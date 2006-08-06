@@ -1,0 +1,16 @@
+To compile the sourcecode you need to set the GP2XDEV environment variable and probably edit the Makefile present in the src folder.
+This is an example environment:
+
+# export GP2XDEV="/usr/local/gp2xdev"
+# export PATH="$PATH:${GP2XDEV}/bin"
+
+=== Installation ===
+Create a directory on your sd or on the nand and put the file "gmenu2x" and the directories "screens", "icons", "scripts" and "sections" in there.
+Then you have to create a autorun.gpu script to let the gp2x launch gmenu2x on startup.
+The script should look something like this, assuming you installed gmenu2x in the directory gmenu2x on the sd:
+
+#!/bin/sh
+cd /mnt/sd/gmenu2x
+exec ./gmenu2x
+
+Visit the homepage at http://gmenu2x.sourceforge.net for more info.
