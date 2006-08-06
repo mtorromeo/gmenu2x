@@ -1,0 +1,7 @@
+title=USB ON
+description=Activate USB connection
+icon=icons/usb.png
+exec=/bin/sh
+params=scripts/usbon.sh
+workdir=.
+dontleave=true

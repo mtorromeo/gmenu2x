@@ -1,0 +1,5 @@
+title=Squidge SNES
+description=Super Nintendo Emulator
+icon=icons/snes.png
+screen=screens/snes.png
+exec=/mnt/sd/snes/squidgesnes.gpe

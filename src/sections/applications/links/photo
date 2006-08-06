@@ -1,0 +1,4 @@
+title=Photo Viewer
+icon=icons/photo.png
+exec=/usr/gp2x/PhotoViewer
+wrapper=true

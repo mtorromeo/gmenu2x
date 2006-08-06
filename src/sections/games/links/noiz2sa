@@ -1,0 +1,4 @@
+title=NOIZ2SA
+exec=/mnt/sd/noiz2sa/noiz2saV2
+params=-accframe
+wrapper=true

@@ -1,0 +1,5 @@
+title=Race!
+description=NeoGeo Pocket Color emulator
+icon=icons/neogeopocket.png
+screen=screens/ngpc.png
+exec=/mnt/sd/ngpc/race.gpe

@@ -1,0 +1,27 @@
+CC = gcc
+CXX = g++
+STRIP = strip
+
+CFLAGS = -I"/usr/include" `sdl-config --cflags` -Wall -pg #-O2
+CXXFLAGS = $(CFLAGS)
+LDFLAGS = -L"/usr/lib" `sdl-config --libs` -lfreetype -lSDL_image -ljpeg -lpng12 -lz #-lSDL_gfx
+
+TARGET = gmenu
+OBJS = gmenu2x.o surface.o link.o SFont.o menu.o
+
+%.o: %.cpp
+		$(CXX) $(CFLAGS) -c $<
+
+%.o: %.c
+		$(CC) $(CFLAGS) -c $<
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+		@echo "Linking $(TARGET) ..."
+		$(CXX) -o $(TARGET) $(OBJS) $(LDFLAGS)
+#		$(STRIP) $(TARGET) #Don't strip if symbols are needed for gprof
+
+clean:
+		rm -f *.o
+		rm -f $(TARGET)

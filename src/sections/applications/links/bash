@@ -1,0 +1,7 @@
+title=Bash
+description=Activate Bash Login
+icon=icons/bash.png
+exec=/bin/sh
+params=scripts/bash.sh
+workdir=.
+wrapper=true

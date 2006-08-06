@@ -1,0 +1,4 @@
+title=OpenBOR
+description=Beas of Rage clone
+screen=screens/bor.png
+exec=/mnt/sd/openbor/openbor.gpe

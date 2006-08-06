@@ -1,0 +1,4 @@
+title=Movie player
+icon=icons/mplayer.png
+exec=/usr/gp2x/mplayer
+wrapper=true

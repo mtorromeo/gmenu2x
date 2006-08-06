@@ -1,0 +1,5 @@
+title=DrMD
+description=SEGA Systems Emulator
+icon=icons/genesis.png
+screen=screens/genesis.png
+exec=/mnt/sd/megadrive/drmd.gpe

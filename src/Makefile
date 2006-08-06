@@ -1,0 +1,30 @@
+CHAINPREFIX=$(GP2XDEV)
+CROSS_COMPILE=$(CHAINPREFIX)/bin/gp2x-
+
+CC= $(CROSS_COMPILE)gcc
+CXX = $(CROSS_COMPILE)g++
+STRIP = $(CROSS_COMPILE)strip
+
+CFLAGS = -I"$(CHAINPREFIX)/include" `$(CHAINPREFIX)/bin/sdl-config --cflags` -DTARGET_GP2X -O2 -Wno-unused -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops
+CXXFLAGS = $(CFLAGS)
+LDFLAGS = -static -L$(CHAINPREFIX)/lib `$(CHAINPREFIX)/bin/sdl-config --libs` -lfreetype -lSDL_image -ljpeg -lpng12 -lSDL -lz
+
+TARGET = gmenu2x
+OBJS = gmenu2x.o surface.o link.o SFont.o joystick.o menu.o
+
+%.o: %.cpp
+		$(CXX) $(CFLAGS) -c $<
+
+%.o: %.c
+		$(CC) $(CFLAGS) -c $<
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+		@echo "Linking $(TARGET) ..."
+		$(CXX) -o $(TARGET) $(OBJS) $(LDFLAGS)
+		$(STRIP) $(TARGET)
+
+clean:
+		rm -f *.o
+		rm -f $(TARGET)
