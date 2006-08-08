@@ -60,6 +60,7 @@ public:
 	void setLinkIndex(int i);
 
 	void write(SDL_Surface *s, string text, int x, int y);
+	void writeCenter(SDL_Surface *s, string text, int x, int y);
 
 	string sectionPath(int section = -1);
 	Surface bg;

@@ -1,4 +1,4 @@
-title=Music Player
+title=Music
 icon=icons/music.png
 exec=/usr/gp2x/MusicPlayer
 wrapper=true

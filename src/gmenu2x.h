@@ -30,7 +30,8 @@ using std::string;
 class GMenu2X {
 private:
 	string getExePath();
-	Surface generic;
+	string getDiskFree();
+	Surface generic, selection;
 	string fps;
 	void drawFPS();
 	void drawRun();

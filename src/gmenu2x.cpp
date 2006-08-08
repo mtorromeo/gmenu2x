@@ -24,6 +24,10 @@
 #include <unistd.h>
 #include "SDL.h"
 
+//for statfs
+#include <sys/vfs.h>
+#include <errno.h>
+
 #ifdef TARGET_GP2X
 #include "gp2x.h"
 #include "joystick.h"
@@ -42,6 +46,7 @@ int main(int argc, char *argv[]) {
 
 GMenu2X::GMenu2X() {
 	string path = getExePath();
+	string df = getDiskFree();
 
 	//Screen
 	cout << "GMENU2X: Initializing screen..." << endl;
@@ -55,6 +60,7 @@ GMenu2X::GMenu2X() {
 	menu = new Menu(path);
 
 	generic.load("icons/generic.png");
+	selection.load("imgs/selection.png");
 
 	//Events
 #ifdef TARGET_GP2X
@@ -66,30 +72,31 @@ GMenu2X::GMenu2X() {
 #endif
 
 	bool quit = false, showFPS = false;
-	int x, i, firstIcon = 0, lastIcon = 0;
+	int x,y,ix,iy, i, firstRow = 0;
 	Uint32 lastFrame = SDL_GetTicks(), thisFrame, numFrames = 0;
 
 	while (!quit) {
 		menu->bg.blit(s,0,0);
 
-		firstIcon = menu->selLinkIndex()-1;
-		lastIcon = menu->selLinkIndex()+6;
+		for (i=firstRow*8; i<(firstRow*8)+32 && i<(int)menu->links.size(); i++) {
+			x = (i%6)*50;
+			y = (i/6+1)*40;
+			ix = x+9;
+			iy = y+2;
 
-		if (menu->selLink()!=NULL) {
-			for (x=firstIcon; x<=lastIcon; x++) {
-				i = x;
-				while (i>=(int)menu->links.size()) i-=menu->links.size();
-				while (i<0) i+=menu->links.size();
-				if (menu->links[i]->icon.raw!=NULL)
-					menu->links[i]->icon.blit(s,12,196-(x-menu->selLinkIndex())*36);
-				else
-					generic.blit(s,12,196-(x-menu->selLinkIndex())*36);
-			}
-			if (menu->selLink()->screen.raw!=NULL)
-				menu->selLink()->screen.blit(s,55,10);
-			menu->write( s->raw, menu->selLink()->title, 50, 199 );
-			menu->write( s->raw, menu->selLink()->description, 50, 213 );
+			if (menu->selLink()==menu->links[i])
+				selection.blit(s,x,y);
+
+			if (menu->links[i]->icon.raw!=NULL)
+				menu->links[i]->icon.blit(s,ix,iy);
+			else
+				generic.blit(s,ix,iy);
+
+			menu->writeCenter( s->raw, menu->links[i]->title, ix+16, iy+30 );
 		}
+
+		menu->writeCenter( s->raw, menu->selLink()->description, 160, 205 );
+		menu->write( s->raw, df, 22, 223 );
 
 		//Frames per second
 		numFrames++;
@@ -109,8 +116,24 @@ GMenu2X::GMenu2X() {
 		joy.update();
 		if ( joy[GP2X_BUTTON_START ] ) quit = true;
 		if ( joy[GP2X_BUTTON_SELECT] ) showFPS = !showFPS;
-		if ( joy[GP2X_BUTTON_DOWN  ] ) menu->decLinkIndex();
-		if ( joy[GP2X_BUTTON_UP    ] ) menu->incLinkIndex();
+		if ( joy[GP2X_BUTTON_LEFT  ] ) menu->decLinkIndex();
+		if ( joy[GP2X_BUTTON_RIGHT ] ) menu->incLinkIndex();
+		if ( joy[GP2X_BUTTON_UP  ] ) {
+				int l = menu->selLinkIndex()-6;
+				if (l<0) {
+					int rows = menu->links.size()/6+1;
+					l = (rows*6)+l;
+					if (l >= (int)menu->links.size())
+						l -= 6;
+				}
+				menu->setLinkIndex(l);
+		}
+		if ( joy[GP2X_BUTTON_DOWN  ] ) {
+			uint l = menu->selLinkIndex()+6;
+			if (l >= menu->links.size())
+				l %= 6;
+			menu->setLinkIndex(l);
+		}
 		if ( joy[GP2X_BUTTON_L     ] ) menu->decSectionIndex();
 		if ( joy[GP2X_BUTTON_R     ] ) menu->incSectionIndex();
 		if ( joy[GP2X_BUTTON_B     ] && menu->selLink()!=NULL ) {
@@ -121,11 +144,27 @@ GMenu2X::GMenu2X() {
 		while (SDL_PollEvent(&event)) {
 			if ( event.type == SDL_QUIT ) quit = true;
 			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_ESCAPE ) quit = true;
-			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_SPACE ) showFPS = !showFPS;
-			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_DOWN   ) menu->decLinkIndex();
-			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_UP     ) menu->incLinkIndex();
-			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_q     ) menu->decSectionIndex();
-			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_w     ) menu->incSectionIndex();
+			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_SPACE  ) showFPS = !showFPS;
+			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_LEFT   ) menu->decLinkIndex();
+			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_RIGHT  ) menu->incLinkIndex();
+			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_UP     ) {
+				int l = menu->selLinkIndex()-6;
+				if (l<0) {
+					int rows = menu->links.size()/6+1;
+					l = (rows*6)+l;
+					if (l >= (int)menu->links.size())
+						l -= 6;
+				}
+				menu->setLinkIndex(l);
+			}
+			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_DOWN   ) {
+				uint l = menu->selLinkIndex()+6;
+				if (l >= menu->links.size())
+					l %= 6;
+				menu->setLinkIndex(l);
+			}
+			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_q      ) menu->decSectionIndex();
+			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_w      ) menu->incSectionIndex();
 			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_RETURN && menu->selLink()!=NULL ) {
 				drawRun();
 				//delay for testing
@@ -137,6 +176,7 @@ GMenu2X::GMenu2X() {
 
 		s->flip();
 	}
+	exit(0);
 }
 
 GMenu2X::~GMenu2X() {
@@ -170,4 +210,21 @@ string GMenu2X::getExePath() {
 	path = path.substr(0,l);
 	l = path.rfind("/");
 	return path.substr(0,l+1);
+}
+
+string GMenu2X::getDiskFree() {
+	stringstream ss;
+	string df = "";
+	struct statfs b;
+
+#ifdef GP2XDEV
+	int ret = statfs("/mnt/sd", &b);
+#else
+	int ret = statfs("/mnt/usb", &b);
+#endif
+	if (ret==0) {
+		ss << b.f_bfree*b.f_bsize/1048576 << "/" << b.f_blocks*b.f_bsize/1048576 << "MB";
+		ss >> df;
+	} else cout << "GMENU2X: statfs failed with error " << errno << endl;
+	return df;
 }

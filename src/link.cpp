@@ -59,6 +59,10 @@ Link::Link(string path, const char* linkfile) {
 }
 
 bool Link::targetExists() {
+#ifndef TARGET_GP2X
+	return true; //For displaying elements during testing on pc
+#endif
+
 	string target = exec;
 	if (exec!="" && exec[0]!='/' && workdir!="")
 		target = workdir + "/" + exec;
@@ -100,8 +104,9 @@ void Link::run() {
 		string command = exec;
 		if (params!="") command += " " + params;
 		system(command.c_str());
-	} else
+	} else {
 		execlp(exec.c_str(),exec.c_str(), params == "" ? NULL : params.c_str() ,NULL);
+	}
 
 	//in case execl fails or dontleave
 	chdir(path.c_str());

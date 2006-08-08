@@ -45,6 +45,7 @@ Menu::Menu(string path) {
 		if (statRet != -1) sections.push_back((string)dptr->d_name);
 	}
 	setSectionIndex(0);
+	bg.load("imgs/bg.png");
 }
 
 Menu::~Menu() {
@@ -78,7 +79,7 @@ void Menu::setSectionIndex(int i) {
 	else if (i>=(int)sections.size()) i=0;
 	iSection = i;
 
-	bg.load(sectionPath()+"bg.png");
+	//bg.load(sectionPath()+"bg.png");
 	if (font!=NULL) free(font);
 	font = new SFont(loadPixmap(sectionPath()+"font.png"));
 
@@ -87,6 +88,10 @@ void Menu::setSectionIndex(int i) {
 
 void Menu::write(SDL_Surface *s, string text, int x, int y) {
 	font->write(s,text.c_str(),x,y);
+}
+
+void Menu::writeCenter(SDL_Surface *s, string text, int x, int y) {
+	font->writeCenter(s,text.c_str(),x,y);
 }
 
 SDL_Surface *Menu::loadPixmap(string pixmap) {

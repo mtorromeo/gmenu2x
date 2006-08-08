@@ -91,6 +91,13 @@ public:
 	void write(SDL_Surface* surface, const std::string& text, int x, int y) const {
 		write(surface, text.c_str(), x, y);
 	}
+	void writeCenter(SDL_Surface* surface, const char* text, int x, int y) const {
+		int w = SFont_TextWidth(font, text);
+		write(surface, text, x-w/2, y);
+	}
+	void writeCenter(SDL_Surface* surface, const std::string& text, int x, int y) const {
+		writeCenter(surface, text.c_str(), x, y);
+	}
 	SFont(SDL_Surface* surface) { font = SFont_InitFont(surface); }
 	~SFont() { SFont_FreeFont(font); }
 

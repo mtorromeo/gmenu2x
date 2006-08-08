@@ -1,4 +1,4 @@
-title=Photo Viewer
+title=Photos
 icon=icons/photo.png
 exec=/usr/gp2x/PhotoViewer
 wrapper=true
