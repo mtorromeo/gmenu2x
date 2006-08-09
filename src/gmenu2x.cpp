@@ -159,34 +159,11 @@ GMenu2X::GMenu2X() {
 		joy.update();
 		if ( joy[GP2X_BUTTON_START ] ) quit = true;
 		if ( joy[GP2X_BUTTON_SELECT] ) showFPS = !showFPS;
-		// LINK LEFT
-		if ( joy[GP2X_BUTTON_LEFT] ) {
-			menu->decLinkIndex();
-			offset = menu->links.size()>24 ? 0 : 10;
-		}
-		// LINK RIGHT
-		if ( joy[GP2X_BUTTON_RIGHT] ) {
-			menu->incLinkIndex();
-			offset = menu->links.size()>24 ? 0 : 10;
-		}
-		// LINK UP
-		if ( joy[GP2X_BUTTON_UP] ) {
-				int l = menu->selLinkIndex()-6;
-				if (l<0) {
-					int rows = menu->links.size()/6+1;
-					l = (rows*6)+l;
-					if (l >= (int)menu->links.size())
-						l -= 6;
-				}
-				menu->setLinkIndex(l);
-		}
-		// LINK DOWN
-		if ( joy[GP2X_BUTTON_DOWN] ) {
-			uint l = menu->selLinkIndex()+6;
-			if (l >= menu->links.size())
-				l %= 6;
-			menu->setLinkIndex(l);
-		}
+		// LINK NAVIGATION
+		if ( joy[GP2X_BUTTON_LEFT ] ) menu->linkLeft();
+		if ( joy[GP2X_BUTTON_RIGHT] ) menu->linkRight();
+		if ( joy[GP2X_BUTTON_UP   ] ) menu->linkUp();
+		if ( joy[GP2X_BUTTON_DOWN ] ) menu->linkDown();
 		// CLOCK DOWN
 		if ( joy[GP2X_BUTTON_VOLDOWN] && !joy[GP2X_BUTTON_VOLUP] ) {
 			if (menu->selLink()->clock()==0)
@@ -204,42 +181,25 @@ GMenu2X::GMenu2X() {
 		if ( joy[GP2X_BUTTON_VOLUP] && joy[GP2X_BUTTON_VOLDOWN] ) {
 			menu->selLink()->setClock(0);
 		}
-		if ( joy[GP2X_BUTTON_L     ] ) menu->decSectionIndex();
-		if ( joy[GP2X_BUTTON_R     ] ) menu->incSectionIndex();
+		if ( joy[GP2X_BUTTON_L     ] ) {
+			menu->decSectionIndex();
+			offset = menu->links.size()>24 ? 0 : 10;
+		}
+		if ( joy[GP2X_BUTTON_R     ] ) {
+			menu->incSectionIndex();
+			offset = menu->links.size()>24 ? 0 : 10;
+		}
 		if ( joy[GP2X_BUTTON_B     ] && menu->selLink()!=NULL ) runLink();
 #else
 		while (SDL_PollEvent(&event)) {
 			if ( event.type == SDL_QUIT ) quit = true;
 			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_ESCAPE ) quit = true;
 			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_SPACE  ) showFPS = !showFPS;
-			// LINK LEFT
-			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_LEFT   )  {
-				menu->decLinkIndex();
-				offset = menu->links.size()>24 ? 0 : 10;
-			}
-			// LINK RIGHT
-			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_RIGHT  )  {
-				menu->incLinkIndex();
-				offset = menu->links.size()>24 ? 0 : 10;
-			}
-			// LINK UP
-			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_UP     ) {
-				int l = menu->selLinkIndex()-6;
-				if (l<0) {
-					int rows = menu->links.size()/6+1;
-					l = (rows*6)+l;
-					if (l >= (int)menu->links.size())
-						l -= 6;
-				}
-				menu->setLinkIndex(l);
-			}
-			// LINK DOWN
-			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_DOWN   ) {
-				uint l = menu->selLinkIndex()+6;
-				if (l >= menu->links.size())
-					l %= 6;
-				menu->setLinkIndex(l);
-			}
+			// LINK NAVIGATION
+			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_LEFT   ) menu->linkLeft();
+			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_RIGHT  ) menu->linkRight();
+			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_UP     ) menu->linkUp();
+			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_DOWN   ) menu->linkDown();
 			// CLOCK DOWN
 			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_z      ) {
 				if (menu->selLink()->clock()==0)
@@ -254,8 +214,14 @@ GMenu2X::GMenu2X() {
 				else if (menu->selLink()->clock()<300)
 					menu->selLink()->setClock( menu->selLink()->clock()+1 );
 			}
-			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_q      ) menu->decSectionIndex();
-			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_w      ) menu->incSectionIndex();
+			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_q      ) {
+				menu->decSectionIndex();
+				offset = menu->links.size()>24 ? 0 : 10;
+			}
+			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_w      ) {
+				menu->incSectionIndex();
+				offset = menu->links.size()>24 ? 0 : 10;
+			}
 			if ( event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_RETURN && menu->selLink()!=NULL ) runLink();
 		}
 #endif

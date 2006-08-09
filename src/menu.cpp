@@ -65,14 +65,6 @@ string Menu::selSection() {
 	return sections[iSection];
 }
 
-void Menu::decSectionIndex() {
-	setSectionIndex(iSection-1);
-}
-
-void Menu::incSectionIndex() {
-	setSectionIndex(iSection+1);
-}
-
 void Menu::setSectionIndex(int i) {
 	if (i<0)
 		i=sections.size()-1;
@@ -88,8 +80,48 @@ void Menu::setSectionIndex(int i) {
 	readLinks();
 }
 
+void Menu::decSectionIndex() {
+	setSectionIndex(iSection-1);
+}
+
+void Menu::incSectionIndex() {
+	setSectionIndex(iSection+1);
+}
+
 uint Menu::firstDispSection() {
 	return iFirstDispSection;
+}
+
+void Menu::linkLeft() {
+	if (iLink%6 == 0)
+		setLinkIndex( (int)links.size()>iLink+5 ? iLink+5 : links.size()-1 );
+	else
+		setLinkIndex(iLink-1);
+}
+
+void Menu::linkRight() {
+	if (iLink%6 == 5 || iLink == (int)links.size()-1)
+		setLinkIndex(iLink-iLink%6);
+	else
+		setLinkIndex(iLink+1);
+}
+
+void Menu::linkUp() {
+	int l = iLink-6;
+	if (l<0) {
+		int rows = links.size()/6+1;
+		l = (rows*6)+l;
+		if (l >= (int)links.size())
+			l -= 6;
+	}
+	setLinkIndex(l);
+}
+
+void Menu::linkDown() {
+	uint l = iLink+6;
+	if (l >= links.size())
+		l %= 6;
+	setLinkIndex(l);
 }
 
 int Menu::selLinkIndex() {
@@ -99,14 +131,6 @@ int Menu::selLinkIndex() {
 Link *Menu::selLink() {
 	if (links.size()==0) return NULL;
 	return links[iLink];
-}
-
-void Menu::decLinkIndex() {
-	setLinkIndex(iLink-1);
-}
-
-void Menu::incLinkIndex() {
-	setLinkIndex(iLink+1);
 }
 
 void Menu::setLinkIndex(int i) {

@@ -55,8 +55,10 @@ public:
 	vector<Link*> links;
 	int selLinkIndex();
 	Link *selLink();
-	void decLinkIndex();
-	void incLinkIndex();
+	void linkLeft();
+	void linkRight();
+	void linkUp();
+	void linkDown();
 	void setLinkIndex(int i);
 
 	string sectionPath(int section = -1);
