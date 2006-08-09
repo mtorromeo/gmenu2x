@@ -36,6 +36,7 @@ class Menu {
 private:
 	string path;
 	int iSection, iLink;
+	uint iFirstDispSection;
 	void readLinks();
 	void freeLinks();
 
@@ -49,6 +50,7 @@ public:
 	void decSectionIndex();
 	void incSectionIndex();
 	void setSectionIndex(int i);
+	uint firstDispSection();
 
 	vector<Link*> links;
 	int selLinkIndex();

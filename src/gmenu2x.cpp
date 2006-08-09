@@ -107,14 +107,18 @@ GMenu2X::GMenu2X() {
 	while (!quit) {
 		sc["imgs/bg.png"]->blit(s,0,0);
 
-		for (i=0; i<(int)menu->sections.size(); i++) {
-			string sectionIcon = "sections/"+menu->sections[i]+".png";
-			x = i*60+24;
-			if (menu->selSectionIndex()==i)
+		if (menu->firstDispSection()>0)
+			sc["imgs/left.png"]->blit(s,1,16);
+		if (menu->firstDispSection()+5<menu->sections.size())
+			sc["imgs/right.png"]->blit(s,311,16);
+		for (uint ui=menu->firstDispSection(); ui<menu->sections.size() && ui<menu->firstDispSection()+5; ui++) {
+			string sectionIcon = "sections/"+menu->sections[ui]+".png";
+			x = (ui-menu->firstDispSection())*60+24;
+			if (menu->selSectionIndex()==(int)ui)
 				boxRGBA(s->raw, x-14, 0, x+46, 40, 255, 255, 255, 130);
 			if (sc.exists(sectionIcon))
 				sc[sectionIcon]->blit(s,x,0);
-			writeCenter( s->raw, menu->sections[i], x+16, 27 );
+			writeCenter( s->raw, menu->sections[ui], x+16, 27 );
 		}
 
 		for (i=firstRow*8; i<(firstRow*8)+32 && i<(int)menu->links.size(); i++) {

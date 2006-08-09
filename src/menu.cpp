@@ -27,6 +27,7 @@ using namespace std;
 
 Menu::Menu(string path) {
 	this->path = path;
+	iFirstDispSection = 0;
 
 	DIR *dirp;
 	struct stat st;
@@ -73,10 +74,22 @@ void Menu::incSectionIndex() {
 }
 
 void Menu::setSectionIndex(int i) {
-	if (i<0) i=sections.size()-1;
-	else if (i>=(int)sections.size()) i=0;
+	if (i<0)
+		i=sections.size()-1;
+	else if (i>=(int)sections.size())
+		i=0;
 	iSection = i;
+
+	if (i>(int)iFirstDispSection+4)
+		iFirstDispSection = i-4;
+	else if (i<(int)iFirstDispSection)
+		iFirstDispSection = i;
+
 	readLinks();
+}
+
+uint Menu::firstDispSection() {
+	return iFirstDispSection;
 }
 
 int Menu::selLinkIndex() {

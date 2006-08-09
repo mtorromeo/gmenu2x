@@ -1,5 +1,4 @@
 title=HU6280
 description=PcEngine emulator
 icon=icons/pcengine.png
-screen=screens/pcengine.png
 exec=/mnt/sd/pcengine/hu6280.gpe

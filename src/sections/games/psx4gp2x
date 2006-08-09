@@ -1,5 +1,4 @@
 title=Psx4gp2x
 description=Playstation emulator
 icon=icons/psx.png
-screen=screens/psx.png
 exec=/mnt/sd/psx4gp2x/psx4all.gpe
