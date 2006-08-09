@@ -134,7 +134,7 @@ GMenu2X::GMenu2X() {
 			writeCenter( s->raw, menu->links[i]->title, ix+16, iy+28 );
 		}
 
-		writeCenter( s->raw, menu->selLink()->description, 160, 205 );
+		writeCenter( s->raw, menu->selLink()->description, 160, 206 );
 		write ( s->raw, menu->selLink()->clockStr(), cpuX, 223 );
 
 		//Frames per second
