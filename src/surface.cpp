@@ -43,6 +43,13 @@ void Surface::free() {
 	if (raw!=NULL) SDL_FreeSurface( raw );
 }
 
+SDL_PixelFormat *Surface::format() {
+	if (raw==NULL)
+		return NULL;
+	else
+		return raw->format;
+}
+
 void Surface::load(string img) {
 	free();
 	SDL_Surface *buf = IMG_Load(img.c_str());

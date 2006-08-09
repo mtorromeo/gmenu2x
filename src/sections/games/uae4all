@@ -1,5 +1,4 @@
-title=uae4all
+title=Uae4all
 description=Amiga emulator
 icon=/mnt/sd/amiga/uae4all.png
-screen=screens/amiga.png
 exec=/mnt/sd/amiga/uae4all.gpe

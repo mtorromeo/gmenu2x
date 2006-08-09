@@ -18,7 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <fstream>
+#include <sstream>
 #include "link.h"
+#include "gmenu2x.h"
 
 using namespace std;
 
@@ -26,6 +28,7 @@ Link::Link(string path, const char* linkfile) {
 	this->path = path;
 	wrapper = false;
 	dontleave = false;
+	setClock(0);
 
 	string line;
 	ifstream infile (linkfile, ios_base::in);
@@ -38,9 +41,9 @@ Link::Link(string path, const char* linkfile) {
 		} else if (name == "description") {
 			description = value;
 		} else if (name == "icon") {
-			icon.load(value);
-		} else if (name == "screen") {
-			screen.load(value);
+			if (fileExists(value)) {
+				icon = value;
+			}
 		} else if (name == "exec") {
 			exec = value;
 		} else if (name == "params") {
@@ -51,10 +54,33 @@ Link::Link(string path, const char* linkfile) {
 			if (value=="true") wrapper = true;
 		} else if (name == "dontleave") {
 			if (value=="true") dontleave = true;
+		} else if (name == "clock") {
+			setClock( atoi(value.c_str()) );
 		} else {
 			cout << "Unrecognized option: " << name << endl;
 			break;
 		}
+	}
+}
+
+int Link::clock() {
+	return iclock;
+}
+
+string Link::clockStr() {
+	return sclock;
+}
+
+void Link::setClock(int mhz) {
+	if (mhz<100 || mhz>300) {
+		iclock = 0;
+		sclock = "Default";
+	} else {
+		iclock = mhz;
+		stringstream ss;
+		sclock = "";
+		ss << iclock << "MHZ";
+		ss >> sclock;
 	}
 }
 
@@ -67,16 +93,13 @@ bool Link::targetExists() {
 	if (exec!="" && exec[0]!='/' && workdir!="")
 		target = workdir + "/" + exec;
 
-	fstream fin;
-	fin.open(target.c_str() ,ios::in);
-	bool exists = fin.is_open();
-	fin.close();
-
-	return exists;
+	return fileExists(target);
 }
 
 void Link::run() {
 	cout << "GMENU2X: Executing '" << title << "'" << endl;
+
+	//Set correct working directory
 	string wd = workdir;
 	if (wd=="") {
 		string::size_type pos = exec.rfind("/");

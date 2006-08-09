@@ -1,4 +1,4 @@
-title=USB OFF
+title=USB Off
 description=Deactivate USB connection
 icon=icons/usb.png
 exec=/bin/sh

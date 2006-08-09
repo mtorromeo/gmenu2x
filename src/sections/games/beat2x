@@ -1,5 +1,4 @@
 title=Beat2X
 description=DanceDance style game
 icon=/mnt/sd/beat2x/beat2x.png
-screen=screens/beat2x.png
 exec=/mnt/sd/beat2x/beat2x.gpe

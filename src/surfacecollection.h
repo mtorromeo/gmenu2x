@@ -20,9 +20,20 @@
 #ifndef SURFACECOLLECTION_H
 #define SURFACECOLLECTION_H
 
+#include "surface.h"
+
 #include <ext/hash_map>
 
 using __gnu_cxx::hash_map;
+using __gnu_cxx::hash;
+
+namespace __gnu_cxx {
+	template<> struct hash< std::string > {
+		size_t operator()( const std::string& x ) const {
+			return hash< const char* >()( x.c_str() );
+		}
+	};
+}
 
 /**
 Hash Map of surfaces that loads surfaces not already loaded and reuses already loaded ones.
@@ -30,11 +41,18 @@ Hash Map of surfaces that loads surfaces not already loaded and reuses already l
 	@author Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
 */
 class SurfaceCollection {
+private:
+	hash_map<string, Surface*> surfaces;
+
 public:
-    SurfaceCollection();
+	SurfaceCollection();
+	~SurfaceCollection();
 
-    ~SurfaceCollection();
-
+	void debug();
+	Surface *add(string path);
+	void     del(string path);
+	bool     exists(string path);
+	Surface *operator[](string);
 };
 
 #endif

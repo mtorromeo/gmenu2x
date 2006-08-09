@@ -4,10 +4,10 @@ STRIP = strip
 
 CFLAGS = -I"/usr/include" `sdl-config --cflags` -Wall -pg #-O2
 CXXFLAGS = $(CFLAGS)
-LDFLAGS = -L"/usr/lib" `sdl-config --libs` -lfreetype -lSDL_image -ljpeg -lpng12 -lz #-lSDL_gfx
+LDFLAGS = -L"/usr/lib" `sdl-config --libs` -lfreetype -lSDL_image -lSDL_gfx -ljpeg -lpng12 -lz #-lSDL_gfx
 
 TARGET = gmenu
-OBJS = gmenu2x.o surface.o link.o SFont.o menu.o
+OBJS = gmenu2x.o surface.o link.o SFont.o menu.o surfacecollection.o
 
 %.o: %.cpp
 		$(CXX) $(CFLAGS) -c $<

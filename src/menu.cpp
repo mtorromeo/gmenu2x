@@ -27,7 +27,6 @@ using namespace std;
 
 Menu::Menu(string path) {
 	this->path = path;
-	font = NULL;
 
 	DIR *dirp;
 	struct stat st;
@@ -45,7 +44,6 @@ Menu::Menu(string path) {
 		if (statRet != -1) sections.push_back((string)dptr->d_name);
 	}
 	setSectionIndex(0);
-	bg.load("imgs/bg.png");
 }
 
 Menu::~Menu() {
@@ -78,33 +76,7 @@ void Menu::setSectionIndex(int i) {
 	if (i<0) i=sections.size()-1;
 	else if (i>=(int)sections.size()) i=0;
 	iSection = i;
-
-	//bg.load(sectionPath()+"bg.png");
-	if (font!=NULL) free(font);
-	font = new SFont(loadPixmap(sectionPath()+"font.png"));
-
 	readLinks();
-}
-
-void Menu::write(SDL_Surface *s, string text, int x, int y) {
-	font->write(s,text.c_str(),x,y);
-}
-
-void Menu::writeCenter(SDL_Surface *s, string text, int x, int y) {
-	font->writeCenter(s,text.c_str(),x,y);
-}
-
-SDL_Surface *Menu::loadPixmap(string pixmap) {
-	SDL_Surface *s = IMG_Load(pixmap.c_str());
-	if (s==NULL) {
-		cout << "GMENU2X: Pixmap '" << pixmap << "' not found!" << endl;
-		return NULL;
-	}
-	SDL_Surface *opti = SDL_DisplayFormat(s);
-	//SDL_Surface *opti = SDL_DisplayFormatAlpha(s);
-	SDL_FreeSurface(s);
-	cout << "GMENU2X: Pixmap '" << pixmap << "' loaded!" << endl;
-	return opti;
 }
 
 int Menu::selLinkIndex() {
@@ -135,10 +107,6 @@ string Menu::sectionPath(int section) {
 	return "sections/"+sections[section]+"/";
 }
 
-string Menu::linksPath() {
-	return sectionPath()+"links/";
-}
-
 void Menu::readLinks() {
 	links.clear();
 	iLink = 0;
@@ -148,12 +116,12 @@ void Menu::readLinks() {
 	struct dirent *dptr;
 	string filepath;
 
-	if ((dirp = opendir(linksPath().c_str())) == NULL) return;
+	if ((dirp = opendir(sectionPath().c_str())) == NULL) return;
 
 	while ((dptr = readdir(dirp))) {
 		/*if ((strcmp(dptr->d_name, ".") == 0 ||  strcmp(dptr->d_name, "..") == 0)) continue;*/
 		if (dptr->d_name[0]=='.') continue;
-		filepath = linksPath()+dptr->d_name;
+		filepath = sectionPath()+dptr->d_name;
 		int statRet = stat(filepath.c_str(), &st);
 		if (S_ISDIR(st.st_mode)) continue;
 		if (statRet != -1) {

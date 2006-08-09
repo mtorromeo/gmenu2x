@@ -1,5 +1,4 @@
 title=GnGeo
 description=NeoGeo Emulator
 icon=/mnt/sd/neogeo/rage2x.png
-screen=screens/neogeo.png
 exec=/mnt/sd/neogeo/rage2x.gpe

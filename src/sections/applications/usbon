@@ -1,4 +1,4 @@
-title=USB ON
+title=USB On
 description=Activate USB connection
 icon=icons/usb.png
 exec=/bin/sh

@@ -7,10 +7,10 @@ STRIP = $(CROSS_COMPILE)strip
 
 CFLAGS = -I"$(CHAINPREFIX)/include" `$(CHAINPREFIX)/bin/sdl-config --cflags` -DTARGET_GP2X -O2 -Wno-unused -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops
 CXXFLAGS = $(CFLAGS)
-LDFLAGS = -static -L$(CHAINPREFIX)/lib `$(CHAINPREFIX)/bin/sdl-config --libs` -lfreetype -lSDL_image -ljpeg -lpng12 -lSDL -lz
+LDFLAGS = -static -L$(CHAINPREFIX)/lib `$(CHAINPREFIX)/bin/sdl-config --libs` -lfreetype -lSDL_image -lSDL_gfx -ljpeg -lpng12 -lSDL -lz
 
 TARGET = gmenu2x
-OBJS = gmenu2x.o surface.o link.o SFont.o joystick.o menu.o
+OBJS = gmenu2x.o surface.o surfacecollection.o link.o SFont.o joystick.o menu.o
 
 %.o: %.cpp
 		$(CXX) $(CFLAGS) -c $<

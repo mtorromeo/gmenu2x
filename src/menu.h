@@ -34,11 +34,9 @@ Handles the menu structure
 */
 class Menu {
 private:
-	SFont *font;
 	string path;
 	int iSection, iLink;
 	void readLinks();
-	SDL_Surface *loadPixmap(string pixmap);
 	void freeLinks();
 
 public:
@@ -59,12 +57,7 @@ public:
 	void incLinkIndex();
 	void setLinkIndex(int i);
 
-	void write(SDL_Surface *s, string text, int x, int y);
-	void writeCenter(SDL_Surface *s, string text, int x, int y);
-
 	string sectionPath(int section = -1);
-	Surface bg;
-	string linksPath();
 };
 
 #endif

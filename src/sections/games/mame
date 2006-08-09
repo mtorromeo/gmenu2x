@@ -1,5 +1,4 @@
 title=Mame
 description=Multiple Arcade Machine Emulator
 icon=/mnt/sd/mame/mame_gp2x.png
-screen=screens/mame.png
 exec=/mnt/sd/mame/mame_gp2x.gpe

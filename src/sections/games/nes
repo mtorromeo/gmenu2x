@@ -1,5 +1,4 @@
 title=Nes
 description=Famicom emulator
 icon=icons/nes.png
-screen=screens/nes.png
 exec=/mnt/sd/nes/fishyNES.gpe

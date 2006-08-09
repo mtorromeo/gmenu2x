@@ -24,24 +24,37 @@
 #include <string>
 #include <iostream>
 #include "menu.h"
+#include "surfacecollection.h"
 
 using std::string;
 
+bool fileExists(string file);
+
 class GMenu2X {
 private:
+	Uint32 blendcolor;
+	string path;
 	string getExePath();
 	string getDiskFree();
-	Surface generic, selection;
+	SurfaceCollection sc;
+	Surface *s;
+	SFont *font;
 	string fps;
+	int cpuX;
 	void drawFPS();
 	void drawRun();
+	void setClock(int mhz);
+	void runLink();
 
 public:
 	GMenu2X();
 	~GMenu2X();
 
-	Menu *menu;
-	Surface *s;
+	void initBG();
+	void write(SDL_Surface *s, string text, int x, int y);
+	void writeCenter(SDL_Surface *s, string text, int x, int y);
+
+	Menu* menu;
 };
 
 #endif

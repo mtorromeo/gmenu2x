@@ -38,6 +38,9 @@ Parses links files.
 class Link {
 private:
 	string path;
+	int iclock;
+	string sclock;
+
 public:
 	Link(string path, const char* linkfile);
 
@@ -45,14 +48,15 @@ public:
 	string description;
 	string exec;
 	string params;
-	string iconFile;
+	string icon;
 	string screenFile;
 	string workdir;
+	int clock();
+	string clockStr();
+	void setClock(int);
 
 	bool wrapper;
 	bool dontleave;
-	Surface icon;
-	Surface screen;
 
 	void run();
 	bool targetExists();
