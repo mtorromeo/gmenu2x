@@ -2,3 +2,4 @@ title=SNES
 description=Squidge's Super Nintendo Emulator
 icon=icons/snes.png
 exec=/mnt/sd/snes/squidgesnes.gpe
+clock=266
