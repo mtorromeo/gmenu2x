@@ -1,5 +1,5 @@
 title=Exit
 description=Exit GMenu2X to the official frontend
 icon=icons/exit.png
-exec=/usr/gp2x/gmenu2x
+exec=/usr/gp2x/gp2xmenu
 params=--disable-autorun
