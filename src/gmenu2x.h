@@ -28,11 +28,8 @@
 
 using std::string;
 
-bool fileExists(string file);
-
 class GMenu2X {
 private:
-	Uint32 blendcolor;
 	string path;
 	string getExePath();
 	string getDiskFree();

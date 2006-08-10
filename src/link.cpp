@@ -20,7 +20,7 @@
 #include <fstream>
 #include <sstream>
 #include "link.h"
-#include "gmenu2x.h"
+#include "utilities.h"
 
 using namespace std;
 
@@ -34,8 +34,8 @@ Link::Link(string path, const char* linkfile) {
 	ifstream infile (linkfile, ios_base::in);
 	while (getline(infile, line, '\n')) {
 		string::size_type position = line.find("=");
-		string name = line.substr(0,position);
-		string value = line.substr(position+1,line.length());
+		string name = trim(line.substr(0,position));
+		string value = trim(line.substr(position+1,line.length()));
 		if (name == "title") {
 			title = value;
 		} else if (name == "description") {

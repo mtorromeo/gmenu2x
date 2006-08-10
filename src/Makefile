@@ -10,7 +10,7 @@ CXXFLAGS = $(CFLAGS)
 LDFLAGS = -static -L$(CHAINPREFIX)/lib `$(CHAINPREFIX)/bin/sdl-config --libs` -lfreetype -lSDL_image -lSDL_gfx -ljpeg -lpng12 -lSDL -lz
 
 TARGET = gmenu2x
-OBJS = gmenu2x.o surface.o surfacecollection.o link.o SFont.o joystick.o menu.o
+OBJS = gmenu2x.o surface.o surfacecollection.o link.o SFont.o joystick.o menu.o utilities.o
 
 %.o: %.cpp
 		$(CXX) $(CFLAGS) -c $<

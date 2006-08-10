@@ -37,13 +37,13 @@ Menu::Menu(string path) {
 	if ((dirp = opendir("sections")) == NULL) return;
 
 	while ((dptr = readdir(dirp))) {
-		/*if ((strcmp(dptr->d_name, ".") == 0 ||  strcmp(dptr->d_name, "..") == 0)) continue;*/
 		if (dptr->d_name[0]=='.') continue;
 		filepath = (string)"sections/"+dptr->d_name;
 		int statRet = stat(filepath.c_str(), &st);
 		if (!S_ISDIR(st.st_mode)) continue;
 		if (statRet != -1) sections.push_back((string)dptr->d_name);
 	}
+	sort(sections.begin(),sections.end());
 	setSectionIndex(0);
 }
 
@@ -156,7 +156,6 @@ void Menu::readLinks() {
 	if ((dirp = opendir(sectionPath().c_str())) == NULL) return;
 
 	while ((dptr = readdir(dirp))) {
-		/*if ((strcmp(dptr->d_name, ".") == 0 ||  strcmp(dptr->d_name, "..") == 0)) continue;*/
 		if (dptr->d_name[0]=='.') continue;
 		filepath = sectionPath()+dptr->d_name;
 		int statRet = stat(filepath.c_str(), &st);

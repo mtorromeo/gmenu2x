@@ -17,23 +17,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "utilities.h"
 
-#define GP2X_BUTTON_UP              (0)
-#define GP2X_BUTTON_DOWN            (4)
-#define GP2X_BUTTON_LEFT            (2)
-#define GP2X_BUTTON_RIGHT           (6)
-#define GP2X_BUTTON_UPLEFT          (1)
-#define GP2X_BUTTON_UPRIGHT         (7)
-#define GP2X_BUTTON_DOWNLEFT        (3)
-#define GP2X_BUTTON_DOWNRIGHT       (5)
-#define GP2X_BUTTON_CLICK           (18)
-#define GP2X_BUTTON_A               (12)
-#define GP2X_BUTTON_B               (13)
-#define GP2X_BUTTON_Y               (14)
-#define GP2X_BUTTON_X               (15)
-#define GP2X_BUTTON_R               (10)
-#define GP2X_BUTTON_L               (11)
-#define GP2X_BUTTON_START           (8)
-#define GP2X_BUTTON_SELECT          (9)
-#define GP2X_BUTTON_VOLUP           (16)
-#define GP2X_BUTTON_VOLDOWN         (17)
+using namespace std;
+
+// General tool to strip spaces from both ends:
+string trim(const string& s) {
+  if(s.length() == 0)
+    return s;
+  int b = s.find_first_not_of(" \t");
+  int e = s.find_last_not_of(" \t");
+  if(b == -1) // No non-spaces
+    return "";
+  return string(s, b, e - b + 1);
+}
+
+bool fileExists(string file) {
+	fstream fin;
+	fin.open(file.c_str() ,ios::in);
+	bool exists = fin.is_open();
+	fin.close();
+
+	return exists;
+}

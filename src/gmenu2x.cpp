@@ -37,6 +37,7 @@
 
 #include "SFont.h"
 #include "surface.h"
+#include "utilities.h"
 #include "gmenu2x.h"
 
 using namespace std;
@@ -44,15 +45,6 @@ using namespace std;
 int main(int argc, char *argv[]) {
 	GMenu2X app;
 	return 0;
-}
-
-bool fileExists(string file) {
-	fstream fin;
-	fin.open(file.c_str() ,ios::in);
-	bool exists = fin.is_open();
-	fin.close();
-
-	return exists;
 }
 
 GMenu2X::GMenu2X() {
@@ -82,10 +74,7 @@ GMenu2X::GMenu2X() {
 			sc.add(sectionIcon);
 	}
 
-	blendcolor = SDL_MapRGBA(s->format(), 0xFF, 0xFF, 0xFF, 140);
 	initBG();
-	//generic.load("icons/generic.png");
-	//selection.load("imgs/selection.png");
 
 	//Events
 #ifdef TARGET_GP2X
@@ -138,8 +127,10 @@ GMenu2X::GMenu2X() {
 			writeCenter( s->raw, menu->links[i]->title, ix+16, iy+28 );
 		}
 
-		writeCenter( s->raw, menu->selLink()->description, 160, 206 );
-		write ( s->raw, menu->selLink()->clockStr(), cpuX, 223 );
+		if (menu->selLink()!=NULL) {
+			writeCenter( s->raw, menu->selLink()->description, 160, 206 );
+			write ( s->raw, menu->selLink()->clockStr(), cpuX, 223 );
+		}
 
 		//Frames per second
 		numFrames++;
