@@ -44,7 +44,7 @@ private:
 	void runLink();
 
 public:
-	GMenu2X();
+	GMenu2X(int argc, char *argv[]);
 	~GMenu2X();
 
 	void initBG();

@@ -43,11 +43,11 @@
 using namespace std;
 
 int main(int argc, char *argv[]) {
-	GMenu2X app;
+	GMenu2X app(argc,argv);
 	return 0;
 }
 
-GMenu2X::GMenu2X() {
+GMenu2X::GMenu2X(int argc, char *argv[]) {
 	path = getExePath();
 
 	//fork to set clock in background
@@ -148,7 +148,7 @@ GMenu2X::GMenu2X() {
 
 #ifdef TARGET_GP2X
 		joy.update();
-		if ( joy[GP2X_BUTTON_START ] ) quit = true;
+		if ( joy[GP2X_BUTTON_START ] && argc>1 && string(argv[1])=="--startquit" ) quit = true;
 		if ( joy[GP2X_BUTTON_SELECT] ) showFPS = !showFPS;
 		// LINK NAVIGATION
 		if ( joy[GP2X_BUTTON_LEFT ] ) menu->linkLeft();
