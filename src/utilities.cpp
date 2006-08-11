@@ -25,8 +25,8 @@ using namespace std;
 string trim(const string& s) {
   if(s.length() == 0)
     return s;
-  int b = s.find_first_not_of(" \t");
-  int e = s.find_last_not_of(" \t");
+  int b = s.find_first_not_of(" \t\r");
+  int e = s.find_last_not_of(" \t\r");
   if(b == -1) // No non-spaces
     return "";
   return string(s, b, e - b + 1);
