@@ -26,7 +26,20 @@
 #include "menu.h"
 #include "surfacecollection.h"
 
+#ifdef TARGET_GP2X
+#include "joystick.h"
+#endif
+
 using std::string;
+
+class GMenu2X;
+
+typedef int (GMenu2X::*StatusFcn)();
+
+struct MenuOption {
+	string text;
+	StatusFcn action;
+};
 
 class GMenu2X {
 private:
@@ -36,16 +49,27 @@ private:
 	SurfaceCollection sc;
 	Surface *s;
 	SFont *font;
-	string fps;
 	int cpuX;
-	void drawFPS();
 	void drawRun();
+	void drawScrollBar();
 	void setClock(int mhz);
 	void runLink();
+	StatusFcn status;
+
+#ifdef TARGET_GP2X
+	Joystick joy;
+	bool startquit;
+#else
+	SDL_Event event;
+#endif
 
 public:
 	GMenu2X(int argc, char *argv[]);
 	~GMenu2X();
+
+	//Status functions
+	int main();
+	int options();
 
 	void initBG();
 	void write(SDL_Surface *s, string text, int x, int y);

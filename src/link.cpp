@@ -26,6 +26,7 @@ using namespace std;
 
 Link::Link(string path, const char* linkfile) {
 	this->path = path;
+	file = linkfile;
 	wrapper = false;
 	dontleave = false;
 	setClock(0);
@@ -61,6 +62,8 @@ Link::Link(string path, const char* linkfile) {
 			break;
 		}
 	}
+
+	edited = false;
 }
 
 int Link::clock() {
@@ -82,6 +85,8 @@ void Link::setClock(int mhz) {
 		ss << iclock << "MHZ";
 		ss >> sclock;
 	}
+
+	edited = true;
 }
 
 bool Link::targetExists() {
@@ -94,6 +99,28 @@ bool Link::targetExists() {
 		target = workdir + "/" + exec;
 
 	return fileExists(target);
+}
+
+bool Link::save() {
+	if (!edited) return false;
+	cout << "GMENU2X: Saving link " << title << endl;
+
+	ofstream f(file.c_str());
+	if (f.is_open()) {
+		if (title!=""      ) f << "title="       << title       << endl;
+		if (description!="") f << "description=" << description << endl;
+		if (icon!=""       ) f << "icon="        << icon        << endl;
+		if (exec!=""       ) f << "exec="        << exec        << endl;
+		if (params!=""     ) f << "params="      << params      << endl;
+		if (workdir!=""    ) f << "workdir="     << workdir     << endl;
+		if (iclock!=0      ) f << "clock="       << iclock      << endl;
+		if (wrapper        ) f << "wrapper=true"                << endl;
+		if (dontleave      ) f << "dontleave=true"              << endl;
+		f.close();
+		return true;
+	} else
+		cout << "GMENU2X: Error while opening the file '" << file << "' for write" << endl;
+	return false;
 }
 
 void Link::run() {

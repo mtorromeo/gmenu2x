@@ -23,7 +23,17 @@
 
 using namespace std;
 
+Joystick::Joystick() {}
+
 Joystick::Joystick(int joynum) {
+	init(joynum);
+}
+
+Joystick::~Joystick() {
+	SDL_JoystickClose(joystick);
+}
+
+void Joystick::init( int joynum ) {
 	SDL_JoystickEventState(SDL_IGNORE);
 	joystick = SDL_JoystickOpen(joynum);
 	cout << "GMENU2X: Joystick " << (joystick!=NULL) << endl;
@@ -35,10 +45,6 @@ Joystick::Joystick(int joynum) {
 		interval.push_back(0);
 	}
 	cout << "GMENU2X: Joystick initialized" << endl;
-}
-
-Joystick::~Joystick() {
-	SDL_JoystickClose(joystick);
 }
 
 void Joystick::update() {

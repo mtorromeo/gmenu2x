@@ -120,3 +120,8 @@ void Surface::putPixel(int x, int y, Uint32 color) {
 			break;
 	}
 }
+
+void Surface::operator = (Surface *s) {
+	raw = s->raw;
+	raw->refcount++;
+}

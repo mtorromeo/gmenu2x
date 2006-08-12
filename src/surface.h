@@ -52,6 +52,8 @@ public:
 	void putPixel(int,int,Uint32);
 	bool blit(Surface *destination, int x, int y);
 	bool blit(SDL_Surface *destination, int x, int y);
+
+	void operator = (Surface*);
 };
 
 #endif

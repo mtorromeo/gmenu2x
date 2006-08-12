@@ -37,9 +37,9 @@ Parses links files.
 */
 class Link {
 private:
-	string path;
+	string path, file, sclock;
 	int iclock;
-	string sclock;
+	bool edited;
 
 public:
 	Link(string path, const char* linkfile);
@@ -58,6 +58,7 @@ public:
 	bool wrapper;
 	bool dontleave;
 
+	bool save();
 	void run();
 	bool targetExists();
 };

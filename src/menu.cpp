@@ -124,6 +124,10 @@ void Menu::linkDown() {
 	setLinkIndex(l);
 }
 
+uint Menu::firstDispRow() {
+	return iFirstDispRow;
+}
+
 int Menu::selLinkIndex() {
 	return iLink;
 }
@@ -134,8 +138,16 @@ Link *Menu::selLink() {
 }
 
 void Menu::setLinkIndex(int i) {
-	if (i<0) i=links.size()-1;
-	else if (i>=(int)links.size()) i=0;
+	if (i<0)
+		i=links.size()-1;
+	else if (i>=(int)links.size())
+		i=0;
+
+	if (i>=(int)iFirstDispRow*6+24)
+		iFirstDispRow = i/6-3;
+	else if (i<(int)iFirstDispRow*6)
+		iFirstDispRow = i/6;
+
 	iLink = i;
 }
 
@@ -147,6 +159,7 @@ string Menu::sectionPath(int section) {
 void Menu::readLinks() {
 	links.clear();
 	iLink = 0;
+	iFirstDispRow = 0;
 
 	DIR *dirp;
 	struct stat st;

@@ -28,5 +28,7 @@ using std::string;
 
 string trim(const string& s);
 bool fileExists(string file);
+int max (int a, int b);
+int min (int a, int b);
 
 #endif

@@ -38,8 +38,10 @@ private:
 	vector<Uint32> interval;
 
 public:
+	Joystick();
 	Joystick(int joynum);
 	~Joystick();
+	void init(int joynum);
 
 	SDL_Joystick *joystick;
 	vector<bool> buttons;
