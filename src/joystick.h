@@ -20,8 +20,8 @@
 #ifndef JOYSTICK_H
 #define JOYSTICK_H
 
-#include "SDL.h"
-#include "SDL_image.h"
+#include <SDL.h>
+#include <SDL_image.h>
 #include <vector>
 
 using std::vector;

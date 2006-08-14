@@ -24,8 +24,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <math.h>
-#include "SDL.h"
-#include "SDL_gfxPrimitives.h"
+#include <SDL.h>
+#include <SDL_gfxPrimitives.h>
 
 //for statfs
 #include <sys/vfs.h>
@@ -152,7 +152,7 @@ int GMenu2X::main() {
 #ifdef TARGET_GP2X
 		joy.update();
 		if ( joy[GP2X_BUTTON_START ] && startquit ) quit = true;
-		//if ( joy[GP2X_BUTTON_SELECT] ) showFPS = !showFPS;
+		if ( joy[GP2X_BUTTON_SELECT] ) { status = &GMenu2X::options; return 0; };
 		// LINK NAVIGATION
 		if ( joy[GP2X_BUTTON_LEFT ] ) menu->linkLeft();
 		if ( joy[GP2X_BUTTON_RIGHT] ) menu->linkRight();
@@ -177,11 +177,11 @@ int GMenu2X::main() {
 		}
 		if ( joy[GP2X_BUTTON_L     ] ) {
 			menu->decSectionIndex();
-			offset = menu->links.size()>24 ? 0 : 10;
+			offset = menu->links.size()>24 ? 0 : 4;
 		}
 		if ( joy[GP2X_BUTTON_R     ] ) {
 			menu->incSectionIndex();
-			offset = menu->links.size()>24 ? 0 : 10;
+			offset = menu->links.size()>24 ? 0 : 4;
 		}
 		if ( joy[GP2X_BUTTON_B     ] && menu->selLink()!=NULL ) runLink();
 #else

@@ -21,8 +21,8 @@
 #define SURFACE_H
 
 #include <iostream>
-#include "SDL.h"
-#include "SDL_image.h"
+#include <SDL.h>
+#include <SDL_image.h>
 
 using std::string;
 

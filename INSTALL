@@ -5,12 +5,4 @@ This is an example environment:
 # export PATH="$PATH:${GP2XDEV}/bin"
 
 === Installation ===
-Create a directory on your sd or on the nand and put the file "gmenu2x" and the directories "screens", "icons", "scripts" and "sections" in there.
-Then you have to create a autorun.gpu script to let the gp2x launch gmenu2x on startup.
-The script should look something like this, assuming you installed gmenu2x in the directory gmenu2x on the sd:
-
-#!/bin/sh
-cd /mnt/sd/gmenu2x
-exec ./gmenu2x
-
-Visit the homepage at http://gmenu2x.sourceforge.net for more info.
+Put the file "autorun.gpu" and the folder "gmenu2x" on the root of your sd, create the links as described on the documentation present on the website (http://gmenu2x.sourceforge.net) and boot your gp2x.

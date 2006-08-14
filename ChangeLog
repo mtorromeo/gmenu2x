@@ -1,0 +1,25 @@
+----------
+New in 0.3
+----------
+Added a menu with options binded to the select button
+Clock setting is saved when changed
+Links area scrollable to allow more than 24 links per section
+Fix for links with DOS line-endings
+Increased space between icons
+
+------------
+New in 0.2.1
+------------
+No more crash in presence of a section with no valid links
+Keys and values in links are now trimmed. This means that you can spaces before and after keys and values (IE: " exec = /path/to/link.gpe  " is valid)
+Split applications section in applications and settings and added settings/exit link that launches the original frontend.
+L and R shoulder buttons swapped
+
+----------
+New in 0.2
+----------
+Interface completely redesigned, now there are 24 links visible at the same time.
+Display of free space on sd
+In-Menu Under/Overclocker using the included utility by god_at_hell, Hermes/PS2Reality, Robster, Vimacs (edit script/cpuspeed.sh to tweak other parameteres besides clock speed)
+Any number of sections supported
+Customisation made simplier (just replace bg.png with any wallpaper of size 320x240)
