@@ -94,15 +94,14 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	SDL_EnableKeyRepeat(1,150);
 #endif
 
-	status = &GMenu2X::main;
-	while ((this->*status)()>=0);
+	main();
 
 	exit(0);
 }
 
 int GMenu2X::main() {
 	bool quit = false;
-	int x,y,ix,iy, offset = menu->links.size()>24 ? 0 : 10;
+	int x,y,ix,iy, offset = menu->links.size()>24 ? 0 : 4;
 	uint i;
 
 	while (!quit) {
@@ -152,7 +151,7 @@ int GMenu2X::main() {
 #ifdef TARGET_GP2X
 		joy.update();
 		if ( joy[GP2X_BUTTON_START ] && startquit ) quit = true;
-		if ( joy[GP2X_BUTTON_SELECT] ) { status = &GMenu2X::options; return 0; };
+		if ( joy[GP2X_BUTTON_SELECT] ) options();
 		// LINK NAVIGATION
 		if ( joy[GP2X_BUTTON_LEFT ] ) menu->linkLeft();
 		if ( joy[GP2X_BUTTON_RIGHT] ) menu->linkRight();
@@ -189,7 +188,7 @@ int GMenu2X::main() {
 			if ( event.type == SDL_QUIT ) quit = true;
 			if ( event.type==SDL_KEYDOWN ) {
 				if ( event.key.keysym.sym==SDLK_ESCAPE ) quit = true;
-				if ( event.key.keysym.sym==SDLK_SPACE  ) { status = &GMenu2X::options; return 0; };
+				if ( event.key.keysym.sym==SDLK_SPACE  ) options();
 				// LINK NAVIGATION
 				if ( event.key.keysym.sym==SDLK_LEFT   ) menu->linkLeft();
 				if ( event.key.keysym.sym==SDLK_RIGHT  ) menu->linkRight();
@@ -233,28 +232,21 @@ int GMenu2X::options() {
 	//Darken background
 	boxRGBA(bg.raw, 0, 0, 320, 240, 0,0,0,ALPHABLEND);
 
-	vector<MenuOption> opts;
+	vector<MenuOption*> options;
+	options.push_back( new MenuOption(this, "Add link in '"+menu->selSection()+"'", &GMenu2X::fileBrowser) );
 
-	MenuOption opt;
-	opt.text = "Add link in '"+menu->selSection()+"'";
-	opt.action=0;
-	opts.push_back(opt);
-
-	if (menu->selLink()!=NULL) {
-		opt.text = "Delete link '"+menu->selLink()->title+"'";
-		opt.action=0;
-		opts.push_back(opt);
-	}
+	if (menu->selLink()!=NULL)
+		options.push_back( new MenuOption(this, "Delete link '"+menu->selLink()->title+"'", 0) );
 
 	bool close = false;
 	uint i, sel = 0;
 
 	int h = font->getHeight();
 	SDL_Rect box;
-	box.h = (h+2)*opts.size()+8;
+	box.h = (h+2)*options.size()+8;
 	box.w = 0;
-	for (i=0; i<opts.size(); i++) {
-		int w = font->getTextWidth(opts[i].text);
+	for (i=0; i<options.size(); i++) {
+		int w = font->getTextWidth(options[i]->text);
 		if (w>box.w) box.w = w;
 	}
 	box.w += 23;
@@ -269,24 +261,31 @@ int GMenu2X::options() {
 		selbox.y = box.y+4+(h+2)*sel;
 		SDL_FillRect( s->raw, &selbox, SDL_MapRGB(s->format(),160,160,160) );
 		rectangleColor( s->raw, box.x+2, box.y+2, box.x+box.w-3, box.y+box.h-3, SDL_MapRGB(s->format(),80,80,80) );
-		for (i=0; i<opts.size(); i++) {
-			write( s->raw, opts[i].text, box.x+12, box.y+5+(h+2)*i );
+		for (i=0; i<options.size(); i++) {
+			write( s->raw, options[i]->text, box.x+12, box.y+5+(h+2)*i );
 		}
 
 #ifdef TARGET_GP2X
 		joy.update();
 		if ( joy[GP2X_BUTTON_SELECT] ) close = true;
 		if ( joy[GP2X_BUTTON_UP    ] ) sel = max(0, sel-1);
-		if ( joy[GP2X_BUTTON_DOWN  ] ) sel = min(opts.size()-1, sel+1);
-		if ( joy[GP2X_BUTTON_B     ] && opts[i].action!=0 ) (this->*(opts[i].action))();
+		if ( joy[GP2X_BUTTON_DOWN  ] ) sel = min(options.size()-1, sel+1);
+		if ( joy[GP2X_BUTTON_B     ] ) {
+			//StatusFcn action = opts[i].action;
+			//if (action!=0)
+			//	(*action)();
+			//StatusFcn action = &GMenu2X::fileBrowser;
+			//(*action)();
+			fileBrowser();
+		}
 #else
 		while (SDL_PollEvent(&event)) {
 			if ( event.type == SDL_QUIT ) return -1;
 			if ( event.type==SDL_KEYDOWN ) {
 				if ( event.key.keysym.sym==SDLK_ESCAPE ) close = true;
 				if ( event.key.keysym.sym==SDLK_UP ) sel = max(0, sel-1);
-				if ( event.key.keysym.sym==SDLK_DOWN ) sel = min(opts.size()-1, sel+1);
-				if ( event.key.keysym.sym==SDLK_RETURN && opts[i].action!=0 ) (this->*(opts[i].action))();
+				if ( event.key.keysym.sym==SDLK_DOWN ) sel = min(options.size()-1, sel+1);
+				if ( event.key.keysym.sym==SDLK_RETURN ) options[i]->exec();
 			}
 		}
 #endif
@@ -294,8 +293,20 @@ int GMenu2X::options() {
 		s->flip();
 	}
 
-	status = &GMenu2X::main;
 	return 0;
+}
+
+int GMenu2X::fileBrowser() {
+	bool close = false;
+	
+	while (!close) {
+		sc["imgs/bg.png"]->blit(s,0,0);
+		writeCenter(s->raw,"File Browser",160,1);
+	
+		s->flip();
+	}
+	
+	return -1;
 }
 
 GMenu2X::~GMenu2X() {

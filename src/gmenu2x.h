@@ -34,11 +34,18 @@ using std::string;
 
 class GMenu2X;
 
-typedef int (GMenu2X::*StatusFcn)();
+typedef int (GMenu2X::*GMenuFcn)();
 
-struct MenuOption {
+class MenuOption {
+private:
+	GMenuFcn action;
+	GMenu2X *parent;
+	
+public:
 	string text;
-	StatusFcn action;
+	
+	MenuOption (GMenu2X *parent, string text, GMenuFcn action) { this->parent = parent; this->text = text; this->action = action; }
+	int exec() { if (action==0) return -1; return (parent->*action)(); }
 };
 
 class GMenu2X {
@@ -54,7 +61,6 @@ private:
 	void drawScrollBar();
 	void setClock(int mhz);
 	void runLink();
-	StatusFcn status;
 
 #ifdef TARGET_GP2X
 	Joystick joy;
@@ -70,6 +76,7 @@ public:
 	//Status functions
 	int main();
 	int options();
+	int fileBrowser();
 
 	void initBG();
 	void write(SDL_Surface *s, string text, int x, int y);
