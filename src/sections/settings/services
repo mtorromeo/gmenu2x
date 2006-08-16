@@ -1,0 +1,7 @@
+title=Services
+description=Activate Services (configure in original frontend)
+icon=icons/bash.png
+exec=/bin/sh
+params=scripts/services.sh
+workdir=.
+dontleave=true

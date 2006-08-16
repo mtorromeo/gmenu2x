@@ -30,6 +30,9 @@
 #include "joystick.h"
 #endif
 
+#define ALPHABLEND 130
+#define BATTERY_READS 10
+
 using std::string;
 
 class GMenu2X;
@@ -56,11 +59,12 @@ private:
 	SurfaceCollection sc;
 	Surface *s;
 	SFont *font;
-	int cpuX;
+	unsigned short cpuX, batX;
 	void drawRun();
 	void drawScrollBar();
 	void setClock(int mhz);
 	void runLink();
+	unsigned short getBatteryLevel();
 
 #ifdef TARGET_GP2X
 	Joystick joy;

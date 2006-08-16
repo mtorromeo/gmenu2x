@@ -33,14 +33,13 @@
 
 #ifdef TARGET_GP2X
 #include "gp2x.h"
+#include <sys/fcntl.h> //for battery
 #endif
 
 #include "SFont.h"
 #include "surface.h"
 #include "utilities.h"
 #include "gmenu2x.h"
-
-#define ALPHABLEND 130
 
 using namespace std;
 
@@ -103,6 +102,8 @@ int GMenu2X::main() {
 	bool quit = false;
 	int x,y,ix,iy, offset = menu->links.size()>24 ? 0 : 4;
 	uint i;
+	long tickBattery = -30000, tickNow;
+	string batteryStatus;
 
 	while (!quit) {
 		//Background
@@ -147,6 +148,19 @@ int GMenu2X::main() {
 			writeCenter( s->raw, menu->selLink()->description, 160, 207 );
 			write ( s->raw, menu->selLink()->clockStr(), cpuX, 223 );
 		}
+		
+		//battery
+		tickNow = SDL_GetTicks();
+		//check battery status every 30 seconds
+		if (tickNow-tickBattery >= 30000) {
+			tickBattery = tickNow;
+			stringstream ss;
+			ss << getBatteryLevel();
+			ss << "%";
+			ss >> batteryStatus;
+			cout << "GMENU2X: Battery level " << batteryStatus << endl;
+		}
+		write( s->raw, batteryStatus, batX, 223 );
 
 #ifdef TARGET_GP2X
 		joy.update();
@@ -315,6 +329,33 @@ GMenu2X::~GMenu2X() {
 	free(font);
 }
 
+unsigned short GMenu2X::getBatteryLevel() {
+#ifdef TARGET_GP2X
+	int devbatt = open ("/dev/batt", O_RDONLY);
+	if (devbatt<0) return 0;
+	
+	int battval = 0;
+	unsigned short cbv;
+	int v;
+
+	for (int i = 0; i < BATTERY_READS; i ++) {
+		if (read (devbatt, &cbv, 2) == 2)
+			battval += cbv;
+	}
+ 	close(devbatt);
+ 	
+ 	battval /= BATTERY_READS;
+ 	battval -= 534; //534 = 2.0v (0%) , 745 = 2.6v (100%)
+ 	if (battval<0) battval = 0;
+ 	battval = battval*100/211; //745-534=211
+ 	if (battval>100) battval = 100;
+ 	
+ 	return battval;
+#else
+	return 100;
+#endif
+}
+
 void GMenu2X::initBG() {
 	//Top Bar
 	boxRGBA(sc["imgs/bg.png"]->raw, 0, 0, 320, 40, 255,255,255,ALPHABLEND);
@@ -323,11 +364,15 @@ void GMenu2X::initBG() {
 
 	Surface sd("imgs/sd.png");
 	Surface cpu("imgs/cpu.png");
+	Surface battery("imgs/battery.png");
 	string df = getDiskFree();
 
 	sd.blit( sc["imgs/bg.png"], 3, 222 );
 	write( sc["imgs/bg.png"]->raw, df, 22, 223 );
-	cpuX = 27+font->getTextWidth(df);
+	batX = 27+font->getTextWidth(df);
+	battery.blit( sc["imgs/bg.png"], batX, 222 );
+	batX += 19;
+	cpuX = batX+5+font->getTextWidth("100%");
 	cpu.blit( sc["imgs/bg.png"], cpuX, 222 );
 	cpuX += 19;
 }
