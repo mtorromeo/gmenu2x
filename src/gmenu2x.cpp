@@ -26,6 +26,12 @@
 #include <math.h>
 #include <SDL.h>
 #include <SDL_gfxPrimitives.h>
+#include <signal.h>
+
+//for browsing the filesystem
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 //for statfs
 #include <sys/vfs.h>
@@ -42,8 +48,10 @@
 #include "gmenu2x.h"
 
 using namespace std;
+using namespace fastdelegate;
 
 int main(int argc, char *argv[]) {
+	signal(SIGINT,&exit);
 	GMenu2X app(argc,argv);
 	return 0;
 }
@@ -86,6 +94,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	joy.setInterval(30,  GP2X_BUTTON_VOLDOWN);
 	joy.setInterval(30,  GP2X_BUTTON_VOLUP  );
 	joy.setInterval(500, GP2X_BUTTON_SELECT );
+	joy.setInterval(300, GP2X_BUTTON_A      );
 	joy.setInterval(1000,GP2X_BUTTON_B      );
 	joy.setInterval(300, GP2X_BUTTON_L      );
 	joy.setInterval(300, GP2X_BUTTON_R      );
@@ -102,7 +111,7 @@ int GMenu2X::main() {
 	bool quit = false;
 	int x,y,ix,iy, offset = menu->links.size()>24 ? 0 : 4;
 	uint i;
-	long tickBattery = -30000, tickNow;
+	long tickBattery = -60000, tickNow;
 	string batteryStatus;
 
 	while (!quit) {
@@ -142,7 +151,7 @@ int GMenu2X::main() {
 
 			writeCenter( s->raw, menu->links[i]->title, ix+16, iy+29 );
 		}
-		drawScrollBar();
+		drawScrollBar(4,menu->links.size()/6 + ((menu->links.size()%6==0) ? 0 : 1),menu->firstDispRow(),43,159);
 
 		if (menu->selLink()!=NULL) {
 			writeCenter( s->raw, menu->selLink()->description, 160, 207 );
@@ -151,8 +160,8 @@ int GMenu2X::main() {
 		
 		//battery
 		tickNow = SDL_GetTicks();
-		//check battery status every 30 seconds
-		if (tickNow-tickBattery >= 30000) {
+		//check battery status every 60 seconds
+		if (tickNow-tickBattery >= 60000) {
 			tickBattery = tickNow;
 			stringstream ss;
 			ss << getBatteryLevel();
@@ -165,7 +174,6 @@ int GMenu2X::main() {
 #ifdef TARGET_GP2X
 		joy.update();
 		if ( joy[GP2X_BUTTON_START ] && startquit ) quit = true;
-		if ( joy[GP2X_BUTTON_SELECT] ) options();
 		// LINK NAVIGATION
 		if ( joy[GP2X_BUTTON_LEFT ] ) menu->linkLeft();
 		if ( joy[GP2X_BUTTON_RIGHT] ) menu->linkRight();
@@ -197,12 +205,12 @@ int GMenu2X::main() {
 			offset = menu->links.size()>24 ? 0 : 4;
 		}
 		if ( joy[GP2X_BUTTON_B     ] && menu->selLink()!=NULL ) runLink();
+		if ( joy[GP2X_BUTTON_SELECT] ) options();
 #else
 		while (SDL_PollEvent(&event)) {
 			if ( event.type == SDL_QUIT ) quit = true;
 			if ( event.type==SDL_KEYDOWN ) {
 				if ( event.key.keysym.sym==SDLK_ESCAPE ) quit = true;
-				if ( event.key.keysym.sym==SDLK_SPACE  ) options();
 				// LINK NAVIGATION
 				if ( event.key.keysym.sym==SDLK_LEFT   ) menu->linkLeft();
 				if ( event.key.keysym.sym==SDLK_RIGHT  ) menu->linkRight();
@@ -231,6 +239,7 @@ int GMenu2X::main() {
 					offset = menu->links.size()>24 ? 0 : 4;
 				}
 				if ( event.key.keysym.sym==SDLK_RETURN && menu->selLink()!=NULL ) runLink();
+				if ( event.key.keysym.sym==SDLK_SPACE  ) options();
 			}
 		}
 #endif
@@ -246,11 +255,16 @@ int GMenu2X::options() {
 	//Darken background
 	boxRGBA(bg.raw, 0, 0, 320, 240, 0,0,0,ALPHABLEND);
 
-	vector<MenuOption*> options;
-	options.push_back( new MenuOption(this, "Add link in '"+menu->selSection()+"'", &GMenu2X::fileBrowser) );
+	vector<MenuOption> options;
+	{
+	MenuOption opt = {"Add link in '"+menu->selSection()+"'", MakeDelegate(this, &GMenu2X::fileBrowser)};
+	options.push_back(opt);
+	}
 
-	if (menu->selLink()!=NULL)
-		options.push_back( new MenuOption(this, "Delete link '"+menu->selLink()->title+"'", 0) );
+	if (menu->selLink()!=NULL) {
+		MenuOption opt = {"Delete link '"+menu->selLink()->title+"'", MakeDelegate(this, &GMenu2X::deleteLink)};
+		options.push_back(opt);
+	}
 
 	bool close = false;
 	uint i, sel = 0;
@@ -260,7 +274,7 @@ int GMenu2X::options() {
 	box.h = (h+2)*options.size()+8;
 	box.w = 0;
 	for (i=0; i<options.size(); i++) {
-		int w = font->getTextWidth(options[i]->text);
+		int w = font->getTextWidth(options[i].text);
 		if (w>box.w) box.w = w;
 	}
 	box.w += 23;
@@ -276,7 +290,7 @@ int GMenu2X::options() {
 		SDL_FillRect( s->raw, &selbox, SDL_MapRGB(s->format(),160,160,160) );
 		rectangleColor( s->raw, box.x+2, box.y+2, box.x+box.w-3, box.y+box.h-3, SDL_MapRGB(s->format(),80,80,80) );
 		for (i=0; i<options.size(); i++) {
-			write( s->raw, options[i]->text, box.x+12, box.y+5+(h+2)*i );
+			write( s->raw, options[i].text, box.x+12, box.y+5+(h+2)*i );
 		}
 
 #ifdef TARGET_GP2X
@@ -284,14 +298,7 @@ int GMenu2X::options() {
 		if ( joy[GP2X_BUTTON_SELECT] ) close = true;
 		if ( joy[GP2X_BUTTON_UP    ] ) sel = max(0, sel-1);
 		if ( joy[GP2X_BUTTON_DOWN  ] ) sel = min(options.size()-1, sel+1);
-		if ( joy[GP2X_BUTTON_B     ] ) {
-			//StatusFcn action = opts[i].action;
-			//if (action!=0)
-			//	(*action)();
-			//StatusFcn action = &GMenu2X::fileBrowser;
-			//(*action)();
-			fileBrowser();
-		}
+		if ( joy[GP2X_BUTTON_B     ] ) { options[sel].action(); return 0; }
 #else
 		while (SDL_PollEvent(&event)) {
 			if ( event.type == SDL_QUIT ) return -1;
@@ -299,7 +306,7 @@ int GMenu2X::options() {
 				if ( event.key.keysym.sym==SDLK_ESCAPE ) close = true;
 				if ( event.key.keysym.sym==SDLK_UP ) sel = max(0, sel-1);
 				if ( event.key.keysym.sym==SDLK_DOWN ) sel = min(options.size()-1, sel+1);
-				if ( event.key.keysym.sym==SDLK_RETURN ) options[i]->exec();
+				if ( event.key.keysym.sym==SDLK_RETURN ) { options[sel].action(); return 0; }
 			}
 		}
 #endif
@@ -310,17 +317,194 @@ int GMenu2X::options() {
 	return 0;
 }
 
-int GMenu2X::fileBrowser() {
+void GMenu2X::deleteLink() {
+	unlink(menu->selLink()->file.c_str());
+	menu->setSectionIndex( menu->selSectionIndex() ); //Force a reload of current section links
+	system("sync");
+}
+
+void GMenu2X::fileBrowser() {
 	bool close = false;
+
+#ifdef TARGET_GP2X
+	string curpath = "/mnt/sd";
+#else
+	string curpath = "/home/ryo";
+#endif
+	vector<string> directories;
+	vector<string> files;
+	browsePath(curpath,&directories,&files);
+	
+	Surface bg("imgs/bg.png");
+	boxRGBA(bg.raw, 0, 0, 320, 15, 255,255,255,ALPHABLEND);
+	
+	uint i, selected = 0, firstElement = 0, iY, ds;
 	
 	while (!close) {
-		sc["imgs/bg.png"]->blit(s,0,0);
-		writeCenter(s->raw,"File Browser",160,1);
-	
+		bg.blit(s,0,0);
+		writeCenter(s->raw,"File Browser",160,2);
+		
+		if (selected>firstElement+11) firstElement=selected-11;
+		if (selected<firstElement) firstElement=selected;
+		
+		//Selection
+		iY = selected-firstElement;
+		iY = 20+(iY*18);
+		boxRGBA(s->raw, 2, iY, 310, iY+16, 255,255,255,ALPHABLEND);
+		
+		//Directories
+		for (i=firstElement; i<directories.size() && i<firstElement+12; i++) {
+			iY = i-firstElement;
+			sc["imgs/folder.png"]->blit(s, 5, 21+(iY*18));
+			write(s->raw, directories[i], 24, 22+(iY*18));
+		}
+		
+		//Files
+		ds = directories.size();
+		for (; i<files.size()+ds && i<firstElement+12; i++) {
+			iY = i-firstElement;
+			sc["imgs/file.png"]->blit(s, 5, 21+(iY*18));
+			write(s->raw, files[i-ds], 24, 22+(iY*18));
+		}
+		
+		drawScrollBar(12,directories.size()+files.size(),firstElement,20,214);
 		s->flip();
+		
+
+#ifdef TARGET_GP2X
+		joy.update();
+		if ( joy[GP2X_BUTTON_SELECT] ) close = true;
+		if ( joy[GP2X_BUTTON_UP    ] ) {
+			if ((int)(selected-1)<0)
+				selected = directories.size()+files.size()-1;
+			else
+				selected -= 1;
+		}
+		if ( joy[GP2X_BUTTON_DOWN  ] ) {
+			if (selected+1>=directories.size()+files.size())
+				selected = 0;
+			else
+				selected += 1;
+		}
+		if ( joy[GP2X_BUTTON_A     ] ) {
+			string::size_type p = curpath.rfind("/");
+			if (p==string::npos || curpath.substr(0,7)!="/mnt/sd" || p<7)
+				return;
+			else
+				curpath = curpath.substr(0,p);
+			selected = 0;
+			browsePath(curpath,&directories,&files);			
+		}
+		if ( joy[GP2X_BUTTON_B     ] ) {
+			if (selected<directories.size()) {
+				curpath += "/"+directories[selected];
+				selected = 0;
+				browsePath(curpath,&directories,&files);
+			} else {
+				if (selected-directories.size()<files.size()) {
+					createLink(curpath, files[selected-directories.size()]);
+					menu->setSectionIndex( menu->selSectionIndex() ); //Force a reload of current section links
+					close = true;
+				}
+			}
+		}
+#else
+		while (SDL_PollEvent(&event)) {
+			if ( event.type == SDL_QUIT ) return;
+			if ( event.type==SDL_KEYDOWN ) {
+				if ( event.key.keysym.sym==SDLK_ESCAPE ) close = true;
+				if ( event.key.keysym.sym==SDLK_UP ) {
+					if ((int)(selected-1)<0) {
+						selected = directories.size()+files.size()-1;
+					} else
+						selected -= 1;
+				}
+				if ( event.key.keysym.sym==SDLK_DOWN ) {
+					if (selected+1>=directories.size()+files.size())
+						selected = 0;
+					else
+						selected += 1;
+				}
+				if ( event.key.keysym.sym==SDLK_BACKSPACE ) {
+					string::size_type p = curpath.rfind("/");
+					if (p==string::npos || curpath.substr(0,9)!="/home/ryo" || p<9)
+						return;
+					else
+						curpath = curpath.substr(0,p);
+					selected = 0;
+					browsePath(curpath,&directories,&files);			
+				}
+				if ( event.key.keysym.sym==SDLK_RETURN ) {
+					if (selected<directories.size()) {
+						curpath += "/"+directories[selected];
+						selected = 0;
+						browsePath(curpath,&directories,&files);
+					} else {
+						if (selected-directories.size()<files.size()) {
+							createLink(curpath, files[selected-directories.size()]);
+							menu->setSectionIndex( menu->selSectionIndex() ); //Force a reload of current section links
+							close = true;
+						}
+					}
+				}
+			}
+		}
+#endif
 	}
 	
-	return -1;
+	return;
+}
+
+void GMenu2X::createLink(string path, string file) {
+	if (path[path.length()-1]!='/') path += "/";
+	
+	string title = file;
+	string::size_type pos = title.rfind(".");
+	if (pos!=string::npos && pos>0)
+		title = title.substr(0, pos);
+		
+	cout << "GMENU2X: Creating link " << title << endl;
+	
+	string linkpath = "sections/"+menu->selSection()+"/"+title;
+	ofstream f(linkpath.c_str());
+	if (f.is_open()) {
+		f << "title=" << title << endl;
+		if (fileExists(path+title+".png"))
+			f << "icon=" << path << title << ".png" << endl;
+		f << "exec=" << path << file << endl;
+		f.close();
+		system("sync");
+	} else
+		cout << "GMENU2X: Error while opening the file '" << linkpath << "' for write" << endl;
+}
+
+void GMenu2X::browsePath(string path, vector<string>* directories, vector<string>* files) {
+	DIR *dirp;
+	struct stat st;
+	struct dirent *dptr;
+	string filepath;
+	
+	directories->clear();
+	files->clear();
+	
+	if ((dirp = opendir(path.c_str())) == NULL) return;
+	if (path[path.length()-1]!='/') path += "/";
+
+	while ((dptr = readdir(dirp))) {
+		if (dptr->d_name[0]=='.') continue;
+		filepath = path+dptr->d_name;
+		int statRet = stat(filepath.c_str(), &st);
+		if (statRet == -1) continue;
+		if (S_ISDIR(st.st_mode))
+			directories->push_back((string)dptr->d_name);
+		else
+			files->push_back((string)dptr->d_name);
+	}
+	
+	closedir(dirp);
+	
+	sort(directories->begin(),directories->end());
+	sort(files->begin(),files->end());
 }
 
 GMenu2X::~GMenu2X() {
@@ -345,9 +529,9 @@ unsigned short GMenu2X::getBatteryLevel() {
  	close(devbatt);
  	
  	battval /= BATTERY_READS;
- 	battval -= 534; //534 = 2.0v (0%) , 745 = 2.6v (100%)
+ 	battval -= 645; //645 ~= 2.3v (0%) , 745 ~= 2.6v (100%)
  	if (battval<0) battval = 0;
- 	battval = battval*100/211; //745-534=211
+ 	//battval = battval*100/xxx; //max-min=xxx
  	if (battval>100) battval = 100;
  	
  	return battval;
@@ -377,17 +561,17 @@ void GMenu2X::initBG() {
 	cpuX += 19;
 }
 
-void GMenu2X::drawScrollBar() {
-	if (menu->links.size()<=24) return;
-
-	rectangleRGBA(s->raw, 312, 43, 317, 202, 255,255,255,ALPHABLEND);
-	//internal bar total height = 157
+void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height) {
+	if (totalsize<=pagesize) return;
+	
+	rectangleRGBA(s->raw, 312, top, 317, top+height, 255,255,255,ALPHABLEND);
+	//internal bar total height = height-2
 	//bar size
-	int bs = 157 * 3 / (int)ceil(menu->links.size()/6);
+	uint bs = (height-2) * pagesize / totalsize;
 	//bar y position
-	int by = 157 * menu->firstDispRow() / (int)ceil(menu->links.size()/6);
-	by = 45+by;
-	if (by+bs>200) by = 200-bs;
+	uint by = (height-2) * pagepos / totalsize;
+	by = top+2+by;
+	if (by+bs>top+height-2) by = top+height-2-bs;
 
 	boxRGBA(s->raw, 314, by, 315, by+bs, 255,255,255,ALPHABLEND);
 }

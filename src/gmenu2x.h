@@ -25,6 +25,7 @@
 #include <iostream>
 #include "menu.h"
 #include "surfacecollection.h"
+#include "FastDelegate.h"
 
 #ifdef TARGET_GP2X
 #include "joystick.h"
@@ -34,21 +35,13 @@
 #define BATTERY_READS 10
 
 using std::string;
+using fastdelegate::FastDelegate0;
 
-class GMenu2X;
+typedef FastDelegate0<> MenuAction;
 
-typedef int (GMenu2X::*GMenuFcn)();
-
-class MenuOption {
-private:
-	GMenuFcn action;
-	GMenu2X *parent;
-	
-public:
+struct MenuOption {
 	string text;
-	
-	MenuOption (GMenu2X *parent, string text, GMenuFcn action) { this->parent = parent; this->text = text; this->action = action; }
-	int exec() { if (action==0) return -1; return (parent->*action)(); }
+	MenuAction action;
 };
 
 class GMenu2X {
@@ -61,10 +54,11 @@ private:
 	SFont *font;
 	unsigned short cpuX, batX;
 	void drawRun();
-	void drawScrollBar();
+	void drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height);
 	void setClock(int mhz);
-	void runLink();
 	unsigned short getBatteryLevel();
+	void browsePath(string path, vector<string>* directories, vector<string>* files);
+	void createLink(string path, string file);
 
 #ifdef TARGET_GP2X
 	Joystick joy;
@@ -80,7 +74,9 @@ public:
 	//Status functions
 	int main();
 	int options();
-	int fileBrowser();
+	void fileBrowser();
+	void runLink();
+	void deleteLink();
 
 	void initBG();
 	void write(SDL_Surface *s, string text, int x, int y);

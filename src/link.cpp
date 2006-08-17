@@ -42,11 +42,14 @@ Link::Link(string path, const char* linkfile) {
 		} else if (name == "description") {
 			description = value;
 		} else if (name == "icon") {
-			if (fileExists(value)) {
-				icon = value;
-			}
+			if (fileExists(value)) icon = value;
 		} else if (name == "exec") {
 			exec = value;
+			if (icon=="") {
+				string::size_type pos = exec.rfind(".");
+				string execicon = exec.substr(0,pos)+".png";
+				if (fileExists(execicon)) icon = execicon;
+			}
 		} else if (name == "params") {
 			params = value;
 		} else if (name == "workdir") {

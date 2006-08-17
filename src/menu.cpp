@@ -43,6 +43,8 @@ Menu::Menu(string path) {
 		if (!S_ISDIR(st.st_mode)) continue;
 		if (statRet != -1) sections.push_back((string)dptr->d_name);
 	}
+	
+	closedir(dirp);
 	sort(sections.begin(),sections.end());
 	setSectionIndex(0);
 }
@@ -157,6 +159,8 @@ string Menu::sectionPath(int section) {
 }
 
 void Menu::readLinks() {
+	vector<string> linkfiles;
+	
 	links.clear();
 	iLink = 0;
 	iFirstDispRow = 0;
@@ -174,11 +178,18 @@ void Menu::readLinks() {
 		int statRet = stat(filepath.c_str(), &st);
 		if (S_ISDIR(st.st_mode)) continue;
 		if (statRet != -1) {
-			Link *link = new Link(path, filepath.c_str());
-			if (link->targetExists())
-				links.push_back( link );
-			else
-				free(link);
+			linkfiles.push_back(filepath);
 		}
 	}
+	
+	sort(linkfiles.begin(), linkfiles.end());
+	for (uint x=0; x<linkfiles.size(); x++) {
+		Link *link = new Link(path, linkfiles[x].c_str());
+		if (link->targetExists())
+			links.push_back( link );
+		else
+			free(link);
+	}
+	
+	closedir(dirp);
 }

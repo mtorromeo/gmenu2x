@@ -37,20 +37,14 @@ Parses links files.
 */
 class Link {
 private:
-	string path, file, sclock;
+	string path, sclock;
 	int iclock;
 	bool edited;
 
 public:
 	Link(string path, const char* linkfile);
 
-	string title;
-	string description;
-	string exec;
-	string params;
-	string icon;
-	string screenFile;
-	string workdir;
+	string title, description, exec, params, icon, workdir, file;
 	int clock();
 	string clockStr();
 	void setClock(int);
