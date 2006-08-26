@@ -65,6 +65,7 @@ Link::Link(string path, const char* linkfile) {
 			break;
 		}
 	}
+	infile.close();
 
 	edited = false;
 }
@@ -163,4 +164,40 @@ void Link::run() {
 
 	//in case execl fails or dontleave
 	chdir(path.c_str());
+}
+
+string Link::getTitle() { return title; }
+void Link::setTitle(string title) {
+	this->title = title;
+	edited = true;
+}
+
+string Link::getDescription() { return description; }
+void Link::setDescription(string description) {
+	this->description = description;
+	edited = true;
+}
+
+string Link::getExec() { return exec; }
+void Link::setExec(string exec) {
+	this->exec = exec;
+	edited = true;
+}
+
+string Link::getParams() { return params; }
+void Link::setParams(string params) {
+	this->params = params;
+	edited = true;
+}
+
+string Link::getIcon() { return icon; }
+void Link::setIcon(string icon) {
+	this->icon = icon;
+	edited = true;
+}
+
+string Link::getWorkdir() { return workdir; }
+void Link::setWorkdir(string workdir) {
+	this->workdir = workdir;
+	edited = true;
 }

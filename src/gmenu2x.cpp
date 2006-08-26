@@ -45,6 +45,7 @@
 #include "SFont.h"
 #include "surface.h"
 #include "utilities.h"
+#include "inputdialog.h"
 #include "gmenu2x.h"
 
 using namespace std;
@@ -58,6 +59,10 @@ int main(int argc, char *argv[]) {
 
 GMenu2X::GMenu2X(int argc, char *argv[]) {
 	path = getExePath();
+	alphablend = 130;
+	colorR = 255;
+	colorG = 255;
+	colorB = 255;
 
 	//fork to set clock in background
 	if (!fork()) {
@@ -82,6 +87,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 		if (fileExists(sectionIcon))
 			sc.add(sectionIcon);
 	}
+	readConfig();
 
 	initBG();
 
@@ -96,6 +102,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	joy.setInterval(500, GP2X_BUTTON_SELECT );
 	joy.setInterval(300, GP2X_BUTTON_A      );
 	joy.setInterval(1000,GP2X_BUTTON_B      );
+	joy.setInterval(1000,GP2X_BUTTON_CLICK  );
 	joy.setInterval(300, GP2X_BUTTON_L      );
 	joy.setInterval(300, GP2X_BUTTON_R      );
 #else
@@ -103,8 +110,47 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 #endif
 
 	main();
+	writeConfig();
 
 	exit(0);
+}
+
+void GMenu2X::readConfig() {
+	string conffile = path+"gmenu2x.conf";
+	if (fileExists(conffile)) {
+		ifstream inf(conffile.c_str(), ios_base::in);
+		if (inf.is_open()) {
+			string line;
+			while (getline(inf, line, '\n')) {
+				string::size_type pos = line.find("=");
+				string name = trim(line.substr(0,pos));
+				string value = trim(line.substr(pos+1,line.length()));
+				
+				if (name=="alpha") alphablend = atoi(value.c_str());
+				else if (name=="colorR") colorR = constrain( atoi(value.c_str()), 0, 255 );
+				else if (name=="colorG") colorG = constrain( atoi(value.c_str()), 0, 255 );
+				else if (name=="colorB") colorB = constrain( atoi(value.c_str()), 0, 255 );
+				else if (name=="section") menu->setSectionIndex( atoi(value.c_str()) );
+				else if (name=="link") menu->setLinkIndex( atoi(value.c_str()) );
+			}
+			inf.close();
+		}
+	}
+}
+
+void GMenu2X::writeConfig() {
+	string conffile = path+"gmenu2x.conf";
+	ofstream inf(conffile.c_str());
+	if (inf.is_open()) {
+		inf << "colorR=" << colorR << endl;
+		inf << "colorG=" << colorG << endl;
+		inf << "colorB=" << colorB << endl;
+		inf << "alpha=" << alphablend << endl;
+		inf << "section=" << menu->selSectionIndex() << endl;
+		inf << "link=" << menu->selLinkIndex() << endl;
+		inf.close();
+		system("sync");
+	}
 }
 
 int GMenu2X::main() {
@@ -127,9 +173,11 @@ int GMenu2X::main() {
 			string sectionIcon = "sections/"+menu->sections[i]+".png";
 			x = (i-menu->firstDispSection())*60+24;
 			if (menu->selSectionIndex()==(int)i)
-				boxRGBA(s->raw, x-14, 0, x+46, 40, 255, 255, 255, ALPHABLEND);
+				boxRGBA(s->raw, x-14, 0, x+46, 40, colorR,colorG,colorB, alphablend);
 			if (sc.exists(sectionIcon))
 				sc[sectionIcon]->blit(s,x,0);
+			else
+				sc["icons/section.png"]->blit(s,x,0);
 			writeCenter( s->raw, menu->sections[i], x+16, 27 );
 		}
 
@@ -144,17 +192,17 @@ int GMenu2X::main() {
 			if (menu->selLink()==menu->links[i])
 				sc["imgs/selection.png"]->blit(s,x,y);
 
-			if (menu->links[i]->icon != "")
-				sc[menu->links[i]->icon]->blit(s,ix,iy);
+			if (menu->links[i]->getIcon() != "")
+				sc[menu->links[i]->getIcon()]->blit(s,ix,iy);
 			else
 				sc["icons/generic.png"]->blit(s,ix,iy);
 
-			writeCenter( s->raw, menu->links[i]->title, ix+16, iy+29 );
+			writeCenter( s->raw, menu->links[i]->getTitle(), ix+16, iy+29 );
 		}
 		drawScrollBar(4,menu->links.size()/6 + ((menu->links.size()%6==0) ? 0 : 1),menu->firstDispRow(),43,159);
 
 		if (menu->selLink()!=NULL) {
-			writeCenter( s->raw, menu->selLink()->description, 160, 207 );
+			writeCenter( s->raw, menu->selLink()->getDescription(), 160, 207 );
 			write ( s->raw, menu->selLink()->clockStr(), cpuX, 223 );
 		}
 		
@@ -204,8 +252,8 @@ int GMenu2X::main() {
 			menu->incSectionIndex();
 			offset = menu->links.size()>24 ? 0 : 4;
 		}
-		if ( joy[GP2X_BUTTON_B     ] && menu->selLink()!=NULL ) runLink();
-		if ( joy[GP2X_BUTTON_SELECT] ) options();
+		if ( joy[GP2X_BUTTON_B || GP2X_BUTTON_CLICK ] && menu->selLink()!=NULL ) runLink();
+		if ( joy[GP2X_BUTTON_SELECT] ) contextMenu();
 #else
 		while (SDL_PollEvent(&event)) {
 			if ( event.type == SDL_QUIT ) quit = true;
@@ -239,7 +287,7 @@ int GMenu2X::main() {
 					offset = menu->links.size()>24 ? 0 : 4;
 				}
 				if ( event.key.keysym.sym==SDLK_RETURN && menu->selLink()!=NULL ) runLink();
-				if ( event.key.keysym.sym==SDLK_SPACE  ) options();
+				if ( event.key.keysym.sym==SDLK_SPACE  ) contextMenu();
 			}
 		}
 #endif
@@ -250,20 +298,30 @@ int GMenu2X::main() {
 	return -1;
 }
 
-int GMenu2X::options() {
+void GMenu2X::contextMenu() {
 	Surface bg = *s;
 	//Darken background
-	boxRGBA(bg.raw, 0, 0, 320, 240, 0,0,0,ALPHABLEND);
+	boxRGBA(bg.raw, 0, 0, 320, 240, 0,0,0,150);
 
-	vector<MenuOption> options;
+	vector<MenuOption> voices;
 	{
 	MenuOption opt = {"Add link in '"+menu->selSection()+"'", MakeDelegate(this, &GMenu2X::fileBrowser)};
-	options.push_back(opt);
+	voices.push_back(opt);
 	}
 
 	if (menu->selLink()!=NULL) {
-		MenuOption opt = {"Delete link '"+menu->selLink()->title+"'", MakeDelegate(this, &GMenu2X::deleteLink)};
-		options.push_back(opt);
+		{
+		MenuOption opt = {"Rename link '"+menu->selLink()->getTitle()+"'", MakeDelegate(this, &GMenu2X::renameLink)};
+		voices.push_back(opt);
+		}
+		{
+		MenuOption opt = {"Edit description for '"+menu->selLink()->getTitle()+"'", MakeDelegate(this, &GMenu2X::editDescriptionLink)};
+		voices.push_back(opt);
+		}
+		{
+		MenuOption opt = {"Delete link '"+menu->selLink()->getTitle()+"'", MakeDelegate(this, &GMenu2X::deleteLink)};
+		voices.push_back(opt);
+		}
 	}
 
 	bool close = false;
@@ -271,10 +329,10 @@ int GMenu2X::options() {
 
 	int h = font->getHeight();
 	SDL_Rect box;
-	box.h = (h+2)*options.size()+8;
+	box.h = (h+2)*voices.size()+8;
 	box.w = 0;
-	for (i=0; i<options.size(); i++) {
-		int w = font->getTextWidth(options[i].text);
+	for (i=0; i<voices.size(); i++) {
+		int w = font->getTextWidth(voices[i].text);
 		if (w>box.w) box.w = w;
 	}
 	box.w += 23;
@@ -289,38 +347,54 @@ int GMenu2X::options() {
 		selbox.y = box.y+4+(h+2)*sel;
 		SDL_FillRect( s->raw, &selbox, SDL_MapRGB(s->format(),160,160,160) );
 		rectangleColor( s->raw, box.x+2, box.y+2, box.x+box.w-3, box.y+box.h-3, SDL_MapRGB(s->format(),80,80,80) );
-		for (i=0; i<options.size(); i++) {
-			write( s->raw, options[i].text, box.x+12, box.y+5+(h+2)*i );
+		for (i=0; i<voices.size(); i++) {
+			write( s->raw, voices[i].text, box.x+12, box.y+5+(h+2)*i );
 		}
 
 #ifdef TARGET_GP2X
 		joy.update();
 		if ( joy[GP2X_BUTTON_SELECT] ) close = true;
 		if ( joy[GP2X_BUTTON_UP    ] ) sel = max(0, sel-1);
-		if ( joy[GP2X_BUTTON_DOWN  ] ) sel = min(options.size()-1, sel+1);
-		if ( joy[GP2X_BUTTON_B     ] ) { options[sel].action(); return 0; }
+		if ( joy[GP2X_BUTTON_DOWN  ] ) sel = min(voices.size()-1, sel+1);
+		if ( joy[GP2X_BUTTON_B || GP2X_BUTTON_CLICK ] ) { voices[sel].action(); return; }
 #else
 		while (SDL_PollEvent(&event)) {
-			if ( event.type == SDL_QUIT ) return -1;
+			if ( event.type == SDL_QUIT ) return;
 			if ( event.type==SDL_KEYDOWN ) {
 				if ( event.key.keysym.sym==SDLK_ESCAPE ) close = true;
 				if ( event.key.keysym.sym==SDLK_UP ) sel = max(0, sel-1);
-				if ( event.key.keysym.sym==SDLK_DOWN ) sel = min(options.size()-1, sel+1);
-				if ( event.key.keysym.sym==SDLK_RETURN ) { options[sel].action(); return 0; }
+				if ( event.key.keysym.sym==SDLK_DOWN ) sel = min(voices.size()-1, sel+1);
+				if ( event.key.keysym.sym==SDLK_RETURN ) { voices[sel].action(); return; }
 			}
 		}
 #endif
 
 		s->flip();
 	}
-
-	return 0;
 }
 
 void GMenu2X::deleteLink() {
 	unlink(menu->selLink()->file.c_str());
 	menu->setSectionIndex( menu->selSectionIndex() ); //Force a reload of current section links
 	system("sync");
+}
+
+void GMenu2X::renameLink() {
+	InputDialog id(this,"Select a title for the link",menu->selLink()->getTitle());
+	if (id.exec()) {
+		menu->selLink()->setTitle( id.input );
+		menu->selLink()->save();
+		system("sync");
+	}
+}
+
+void GMenu2X::editDescriptionLink() {
+	InputDialog id(this,"Insert link description",menu->selLink()->getDescription());
+	if (id.exec()) {
+		menu->selLink()->setDescription( id.input );
+		menu->selLink()->save();
+		system("sync");
+	}
 }
 
 void GMenu2X::fileBrowser() {
@@ -336,7 +410,17 @@ void GMenu2X::fileBrowser() {
 	browsePath(curpath,&directories,&files);
 	
 	Surface bg("imgs/bg.png");
-	boxRGBA(bg.raw, 0, 0, 320, 15, 255,255,255,ALPHABLEND);
+	boxRGBA(bg.raw, 0, 0, 320, 15, colorR,colorG,colorB,alphablend);
+	
+	//A Button
+	filledCircleRGBA(bg.raw, 12, 228, 7, 0,0,0,255);
+	writeCenter(bg.raw, "A", 13, 222);
+	write(bg.raw, "Up one folder", 23, 222);
+	
+	//B Button
+	filledCircleRGBA(bg.raw, 100, 228, 7, 0,0,0,255);
+	writeCenter(bg.raw, "B", 101, 222);
+	write(bg.raw, "Enter folder/Confirm", 111, 222);
 	
 	uint i, selected = 0, firstElement = 0, iY, ds;
 	
@@ -344,16 +428,16 @@ void GMenu2X::fileBrowser() {
 		bg.blit(s,0,0);
 		writeCenter(s->raw,"File Browser",160,2);
 		
-		if (selected>firstElement+11) firstElement=selected-11;
+		if (selected>firstElement+10) firstElement=selected-10;
 		if (selected<firstElement) firstElement=selected;
 		
 		//Selection
 		iY = selected-firstElement;
 		iY = 20+(iY*18);
-		boxRGBA(s->raw, 2, iY, 310, iY+16, 255,255,255,ALPHABLEND);
+		boxRGBA(s->raw, 2, iY, 310, iY+16, colorR,colorG,colorB,alphablend);
 		
 		//Directories
-		for (i=firstElement; i<directories.size() && i<firstElement+12; i++) {
+		for (i=firstElement; i<directories.size() && i<firstElement+11; i++) {
 			iY = i-firstElement;
 			sc["imgs/folder.png"]->blit(s, 5, 21+(iY*18));
 			write(s->raw, directories[i], 24, 22+(iY*18));
@@ -361,13 +445,13 @@ void GMenu2X::fileBrowser() {
 		
 		//Files
 		ds = directories.size();
-		for (; i<files.size()+ds && i<firstElement+12; i++) {
+		for (; i<files.size()+ds && i<firstElement+11; i++) {
 			iY = i-firstElement;
 			sc["imgs/file.png"]->blit(s, 5, 21+(iY*18));
 			write(s->raw, files[i-ds], 24, 22+(iY*18));
 		}
 		
-		drawScrollBar(12,directories.size()+files.size(),firstElement,20,214);
+		drawScrollBar(11,directories.size()+files.size(),firstElement,20,196);
 		s->flip();
 		
 
@@ -395,7 +479,7 @@ void GMenu2X::fileBrowser() {
 			selected = 0;
 			browsePath(curpath,&directories,&files);			
 		}
-		if ( joy[GP2X_BUTTON_B     ] ) {
+		if ( joy[GP2X_BUTTON_B || GP2X_BUTTON_CLICK ] ) {
 			if (selected<directories.size()) {
 				curpath += "/"+directories[selected];
 				selected = 0;
@@ -466,6 +550,11 @@ void GMenu2X::createLink(string path, string file) {
 	cout << "GMENU2X: Creating link " << title << endl;
 	
 	string linkpath = "sections/"+menu->selSection()+"/"+title;
+	
+	if (title.length()>9) {
+		title = title.substr(0,7)+"..";
+	}
+	
 	ofstream f(linkpath.c_str());
 	if (f.is_open()) {
 		f << "title=" << title << endl;
@@ -542,9 +631,9 @@ unsigned short GMenu2X::getBatteryLevel() {
 
 void GMenu2X::initBG() {
 	//Top Bar
-	boxRGBA(sc["imgs/bg.png"]->raw, 0, 0, 320, 40, 255,255,255,ALPHABLEND);
+	boxRGBA(sc["imgs/bg.png"]->raw, 0, 0, 320, 40, colorR,colorG,colorB,alphablend);
 	//Bottom Bar
-	boxRGBA(sc["imgs/bg.png"]->raw, 0, 220, 320, 240, 255,255,255,ALPHABLEND);
+	boxRGBA(sc["imgs/bg.png"]->raw, 0, 220, 320, 240, colorR,colorG,colorB,alphablend);
 
 	Surface sd("imgs/sd.png");
 	Surface cpu("imgs/cpu.png");
@@ -564,7 +653,7 @@ void GMenu2X::initBG() {
 void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height) {
 	if (totalsize<=pagesize) return;
 	
-	rectangleRGBA(s->raw, 312, top, 317, top+height, 255,255,255,ALPHABLEND);
+	rectangleRGBA(s->raw, 312, top, 317, top+height, colorR,colorG,colorB,150);
 	//internal bar total height = height-2
 	//bar size
 	uint bs = (height-2) * pagesize / totalsize;
@@ -573,7 +662,7 @@ void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint to
 	by = top+2+by;
 	if (by+bs>top+height-2) by = top+height-2-bs;
 
-	boxRGBA(s->raw, 314, by, 315, by+bs, 255,255,255,ALPHABLEND);
+	boxRGBA(s->raw, 314, by, 315, by+bs, colorR,colorG,colorB,150);
 }
 
 void GMenu2X::write(SDL_Surface *s, string text, int x, int y) {
@@ -586,9 +675,9 @@ void GMenu2X::writeCenter(SDL_Surface *s, string text, int x, int y) {
 
 void GMenu2X::drawRun() {
 	//Darkened background
-	boxRGBA(s->raw, 0, 0, 320, 240, 0,0,0,ALPHABLEND);
+	boxRGBA(s->raw, 0, 0, 320, 240, 0,0,0,150);
 
-	string text = "Launching "+menu->selLink()->title;
+	string text = "Launching "+menu->selLink()->getTitle();
 	int textW = font->getTextWidth(text);
 	int boxW = 62+textW;
 	int halfBoxW = boxW/2;
@@ -600,8 +689,8 @@ void GMenu2X::drawRun() {
 	rectangleColor(s->raw, 160-halfBoxW, 99, 160+halfBoxW, 141, SDL_MapRGB(s->format(),80,80,80));
 
 	int x = 170-halfBoxW;
-	if (menu->selLink()->icon!="")
-		sc[menu->selLink()->icon]->blit(s,x,104);
+	if (menu->selLink()->getIcon()!="")
+		sc[menu->selLink()->getIcon()]->blit(s,x,104);
 	else
 		sc["icons/generic.png"]->blit(s,x,104);
 	write( s->raw, text, x+42, 114 );
@@ -627,12 +716,9 @@ void GMenu2X::runLink() {
 	//delay for testing
 	SDL_Delay(2000);
 #endif
-	bool sync = false;
 	for (uint i=0; i<menu->links.size(); i++)
-		if (menu->links[i]->save())
-			sync = true;
-	if (sync)
-		system("sync");
+		menu->links[i]->save();
+	writeConfig();
 	if (menu->selLink()->clock()>0)
 		setClock(menu->selLink()->clock());
 	menu->selLink()->run();

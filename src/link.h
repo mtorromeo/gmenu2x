@@ -40,11 +40,25 @@ private:
 	string path, sclock;
 	int iclock;
 	bool edited;
+	string title, description, exec, params, icon, workdir;
 
 public:
 	Link(string path, const char* linkfile);
 
-	string title, description, exec, params, icon, workdir, file;
+	string getTitle();
+	void setTitle(string title);
+	string getDescription();
+	void setDescription(string description);
+	string getExec();
+	void setExec(string exec);
+	string getParams();
+	void setParams(string params);
+	string getIcon();
+	void setIcon(string icon);
+	string getWorkdir();
+	void setWorkdir(string workdir);
+
+	string file;
 	int clock();
 	string clockStr();
 	void setClock(int);

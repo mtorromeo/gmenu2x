@@ -18,78 +18,30 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef GMENU2X_H
-#define GMENU2X_H
+#ifndef INPUTDIALOG_H_
+#define INPUTDIALOG_H_
 
 #include <string>
-#include <iostream>
-#include "menu.h"
-#include "surfacecollection.h"
-#include "FastDelegate.h"
-
-#ifdef TARGET_GP2X
-#include "joystick.h"
-#endif
-
-#define BATTERY_READS 10
+#include "gmenu2x.h"
 
 using std::string;
-using fastdelegate::FastDelegate0;
+using std::vector;
 
-typedef FastDelegate0<> MenuAction;
-
-struct MenuOption {
-	string text;
-	MenuAction action;
-};
-
-class GMenu2X {
+class InputDialog {
 private:
-	string path;
-	string getExePath();
-	string getDiskFree();
-	unsigned short cpuX, batX;
-	void drawRun();
-	void drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height);
-	void setClock(int mhz);
-	unsigned short getBatteryLevel();
-	void browsePath(string path, vector<string>* directories, vector<string>* files);
-	void createLink(string path, string file);
-	void readConfig();
-	void writeConfig();
+	int selRow, selCol;
+	string text;
+	GMenu2X *parent;
+	vector<string> keyboard;
 
+	void drawVirtualKeyboard();
+	
 public:
-	GMenu2X(int argc, char *argv[]);
-	~GMenu2X();
-
-#ifdef TARGET_GP2X
-	Joystick joy;
-	bool startquit;
-#else
-	SDL_Event event;
-#endif
+	InputDialog(GMenu2X *parent, string text, string startvalue="");
+	~InputDialog();
 	
-	unsigned short alphablend, colorR, colorG, colorB;
-	SurfaceCollection sc;
-	Surface *s;
-	SFont *font;
-
-	//Status functions
-	int main();
-	void options();
-	void contextMenu();
-	void fileBrowser();
-	
-	void runLink();
-	void deleteLink();
-	void renameLink();
-	void editDescriptionLink();
-
-	void initBG();
-	void write(SDL_Surface *s, string text, int x, int y);
-	void writeCenter(SDL_Surface *s, string text, int x, int y);
-
-	Menu* menu;
+	string input;
+	bool exec();
 };
 
-#endif
+#endif /*INPUTDIALOG_H_*/

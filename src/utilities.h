@@ -30,5 +30,6 @@ string trim(const string& s);
 bool fileExists(string file);
 int max (int a, int b);
 int min (int a, int b);
+int constrain (int x, int imin, int imax);
 
 #endif
