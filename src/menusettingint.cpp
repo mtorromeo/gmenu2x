@@ -17,79 +17,48 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "menusettingint.h"
+#include "utilities.h"
+#include <sstream>
 
-#ifndef GMENU2X_H
-#define GMENU2X_H
+using namespace std;
 
-#include <string>
-#include <iostream>
-#include "menu.h"
-#include "surfacecollection.h"
-#include "FastDelegate.h"
+MenuSettingInt::MenuSettingInt(GMenu2X *gmenu2x, string name, string description, int *value, int min, int max)
+	: MenuSetting(gmenu2x,name,description) {
+	this->gmenu2x = gmenu2x;
+	_value = value;
+	this->min = min;
+	this->max = max;
+	this->setValue(this->value());
+}
 
-#ifdef TARGET_GP2X
-#include "joystick.h"
-#endif
-
-#define BATTERY_READS 10
-
-using std::string;
-using fastdelegate::FastDelegate0;
-
-typedef FastDelegate0<> MenuAction;
-
-struct MenuOption {
-	string text;
-	MenuAction action;
-};
-
-class GMenu2X {
-private:
-	string path;
-	string getExePath();
-	string getDiskFree();
-	unsigned short cpuX, batX;
-	void drawRun();
-	void drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height);
-	void setClock(int mhz);
-	unsigned short getBatteryLevel();
-	void browsePath(string path, vector<string>* directories, vector<string>* files);
-	void createLink(string path, string file);
-	void readConfig();
-	void writeConfig();
-	void setInputSpeed();
-
-public:
-	GMenu2X(int argc, char *argv[]);
-	~GMenu2X();
+void MenuSettingInt::draw(int y) {
+	MenuSetting::draw(y);
+	gmenu2x->write( gmenu2x->s->raw, strvalue, 165, y );
+}
 
 #ifdef TARGET_GP2X
-	Joystick joy;
+#include "gp2x.h"
+
+void MenuSettingInt::manageInput() {
+	if ( gmenu2x->joy[GP2X_BUTTON_LEFT ] ) setValue(value()-1);
+	if ( gmenu2x->joy[GP2X_BUTTON_RIGHT] ) setValue(value()+1);
+}
 #else
-	SDL_Event event;
+void MenuSettingInt::manageInput() {
+	if ( gmenu2x->event.key.keysym.sym==SDLK_LEFT ) setValue(value()-1);
+	if ( gmenu2x->event.key.keysym.sym==SDLK_RIGHT ) setValue(value()+1);
+}
 #endif
 
-	int alphablend, colorR, colorG, colorB;
-	SurfaceCollection sc;
-	Surface *s;
-	SFont *font;
+void MenuSettingInt::setValue(int value) {
+	*_value = constrain(value,min,max);
+	stringstream ss;
+	ss << *_value;
+	strvalue = "";
+	ss >> strvalue;
+}
 
-	//Status functions
-	int main();
-	void options();
-	void contextMenu();
-	void fileBrowser();
-
-	void runLink();
-	void deleteLink();
-	void renameLink();
-	void editDescriptionLink();
-
-	void initBG();
-	void write(SDL_Surface *s, string text, int x, int y);
-	void writeCenter(SDL_Surface *s, string text, int x, int y);
-
-	Menu* menu;
-};
-
-#endif
+int MenuSettingInt::value() {
+	return *_value;
+}

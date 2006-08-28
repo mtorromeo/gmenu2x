@@ -28,11 +28,28 @@ Surface::Surface(string img) {
 	load(img);
 }
 
-Surface::Surface(int w, int h) {
-	SDL_JoystickOpen(0);
-	//raw = SDL_SetVideoMode(w, h, 16, SDL_SWSURFACE);
-	raw = SDL_SetVideoMode(w, h, 16, SDL_HWSURFACE|SDL_DOUBLEBUF);
-	SDL_ShowCursor(0);
+Surface::Surface(SDL_Surface *s) {
+	raw = SDL_ConvertSurface( s, s->format, s->flags );
+}
+
+Surface::Surface(Surface *s) {
+	raw = SDL_ConvertSurface( s->raw, s->raw->format, s->raw->flags );
+}
+
+Surface::Surface(int w, int h, Uint32 flags) {
+	Uint32 rmask, gmask, bmask, amask;
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+	rmask = 0xff000000;
+	gmask = 0x00ff0000;
+	bmask = 0x0000ff00;
+	amask = 0x000000ff;
+#else
+	rmask = 0x000000ff;
+	gmask = 0x0000ff00;
+	bmask = 0x00ff0000;
+	amask = 0xff000000;
+#endif
+	raw = SDL_CreateRGBSurface( flags, w, h, 16, rmask, gmask, bmask, amask );
 }
 
 Surface::~Surface() {

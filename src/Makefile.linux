@@ -7,7 +7,7 @@ CXXFLAGS = $(CFLAGS)
 LDFLAGS = -L"/usr/lib" `sdl-config --libs` -lfreetype -lSDL_image -lSDL_gfx -ljpeg -lpng12 -lz #-lSDL_gfx
 
 TARGET = gmenu
-OBJS = gmenu2x.o surface.o link.o SFont.o menu.o surfacecollection.o utilities.o inputdialog.o
+OBJS = gmenu2x.o surface.o link.o SFont.o menu.o surfacecollection.o utilities.o inputdialog.o menusetting.o menusettingint.o
 
 %.o: %.cpp
 		$(CXX) $(CFLAGS) -c $<

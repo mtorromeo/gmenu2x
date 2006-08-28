@@ -17,79 +17,22 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "menusetting.h"
 
-#ifndef GMENU2X_H
-#define GMENU2X_H
+MenuSetting::MenuSetting(GMenu2X *gmenu2x, string name, string description) {
+	this->gmenu2x = gmenu2x;
+	this->name = name;
+	this->description = description;
+}
 
-#include <string>
-#include <iostream>
-#include "menu.h"
-#include "surfacecollection.h"
-#include "FastDelegate.h"
-
-#ifdef TARGET_GP2X
-#include "joystick.h"
-#endif
-
-#define BATTERY_READS 10
-
-using std::string;
-using fastdelegate::FastDelegate0;
-
-typedef FastDelegate0<> MenuAction;
-
-struct MenuOption {
-	string text;
-	MenuAction action;
-};
-
-class GMenu2X {
-private:
-	string path;
-	string getExePath();
-	string getDiskFree();
-	unsigned short cpuX, batX;
-	void drawRun();
-	void drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height);
-	void setClock(int mhz);
-	unsigned short getBatteryLevel();
-	void browsePath(string path, vector<string>* directories, vector<string>* files);
-	void createLink(string path, string file);
-	void readConfig();
-	void writeConfig();
-	void setInputSpeed();
-
-public:
-	GMenu2X(int argc, char *argv[]);
-	~GMenu2X();
+void MenuSetting::draw(int y) {
+	gmenu2x->write( gmenu2x->s->raw, name, 5, y );
+}
 
 #ifdef TARGET_GP2X
-	Joystick joy;
+void MenuSetting::manageInput(Joystick joy) {
+}
 #else
-	SDL_Event event;
-#endif
-
-	int alphablend, colorR, colorG, colorB;
-	SurfaceCollection sc;
-	Surface *s;
-	SFont *font;
-
-	//Status functions
-	int main();
-	void options();
-	void contextMenu();
-	void fileBrowser();
-
-	void runLink();
-	void deleteLink();
-	void renameLink();
-	void editDescriptionLink();
-
-	void initBG();
-	void write(SDL_Surface *s, string text, int x, int y);
-	void writeCenter(SDL_Surface *s, string text, int x, int y);
-
-	Menu* menu;
-};
-
+void MenuSetting::manageInput(SDL_Event *event) {
+}
 #endif

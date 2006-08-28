@@ -47,6 +47,7 @@
 #include "utilities.h"
 #include "inputdialog.h"
 #include "gmenu2x.h"
+#include "menusettingint.h"
 
 using namespace std;
 using namespace fastdelegate;
@@ -76,7 +77,11 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 		fprintf(stdout, "Could not initialize SDL: %s\n", SDL_GetError());
 		SDL_Quit();
 	}
-	s = new Surface(320,240);
+	s = new Surface();
+	SDL_JoystickOpen(0);
+	//s->raw = SDL_SetVideoMode(320, 240, 16, SDL_SWSURFACE);
+	s->raw = SDL_SetVideoMode(320, 240, 16, SDL_HWSURFACE|SDL_DOUBLEBUF);
+	SDL_ShowCursor(0);
 
 	font = new SFont( sc["imgs/font.png"]->raw );
 
@@ -93,25 +98,14 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 
 	//Events
 #ifdef TARGET_GP2X
-	startquit = argc>1 && string(argv[1])=="--startquit";
-
 	joy.init(0);
-	joy.setInterval(150);
-	joy.setInterval(30,  GP2X_BUTTON_VOLDOWN);
-	joy.setInterval(30,  GP2X_BUTTON_VOLUP  );
-	joy.setInterval(500, GP2X_BUTTON_SELECT );
-	joy.setInterval(300, GP2X_BUTTON_A      );
-	joy.setInterval(1000,GP2X_BUTTON_B      );
-	joy.setInterval(1000,GP2X_BUTTON_CLICK  );
-	joy.setInterval(300, GP2X_BUTTON_L      );
-	joy.setInterval(300, GP2X_BUTTON_R      );
-#else
-	SDL_EnableKeyRepeat(1,150);
 #endif
+	setInputSpeed();
 
 	main();
 	writeConfig();
 
+	SDL_Quit();
 	exit(0);
 }
 
@@ -125,8 +119,8 @@ void GMenu2X::readConfig() {
 				string::size_type pos = line.find("=");
 				string name = trim(line.substr(0,pos));
 				string value = trim(line.substr(pos+1,line.length()));
-				
-				if (name=="alpha") alphablend = atoi(value.c_str());
+
+				if (name=="alpha") alphablend = constrain( atoi(value.c_str()), 0, 255 );
 				else if (name=="colorR") colorR = constrain( atoi(value.c_str()), 0, 255 );
 				else if (name=="colorG") colorG = constrain( atoi(value.c_str()), 0, 255 );
 				else if (name=="colorB") colorB = constrain( atoi(value.c_str()), 0, 255 );
@@ -205,7 +199,7 @@ int GMenu2X::main() {
 			writeCenter( s->raw, menu->selLink()->getDescription(), 160, 207 );
 			write ( s->raw, menu->selLink()->clockStr(), cpuX, 223 );
 		}
-		
+
 		//battery
 		tickNow = SDL_GetTicks();
 		//check battery status every 60 seconds
@@ -221,7 +215,7 @@ int GMenu2X::main() {
 
 #ifdef TARGET_GP2X
 		joy.update();
-		if ( joy[GP2X_BUTTON_START ] && startquit ) quit = true;
+		if ( joy[GP2X_BUTTON_START ] ) options();
 		// LINK NAVIGATION
 		if ( joy[GP2X_BUTTON_LEFT ] ) menu->linkLeft();
 		if ( joy[GP2X_BUTTON_RIGHT] ) menu->linkRight();
@@ -252,7 +246,7 @@ int GMenu2X::main() {
 			menu->incSectionIndex();
 			offset = menu->links.size()>24 ? 0 : 4;
 		}
-		if ( joy[GP2X_BUTTON_B || GP2X_BUTTON_CLICK ] && menu->selLink()!=NULL ) runLink();
+		if ( joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK] && menu->selLink()!=NULL ) runLink();
 		if ( joy[GP2X_BUTTON_SELECT] ) contextMenu();
 #else
 		while (SDL_PollEvent(&event)) {
@@ -286,6 +280,7 @@ int GMenu2X::main() {
 					menu->incSectionIndex();
 					offset = menu->links.size()>24 ? 0 : 4;
 				}
+				if ( event.key.keysym.sym==SDLK_s      ) options();
 				if ( event.key.keysym.sym==SDLK_RETURN && menu->selLink()!=NULL ) runLink();
 				if ( event.key.keysym.sym==SDLK_SPACE  ) contextMenu();
 			}
@@ -298,8 +293,74 @@ int GMenu2X::main() {
 	return -1;
 }
 
+void GMenu2X::options() {
+#ifdef TARGET_GP2X
+	joy.setInterval(30,  GP2X_BUTTON_LEFT );
+	joy.setInterval(30,  GP2X_BUTTON_RIGHT);
+#endif
+
+	Surface bg ("imgs/bg.png");
+
+	vector<MenuSetting *> voices;
+	voices.resize(4);
+	voices[0] = new MenuSettingInt(this,"Color (Red)","Red part of the color of the interface",&colorR,0,255);
+	voices[1] = new MenuSettingInt(this,"Color (Green)","Green part of the color of the interface",&colorG,0,255);
+	voices[2] = new MenuSettingInt(this,"Color (Blue)","Blue part of the color of the interface",&colorB,0,255);
+	voices[3] = new MenuSettingInt(this,"Color (Alpha)","Transparency of the interface",&alphablend,0,255);
+
+	bool close = false;
+	uint i, sel = 0, iY;
+
+	while (!close) {
+		bg.blit(s,0,0);
+		//top bar
+		boxRGBA(s->raw, 0, 0, 320, 15, colorR,colorG,colorB,alphablend);
+		writeCenter(s->raw, "Settings", 160, 1);
+	//bottom bar
+		boxRGBA(s->raw, 0, 225, 320, 240, colorR,colorG,colorB,alphablend);
+
+		//selection
+		iY = 18+(sel*17);
+		boxRGBA(s->raw, 2, iY, 318, iY+16, colorR,colorG,colorB,alphablend);
+
+		for (i=0; i<voices.size(); i++) {
+			voices[i]->draw(i*17+20);
+		}
+
+		//description at bottom
+		writeCenter(s->raw, voices[sel]->description, 160, 226);
+
+#ifdef TARGET_GP2X
+		joy.update();
+		if ( joy[GP2X_BUTTON_START] ) close = true;
+		if ( joy[GP2X_BUTTON_UP    ] ) sel = max(0, sel-1);
+		if ( joy[GP2X_BUTTON_DOWN  ] ) sel = min(voices.size()-1, sel+1);
+		voices[sel]->manageInput();
+#else
+		while (SDL_PollEvent(&event)) {
+			if ( event.type == SDL_QUIT ) return;
+			if ( event.type==SDL_KEYDOWN ) {
+				if ( event.key.keysym.sym==SDLK_ESCAPE ) close = true;
+				if ( event.key.keysym.sym==SDLK_UP ) sel = max(0, sel-1);
+				if ( event.key.keysym.sym==SDLK_DOWN ) sel = min(voices.size()-1, sel+1);
+				voices[sel]->manageInput();
+			}
+		}
+#endif
+
+		s->flip();
+	}
+
+	for (i=0; i<voices.size(); i++) {
+		free(voices[i]);
+	}
+	writeConfig();
+	initBG();
+	setInputSpeed();
+}
+
 void GMenu2X::contextMenu() {
-	Surface bg = *s;
+	Surface bg(s);
 	//Darken background
 	boxRGBA(bg.raw, 0, 0, 320, 240, 0,0,0,150);
 
@@ -356,7 +417,7 @@ void GMenu2X::contextMenu() {
 		if ( joy[GP2X_BUTTON_SELECT] ) close = true;
 		if ( joy[GP2X_BUTTON_UP    ] ) sel = max(0, sel-1);
 		if ( joy[GP2X_BUTTON_DOWN  ] ) sel = min(voices.size()-1, sel+1);
-		if ( joy[GP2X_BUTTON_B || GP2X_BUTTON_CLICK ] ) { voices[sel].action(); return; }
+		if ( joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK] ) { voices[sel].action(); return; }
 #else
 		while (SDL_PollEvent(&event)) {
 			if ( event.type == SDL_QUIT ) return;
@@ -408,41 +469,41 @@ void GMenu2X::fileBrowser() {
 	vector<string> directories;
 	vector<string> files;
 	browsePath(curpath,&directories,&files);
-	
+
 	Surface bg("imgs/bg.png");
 	boxRGBA(bg.raw, 0, 0, 320, 15, colorR,colorG,colorB,alphablend);
-	
+
 	//A Button
 	filledCircleRGBA(bg.raw, 12, 228, 7, 0,0,0,255);
 	writeCenter(bg.raw, "A", 13, 222);
 	write(bg.raw, "Up one folder", 23, 222);
-	
+
 	//B Button
 	filledCircleRGBA(bg.raw, 100, 228, 7, 0,0,0,255);
 	writeCenter(bg.raw, "B", 101, 222);
 	write(bg.raw, "Enter folder/Confirm", 111, 222);
-	
+
 	uint i, selected = 0, firstElement = 0, iY, ds;
-	
+
 	while (!close) {
 		bg.blit(s,0,0);
-		writeCenter(s->raw,"File Browser",160,2);
-		
+		writeCenter(s->raw,"File Browser",160,1);
+
 		if (selected>firstElement+10) firstElement=selected-10;
 		if (selected<firstElement) firstElement=selected;
-		
+
 		//Selection
 		iY = selected-firstElement;
 		iY = 20+(iY*18);
 		boxRGBA(s->raw, 2, iY, 310, iY+16, colorR,colorG,colorB,alphablend);
-		
+
 		//Directories
 		for (i=firstElement; i<directories.size() && i<firstElement+11; i++) {
 			iY = i-firstElement;
 			sc["imgs/folder.png"]->blit(s, 5, 21+(iY*18));
 			write(s->raw, directories[i], 24, 22+(iY*18));
 		}
-		
+
 		//Files
 		ds = directories.size();
 		for (; i<files.size()+ds && i<firstElement+11; i++) {
@@ -450,10 +511,10 @@ void GMenu2X::fileBrowser() {
 			sc["imgs/file.png"]->blit(s, 5, 21+(iY*18));
 			write(s->raw, files[i-ds], 24, 22+(iY*18));
 		}
-		
+
 		drawScrollBar(11,directories.size()+files.size(),firstElement,20,196);
 		s->flip();
-		
+
 
 #ifdef TARGET_GP2X
 		joy.update();
@@ -477,9 +538,9 @@ void GMenu2X::fileBrowser() {
 			else
 				curpath = curpath.substr(0,p);
 			selected = 0;
-			browsePath(curpath,&directories,&files);			
+			browsePath(curpath,&directories,&files);
 		}
-		if ( joy[GP2X_BUTTON_B || GP2X_BUTTON_CLICK ] ) {
+		if ( joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK] ) {
 			if (selected<directories.size()) {
 				curpath += "/"+directories[selected];
 				selected = 0;
@@ -516,7 +577,7 @@ void GMenu2X::fileBrowser() {
 					else
 						curpath = curpath.substr(0,p);
 					selected = 0;
-					browsePath(curpath,&directories,&files);			
+					browsePath(curpath,&directories,&files);
 				}
 				if ( event.key.keysym.sym==SDLK_RETURN ) {
 					if (selected<directories.size()) {
@@ -535,26 +596,26 @@ void GMenu2X::fileBrowser() {
 		}
 #endif
 	}
-	
+
 	return;
 }
 
 void GMenu2X::createLink(string path, string file) {
 	if (path[path.length()-1]!='/') path += "/";
-	
+
 	string title = file;
 	string::size_type pos = title.rfind(".");
 	if (pos!=string::npos && pos>0)
 		title = title.substr(0, pos);
-		
+
 	cout << "GMENU2X: Creating link " << title << endl;
-	
+
 	string linkpath = "sections/"+menu->selSection()+"/"+title;
-	
+
 	if (title.length()>9) {
 		title = title.substr(0,7)+"..";
 	}
-	
+
 	ofstream f(linkpath.c_str());
 	if (f.is_open()) {
 		f << "title=" << title << endl;
@@ -572,10 +633,10 @@ void GMenu2X::browsePath(string path, vector<string>* directories, vector<string
 	struct stat st;
 	struct dirent *dptr;
 	string filepath;
-	
+
 	directories->clear();
 	files->clear();
-	
+
 	if ((dirp = opendir(path.c_str())) == NULL) return;
 	if (path[path.length()-1]!='/') path += "/";
 
@@ -589,9 +650,9 @@ void GMenu2X::browsePath(string path, vector<string>* directories, vector<string
 		else
 			files->push_back((string)dptr->d_name);
 	}
-	
+
 	closedir(dirp);
-	
+
 	sort(directories->begin(),directories->end());
 	sort(files->begin(),files->end());
 }
@@ -606,7 +667,7 @@ unsigned short GMenu2X::getBatteryLevel() {
 #ifdef TARGET_GP2X
 	int devbatt = open ("/dev/batt", O_RDONLY);
 	if (devbatt<0) return 0;
-	
+
 	int battval = 0;
 	unsigned short cbv;
 	int v;
@@ -616,20 +677,39 @@ unsigned short GMenu2X::getBatteryLevel() {
 			battval += cbv;
 	}
  	close(devbatt);
- 	
+
  	battval /= BATTERY_READS;
  	battval -= 645; //645 ~= 2.3v (0%) , 745 ~= 2.6v (100%)
  	if (battval<0) battval = 0;
  	//battval = battval*100/xxx; //max-min=xxx
  	if (battval>100) battval = 100;
- 	
+
  	return battval;
 #else
 	return 100;
 #endif
 }
 
+void GMenu2X::setInputSpeed() {
+#ifdef TARGET_GP2X
+	joy.setInterval(150);
+	joy.setInterval(30,  GP2X_BUTTON_VOLDOWN);
+	joy.setInterval(30,  GP2X_BUTTON_VOLUP  );
+	joy.setInterval(500, GP2X_BUTTON_START  );
+	joy.setInterval(500, GP2X_BUTTON_SELECT );
+	joy.setInterval(300, GP2X_BUTTON_A      );
+	joy.setInterval(1000,GP2X_BUTTON_B      );
+	joy.setInterval(1000,GP2X_BUTTON_CLICK  );
+	joy.setInterval(300, GP2X_BUTTON_L      );
+	joy.setInterval(300, GP2X_BUTTON_R      );
+#else
+	SDL_EnableKeyRepeat(1,150);
+#endif
+}
+
 void GMenu2X::initBG() {
+	sc.del("imgs/bg.png");
+
 	//Top Bar
 	boxRGBA(sc["imgs/bg.png"]->raw, 0, 0, 320, 40, colorR,colorG,colorB,alphablend);
 	//Bottom Bar
@@ -652,7 +732,7 @@ void GMenu2X::initBG() {
 
 void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height) {
 	if (totalsize<=pagesize) return;
-	
+
 	rectangleRGBA(s->raw, 312, top, 317, top+height, colorR,colorG,colorB,150);
 	//internal bar total height = height-2
 	//bar size

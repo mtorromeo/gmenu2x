@@ -38,7 +38,9 @@ private:
 public:
 	Surface();
 	Surface(string img);
-	Surface(int w, int h);
+	Surface(SDL_Surface *s);
+	Surface(Surface *s);
+	Surface(int w, int h, Uint32 flags = SDL_HWSURFACE|SDL_SRCALPHA);
 	~Surface();
 
 	SDL_Surface *raw;

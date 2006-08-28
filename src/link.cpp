@@ -159,10 +159,14 @@ void Link::run() {
 		if (params!="") command += " " + params;
 		system(command.c_str());
 	} else {
+		SDL_Quit();
 		execlp(exec.c_str(),exec.c_str(), params == "" ? NULL : params.c_str() ,NULL);
+		//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue
+		//try relaunching gmenu2x
+		chdir(path.c_str());
+		execlp("./scripts/wrapper.sh", "./scripts/wrapper.sh", NULL);
 	}
 
-	//in case execl fails or dontleave
 	chdir(path.c_str());
 }
 

@@ -17,79 +17,34 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
-#ifndef GMENU2X_H
-#define GMENU2X_H
-
-#include <string>
-#include <iostream>
-#include "menu.h"
-#include "surfacecollection.h"
-#include "FastDelegate.h"
+#ifndef MENUSETTINGINT_H
+#define MENUSETTINGINT_H
 
 #ifdef TARGET_GP2X
 #include "joystick.h"
 #endif
 
-#define BATTERY_READS 10
+#include "gmenu2x.h"
+#include "menusetting.h"
 
 using std::string;
-using fastdelegate::FastDelegate0;
 
-typedef FastDelegate0<> MenuAction;
-
-struct MenuOption {
-	string text;
-	MenuAction action;
-};
-
-class GMenu2X {
+class MenuSettingInt : public MenuSetting {
 private:
-	string path;
-	string getExePath();
-	string getDiskFree();
-	unsigned short cpuX, batX;
-	void drawRun();
-	void drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height);
-	void setClock(int mhz);
-	unsigned short getBatteryLevel();
-	void browsePath(string path, vector<string>* directories, vector<string>* files);
-	void createLink(string path, string file);
-	void readConfig();
-	void writeConfig();
-	void setInputSpeed();
+	int *_value;
+	string strvalue;
+	GMenu2X *gmenu2x;
 
 public:
-	GMenu2X(int argc, char *argv[]);
-	~GMenu2X();
+	MenuSettingInt(GMenu2X *gmenu2x, string name, string description, int *value, int min, int max);
+	virtual ~MenuSettingInt() {};
 
-#ifdef TARGET_GP2X
-	Joystick joy;
-#else
-	SDL_Event event;
-#endif
+	virtual void draw(int y);
+	virtual void manageInput();
 
-	int alphablend, colorR, colorG, colorB;
-	SurfaceCollection sc;
-	Surface *s;
-	SFont *font;
-
-	//Status functions
-	int main();
-	void options();
-	void contextMenu();
-	void fileBrowser();
-
-	void runLink();
-	void deleteLink();
-	void renameLink();
-	void editDescriptionLink();
-
-	void initBG();
-	void write(SDL_Surface *s, string text, int x, int y);
-	void writeCenter(SDL_Surface *s, string text, int x, int y);
-
-	Menu* menu;
+	int min, max;
+	void setValue(int value);
+	int value();
 };
 
 #endif
