@@ -531,7 +531,7 @@ void GMenu2X::fileBrowser() {
 			else
 				selected += 1;
 		}
-		if ( joy[GP2X_BUTTON_A     ] ) {
+		if ( joy[GP2X_BUTTON_A] || joy[GP2X_BUTTON_LEFT] ) {
 			string::size_type p = curpath.rfind("/");
 			if (p==string::npos || curpath.substr(0,7)!="/mnt/sd" || p<7)
 				return;
