@@ -149,7 +149,7 @@ void GMenu2X::writeConfig() {
 
 int GMenu2X::main() {
 	bool quit = false;
-	int x,y,ix,iy, offset = menu->links.size()>24 ? 0 : 4;
+	int x,y,ix, offset = menu->links.size()>24 ? 0 : 4;
 	uint i;
 	long tickBattery = -60000, tickNow;
 	string batteryStatus;
@@ -179,19 +179,19 @@ int GMenu2X::main() {
 		for (i=menu->firstDispRow()*6; i<(menu->firstDispRow()*6)+24 && i<menu->links.size(); i++) {
 			int ir = i-menu->firstDispRow()*6;
 			x = (ir%6)*52+offset;
-			y = (ir/6+1)*41-1;
+			y = (ir/6+1)*41+1;
 			ix = x+10;
-			iy = y+1;
 
 			if (menu->selLink()==menu->links[i])
-				sc["imgs/selection.png"]->blit(s,x,y);
+				boxRGBA(s->raw, x, y, x+50, y+41, colorR,colorG,colorB,alphablend);
+				//sc["imgs/selection.png"]->blit(s,x,y);
 
 			if (menu->links[i]->getIcon() != "")
-				sc[menu->links[i]->getIcon()]->blit(s,ix,iy);
+				sc[menu->links[i]->getIcon()]->blit(s,ix,y);
 			else
-				sc["icons/generic.png"]->blit(s,ix,iy);
+				sc["icons/generic.png"]->blit(s,ix,y);
 
-			writeCenter( s->raw, menu->links[i]->getTitle(), ix+16, iy+29 );
+			writeCenter( s->raw, menu->links[i]->getTitle(), ix+16, y+29 );
 		}
 		drawScrollBar(4,menu->links.size()/6 + ((menu->links.size()%6==0) ? 0 : 1),menu->firstDispRow(),43,159);
 

@@ -29,10 +29,5 @@ void MenuSetting::draw(int y) {
 	gmenu2x->write( gmenu2x->s->raw, name, 5, y );
 }
 
-#ifdef TARGET_GP2X
-void MenuSetting::manageInput(Joystick joy) {
+void MenuSetting::manageInput() {
 }
-#else
-void MenuSetting::manageInput(SDL_Event *event) {
-}
-#endif
