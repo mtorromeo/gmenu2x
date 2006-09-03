@@ -36,7 +36,7 @@ Link::Link(string path, const char* linkfile) {
 	while (getline(infile, line, '\n')) {
 		string::size_type position = line.find("=");
 		string name = trim(line.substr(0,position));
-		string value = trim(line.substr(position+1,line.length()));
+		string value = trim(line.substr(position+1));
 		if (name == "title") {
 			title = value;
 		} else if (name == "description") {

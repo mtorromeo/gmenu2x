@@ -89,9 +89,10 @@ public:
 	int main();
 	void options();
 	void contextMenu();
-	void fileBrowser();
-
 	void runLink();
+
+	void addLink();
+	void changeLinkIcon();
 	void deleteLink();
 	void renameLink();
 	void editDescriptionLink();

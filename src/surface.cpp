@@ -98,23 +98,24 @@ void Surface::flip() {
 	SDL_Flip(raw);
 }
 
-bool Surface::blit(SDL_Surface *destination, int x, int y) {
+bool Surface::blit(SDL_Surface *destination, int x, int y, int w, int h) {
+	SDL_Rect src = {0,0,w,h};
 	SDL_Rect dest;
 	dest.x = x;
 	dest.y = y;
-	return SDL_BlitSurface(raw, NULL, destination, &dest);
+	return SDL_BlitSurface(raw, (w==0 || h==0) ? NULL : &src, destination, &dest);
 }
 
-bool Surface::blit(Surface *destination, int x, int y) {
-	return blit(destination->raw,x,y);
+bool Surface::blit(Surface *destination, int x, int y, int w, int h) {
+	return blit(destination->raw,x,y,w,h);
 }
 
-bool Surface::blitCenter(SDL_Surface *destination, int x, int y) {
-	return blit(destination,x-raw->w/2,y-raw->h/2);
+bool Surface::blitCenter(SDL_Surface *destination, int x, int y, int w, int h) {
+	return blit(destination,x-raw->w/2,y-raw->h/2,w,h);
 }
 
-bool Surface::blitCenter(Surface *destination, int x, int y) {
-	return blitCenter(destination->raw,x,y);
+bool Surface::blitCenter(Surface *destination, int x, int y, int w, int h) {
+	return blitCenter(destination->raw,x,y,w,h);
 }
 
 void Surface::putPixel(int x, int y, Uint32 color) {

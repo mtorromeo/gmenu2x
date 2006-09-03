@@ -57,3 +57,33 @@ int min (int a, int b) {
 int constrain (int x, int imin, int imax) {
 	return min( imax, max(imin,x) );
 }
+
+bool split (vector<string> &vec, const string &str, const string &delim) {
+	vec.clear();
+
+	if (delim.empty()) {
+		vec.push_back(str);
+		return false;
+	}
+
+	std::string::size_type i = 0;
+	std::string::size_type j = 0;
+
+	while(1) {
+		j = str.find(delim,i);
+		if (j==std::string::npos) {
+			vec.push_back(str.substr(i));
+			break;
+		}
+
+		vec.push_back(str.substr(i,j-i));
+		i = j + delim.size();
+
+		if (i==str.size()) {
+								vec.push_back(std::string());
+								break;
+		}
+	}
+
+	return true;
+}

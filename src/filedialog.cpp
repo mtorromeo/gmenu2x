@@ -33,19 +33,20 @@
 
 using namespace std;
 
-FileDialog::FileDialog(GMenu2X *gmenu2x, string text) {
+FileDialog::FileDialog(GMenu2X *gmenu2x, string text, string filter) {
 	this->gmenu2x = gmenu2x;
 	this->text = text;
+	split(this->filter,filter,",");
 	selRow = 0;
 }
 
 bool FileDialog::exec() {
-	bool close = false;
+	bool close = false, result = true;
 
 #ifdef TARGET_GP2X
-	string path = "/mnt/sd";
+	path = "/mnt/sd";
 #else
-	string path = "/home/ryo";
+	path = "/home/ryo";
 #endif
 
 	vector<string> directories;
@@ -56,8 +57,7 @@ bool FileDialog::exec() {
 	boxRGBA(bg.raw, 0, 0, 320, 15, gmenu2x->topBarColor);
 
 	gmenu2x->drawButton(&bg, "B", "Enter folder/Confirm",
-	gmenu2x->drawButton(&bg, "A", "Up one folder", 10)
-	);
+	gmenu2x->drawButton(&bg, "A", "Up one folder", 10));
 	
 
 	uint i, selected = 0, firstElement = 0, iY, ds;
@@ -95,7 +95,7 @@ bool FileDialog::exec() {
 
 #ifdef TARGET_GP2X
 		gmenu2x->joy.update();
-		if ( gmenu2x->joy[GP2X_BUTTON_SELECT] ) close = true;
+		if ( gmenu2x->joy[GP2X_BUTTON_SELECT] ) { close = true; result = false; }
 		if ( gmenu2x->joy[GP2X_BUTTON_UP    ] ) {
 			if ((int)(selected-1)<0)
 				selected = directories.size()+files.size()-1;
@@ -131,9 +131,9 @@ bool FileDialog::exec() {
 		}
 #else
 		while (SDL_PollEvent(&gmenu2x->event)) {
-			if ( gmenu2x->event.type == SDL_QUIT ) return false;
+			if ( gmenu2x->event.type == SDL_QUIT ) { close = true; result = false; }
 			if ( gmenu2x->event.type==SDL_KEYDOWN ) {
-				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) close = true;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) { close = true; result = false; }
 				if ( gmenu2x->event.key.keysym.sym==SDLK_UP ) {
 					if ((int)(selected-1)<0) {
 						selected = directories.size()+files.size()-1;
@@ -172,7 +172,7 @@ bool FileDialog::exec() {
 #endif
 	}
 
-	return true;
+	return result;
 }
 
 void FileDialog::browsePath(string path, vector<string>* directories, vector<string>* files) {
@@ -194,8 +194,15 @@ void FileDialog::browsePath(string path, vector<string>* directories, vector<str
 		if (statRet == -1) continue;
 		if (S_ISDIR(st.st_mode))
 			directories->push_back((string)dptr->d_name);
-		else
-			files->push_back((string)dptr->d_name);
+		else {
+			bool filterOk = false;
+			string file = dptr->d_name;
+			for (uint i = 0; i<filter.size() && !filterOk; i++) {
+				filterOk = file.substr(file.length()-filter[i].length(),filter[i].length())==filter[i];
+			}
+			if (filterOk)
+				files->push_back(file);
+		}
 	}
 
 	closedir(dirp);

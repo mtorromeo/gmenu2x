@@ -52,10 +52,10 @@ public:
 	void flip();
 	SDL_PixelFormat *format();
 	void putPixel(int,int,Uint32);
-	bool blit(Surface *destination, int x, int y);
-	bool blit(SDL_Surface *destination, int x, int y);
-	bool blitCenter(Surface *destination, int x, int y);
-	bool blitCenter(SDL_Surface *destination, int x, int y);
+	bool blit(Surface *destination, int x, int y, int w=0, int h=0);
+	bool blit(SDL_Surface *destination, int x, int y, int w=0, int h=0);
+	bool blitCenter(Surface *destination, int x, int y, int w=0, int h=0);
+	bool blitCenter(SDL_Surface *destination, int x, int y, int w=0, int h=0);
 
 	void operator = (Surface*);
 };

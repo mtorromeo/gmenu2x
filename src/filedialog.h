@@ -25,18 +25,20 @@
 #include "gmenu2x.h"
 
 using std::string;
+using std::vector;
 
 class FileDialog {
 private:
 	int selRow;
 	string text;
 	GMenu2X *gmenu2x;
+	vector<string> filter;
 
 	void browsePath(string path, vector<string>* directories, vector<string>* files);
 	
 public:
 	string path, file;
-	FileDialog(GMenu2X *gmenu2x, string text);
+	FileDialog(GMenu2X *gmenu2x, string text, string filter="");
 	
 	bool exec();
 };

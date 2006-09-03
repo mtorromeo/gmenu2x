@@ -25,8 +25,10 @@
 #include <SDL_gfxPrimitives.h>
 #include <fstream>
 #include <string>
+#include <vector>
 
 using std::string;
+using std::vector;
 
 struct RGBAColor {
 	unsigned short r,g,b,a;
@@ -40,5 +42,6 @@ bool fileExists(string file);
 int max (int a, int b);
 int min (int a, int b);
 int constrain (int x, int imin, int imax);
+bool split (vector<string> &vec, const string &str, const string &delim);
 
 #endif

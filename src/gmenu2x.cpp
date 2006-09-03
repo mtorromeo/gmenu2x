@@ -143,6 +143,12 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	exit(0);
 }
 
+GMenu2X::~GMenu2X() {
+	free(menu);
+	free(s);
+	free(font);
+}
+
 void GMenu2X::readConfig() {
 	string conffile = path+"gmenu2x.conf";
 	if (fileExists(conffile)) {
@@ -225,7 +231,7 @@ int GMenu2X::main() {
 			if (menu->selSectionIndex()==(int)i)
 				boxRGBA(s->raw, x-14, 0, x+46, 40, selectionColor);
 			if (sc.exists(sectionIcon))
-				sc[sectionIcon]->blit(s,x,0);
+				sc[sectionIcon]->blit(s,x,0,32,32);
 			else
 				sc["icons/section.png"]->blit(s,x,0);
 			writeCenter( s->raw, menu->sections[i], x+16, 27 );
@@ -246,9 +252,9 @@ int GMenu2X::main() {
 			}
 
 			if (menu->links[i]->getIcon() != "")
-				sc[menu->links[i]->getIcon()]->blit(s,ix,y);
+				sc[menu->links[i]->getIcon()]->blit(s,ix,y,32,32);
 			else
-				sc["icons/generic.png"]->blit(s,ix,y);
+				sc["icons/generic.png"]->blit(s,ix,y,32,32);
 
 			writeCenter( s->raw, menu->links[i]->getTitle(), ix+16, y+29 );
 		}
@@ -430,17 +436,21 @@ void GMenu2X::contextMenu() {
 
 	vector<MenuOption> voices;
 	{
-	MenuOption opt = {"Add link in '"+menu->selSection()+"'", MakeDelegate(this, &GMenu2X::fileBrowser)};
+	MenuOption opt = {"Add link in '"+menu->selSection()+"'", MakeDelegate(this, &GMenu2X::addLink)};
 	voices.push_back(opt);
 	}
 
 	if (menu->selLink()!=NULL) {
 		{
-		MenuOption opt = {"Rename link '"+menu->selLink()->getTitle()+"'", MakeDelegate(this, &GMenu2X::renameLink)};
+		MenuOption opt = {"Change link icon", MakeDelegate(this, &GMenu2X::changeLinkIcon)};
 		voices.push_back(opt);
 		}
 		{
-		MenuOption opt = {"Edit description for '"+menu->selLink()->getTitle()+"'", MakeDelegate(this, &GMenu2X::editDescriptionLink)};
+		MenuOption opt = {"Rename link", MakeDelegate(this, &GMenu2X::renameLink)};
+		voices.push_back(opt);
+		}
+		{
+		MenuOption opt = {"Edit description", MakeDelegate(this, &GMenu2X::editDescriptionLink)};
 		voices.push_back(opt);
 		}
 		{
@@ -498,6 +508,22 @@ void GMenu2X::contextMenu() {
 	}
 }
 
+void GMenu2X::addLink() {
+	FileDialog fd(this,"Select an application");
+	if (fd.exec()) {
+		createLink(fd.path, fd.file);
+		menu->setSectionIndex( menu->selSectionIndex() ); //Force a reload of current section links
+	}
+}
+
+void GMenu2X::changeLinkIcon() {
+	FileDialog fd(this,"Select an icon for the link",".png,.bmp,.jpg,.jpeg");
+	if (fd.exec()) {
+		menu->selLink()->setIcon( fd.path+"/"+fd.file );
+		menu->selLink()->save();
+		system("sync");
+	}
+}
 void GMenu2X::deleteLink() {
 	unlink(menu->selLink()->file.c_str());
 	menu->setSectionIndex( menu->selSectionIndex() ); //Force a reload of current section links
@@ -520,15 +546,6 @@ void GMenu2X::editDescriptionLink() {
 		menu->selLink()->save();
 		system("sync");
 	}
-}
-
-void GMenu2X::fileBrowser() {
-	FileDialog fd(this,"Select an application");
-	if (fd.exec()) {
-		createLink(fd.path, fd.file);
-		menu->setSectionIndex( menu->selSectionIndex() ); //Force a reload of current section links
-	}
-	return;
 }
 
 void GMenu2X::createLink(string path, string file) {
@@ -564,12 +581,6 @@ void GMenu2X::createLink(string path, string file) {
 		system("sync");
 	} else
 		cout << "GMENU2X: Error while opening the file '" << linkpath << "' for write" << endl;
-}
-
-GMenu2X::~GMenu2X() {
-	free(menu);
-	free(s);
-	free(font);
 }
 
 unsigned short GMenu2X::getBatteryLevel() {
@@ -614,6 +625,82 @@ void GMenu2X::setInputSpeed() {
 #else
 	SDL_EnableKeyRepeat(1,150);
 #endif
+}
+
+void GMenu2X::setClock(unsigned mhz) {
+	mhz = constrain(mhz,50,maxClock);
+	cout << "GMENU2X: Setting clock speed at " << mhz << "MHZ" << endl;
+#ifdef TARGET_GP2X
+	gp2x_init();
+
+	unsigned v;
+	unsigned mdiv,pdiv=3,scale=0;
+	mhz*=1000000;
+	mdiv=(mhz*pdiv)/GP2X_CLK_FREQ;
+	mdiv=((mdiv-8)<<8) & 0xff00;
+	pdiv=((pdiv-2)<<2) & 0xfc;
+	scale&=3;
+	v=mdiv | pdiv | scale;
+	MEM_REG[0x910>>1]=v;
+
+	gp2x_deinit();
+#endif
+/*
+	string command = "";
+	stringstream ss;
+	ss << mhz;
+	ss >> command;
+	cout << "GMENU2X: Setting clock speed at " << command << "MHZ" << endl;
+	command = path + "scripts/cpuspeed.sh " + command;
+	cout << "GMENU2X: " << command << endl;
+#ifdef TARGET_GP2X
+	system(command.c_str());
+#endif
+*/
+}
+
+void GMenu2X::runLink() {
+	drawRun();
+#ifndef TARGET_GP2X
+	//delay for testing
+	SDL_Delay(1000);
+#endif
+	for (uint i=0; i<menu->links.size(); i++)
+		menu->links[i]->save();
+	if (saveSelection) writeConfig();
+	if (menu->selLink()->clock()!=menuClock)
+		setClock(menu->selLink()->clock());
+	menu->selLink()->run();
+}
+
+string GMenu2X::getExePath() {
+	stringstream ss;
+	ss << "/proc/" << getpid() << "/exe";
+	string p;
+	ss >> p;
+	char buf[255];
+	int l = readlink(p.c_str(),buf,255);
+	p = buf;
+	p = p.substr(0,l);
+	l = p.rfind("/");
+	return p.substr(0,l+1);
+}
+
+string GMenu2X::getDiskFree() {
+	stringstream ss;
+	string df = "";
+	struct statfs b;
+
+#ifdef TARGET_GP2X
+	int ret = statfs("/mnt/sd", &b);
+#else
+	int ret = statfs("/mnt/sda1", &b);
+#endif
+	if (ret==0) {
+		ss << b.f_bfree*b.f_bsize/1048576 << "/" << b.f_blocks*b.f_bsize/1048576 << "MB";
+		ss >> df;
+	} else cout << "GMENU2X: statfs failed with error '" << strerror(errno) << "'" << endl;
+	return df;
 }
 
 void GMenu2X::initBG() {
@@ -691,80 +778,4 @@ void GMenu2X::drawRun() {
 		sc["icons/generic.png"]->blit(s,x,104);
 	write( s->raw, text, x+42, 114 );
 	s->flip();
-}
-
-void GMenu2X::setClock(unsigned mhz) {
-	mhz = constrain(mhz,50,maxClock);
-	cout << "GMENU2X: Setting clock speed at " << mhz << "MHZ" << endl;
-#ifdef TARGET_GP2X
-	gp2x_init();
-
-	unsigned v;
-	unsigned mdiv,pdiv=3,scale=0;
-	mhz*=1000000;
-	mdiv=(mhz*pdiv)/GP2X_CLK_FREQ;
-	mdiv=((mdiv-8)<<8) & 0xff00;
-	pdiv=((pdiv-2)<<2) & 0xfc;
-	scale&=3;
-	v=mdiv | pdiv | scale;
-	MEM_REG[0x910>>1]=v;
-
-	gp2x_deinit();
-#endif
-/*
-	string command = "";
-	stringstream ss;
-	ss << mhz;
-	ss >> command;
-	cout << "GMENU2X: Setting clock speed at " << command << "MHZ" << endl;
-	command = path + "scripts/cpuspeed.sh " + command;
-	cout << "GMENU2X: " << command << endl;
-#ifdef TARGET_GP2X
-	system(command.c_str());
-#endif
-*/
-}
-
-void GMenu2X::runLink() {
-	drawRun();
-#ifndef TARGET_GP2X
-	//delay for testing
-	SDL_Delay(1000);
-#endif
-	for (uint i=0; i<menu->links.size(); i++)
-		menu->links[i]->save();
-	if (saveSelection) writeConfig();
-	if (menu->selLink()->clock()!=menuClock)
-		setClock(menu->selLink()->clock());
-	menu->selLink()->run();
-}
-
-string GMenu2X::getExePath() {
-	stringstream ss;
-	ss << "/proc/" << getpid() << "/exe";
-	string p;
-	ss >> p;
-	char buf[255];
-	int l = readlink(p.c_str(),buf,255);
-	p = buf;
-	p = p.substr(0,l);
-	l = p.rfind("/");
-	return p.substr(0,l+1);
-}
-
-string GMenu2X::getDiskFree() {
-	stringstream ss;
-	string df = "";
-	struct statfs b;
-
-#ifdef TARGET_GP2X
-	int ret = statfs("/mnt/sd", &b);
-#else
-	int ret = statfs("/mnt/sda1", &b);
-#endif
-	if (ret==0) {
-		ss << b.f_bfree*b.f_bsize/1048576 << "/" << b.f_blocks*b.f_bsize/1048576 << "MB";
-		ss >> df;
-	} else cout << "GMENU2X: statfs failed with error '" << strerror(errno) << "'" << endl;
-	return df;
 }
