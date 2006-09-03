@@ -29,5 +29,6 @@ void MenuSetting::draw(int y) {
 	gmenu2x->write( gmenu2x->s->raw, name, 5, y );
 }
 
-void MenuSetting::manageInput() {
-}
+void MenuSetting::manageInput() {}
+void MenuSetting::adjustInput() {}
+void MenuSetting::drawSelected(int) {}

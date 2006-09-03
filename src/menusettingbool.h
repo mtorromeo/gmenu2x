@@ -17,36 +17,31 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MENUSETTING_H
-#define MENUSETTING_H
-
-#ifdef TARGET_GP2X
-#include "joystick.h"
-#endif
+#ifndef MENUSETTINGBOOL_H
+#define MENUSETTINGBOOL_H
 
 #include "gmenu2x.h"
+#include "menusetting.h"
 
 using std::string;
 
-/**
-Base class for different kind of option
-
-	@author Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
-*/
-class MenuSetting {
+class MenuSettingBool : public MenuSetting {
 private:
+	bool *_value;
+	string strvalue;
 	GMenu2X *gmenu2x;
 
 public:
-	MenuSetting(GMenu2X *gmenu2x, string name, string description);
-	virtual ~MenuSetting() {};
+	MenuSettingBool(GMenu2X *gmenu2x, string name, string description, bool *value);
+	virtual ~MenuSettingBool() {};
 
 	virtual void draw(int y);
 	virtual void manageInput();
 	virtual void adjustInput();
 	virtual void drawSelected(int y);
 
-	string name, description;
+	void setValue(bool value);
+	bool value();
 };
 
 #endif

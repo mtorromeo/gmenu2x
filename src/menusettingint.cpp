@@ -41,8 +41,8 @@ void MenuSettingInt::draw(int y) {
 #include "gp2x.h"
 
 void MenuSettingInt::manageInput() {
-	if ( gmenu2x->joy[GP2X_BUTTON_LEFT ] ) setValue(value()-1);
-	if ( gmenu2x->joy[GP2X_BUTTON_RIGHT] ) setValue(value()+1);
+	if ( gmenu2x->joy[GP2X_BUTTON_LEFT ] || gmenu2x->joy[GP2X_BUTTON_X] ) setValue(value()-1);
+	if ( gmenu2x->joy[GP2X_BUTTON_RIGHT] || gmenu2x->joy[GP2X_BUTTON_Y] ) setValue(value()+1);
 }
 #else
 void MenuSettingInt::manageInput() {
@@ -61,4 +61,18 @@ void MenuSettingInt::setValue(int value) {
 
 int MenuSettingInt::value() {
 	return *_value;
+}
+
+void MenuSettingInt::adjustInput() {
+#ifdef TARGET_GP2X
+	gmenu2x->joy.setInterval(30, GP2X_BUTTON_LEFT );
+	gmenu2x->joy.setInterval(30, GP2X_BUTTON_RIGHT);
+#endif
+}
+
+void MenuSettingInt::drawSelected(int) {
+	gmenu2x->drawButton(gmenu2x->s, "Y", "Increase value",
+	gmenu2x->drawButton(gmenu2x->s, ">", "/",
+	gmenu2x->drawButton(gmenu2x->s, "X", "Decrease value",
+	gmenu2x->drawButton(gmenu2x->s, "<", "/", 10)-4))-4);
 }

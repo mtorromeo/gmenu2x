@@ -60,8 +60,8 @@ public:
 
 	string file;
 	int clock();
-	string clockStr();
-	void setClock(int);
+	string clockStr(int maxClock);
+	void setClock(int mhz);
 
 	bool wrapper;
 	bool dontleave;

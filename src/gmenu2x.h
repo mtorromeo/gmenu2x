@@ -26,6 +26,7 @@
 #include "menu.h"
 #include "surfacecollection.h"
 #include "FastDelegate.h"
+#include "utilities.h"
 
 #ifdef TARGET_GP2X
 #include "joystick.h"
@@ -50,14 +51,20 @@ private:
 	string getDiskFree();
 	unsigned short cpuX, batX;
 	void drawRun();
-	void drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height);
-	void setClock(int mhz);
+	void setClock(unsigned mhz);
 	unsigned short getBatteryLevel();
 	void browsePath(string path, vector<string>* directories, vector<string>* files);
 	void createLink(string path, string file);
 	void readConfig();
 	void writeConfig();
 	void setInputSpeed();
+
+	bool gp2x_initialized;
+	unsigned long gp2x_mem;
+	unsigned short *gp2x_memregs;
+	volatile unsigned short *MEM_REG;
+	void gp2x_init();
+	void gp2x_deinit();
 
 public:
 	GMenu2X(int argc, char *argv[]);
@@ -69,7 +76,11 @@ public:
 	SDL_Event event;
 #endif
 
-	int alphablend, colorR, colorG, colorB;
+	//Configuration settings
+	RGBAColor selectionColor, topBarColor, bottomBarColor;
+	bool saveSelection;
+	int maxClock, menuClock;
+
 	SurfaceCollection sc;
 	Surface *s;
 	SFont *font;
@@ -88,6 +99,8 @@ public:
 	void initBG();
 	void write(SDL_Surface *s, string text, int x, int y);
 	void writeCenter(SDL_Surface *s, string text, int x, int y);
+	int drawButton(Surface *s, string btn, string text, int x);
+	void drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height);
 
 	Menu* menu;
 };

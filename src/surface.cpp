@@ -109,6 +109,14 @@ bool Surface::blit(Surface *destination, int x, int y) {
 	return blit(destination->raw,x,y);
 }
 
+bool Surface::blitCenter(SDL_Surface *destination, int x, int y) {
+	return blit(destination,x-raw->w/2,y-raw->h/2);
+}
+
+bool Surface::blitCenter(Surface *destination, int x, int y) {
+	return blitCenter(destination->raw,x,y);
+}
+
 void Surface::putPixel(int x, int y, Uint32 color) {
 	int bpp = raw->format->BytesPerPixel;
 	// Here p is the address to the pixel we want to set

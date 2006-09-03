@@ -21,10 +21,19 @@
 #ifndef UTILITIES_H
 #define UTILITIES_H
 
+#include <SDL.h>
+#include <SDL_gfxPrimitives.h>
 #include <fstream>
 #include <string>
 
 using std::string;
+
+struct RGBAColor {
+	unsigned short r,g,b,a;
+};
+
+int boxRGBA(SDL_Surface* s, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, RGBAColor rgba);
+int rectangleRGBA(SDL_Surface* s, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, RGBAColor rgba);
 
 string trim(const string& s);
 bool fileExists(string file);

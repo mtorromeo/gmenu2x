@@ -38,7 +38,6 @@ private:
 	
 public:
 	InputDialog(GMenu2X *parent, string text, string startvalue="");
-	~InputDialog();
 	
 	string input;
 	bool exec();

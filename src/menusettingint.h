@@ -20,10 +20,6 @@
 #ifndef MENUSETTINGINT_H
 #define MENUSETTINGINT_H
 
-#ifdef TARGET_GP2X
-#include "joystick.h"
-#endif
-
 #include "gmenu2x.h"
 #include "menusetting.h"
 
@@ -41,6 +37,8 @@ public:
 
 	virtual void draw(int y);
 	virtual void manageInput();
+	virtual void adjustInput();
+	virtual void drawSelected(int y);
 
 	int min, max;
 	void setValue(int value);

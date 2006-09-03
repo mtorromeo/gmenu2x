@@ -17,36 +17,38 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MENUSETTING_H
-#define MENUSETTING_H
-
-#ifdef TARGET_GP2X
-#include "joystick.h"
-#endif
+#ifndef MENUSETTINGRGBA_H
+#define MENUSETTINGRGBA_H
 
 #include "gmenu2x.h"
+#include "menusetting.h"
+#include "utilities.h"
 
 using std::string;
 
-/**
-Base class for different kind of option
-
-	@author Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
-*/
-class MenuSetting {
+class MenuSettingRGBA : public MenuSetting {
 private:
+	unsigned short selPart;
+	string strR, strG, strB, strA;
+	RGBAColor *_value;
 	GMenu2X *gmenu2x;
 
 public:
-	MenuSetting(GMenu2X *gmenu2x, string name, string description);
-	virtual ~MenuSetting() {};
+	MenuSettingRGBA(GMenu2X *gmenu2x, string name, string description, RGBAColor *value);
+	virtual ~MenuSettingRGBA() {};
 
 	virtual void draw(int y);
 	virtual void manageInput();
 	virtual void adjustInput();
 	virtual void drawSelected(int y);
 
-	string name, description;
+	void setSelPart(unsigned short value);
+	void setR(unsigned short r);
+	void setG(unsigned short g);
+	void setB(unsigned short b);
+	void setA(unsigned short a);
+	unsigned short getSelPart();
+	RGBAColor value();
 };
 
 #endif

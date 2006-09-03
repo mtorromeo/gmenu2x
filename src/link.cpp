@@ -29,7 +29,7 @@ Link::Link(string path, const char* linkfile) {
 	file = linkfile;
 	wrapper = false;
 	dontleave = false;
-	setClock(0);
+	setClock(200);
 
 	string line;
 	ifstream infile (linkfile, ios_base::in);
@@ -74,21 +74,17 @@ int Link::clock() {
 	return iclock;
 }
 
-string Link::clockStr() {
+string Link::clockStr(int maxClock) {
+	if (iclock>maxClock) setClock(maxClock);
 	return sclock;
 }
 
 void Link::setClock(int mhz) {
-	if (mhz<100 || mhz>300) {
-		iclock = 0;
-		sclock = "Default";
-	} else {
-		iclock = mhz;
-		stringstream ss;
-		sclock = "";
-		ss << iclock << "MHZ";
-		ss >> sclock;
-	}
+	iclock = constrain(mhz,50,300);
+	stringstream ss;
+	sclock = "";
+	ss << iclock << "MHZ";
+	ss >> sclock;
 
 	edited = true;
 }

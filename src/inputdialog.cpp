@@ -36,15 +36,11 @@ InputDialog::InputDialog(GMenu2X *parent, string text, string startvalue) {
 	selRow = 0;
 
 	keyboard.resize(4);
-	//keyboard[0] = "ABCDEFGHIJKLM";
-	//keyboard[0] = "NOPQRSTUVWXYZ";
 	keyboard[0] = "abcdefghijklm";
 	keyboard[1] = "nopqrstuvwxyz";
 	keyboard[2] = "0123456789 \"'";
 	keyboard[3] = "#$%&|?.,:;*+-";
 }
-
-InputDialog::~InputDialog() {}
 
 bool InputDialog::exec() {
 	bool close = false, ok = true;
@@ -55,40 +51,22 @@ bool InputDialog::exec() {
 	Uint32 caretTick, curTick;
 	bool caretOn = true;
 
-	boxRGBA(bg.raw, 0, 0, 320, 15, parent->colorR,parent->colorG,parent->colorB,parent->alphablend);
+	boxRGBA(bg.raw, 0, 0, 320, 15, parent->topBarColor);
 	parent->writeCenter(bg.raw, text, 160, 2);
 
-	//A Button
-	filledCircleRGBA(bg.raw, 12, 228, 7, 0,0,0,255);
-	parent->writeCenter(bg.raw, "A", 13, 222);
-	parent->write(bg.raw, "or", 22, 222);
-	//L Button
-	filledCircleRGBA(bg.raw, 40, 228, 7, 0,0,0,255);
-	parent->writeCenter(bg.raw, "L", 41, 222);
-	parent->write(bg.raw, "Backspace", 51, 222);
-
-	//R Button
-	filledCircleRGBA(bg.raw, 114, 228, 7, 0,0,0,255);
-	parent->writeCenter(bg.raw, "R", 115, 222);
-	parent->write(bg.raw, "Space", 125, 222);
-
-	//B Button
-	filledCircleRGBA(bg.raw, 168, 228, 7, 0,0,0,255);
-	parent->writeCenter(bg.raw, "B", 169, 222);
-	parent->write(bg.raw, "Confirm", 179, 222);
-
-	//Y Button
-	filledCircleRGBA(bg.raw, 231, 228, 7, 0,0,0,255);
-	parent->writeCenter(bg.raw, "Y", 232, 222);
-	parent->write(bg.raw, "Shift", 242, 222);
+	parent->drawButton(&bg, "Y", "Shift",
+	parent->drawButton(&bg, "B", "Confirm",
+	parent->drawButton(&bg, "R", "Space",
+	parent->drawButton(&bg, "L", "Backspace",
+	parent->drawButton(&bg, "A", "/", 10)-4))));
 
 	while (!close) {
 		bg.blit(parent->s,0,0);
 
 		box.w = parent->font->getTextWidth(input)+18;
 		box.x = 160-box.w/2;
-		boxRGBA(parent->s->raw, box.x, box.y, box.x+box.w, box.y+box.h, parent->colorR,parent->colorG,parent->colorB,parent->alphablend);
-		rectangleRGBA(parent->s->raw, box.x, box.y, box.x+box.w, box.y+box.h, parent->colorR,parent->colorG,parent->colorB,parent->alphablend);
+		boxRGBA(parent->s->raw, box.x, box.y, box.x+box.w, box.y+box.h, parent->selectionColor);
+		rectangleRGBA(parent->s->raw, box.x, box.y, box.x+box.w, box.y+box.h, parent->selectionColor);
 
 		parent->write(parent->s->raw, input, box.x+5, box.y+3);
 
@@ -98,7 +76,7 @@ bool InputDialog::exec() {
 			caretTick = curTick;
 		}
 
-		if (caretOn) boxRGBA(parent->s->raw, box.x+box.w-12, box.y+3, box.x+box.w-4, box.y+box.h-3, parent->colorR,parent->colorG,parent->colorB,parent->alphablend);
+		if (caretOn) boxRGBA(parent->s->raw, box.x+box.w-12, box.y+3, box.x+box.w-4, box.y+box.h-3, parent->selectionColor);
 
 		drawVirtualKeyboard();
 
@@ -130,6 +108,7 @@ bool InputDialog::exec() {
 			} else
 				input += keyboard[selRow][selCol];
 		}
+		if ( parent->joy[GP2X_BUTTON_START] ) close = true;
 #else
 		while (SDL_PollEvent(&parent->event)) {
 			if ( parent->event.type==SDL_KEYDOWN ) {
@@ -150,7 +129,7 @@ bool InputDialog::exec() {
 					}
 				}
 				if ( parent->event.key.keysym.sym==SDLK_RETURN    ) {
-					if (selRow==keyboard.size()) {
+					if (selRow==(int)keyboard.size()) {
 						if (selCol==0)
 							ok = false;
 						close = true;
@@ -167,21 +146,21 @@ bool InputDialog::exec() {
 
 void InputDialog::drawVirtualKeyboard() {
 	//keyboard border
-	rectangleRGBA(parent->s->raw, 157-keyboard[0].length()*5, 98, 161+keyboard[0].length()*5, 116+keyboard.size()*15, parent->colorR,parent->colorG,parent->colorB,parent->alphablend);
+	rectangleRGBA(parent->s->raw, 157-keyboard[0].length()*5, 98, 161+keyboard[0].length()*5, 116+keyboard.size()*15, parent->selectionColor);
 	uint left = 160-keyboard[0].length()*5;
 
 	if (selCol<0) selCol = keyboard[0].length()-1;
 	if (selCol>=(int)keyboard[0].length()) selCol = 0;
 	if (selRow<0) selRow = keyboard.size()-1;
-	if (selRow>keyboard.size()) selRow = 0;
+	if (selRow>(int)keyboard.size()) selRow = 0;
 
 	//selection
-	if (selRow<keyboard.size())
-		boxRGBA(parent->s->raw, left+selCol*10-1, 100+selRow*15, left+(selCol+1)*10-1, 113+selRow*15, parent->colorR,parent->colorG,parent->colorB,parent->alphablend);
+	if (selRow<(int)keyboard.size())
+		boxRGBA(parent->s->raw, left+selCol*10-1, 100+selRow*15, left+(selCol+1)*10-1, 113+selRow*15, parent->selectionColor);
 	else {
 		if (selCol>1) selCol = 0;
 		if (selCol<0) selCol = 1;
-		boxRGBA(parent->s->raw, left+selCol*keyboard[0].length()*5-1, 100+keyboard.size()*15, left+(selCol+1)*keyboard[0].length()*5-1, 114+keyboard.size()*15, parent->colorR,parent->colorG,parent->colorB,parent->alphablend);
+		boxRGBA(parent->s->raw, left+selCol*keyboard[0].length()*5-1, 100+keyboard.size()*15, left+(selCol+1)*keyboard[0].length()*5-1, 114+keyboard.size()*15, parent->selectionColor);
 	}
 
 	//keys
