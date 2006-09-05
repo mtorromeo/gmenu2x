@@ -1,5 +1,5 @@
 title=Beat2X
 description=DanceDance style game
-icon=/home/ryo/Documenti/Immagini/nazgul-black.png
+icon=icons/beat2x.png
 exec=/mnt/sd/beat2x/beat2x.gpe
 clock=200

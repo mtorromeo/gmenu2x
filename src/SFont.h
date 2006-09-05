@@ -27,6 +27,7 @@
 
 /************************************************************************
 *    SFONT - SDL Font Library by Karl Bartel <karlb@gmx.net>            *
+*  modified by Massimiliano Torromeo <massimiliano.torromeo@gmail.com   *
 *                                                                       *
 *  All functions are explained below. For further information, take a   *
 *  look at the example files, the links at the SFont web site, or       *
@@ -78,32 +79,6 @@ void SFont_WriteCenter(SDL_Surface *Surface, const SFont_Font* Font, int y,
 
 #ifdef __cplusplus
 }
-
-class SFont
-{
-public:
-	int getHeight() const { return SFont_TextHeight(font); }
-	int getTextWidth(const char* text) const { return SFont_TextWidth(font, text); }
-	int getTextWidth(const std::string& text) const { return getTextWidth(text.c_str()); }
-	void write(SDL_Surface* surface, const char* text, int x, int y) const {
-		SFont_Write(surface, font, x, y, text);
-	}
-	void write(SDL_Surface* surface, const std::string& text, int x, int y) const {
-		write(surface, text.c_str(), x, y);
-	}
-	void writeCenter(SDL_Surface* surface, const char* text, int x, int y) const {
-		int w = SFont_TextWidth(font, text);
-		write(surface, text, x-w/2, y);
-	}
-	void writeCenter(SDL_Surface* surface, const std::string& text, int x, int y) const {
-		writeCenter(surface, text.c_str(), x, y);
-	}
-	SFont(SDL_Surface* surface) { font = SFont_InitFont(surface); }
-	~SFont() { SFont_FreeFont(font); }
-
-private:
-	SFont_Font* font;
-};
 #endif
 
 #endif /* SFONT_H */

@@ -32,7 +32,7 @@ MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, string name, string descripti
 
 void MenuSettingBool::draw(int y) {
 	MenuSetting::draw(y);
-	gmenu2x->write( gmenu2x->s->raw, strvalue, 165, y );
+	gmenu2x->s->write( gmenu2x->font, strvalue, 165, y+9, SFontHAlignLeft, SFontVAlignMiddle );
 }
 
 #ifdef TARGET_GP2X

@@ -31,13 +31,13 @@ class InputDialog {
 private:
 	int selRow, selCol;
 	string text;
-	GMenu2X *parent;
+	GMenu2X *gmenu2x;
 	vector<string> keyboard;
 
 	void drawVirtualKeyboard();
 	
 public:
-	InputDialog(GMenu2X *parent, string text, string startvalue="");
+	InputDialog(GMenu2X *gmenu2x, string text, string startvalue="");
 	
 	string input;
 	bool exec();

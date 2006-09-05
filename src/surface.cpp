@@ -17,7 +17,9 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "surface.h"
+#include <SDL_gfxPrimitives.h>
 
 Surface::Surface() {
 	raw = NULL;
@@ -147,7 +149,25 @@ void Surface::putPixel(int x, int y, Uint32 color) {
 	}
 }
 
+void Surface::write(ASFont *font, string text, int x, int y, const unsigned short halign, const unsigned short valign) {
+	font->write(this,text,x,y,halign,valign);
+}
+
 void Surface::operator = (Surface *s) {
 	raw = s->raw;
 	raw->refcount++;
+}
+
+int Surface::box(Sint16 x, Sint16 y, Sint16 w, Sint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+	return boxRGBA(raw,x,y,x+w,y+h,r,g,b,a);
+}
+int Surface::box(Sint16 x, Sint16 y, Sint16 w, Sint16 h, RGBAColor c) {
+	return box(x,y,w,h,c.r,c.g,c.b,c.a);
+}
+
+int Surface::rectangle(Sint16 x, Sint16 y, Sint16 w, Sint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+	return rectangleRGBA(raw,x,y,x+w,y+h,r,g,b,a);
+}
+int Surface::rectangle(Sint16 x, Sint16 y, Sint16 w, Sint16 h, RGBAColor c) {
+	return rectangle(x,y,w,h,c.r,c.g,c.b,c.a);
 }

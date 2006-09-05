@@ -30,13 +30,6 @@
 using std::string;
 using std::vector;
 
-struct RGBAColor {
-	unsigned short r,g,b,a;
-};
-
-int boxRGBA(SDL_Surface* s, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, RGBAColor rgba);
-int rectangleRGBA(SDL_Surface* s, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, RGBAColor rgba);
-
 string trim(const string& s);
 bool fileExists(string file);
 int max (int a, int b);

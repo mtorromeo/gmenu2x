@@ -38,7 +38,7 @@
 #include <sys/fcntl.h> //for battery
 #endif
 
-#include "SFont.h"
+#include "asfont.h"
 #include "surface.h"
 #include "filedialog.h"
 #include "inputdialog.h"
@@ -115,7 +115,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	s->raw = SDL_SetVideoMode(320, 240, 16, SDL_HWSURFACE|SDL_DOUBLEBUF);
 	SDL_ShowCursor(0);
 
-	font = new SFont( sc["imgs/font.png"]->raw );
+	font = new ASFont( sc["imgs/font.png"]->raw );
 
 	//Menu structure handler
 	menu = new Menu(path);
@@ -214,7 +214,7 @@ int GMenu2X::main() {
 	int x,y,ix, offset = menu->links.size()>24 ? 0 : 4;
 	uint i;
 	long tickBattery = -60000, tickNow;
-	string batteryStatus;
+	string batteryIcon = "imgs/battery/0.png";
 
 	while (!quit) {
 		//Background
@@ -229,12 +229,12 @@ int GMenu2X::main() {
 			string sectionIcon = "sections/"+menu->sections[i]+".png";
 			x = (i-menu->firstDispSection())*60+24;
 			if (menu->selSectionIndex()==(int)i)
-				boxRGBA(s->raw, x-14, 0, x+46, 40, selectionColor);
+				s->box(x-14, 0, 60, 40, selectionColor);
 			if (sc.exists(sectionIcon))
 				sc[sectionIcon]->blit(s,x,0,32,32);
 			else
 				sc["icons/section.png"]->blit(s,x,0);
-			writeCenter( s->raw, menu->sections[i], x+16, 27 );
+			s->write( font, menu->sections[i], x+16, 41, SFontHAlignCenter, SFontVAlignBottom );
 		}
 
 		//Links
@@ -248,7 +248,7 @@ int GMenu2X::main() {
 				if (useSelectionPng)
 					sc["imgs/selection.png"]->blitCenter(s,x+25,y+20);
 				else
-					boxRGBA(s->raw, x, y, x+50, y+41, selectionColor);
+					s->box(x, y, 50, 41, selectionColor);
 			}
 
 			if (menu->links[i]->getIcon() != "")
@@ -256,13 +256,13 @@ int GMenu2X::main() {
 			else
 				sc["icons/generic.png"]->blit(s,ix,y,32,32);
 
-			writeCenter( s->raw, menu->links[i]->getTitle(), ix+16, y+29 );
+			s->write( font, menu->links[i]->getTitle(), ix+16, y+43, SFontHAlignCenter, SFontVAlignBottom );
 		}
 		drawScrollBar(4,menu->links.size()/6 + ((menu->links.size()%6==0) ? 0 : 1),menu->firstDispRow(),43,159);
 
 		if (menu->selLink()!=NULL) {
-			writeCenter( s->raw, menu->selLink()->getDescription(), 160, 207 );
-			write ( s->raw, menu->selLink()->clockStr(maxClock), cpuX, 223 );
+			s->write ( font, menu->selLink()->getDescription(), 160, 220, SFontHAlignCenter, SFontVAlignBottom );
+			s->write ( font, menu->selLink()->clockStr(maxClock), cpuX, 230, SFontHAlignLeft, SFontVAlignMiddle );
 		}
 
 		//battery
@@ -270,19 +270,31 @@ int GMenu2X::main() {
 		//check battery status every 60 seconds
 		if (tickNow-tickBattery >= 60000) {
 			tickBattery = tickNow;
-			stringstream ss;
-			ss << getBatteryLevel();
-			ss << "%";
-			ss >> batteryStatus;
-			cout << "GMENU2X: Battery level " << batteryStatus << endl;
+			unsigned short battlevel = getBatteryLevel();
+			if (battlevel>100) {
+				batteryIcon = "imgs/battery/ac.png";
+			} else {
+				if (battlevel<10)
+					batteryIcon = "imgs/battery/0.png";
+				else if (battlevel<30)
+					batteryIcon = "imgs/battery/1.png";
+				else if (battlevel<50)
+					batteryIcon = "imgs/battery/2.png";
+				else if (battlevel<70)
+					batteryIcon = "imgs/battery/3.png";
+				else if (battlevel<90)
+					batteryIcon = "imgs/battery/4.png";
+				else
+					batteryIcon = "imgs/battery/5.png";
+
+				cout << "GMENU2X: Battery level " << battlevel << endl;
+			}
 		}
-		write( s->raw, batteryStatus, batX, 223 );
+		sc[batteryIcon]->blit( s, 301, 222 );
 
 #ifdef TARGET_GP2X
 		joy.update();
 		if ( joy[GP2X_BUTTON_START] ) options();
-		if ( joy[GP2X_BUTTON_Y    ] ) { SDL_GP2X_TV(tv); tv = tv == 0 ? 1 : 0; }
-		if ( joy[GP2X_BUTTON_X    ] ) { SDL_GP2X_TVMode(tvmode); tvmode = tvmode == 0 ? 1 : tvmode == 1 ? 2 : 0; }
 		// LINK NAVIGATION
 		if ( joy[GP2X_BUTTON_LEFT ] ) menu->linkLeft();
 		if ( joy[GP2X_BUTTON_RIGHT] ) menu->linkRight();
@@ -363,25 +375,25 @@ void GMenu2X::options() {
 	while (!close) {
 		bg.blit(s,0,0);
 		//top bar
-		boxRGBA(s->raw, 0, 0, 320, 15, topBarColor);
-		writeCenter(s->raw, "Settings", 160, 1);
+		s->box(0, 0, 320, 15, topBarColor);
+		s->write(font, "Settings", 160, 8, SFontHAlignCenter, SFontVAlignMiddle);
 	//bottom bar
-		boxRGBA(s->raw, 0, 210, 320, 240, bottomBarColor);
+		s->box(0, 210, 320, 30, bottomBarColor);
 
 		//selection
 		iY = 18+(sel*17);
-		//boxRGBA(s->raw, 2, iY, 318, iY+16, selectionColor);
-		boxRGBA(s->raw, 2, iY, 160, iY+16, selectionColor);
+		//s->box(2, iY, 316, 16, selectionColor);
+		s->box(2, iY, 158, 16, selectionColor);
 
 		//selected option
 		voices[sel]->drawSelected(iY);
 
 		for (i=0; i<voices.size(); i++) {
-			voices[i]->draw(i*17+20);
+			voices[i]->draw(i*17+18);
 		}
 
 		//description at bottom
-		writeCenter(s->raw, voices[sel]->description, 160, 210);
+		s->write(font, voices[sel]->description, 160, 218, SFontHAlignCenter, SFontVAlignMiddle);
 
 #ifdef TARGET_GP2X
 		joy.update();
@@ -432,29 +444,29 @@ void GMenu2X::options() {
 void GMenu2X::contextMenu() {
 	Surface bg(s);
 	//Darken background
-	boxRGBA(bg.raw, 0, 0, 320, 240, 0,0,0,150);
+	bg.box(0, 0, 320, 240, 0,0,0,150);
 
 	vector<MenuOption> voices;
 	{
-	MenuOption opt = {"Add link in '"+menu->selSection()+"'", MakeDelegate(this, &GMenu2X::addLink)};
+	MenuOption opt = {"Add link in "+menu->selSection(), MakeDelegate(this, &GMenu2X::addLink)};
 	voices.push_back(opt);
 	}
 
 	if (menu->selLink()!=NULL) {
 		{
-		MenuOption opt = {"Change link icon", MakeDelegate(this, &GMenu2X::changeLinkIcon)};
+		MenuOption opt = {"Change "+menu->selLink()->getTitle()+" icon", MakeDelegate(this, &GMenu2X::changeLinkIcon)};
 		voices.push_back(opt);
 		}
 		{
-		MenuOption opt = {"Rename link", MakeDelegate(this, &GMenu2X::renameLink)};
+		MenuOption opt = {"Rename "+menu->selLink()->getTitle(), MakeDelegate(this, &GMenu2X::renameLink)};
 		voices.push_back(opt);
 		}
 		{
-		MenuOption opt = {"Edit description", MakeDelegate(this, &GMenu2X::editDescriptionLink)};
+		MenuOption opt = {"Edit "+menu->selLink()->getTitle()+" description", MakeDelegate(this, &GMenu2X::editDescriptionLink)};
 		voices.push_back(opt);
 		}
 		{
-		MenuOption opt = {"Delete link '"+menu->selLink()->getTitle()+"'", MakeDelegate(this, &GMenu2X::deleteLink)};
+		MenuOption opt = {"Delete "+menu->selLink()->getTitle()+" link", MakeDelegate(this, &GMenu2X::deleteLink)};
 		voices.push_back(opt);
 		}
 	}
@@ -483,7 +495,7 @@ void GMenu2X::contextMenu() {
 		SDL_FillRect( s->raw, &selbox, SDL_MapRGB(s->format(),160,160,160) );
 		rectangleColor( s->raw, box.x+2, box.y+2, box.x+box.w-3, box.y+box.h-3, SDL_MapRGB(s->format(),80,80,80) );
 		for (i=0; i<voices.size(); i++) {
-			write( s->raw, voices[i].text, box.x+12, box.y+5+(h+2)*i );
+			s->write( font, voices[i].text, box.x+12, box.y+10+(h+2)*i, SFontHAlignLeft, SFontVAlignMiddle );
 		}
 
 #ifdef TARGET_GP2X
@@ -599,6 +611,9 @@ unsigned short GMenu2X::getBatteryLevel() {
  	close(devbatt);
 
  	battval /= BATTERY_READS;
+
+	if (battval>900) return 101;
+
  	battval -= 645; //645 ~= 2.3v (0%) , 745 ~= 2.6v (100%)
  	if (battval<0) battval = 0;
  	//battval = battval*100/xxx; //max-min=xxx
@@ -606,7 +621,7 @@ unsigned short GMenu2X::getBatteryLevel() {
 
  	return battval;
 #else
-	return 100;
+	return 101; //>100 = AC Power
 #endif
 }
 
@@ -707,36 +722,32 @@ void GMenu2X::initBG() {
 	sc.del("imgs/bg.png");
 
 	//Top Bar
-	boxRGBA(sc["imgs/bg.png"]->raw, 0, 0, 320, 40, topBarColor);
+	sc["imgs/bg.png"]->box(0, 0, 320, 40, topBarColor);
 	//Bottom Bar
-	boxRGBA(sc["imgs/bg.png"]->raw, 0, 220, 320, 240, bottomBarColor);
+	sc["imgs/bg.png"]->box(0, 220, 320, 20, bottomBarColor);
 
 	Surface sd("imgs/sd.png");
 	Surface cpu("imgs/cpu.png");
-	Surface battery("imgs/battery.png");
 	string df = getDiskFree();
 
 	sd.blit( sc["imgs/bg.png"], 3, 222 );
-	write( sc["imgs/bg.png"]->raw, df, 22, 223 );
-	batX = 27+font->getTextWidth(df);
-	battery.blit( sc["imgs/bg.png"], batX, 222 );
-	batX += 19;
-	cpuX = batX+5+font->getTextWidth("100%");
+	sc["imgs/bg.png"]->write( font, df, 22, 230, SFontHAlignLeft, SFontVAlignMiddle );
+	cpuX = 27+font->getTextWidth(df);
 	cpu.blit( sc["imgs/bg.png"], cpuX, 222 );
 	cpuX += 19;
 }
 
 int GMenu2X::drawButton(Surface *s, string btn, string text, int x) {
 	filledCircleRGBA(s->raw, x, 230, 7, 0,0,0,255);
-	writeCenter(s->raw, btn, x+1, 224);
-	write(s->raw, text, x+11, 224);
+	s->write(font, btn, x+1, 231, SFontHAlignCenter, SFontVAlignMiddle);
+	s->write(font, text, x+11, 231, SFontHAlignLeft, SFontVAlignMiddle);
 	return x+24+font->getTextWidth(text);
 }
 
 void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height) {
 	if (totalsize<=pagesize) return;
 
-	rectangleRGBA(s->raw, 312, top, 317, top+height, selectionColor);
+	s->rectangle(312, top, 5, height, selectionColor);
 	//internal bar total height = height-2
 	//bar size
 	uint bs = (height-2) * pagesize / totalsize;
@@ -745,20 +756,12 @@ void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint to
 	by = top+2+by;
 	if (by+bs>top+height-2) by = top+height-2-bs;
 
-	boxRGBA(s->raw, 314, by, 315, by+bs, selectionColor);
-}
-
-void GMenu2X::write(SDL_Surface *s, string text, int x, int y) {
-	font->write(s,text.c_str(),x,y);
-}
-
-void GMenu2X::writeCenter(SDL_Surface *s, string text, int x, int y) {
-	font->writeCenter(s,text.c_str(),x,y);
+	s->box(314, by, 1, bs, selectionColor);
 }
 
 void GMenu2X::drawRun() {
 	//Darkened background
-	boxRGBA(s->raw, 0, 0, 320, 240, 0,0,0,150);
+	s->box(0, 0, 320, 240, 0,0,0,150);
 
 	string text = "Launching "+menu->selLink()->getTitle();
 	int textW = font->getTextWidth(text);
@@ -776,6 +779,6 @@ void GMenu2X::drawRun() {
 		sc[menu->selLink()->getIcon()]->blit(s,x,104);
 	else
 		sc["icons/generic.png"]->blit(s,x,104);
-	write( s->raw, text, x+42, 114 );
+	s->write( font, text, x+42, 121, SFontHAlignLeft, SFontVAlignMiddle );
 	s->flip();
 }

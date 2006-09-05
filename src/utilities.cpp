@@ -21,13 +21,6 @@
 
 using namespace std;
 
-int boxRGBA(SDL_Surface* s, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, RGBAColor rgba) {
-	return boxRGBA(s, x1, y1, x2, y2, rgba.r, rgba.g, rgba.b, rgba.a);
-}
-int rectangleRGBA(SDL_Surface* s, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, RGBAColor rgba) {
-	return rectangleRGBA(s, x1, y1, x2, y2, rgba.r, rgba.g, rgba.b, rgba.a);
-}
-
 // General tool to strip spaces from both ends:
 string trim(const string& s) {
   if(s.length() == 0)

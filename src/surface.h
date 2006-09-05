@@ -24,7 +24,13 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+#include "asfont.h"
+
 using std::string;
+
+struct RGBAColor {
+	unsigned short r,g,b,a;
+};
 
 /**
 Wrapper around SDL_Surface
@@ -52,10 +58,18 @@ public:
 	void flip();
 	SDL_PixelFormat *format();
 	void putPixel(int,int,Uint32);
+
 	bool blit(Surface *destination, int x, int y, int w=0, int h=0);
 	bool blit(SDL_Surface *destination, int x, int y, int w=0, int h=0);
 	bool blitCenter(Surface *destination, int x, int y, int w=0, int h=0);
 	bool blitCenter(SDL_Surface *destination, int x, int y, int w=0, int h=0);
+
+	void write(ASFont *font, string text, int x, int y, const unsigned short halign=0, const unsigned short valign=0);
+
+	int box(Sint16, Sint16, Sint16, Sint16, Uint8, Uint8, Uint8, Uint8);
+	int box(Sint16, Sint16, Sint16, Sint16, RGBAColor);
+	int rectangle(Sint16, Sint16, Sint16, Sint16, Uint8, Uint8, Uint8, Uint8);
+	int rectangle(Sint16, Sint16, Sint16, Sint16, RGBAColor);
 
 	void operator = (Surface*);
 };

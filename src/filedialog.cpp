@@ -42,19 +42,16 @@ FileDialog::FileDialog(GMenu2X *gmenu2x, string text, string filter) {
 
 bool FileDialog::exec() {
 	bool close = false, result = true;
-
-#ifdef TARGET_GP2X
-	path = "/mnt/sd";
-#else
-	path = "/home/ryo";
-#endif
+	path = "/mnt";
 
 	vector<string> directories;
 	vector<string> files;
 	browsePath(path,&directories,&files);
 
 	Surface bg("imgs/bg.png");
-	boxRGBA(bg.raw, 0, 0, 320, 15, gmenu2x->topBarColor);
+	bg.box(0, 0, 320, 15, gmenu2x->topBarColor);
+	bg.write(gmenu2x->font,"File Browser: "+text,160,8, SFontHAlignCenter, SFontVAlignMiddle);
+	bg.box(0, 220, 320, 20, gmenu2x->bottomBarColor);
 
 	gmenu2x->drawButton(&bg, "B", "Enter folder/Confirm",
 	gmenu2x->drawButton(&bg, "A", "Up one folder", 10));
@@ -64,7 +61,6 @@ bool FileDialog::exec() {
 
 	while (!close) {
 		bg.blit(gmenu2x->s,0,0);
-		gmenu2x->writeCenter(gmenu2x->s->raw,"File Browser: "+text,160,1);
 
 		if (selected>firstElement+10) firstElement=selected-10;
 		if (selected<firstElement) firstElement=selected;
@@ -72,13 +68,13 @@ bool FileDialog::exec() {
 		//Selection
 		iY = selected-firstElement;
 		iY = 20+(iY*18);
-		boxRGBA(gmenu2x->s->raw, 2, iY, 310, iY+16, gmenu2x->selectionColor);
+		gmenu2x->s->box(2, iY, 308, 16, gmenu2x->selectionColor);
 
 		//Directories
 		for (i=firstElement; i<directories.size() && i<firstElement+11; i++) {
 			iY = i-firstElement;
 			gmenu2x->sc["imgs/folder.png"]->blit(gmenu2x->s, 5, 21+(iY*18));
-			gmenu2x->write(gmenu2x->s->raw, directories[i], 24, 22+(iY*18));
+			gmenu2x->s->write(gmenu2x->font, directories[i], 24, 29+(iY*18), SFontHAlignLeft, SFontVAlignMiddle);
 		}
 
 		//Files
@@ -86,7 +82,7 @@ bool FileDialog::exec() {
 		for (; i<files.size()+ds && i<firstElement+11; i++) {
 			iY = i-firstElement;
 			gmenu2x->sc["imgs/file.png"]->blit(gmenu2x->s, 5, 21+(iY*18));
-			gmenu2x->write(gmenu2x->s->raw, files[i-ds], 24, 22+(iY*18));
+			gmenu2x->s->write(gmenu2x->font, files[i-ds], 24, 29+(iY*18), SFontHAlignLeft, SFontVAlignMiddle);
 		}
 
 		gmenu2x->drawScrollBar(11,directories.size()+files.size(),firstElement,20,196);
@@ -110,7 +106,7 @@ bool FileDialog::exec() {
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_A] || gmenu2x->joy[GP2X_BUTTON_LEFT] ) {
 			string::size_type p = path.rfind("/");
-			if (p==string::npos || path.substr(0,7)!="/mnt/sd" || p<7)
+			if (p==string::npos || path.substr(0,4)!="/mnt" || p<4)
 				return false;
 			else
 				path = path.substr(0,p);
@@ -148,7 +144,7 @@ bool FileDialog::exec() {
 				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) {
 					string::size_type p = path.rfind("/");
-					if (p==string::npos || path.substr(0,9)!="/home/ryo" || p<9)
+					if (p==string::npos || path.substr(0,4)!="/mnt" || p<4)
 						return false;
 					else
 						path = path.substr(0,p);

@@ -49,7 +49,7 @@ private:
 	string path;
 	string getExePath();
 	string getDiskFree();
-	unsigned short cpuX, batX;
+	unsigned short cpuX;
 	void drawRun();
 	void setClock(unsigned mhz);
 	unsigned short getBatteryLevel();
@@ -83,7 +83,7 @@ public:
 
 	SurfaceCollection sc;
 	Surface *s;
-	SFont *font;
+	ASFont *font;
 
 	//Status functions
 	int main();
@@ -98,8 +98,6 @@ public:
 	void editDescriptionLink();
 
 	void initBG();
-	void write(SDL_Surface *s, string text, int x, int y);
-	void writeCenter(SDL_Surface *s, string text, int x, int y);
 	int drawButton(Surface *s, string btn, string text, int x);
 	void drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height);
 

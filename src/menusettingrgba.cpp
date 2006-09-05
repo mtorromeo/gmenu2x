@@ -35,12 +35,12 @@ MenuSettingRGBA::MenuSettingRGBA(GMenu2X *gmenu2x, string name, string descripti
 
 void MenuSettingRGBA::draw(int y) {
 	MenuSetting::draw(y);
-	rectangleRGBA( gmenu2x->s->raw, 165, y, 177, y+12, 0,0,0,255 );
-	boxRGBA( gmenu2x->s->raw, 165, y, 177, y+12, value() );
-	gmenu2x->write( gmenu2x->s->raw, "R: "+strR, 183, y );
-	gmenu2x->write( gmenu2x->s->raw, "G: "+strG, 218, y );
-	gmenu2x->write( gmenu2x->s->raw, "B: "+strB, 253, y );
-	gmenu2x->write( gmenu2x->s->raw, "A: "+strA, 288, y );
+	gmenu2x->s->rectangle( 165, y+2, 12, 12, 0,0,0,255 );
+	gmenu2x->s->box( 166, y+3, 10, 10, value() );
+	gmenu2x->s->write( gmenu2x->font, "R: "+strR, 183, y+9, SFontHAlignLeft, SFontVAlignMiddle );
+	gmenu2x->s->write( gmenu2x->font, "G: "+strG, 218, y+9, SFontHAlignLeft, SFontVAlignMiddle );
+	gmenu2x->s->write( gmenu2x->font, "B: "+strB, 253, y+9, SFontHAlignLeft, SFontVAlignMiddle );
+	gmenu2x->s->write( gmenu2x->font, "A: "+strA, 288, y+9, SFontHAlignLeft, SFontVAlignMiddle );
 }
 
 #ifdef TARGET_GP2X
@@ -120,10 +120,10 @@ void MenuSettingRGBA::adjustInput() {
 
 void MenuSettingRGBA::drawSelected(int y) {
 	int x = 180+selPart*35;
-	boxRGBA( gmenu2x->s->raw, x, y, x+34, y+16, gmenu2x->selectionColor );
+	gmenu2x->s->box( x, y, 34, 16, gmenu2x->selectionColor );
 
-	gmenu2x->drawButton(gmenu2x->s, "Y", "Increase value",
-	gmenu2x->drawButton(gmenu2x->s, "X", "Decrease value",
-	gmenu2x->drawButton(gmenu2x->s, ">", "Change color part",
+	gmenu2x->drawButton(gmenu2x->s, "Y", "Increase",
+	gmenu2x->drawButton(gmenu2x->s, "X", "Decrease",
+	gmenu2x->drawButton(gmenu2x->s, ">", "Change color component",
 	gmenu2x->drawButton(gmenu2x->s, "<", "/", 10)-4)));
 }

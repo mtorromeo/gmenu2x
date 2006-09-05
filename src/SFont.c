@@ -175,4 +175,3 @@ void SFont_WriteCenter(SDL_Surface *Surface, const SFont_Font *Font,
     SFont_Write(Surface, Font, Surface->w/2 - SFont_TextWidth(Font, text)/2,
 	    	y, text);
 }
-
