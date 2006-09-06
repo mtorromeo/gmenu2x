@@ -55,9 +55,15 @@ private:
 	unsigned short getBatteryLevel();
 	void browsePath(string path, vector<string>* directories, vector<string>* files);
 	void createLink(string path, string file);
+	void setInputSpeed();
+
+	bool inet, usbnet, samba, web;
+	string ip, defaultgw;
 	void readConfig();
 	void writeConfig();
-	void setInputSpeed();
+	void readCommonIni();
+	void writeCommonIni();
+	void initServices();
 
 	bool gp2x_initialized;
 	unsigned long gp2x_mem;

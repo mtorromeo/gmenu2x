@@ -83,6 +83,9 @@ if (gp2x_initialized) {
 }
 
 GMenu2X::GMenu2X(int argc, char *argv[]) {
+	readCommonIni();
+	initServices();
+
 	path = getExePath();
 	gp2x_initialized = false;
 
@@ -101,7 +104,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	selectionColor.a = 130;
 	saveSelection = true;
 	maxClock = 300;
-	menuClock = 50;
+	menuClock = 100;
 
 	//Screen
 	cout << "GMENU2X: Initializing screen..." << endl;
@@ -207,6 +210,59 @@ void GMenu2X::writeConfig() {
 		inf.close();
 		system("sync");
 	}
+}
+
+void GMenu2X::readCommonIni() {
+	if (fileExists("/usr/gp2x/common.ini")) {
+		ifstream inf("/usr/gp2x/common.ini", ios_base::in);
+		if (inf.is_open()) {
+			string line;
+			string section = "";
+			while (getline(inf, line, '\n')) {
+				line = trim(line);
+				if (line[0]=='[' && line[line.length()-1]==']') {
+					section = line.substr(1,line.length()-2);
+				} else {
+					string::size_type pos = line.find("=");
+					string name = trim(line.substr(0,pos));
+					string value = trim(line.substr(pos+1,line.length()));
+
+					if (section=="usbnet") {
+						if (name=="enable")
+							usbnet = value=="true" ? true : false;
+						else if (name=="ip")
+							ip = value;
+
+					} else if (section=="server") {
+						if (name=="inet")
+							inet = value=="true" ? true : false;
+						else if (name=="samba")
+							samba = value=="true" ? true : false;
+						else if (name=="web")
+							web = value=="true" ? true : false;
+					}
+				}
+			}
+			inf.close();
+		}
+	}
+}
+
+void GMenu2X::writeCommonIni() {}
+
+void GMenu2X::initServices() {
+#ifdef TARGET_GP2X
+	if (usbnet) {
+		system("insmod net2272");
+		system("insmod g_ether");
+		string ifconfig = "ifconfig usb0 "+ip+" netmask 255.255.255.0 up";
+		system(ifconfig.c_str());
+		//system("route add default gw "+defaultgw);
+		if (inet) system("/etc/init.d/inet start");
+		if (samba) system("smbd");
+		if (web) system("thttpd");
+	}
+#endif
 }
 
 int GMenu2X::main() {
@@ -362,8 +418,8 @@ void GMenu2X::options() {
 	vector<MenuSetting *> voices;
 	voices.resize(6);
 	voices[0] = new MenuSettingBool(this,"Save last selection","Save the last selected link and section on exit",&saveSelection);
-	voices[1] = new MenuSettingInt(this,"Clock for GMenu2X","Set the cpu working frequency when running GMenu2X",&menuClock,50,300);
-	voices[2] = new MenuSettingInt(this,"Maximum overclock","Set the maximum overclock for launching links",&maxClock,50,300);
+	voices[1] = new MenuSettingInt(this,"Clock for GMenu2X","Set the cpu working frequency when running GMenu2X",&menuClock,50,325);
+	voices[2] = new MenuSettingInt(this,"Maximum overclock","Set the maximum overclock for launching links",&maxClock,50,325);
 	voices[3] = new MenuSettingRGBA(this,"Top Bar Color","Color of the top bar",&topBarColor);
 	voices[4] = new MenuSettingRGBA(this,"Bottom Bar Color","Color of the bottom bar",&bottomBarColor);
 	voices[5] = new MenuSettingRGBA(this,"Selection Color","Color of the selection and other interface details",&selectionColor);

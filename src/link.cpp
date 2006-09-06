@@ -80,7 +80,7 @@ string Link::clockStr(int maxClock) {
 }
 
 void Link::setClock(int mhz) {
-	iclock = constrain(mhz,50,300);
+	iclock = constrain(mhz,50,325);
 	stringstream ss;
 	sclock = "";
 	ss << iclock << "MHZ";
