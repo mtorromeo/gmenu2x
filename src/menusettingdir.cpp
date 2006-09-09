@@ -17,19 +17,19 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "menusettingstring.h"
-#include "inputdialog.h"
+#include "menusettingdir.h"
+#include "dirdialog.h"
 #include "utilities.h"
 
 using namespace std;
 
-MenuSettingString::MenuSettingString(GMenu2X *gmenu2x, string name, string description, string *value)
+MenuSettingDir::MenuSettingDir(GMenu2X *gmenu2x, string name, string description, string *value)
 	: MenuSetting(gmenu2x,name,description) {
 	this->gmenu2x = gmenu2x;
 	_value = value;
 }
 
-void MenuSettingString::draw(int y) {
+void MenuSettingDir::draw(int y) {
 	MenuSetting::draw(y);
 	gmenu2x->s->write( gmenu2x->font, value(), 165, y+9, SFontHAlignLeft, SFontVAlignMiddle );
 }
@@ -37,34 +37,34 @@ void MenuSettingString::draw(int y) {
 #ifdef TARGET_GP2X
 #include "gp2x.h"
 
-void MenuSettingString::manageInput() {
+void MenuSettingDir::manageInput() {
 	if ( gmenu2x->joy[GP2X_BUTTON_A] ) setValue("");
 	if ( gmenu2x->joy[GP2X_BUTTON_B] ) {
-		InputDialog id(gmenu2x,description,value());
-		if (id.exec()) setValue(id.input);
+		DirDialog dd(gmenu2x,description);
+		if (dd.exec()) setValue( dd.path );
 	}
 }
 #else
-void MenuSettingString::manageInput() {
+void MenuSettingDir::manageInput() {
 	if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) setValue("");
 	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
-		InputDialog id(gmenu2x,description,value());
-		if (id.exec()) setValue(id.input);
+		DirDialog dd(gmenu2x,description);
+		if (dd.exec()) setValue( dd.path );
 	}
 }
 #endif
 
-void MenuSettingString::setValue(string value) {
+void MenuSettingDir::setValue(string value) {
 	*_value = value;
 }
 
-string MenuSettingString::value() {
+string MenuSettingDir::value() {
 	return *_value;
 }
 
-void MenuSettingString::adjustInput() {}
+void MenuSettingDir::adjustInput() {}
 
-void MenuSettingString::drawSelected(int) {
+void MenuSettingDir::drawSelected(int) {
 	gmenu2x->drawButton(gmenu2x->s, "A", "Clear",
-	gmenu2x->drawButton(gmenu2x->s, "B", "Edit", 10));
+	gmenu2x->drawButton(gmenu2x->s, "B", "Select a directory", 10));
 }

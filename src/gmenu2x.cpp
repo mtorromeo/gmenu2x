@@ -43,13 +43,13 @@
 #include "asfont.h"
 #include "surface.h"
 #include "filedialog.h"
-#include "inputdialog.h"
 #include "gmenu2x.h"
 #include "menusettingint.h"
 #include "menusettingbool.h"
 #include "menusettingrgba.h"
 #include "menusettingstring.h"
 #include "menusettingfile.h"
+#include "menusettingdir.h"
 
 #include <sys/mman.h>
 
@@ -627,8 +627,8 @@ void GMenu2X::editLink() {
 	voices[2] = new MenuSettingFile(this,"Icon","Select an icon for the link",&linkIcon,".png,.bmp,.jpg,.jpeg");
 	voices[3] = new MenuSettingInt(this,"Clock (default=200)","Cpu clock frequency to set when launching this link",&linkClock,50,maxClock);
 	voices[4] = new MenuSettingString(this,"Selector Filter","Filter for the selector (Separate values with a comma)",&linkSelFilter);
-	voices[5] = new MenuSettingString(this,"Selector Directory","Directory to scan for the selector",&linkSelDir);
-	voices[6] = new MenuSettingString(this,"Selector Screens","Directory of the screenshots for the selector",&linkSelScreens);
+	voices[5] = new MenuSettingDir(this,"Selector Directory","Directory to scan for the selector",&linkSelDir);
+	voices[6] = new MenuSettingDir(this,"Selector Screens","Directory of the screenshots for the selector",&linkSelScreens);
 	voices[7] = new MenuSettingInt(this,"Gamma (0=default)","Gamma value to set when launching this link",&linkGamma,0,100);
 	voices[8] = new MenuSettingBool(this,"Wrapper","Explicitly relaunch GMenu2X after this link's execution ends",&menu->selLink()->dontleave);
 	voices[9] = new MenuSettingBool(this,"Don't Leave","Don't quit GMenu2X when launching this link",&menu->selLink()->dontleave);
@@ -785,7 +785,7 @@ unsigned short GMenu2X::getBatteryLevel() {
 
  	battval /= BATTERY_READS;
 
-	if (battval>900) return 101;
+	if (battval>=850) return 101;
 
  	battval -= 645; //645 ~= 2.3v (0%) , 745 ~= 2.6v (100%)
  	if (battval<0) battval = 0;
@@ -910,6 +910,24 @@ void GMenu2X::initBG() {
 	cpuX = 27+font->getTextWidth(df);
 	cpu.blit( sc["imgs/bg.png"], cpuX, 222 );
 	cpuX += 19;
+
+	//301-3-16
+	int serviceX = 282;
+	if (web) {
+		Surface webserver("imgs/webserver.png");
+		webserver.blit( sc["imgs/bg.png"], serviceX, 222 );
+		serviceX -= 19;
+	}
+	if (samba) {
+		Surface sambaS("imgs/samba.png");
+		sambaS.blit( sc["imgs/bg.png"], serviceX, 222 );
+		serviceX -= 19;
+	}
+	if (inet) {
+		Surface inetS("imgs/inet.png");
+		inetS.blit( sc["imgs/bg.png"], serviceX, 222 );
+		serviceX -= 19;
+	}
 }
 
 int GMenu2X::drawButton(Surface *s, string btn, string text, int x) {

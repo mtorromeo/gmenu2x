@@ -17,54 +17,30 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "menusettingstring.h"
-#include "inputdialog.h"
-#include "utilities.h"
+#ifndef MENUSETTINGDIR_H
+#define MENUSETTINGDIR_H
 
-using namespace std;
+#include "gmenu2x.h"
+#include "menusetting.h"
 
-MenuSettingString::MenuSettingString(GMenu2X *gmenu2x, string name, string description, string *value)
-	: MenuSetting(gmenu2x,name,description) {
-	this->gmenu2x = gmenu2x;
-	_value = value;
-}
+using std::string;
 
-void MenuSettingString::draw(int y) {
-	MenuSetting::draw(y);
-	gmenu2x->s->write( gmenu2x->font, value(), 165, y+9, SFontHAlignLeft, SFontVAlignMiddle );
-}
+class MenuSettingDir : public MenuSetting {
+private:
+	string *_value;
+	GMenu2X *gmenu2x;
 
-#ifdef TARGET_GP2X
-#include "gp2x.h"
+public:
+	MenuSettingDir(GMenu2X *gmenu2x, string name, string description, string *value);
+	virtual ~MenuSettingDir() {};
 
-void MenuSettingString::manageInput() {
-	if ( gmenu2x->joy[GP2X_BUTTON_A] ) setValue("");
-	if ( gmenu2x->joy[GP2X_BUTTON_B] ) {
-		InputDialog id(gmenu2x,description,value());
-		if (id.exec()) setValue(id.input);
-	}
-}
-#else
-void MenuSettingString::manageInput() {
-	if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) setValue("");
-	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
-		InputDialog id(gmenu2x,description,value());
-		if (id.exec()) setValue(id.input);
-	}
-}
+	virtual void draw(int y);
+	virtual void manageInput();
+	virtual void adjustInput();
+	virtual void drawSelected(int y);
+
+	void setValue(string value);
+	string value();
+};
+
 #endif
-
-void MenuSettingString::setValue(string value) {
-	*_value = value;
-}
-
-string MenuSettingString::value() {
-	return *_value;
-}
-
-void MenuSettingString::adjustInput() {}
-
-void MenuSettingString::drawSelected(int) {
-	gmenu2x->drawButton(gmenu2x->s, "A", "Clear",
-	gmenu2x->drawButton(gmenu2x->s, "B", "Edit", 10));
-}
