@@ -17,76 +17,31 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "utilities.h"
+#ifndef MENUSETTINGFILE_H
+#define MENUSETTINGFILE_H
 
-using namespace std;
+#include "gmenu2x.h"
+#include "menusetting.h"
 
-// General tool to strip spaces from both ends:
-string trim(const string& s) {
-  if(s.length() == 0)
-    return s;
-  int b = s.find_first_not_of(" \t\r");
-  int e = s.find_last_not_of(" \t\r");
-  if(b == -1) // No non-spaces
-    return "";
-  return string(s, b, e - b + 1);
-}
+using std::string;
 
-bool fileExists(string file) {
-	fstream fin;
-	fin.open(file.c_str() ,ios::in);
-	bool exists = fin.is_open();
-	fin.close();
+class MenuSettingFile : public MenuSetting {
+private:
+	string *_value;
+	string filter;
+	GMenu2X *gmenu2x;
 
-	return exists;
-}
+public:
+	MenuSettingFile(GMenu2X *gmenu2x, string name, string description, string *value, string filter="");
+	virtual ~MenuSettingFile() {};
 
-int max (int a, int b) {
-	return a>b ? a : b;
-}
-int min (int a, int b) {
-	return a<b ? a : b;
-}
-int constrain (int x, int imin, int imax) {
-	return min( imax, max(imin,x) );
-}
+	virtual void draw(int y);
+	virtual void manageInput();
+	virtual void adjustInput();
+	virtual void drawSelected(int y);
 
-float max (float a, float b) {
-	return a>b ? a : b;
-}
-float min (float a, float b) {
-	return a<b ? a : b;
-}
-float constrain (float x, float imin, float imax) {
-	return min( imax, max(imin,x) );
-}
+	void setValue(string value);
+	string value();
+};
 
-bool split (vector<string> &vec, const string &str, const string &delim) {
-	vec.clear();
-
-	if (delim.empty()) {
-		vec.push_back(str);
-		return false;
-	}
-
-	std::string::size_type i = 0;
-	std::string::size_type j = 0;
-
-	while(1) {
-		j = str.find(delim,i);
-		if (j==std::string::npos) {
-			vec.push_back(str.substr(i));
-			break;
-		}
-
-		vec.push_back(str.substr(i,j-i));
-		i = j + delim.size();
-
-		if (i==str.size()) {
-								vec.push_back(std::string());
-								break;
-		}
-	}
-
-	return true;
-}
+#endif

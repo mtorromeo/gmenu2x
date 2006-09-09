@@ -23,7 +23,6 @@
 
 #include <string>
 #include <iostream>
-#include "menu.h"
 #include "surfacecollection.h"
 #include "FastDelegate.h"
 #include "utilities.h"
@@ -44,14 +43,14 @@ struct MenuOption {
 	MenuAction action;
 };
 
+class Menu;
+
 class GMenu2X {
 private:
 	string path;
 	string getExePath();
 	string getDiskFree();
 	unsigned short cpuX;
-	void drawRun();
-	void setClock(unsigned mhz);
 	unsigned short getBatteryLevel();
 	void browsePath(string path, vector<string>* directories, vector<string>* files);
 	void createLink(string path, string file);
@@ -84,8 +83,8 @@ public:
 
 	//Configuration settings
 	RGBAColor selectionColor, topBarColor, bottomBarColor;
-	bool saveSelection;
-	int maxClock, menuClock;
+	bool saveSelection, useBorders;
+	int maxClock, menuClock, gamma, startSectionIndex, startLinkIndex;
 
 	SurfaceCollection sc;
 	Surface *s;
@@ -97,15 +96,21 @@ public:
 	void contextMenu();
 	void runLink();
 
+	void setClock(unsigned mhz);
+	void setGamma(int gamma);
+
+	void ledOn();
+	void ledOff();
+
 	void addLink();
-	void changeLinkIcon();
+	void editLink();
 	void deleteLink();
-	void renameLink();
-	void editDescriptionLink();
 
 	void initBG();
 	int drawButton(Surface *s, string btn, string text, int x);
 	void drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height);
+	void drawTopBar(Surface *s=NULL, uint height=20);
+	void drawBottomBar(Surface *s=NULL, uint height=20);
 
 	Menu* menu;
 };

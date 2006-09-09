@@ -51,8 +51,8 @@ bool InputDialog::exec() {
 	Uint32 caretTick, curTick;
 	bool caretOn = true;
 
-	bg.box(0, 0, 320, 15, gmenu2x->topBarColor);
-	bg.box(0, 220, 320, 20, gmenu2x->bottomBarColor);
+	gmenu2x->drawTopBar(&bg,15);
+	gmenu2x->drawBottomBar(&bg);
 	bg.write(gmenu2x->font, text, 160, 8, SFontHAlignCenter, SFontVAlignMiddle);
 
 	gmenu2x->drawButton(&bg, "Y", "Shift",

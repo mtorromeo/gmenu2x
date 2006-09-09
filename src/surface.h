@@ -63,6 +63,8 @@ public:
 	bool blit(SDL_Surface *destination, int x, int y, int w=0, int h=0);
 	bool blitCenter(Surface *destination, int x, int y, int w=0, int h=0);
 	bool blitCenter(SDL_Surface *destination, int x, int y, int w=0, int h=0);
+	bool blitRight(Surface *destination, int x, int y, int w=0, int h=0);
+	bool blitRight(SDL_Surface *destination, int x, int y, int w=0, int h=0);
 
 	void write(ASFont *font, string text, int x, int y, const unsigned short halign=0, const unsigned short valign=0);
 
@@ -70,6 +72,8 @@ public:
 	int box(Sint16, Sint16, Sint16, Sint16, RGBAColor);
 	int rectangle(Sint16, Sint16, Sint16, Sint16, Uint8, Uint8, Uint8, Uint8);
 	int rectangle(Sint16, Sint16, Sint16, Sint16, RGBAColor);
+	int hline(Sint16, Sint16, Sint16, Uint8, Uint8, Uint8, Uint8);
+	int hline(Sint16, Sint16, Sint16, RGBAColor);
 
 	void operator = (Surface*);
 };

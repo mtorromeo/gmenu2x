@@ -23,6 +23,7 @@
 #include <vector>
 #include "link.h"
 #include "SFont.h"
+#include "gmenu2x.h"
 
 using std::string;
 using std::vector;
@@ -34,6 +35,7 @@ Handles the menu structure
 */
 class Menu {
 private:
+	GMenu2X *gmenu2x;
 	string path;
 	int iSection, iLink;
 	uint iFirstDispSection, iFirstDispRow;
@@ -41,7 +43,7 @@ private:
 	void freeLinks();
 
 public:
-	Menu(string path);
+	Menu(GMenu2X *gmenu2x, string path);
 	~Menu();
 
 	vector<string> sections;

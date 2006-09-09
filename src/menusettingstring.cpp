@@ -17,76 +17,51 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "menusettingstring.h"
+#include "inputdialog.h"
 #include "utilities.h"
 
 using namespace std;
 
-// General tool to strip spaces from both ends:
-string trim(const string& s) {
-  if(s.length() == 0)
-    return s;
-  int b = s.find_first_not_of(" \t\r");
-  int e = s.find_last_not_of(" \t\r");
-  if(b == -1) // No non-spaces
-    return "";
-  return string(s, b, e - b + 1);
+MenuSettingString::MenuSettingString(GMenu2X *gmenu2x, string name, string description, string *value)
+	: MenuSetting(gmenu2x,name,description) {
+	this->gmenu2x = gmenu2x;
+	_value = value;
 }
 
-bool fileExists(string file) {
-	fstream fin;
-	fin.open(file.c_str() ,ios::in);
-	bool exists = fin.is_open();
-	fin.close();
-
-	return exists;
+void MenuSettingString::draw(int y) {
+	MenuSetting::draw(y);
+	gmenu2x->s->write( gmenu2x->font, value(), 165, y+9, SFontHAlignLeft, SFontVAlignMiddle );
 }
 
-int max (int a, int b) {
-	return a>b ? a : b;
-}
-int min (int a, int b) {
-	return a<b ? a : b;
-}
-int constrain (int x, int imin, int imax) {
-	return min( imax, max(imin,x) );
-}
+#ifdef TARGET_GP2X
+#include "gp2x.h"
 
-float max (float a, float b) {
-	return a>b ? a : b;
-}
-float min (float a, float b) {
-	return a<b ? a : b;
-}
-float constrain (float x, float imin, float imax) {
-	return min( imax, max(imin,x) );
-}
-
-bool split (vector<string> &vec, const string &str, const string &delim) {
-	vec.clear();
-
-	if (delim.empty()) {
-		vec.push_back(str);
-		return false;
+void MenuSettingString::manageInput() {
+	if ( gmenu2x->joy[GP2X_BUTTON_B] ) {
+		InputDialog id(gmenu2x,description,value());
+		if (id.exec()) setValue(id.input);
 	}
-
-	std::string::size_type i = 0;
-	std::string::size_type j = 0;
-
-	while(1) {
-		j = str.find(delim,i);
-		if (j==std::string::npos) {
-			vec.push_back(str.substr(i));
-			break;
-		}
-
-		vec.push_back(str.substr(i,j-i));
-		i = j + delim.size();
-
-		if (i==str.size()) {
-								vec.push_back(std::string());
-								break;
-		}
+}
+#else
+void MenuSettingString::manageInput() {
+	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
+		InputDialog id(gmenu2x,description,value());
+		if (id.exec()) setValue(id.input);
 	}
+}
+#endif
 
-	return true;
+void MenuSettingString::setValue(string value) {
+	*_value = value;
+}
+
+string MenuSettingString::value() {
+	return *_value;
+}
+
+void MenuSettingString::adjustInput() {}
+
+void MenuSettingString::drawSelected(int) {
+	gmenu2x->drawButton(gmenu2x->s, "B", "Edit", 10);
 }

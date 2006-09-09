@@ -26,6 +26,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+#include "gmenu2x.h"
 #include "surface.h"
 
 using std::string;
@@ -37,13 +38,15 @@ Parses links files.
 */
 class Link {
 private:
-	string path, sclock;
-	int iclock;
+	GMenu2X *gmenu2x;
+	string path, sclock, sgamma;
+	int iclock, igamma;
 	bool edited;
-	string title, description, exec, params, icon, workdir;
+	string title, description, exec, params, icon, workdir, selectordir, selectorfilter, selectorscreens;
+	void drawRun();
 
 public:
-	Link(string path, const char* linkfile);
+	Link(GMenu2X *gmenu2x, string path, const char* linkfile);
 
 	string getTitle();
 	void setTitle(string title);
@@ -57,17 +60,28 @@ public:
 	void setIcon(string icon);
 	string getWorkdir();
 	void setWorkdir(string workdir);
+	string getSelectorDir();
+	void setSelectorDir(string selectordir);
+	string getSelectorScreens();
+	void setSelectorScreens(string selectorscreens);
+	string getSelectorFilter();
+	void setSelectorFilter(string selectorfilter);
 
 	string file;
+
 	int clock();
 	string clockStr(int maxClock);
 	void setClock(int mhz);
+
+	int gamma();
+	string gammaStr();
+	void setGamma(int gamma);
 
 	bool wrapper;
 	bool dontleave;
 
 	bool save();
-	void run();
+	void run(string selectedFile="");
 	bool targetExists();
 };
 

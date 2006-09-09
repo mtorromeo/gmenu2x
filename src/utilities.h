@@ -32,9 +32,15 @@ using std::vector;
 
 string trim(const string& s);
 bool fileExists(string file);
+
 int max (int a, int b);
 int min (int a, int b);
 int constrain (int x, int imin, int imax);
+
+float max (float a, float b);
+float min (float a, float b);
+float constrain (float x, float imin, float imax);
+
 bool split (vector<string> &vec, const string &str, const string &delim);
 
 #endif

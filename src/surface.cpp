@@ -18,8 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "surface.h"
 #include <SDL_gfxPrimitives.h>
+
+#include "surface.h"
+#include "utilities.h"
 
 Surface::Surface() {
 	raw = NULL;
@@ -107,17 +109,22 @@ bool Surface::blit(SDL_Surface *destination, int x, int y, int w, int h) {
 	dest.y = y;
 	return SDL_BlitSurface(raw, (w==0 || h==0) ? NULL : &src, destination, &dest);
 }
-
 bool Surface::blit(Surface *destination, int x, int y, int w, int h) {
 	return blit(destination->raw,x,y,w,h);
 }
 
 bool Surface::blitCenter(SDL_Surface *destination, int x, int y, int w, int h) {
-	return blit(destination,x-raw->w/2,y-raw->h/2,w,h);
+	return blit(destination,x-min(raw->w,w)/2,y-min(raw->h,h)/2,w,h);
 }
-
 bool Surface::blitCenter(Surface *destination, int x, int y, int w, int h) {
 	return blitCenter(destination->raw,x,y,w,h);
+}
+
+bool Surface::blitRight(SDL_Surface *destination, int x, int y, int w, int h) {
+	return blit(destination,x-min(raw->w,w),y,w,h);
+}
+bool Surface::blitRight(Surface *destination, int x, int y, int w, int h) {
+	return blitRight(destination->raw,x,y,w,h);
 }
 
 void Surface::putPixel(int x, int y, Uint32 color) {
@@ -170,4 +177,11 @@ int Surface::rectangle(Sint16 x, Sint16 y, Sint16 w, Sint16 h, Uint8 r, Uint8 g,
 }
 int Surface::rectangle(Sint16 x, Sint16 y, Sint16 w, Sint16 h, RGBAColor c) {
 	return rectangle(x,y,w,h,c.r,c.g,c.b,c.a);
+}
+
+int Surface::hline(Sint16 x, Sint16 y, Sint16 w, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+	return hlineRGBA(raw,x,x+w,y,r,g,b,a);
+}
+int Surface::hline(Sint16 x, Sint16 y, Sint16 w, RGBAColor c) {
+	return hline(x,y,w,c.r,c.g,c.b,c.a);
 }

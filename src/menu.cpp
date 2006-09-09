@@ -25,7 +25,8 @@
 
 using namespace std;
 
-Menu::Menu(string path) {
+Menu::Menu(GMenu2X *gmenu2x, string path) {
+	this->gmenu2x = gmenu2x;
 	this->path = path;
 	iFirstDispSection = 0;
 
@@ -184,7 +185,7 @@ void Menu::readLinks() {
 	
 	sort(linkfiles.begin(), linkfiles.end());
 	for (uint x=0; x<linkfiles.size(); x++) {
-		Link *link = new Link(path, linkfiles[x].c_str());
+		Link *link = new Link(gmenu2x, path, linkfiles[x].c_str());
 		if (link->targetExists())
 			links.push_back( link );
 		else
