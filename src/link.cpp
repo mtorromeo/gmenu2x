@@ -185,7 +185,7 @@ void Link::drawRun() {
 void Link::run(string selectedFile) {
 	if (selectordir!="" && selectedFile=="") {
 		//Run selector interface
-		Selector sel(gmenu2x, title, selectordir, selectorscreens, selectorfilter);
+		Selector sel(gmenu2x, this);
 		if (sel.exec()) run(sel.file);
 
 	} else {

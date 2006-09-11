@@ -24,21 +24,22 @@
 #include <string>
 #include "gmenu2x.h"
 
+class Link;
+
 using std::string;
 using std::vector;
 
 class Selector {
 private:
 	int selRow;
-	string text, dir, screendir;
 	GMenu2X *gmenu2x;
-	vector<string> filter;
+	Link *link;
 
 	void browsePath(string path, vector<string>* files);
 	
 public:
 	string path, file;
-	Selector(GMenu2X *gmenu2x, string text, string dir, string screendir, string filter="");
+	Selector(GMenu2X *gmenu2x, Link *link);
 	
 	bool exec();
 };

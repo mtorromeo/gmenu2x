@@ -108,18 +108,11 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	startSectionIndex = 0;
 	startLinkIndex = 0;
 
+	samba = inet = web = false;
+
 	//load config data
 	readConfig();
-
-	if (!fork()) {
-		gp2x_init();
-		if (gamma!=10) setGamma(gamma);
-		readCommonIni();
-		initServices();
-		setClock(menuClock);
-		gp2x_deinit();
-		exit(0);
-	}
+	readCommonIni();
 
 	path = getExePath();
 
@@ -153,6 +146,13 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	joy.init(0);
 #endif
 	setInputSpeed();
+
+	initServices();
+
+	gp2x_init();
+	if (gamma!=10) setGamma(gamma);
+	setClock(menuClock);
+	gp2x_deinit();
 
 	main();
 	writeConfig();
@@ -272,14 +272,8 @@ void GMenu2X::writeCommonIni() {}
 void GMenu2X::initServices() {
 #ifdef TARGET_GP2X
 	if (usbnet) {
-		system("insmod net2272");
-		system("insmod g_ether");
-		string ifconfig = "ifconfig usb0 "+ip+" netmask 255.255.255.0 up";
-		system(ifconfig.c_str());
-		//system("route add default gw "+defaultgw);
-		if (inet) system("/etc/init.d/inet start");
-		if (samba) system("smbd");
-		if (web) system("thttpd");
+		string services = "scripts/services.sh "+ip+" "+(inet?"on":"off")+" "+(samba?"on":"off")+" "+(web?"on":"off")+" &";
+		system(services.c_str());
 	}
 #endif
 }
@@ -932,8 +926,8 @@ void GMenu2X::initBG() {
 
 int GMenu2X::drawButton(Surface *s, string btn, string text, int x) {
 	filledCircleRGBA(s->raw, x, 230, 7, 0,0,0,255);
-	s->write(font, btn, x+1, 231, SFontHAlignCenter, SFontVAlignMiddle);
-	s->write(font, text, x+11, 231, SFontHAlignLeft, SFontVAlignMiddle);
+	s->write(font, btn, x+1, 230, SFontHAlignCenter, SFontVAlignMiddle);
+	s->write(font, text, x+11, 230, SFontHAlignLeft, SFontVAlignMiddle);
 	return x+24+font->getTextWidth(text);
 }
 

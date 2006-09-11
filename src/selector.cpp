@@ -29,18 +29,15 @@
 #ifdef TARGET_GP2X
 #include "gp2x.h"
 #endif
+#include "menu.h"
+#include "link.h"
 #include "selector.h"
 
 using namespace std;
 
-Selector::Selector(GMenu2X *gmenu2x, string text, string dir, string screendir, string filter) {
+Selector::Selector(GMenu2X *gmenu2x, Link *link) {
 	this->gmenu2x = gmenu2x;
-	this->text = text;
-	if (dir[dir.length()-1]!='/') dir += "/";
-	this->dir = dir;
-	if (screendir[screendir.length()-1]!='/') screendir += "/";
-	this->screendir = screendir;
-	split(this->filter,filter,",");
+	this->link = link;
 	selRow = 0;
 }
 
@@ -48,11 +45,24 @@ bool Selector::exec() {
 	bool close = false, result = true;
 
 	vector<string> files, screens;
+
+	string dir = link->getSelectorDir();
+	if (dir[dir.length()-1]!='/') dir += "/";
+	string screendir = link->getSelectorScreens();
+	if (screendir[screendir.length()-1]!='/') screendir += "/";
+
 	browsePath(dir,&files);
 
 	Surface bg("imgs/bg.png");
-	gmenu2x->drawTopBar(&bg,15);
-	bg.write(gmenu2x->font,"Selector: "+text,160,8, SFontHAlignCenter, SFontVAlignMiddle);
+	gmenu2x->drawTopBar(&bg,40);
+	//link icon
+	if (gmenu2x->menu->selLink()->getIcon() != "")
+		gmenu2x->sc[gmenu2x->menu->selLink()->getIcon()]->blit(&bg,4,4);
+	else
+		gmenu2x->sc["icons/generic.png"]->blit(&bg,4,4);
+	//selector text
+	bg.write(gmenu2x->font,gmenu2x->menu->selLink()->getTitle(),40,13, SFontHAlignLeft, SFontVAlignMiddle);
+	bg.write(gmenu2x->font,gmenu2x->menu->selLink()->getDescription(),40,27, SFontHAlignLeft, SFontVAlignMiddle);
 	gmenu2x->drawBottomBar(&bg);
 
 	gmenu2x->drawButton(&bg, "B", "Select file",
@@ -79,28 +89,28 @@ bool Selector::exec() {
 	while (!close) {
 		bg.blit(gmenu2x->s,0,0);
 
-		if (selected>firstElement+10) firstElement=selected-10;
+		if (selected>firstElement+8) firstElement=selected-8;
 		if (selected<firstElement) firstElement=selected;
 
 		//Selection
 		iY = selected-firstElement;
-		iY = 20+(iY*18);
+		iY = 45+(iY*18);
 		gmenu2x->s->box(2, iY, 308, 16, gmenu2x->selectionColor);
 
 		//Files
-		for (i=firstElement; i<files.size() && i<firstElement+11; i++) {
+		for (i=firstElement; i<files.size() && i<firstElement+9; i++) {
 			iY = i-firstElement;
-			gmenu2x->sc["imgs/file.png"]->blit(gmenu2x->s, 5, 21+(iY*18));
-			gmenu2x->s->write(gmenu2x->font, files[i], 24, 29+(iY*18), SFontHAlignLeft, SFontVAlignMiddle);
+			gmenu2x->sc["imgs/file.png"]->blit(gmenu2x->s, 5, 46+(iY*18));
+			gmenu2x->s->write(gmenu2x->font, files[i], 24, 53+(iY*18), SFontHAlignLeft, SFontVAlignMiddle);
 		}
 		
 		if (screens[selected]!="") {
 			curTick = SDL_GetTicks();
 			if (curTick-selTick>500)
-				gmenu2x->sc[screens[selected]]->blitRight(gmenu2x->s, 310, 21, 160, 160);
+				gmenu2x->sc[screens[selected]]->blitRight(gmenu2x->s, 310, 46, 160, 160);
 		}
 
-		gmenu2x->drawScrollBar(11,files.size(),firstElement,20,196);
+		gmenu2x->drawScrollBar(9,files.size(),firstElement,45,135);
 		gmenu2x->s->flip();
 
 
@@ -171,6 +181,9 @@ void Selector::browsePath(string path, vector<string>* files) {
 	struct dirent *dptr;
 	string filepath;
 	files->clear();
+	
+	vector<string> filter;
+	split(filter,link->getSelectorFilter(),",");
 
 	if ((dirp = opendir(path.c_str())) == NULL) return;
 
