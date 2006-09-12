@@ -39,6 +39,11 @@
 #include <sys/fcntl.h> //for battery
 #endif
 
+//for browsing the filesystem
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <dirent.h>
+
 #include "menu.h"
 #include "asfont.h"
 #include "surface.h"
@@ -552,6 +557,10 @@ void GMenu2X::contextMenu() {
 		voices.push_back(opt);
 		}
 	}
+	{
+	MenuOption opt = {"Scan for applications and games", MakeDelegate(this, &GMenu2X::scanner)};
+	voices.push_back(opt);
+	}
 
 	bool close = false;
 	uint i, sel = 0;
@@ -620,8 +629,8 @@ void GMenu2X::editLink() {
 	voices[1] = new MenuSettingString(this,"Description","Link description",&linkDescription);
 	voices[2] = new MenuSettingFile(this,"Icon","Select an icon for the link",&linkIcon,".png,.bmp,.jpg,.jpeg");
 	voices[3] = new MenuSettingInt(this,"Clock (default=200)","Cpu clock frequency to set when launching this link",&linkClock,50,maxClock);
-	voices[4] = new MenuSettingString(this,"Selector Filter","Filter for the selector (Separate values with a comma)",&linkSelFilter);
-	voices[5] = new MenuSettingDir(this,"Selector Directory","Directory to scan for the selector",&linkSelDir);
+	voices[4] = new MenuSettingDir(this,"Selector Directory","Directory to scan for the selector",&linkSelDir);
+	voices[5] = new MenuSettingString(this,"Selector Filter","Filter for the selector (Separate values with a comma)",&linkSelFilter);
 	voices[6] = new MenuSettingDir(this,"Selector Screens","Directory of the screenshots for the selector",&linkSelScreens);
 	voices[7] = new MenuSettingInt(this,"Gamma (0=default)","Gamma value to set when launching this link",&linkGamma,0,100);
 	voices[8] = new MenuSettingBool(this,"Wrapper","Explicitly relaunch GMenu2X after this link's execution ends",&menu->selLink()->dontleave);
@@ -713,7 +722,10 @@ void GMenu2X::editLink() {
 void GMenu2X::addLink() {
 	FileDialog fd(this,"Select an application");
 	if (fd.exec()) {
+		ledOn();
 		createLink(fd.path, fd.file);
+		system("sync");
+		ledOff();
 		menu->setSectionIndex( menu->selSectionIndex() ); //Force a reload of current section links
 	}
 }
@@ -725,7 +737,19 @@ void GMenu2X::deleteLink() {
 	ledOff();
 }
 
-void GMenu2X::createLink(string path, string file) {
+bool GMenu2X::createLink(string path, string file, string section) {
+	if (section=="")
+		section = menu->selSection();
+	else if (find(menu->sections.begin(),menu->sections.end(),section)==menu->sections.end()) {
+		//section directory doesn't exists
+		string sectiondir = "sections/"+section;
+		cout << "GMENU2X: mkdir " << sectiondir << endl;
+		if (mkdir(sectiondir.c_str(),777)==0)
+			menu->sections.push_back(section);
+		else
+			return false;
+	}
+	cout << "GMENU2X: createLink section=" << section << " file=" << file << endl;
 	if (path[path.length()-1]!='/') path += "/";
 
 	string title = file;
@@ -735,12 +759,15 @@ void GMenu2X::createLink(string path, string file) {
 
 	cout << "GMENU2X: Creating link " << title << endl;
 
-	string linkpath = "sections/"+menu->selSection()+"/"+title;
+	string linkpath = "sections/"+section+"/"+title;
 	int x=2;
 	while (fileExists(linkpath)) {
 		stringstream ss;
-		ss << "sections/" << menu->selSection() << "/" << title << x;
+		linkpath = "";
+		ss << x;
 		ss >> linkpath;
+		linkpath = "sections/"+section+"/"+title+linkpath; 
+		cout << "GMENU2X: linkpath=" << linkpath << endl;
 		x++;
 	}
 
@@ -750,16 +777,94 @@ void GMenu2X::createLink(string path, string file) {
 
 	ofstream f(linkpath.c_str());
 	if (f.is_open()) {
-		ledOn();
 		f << "title=" << title << endl;
 		if (fileExists(path+title+".png"))
 			f << "icon=" << path << title << ".png" << endl;
 		f << "exec=" << path << file << endl;
 		f.close();
-		system("sync");
-		ledOff();
-	} else
+	} else {
 		cout << "GMENU2X: Error while opening the file '" << linkpath << "' for write" << endl;
+		return false;
+	}
+
+	return true;
+}
+
+void GMenu2X::scanner() {
+	Surface bg("imgs/bg.png");
+	drawTopBar(&bg,15);
+	bg.write(font,"Link Scanner",160,7,SFontHAlignCenter,SFontVAlignMiddle);
+	bg.write(font,"Scanning SD filesystem...",5,20);
+	bg.blit(s,0,0);
+	s->flip();
+
+	vector<string> files;
+	scanPath("/mnt/sd",&files);
+
+	bg.write(font,"Scanning NAND filesystem...",5,35);
+	bg.blit(s,0,0);
+	s->flip();
+	scanPath("/mnt/nand",&files);
+
+	stringstream ss;
+	ss << files.size();
+	string str = "";
+	ss >> str;
+	bg.write(font,str+" files found.",5,50);
+	bg.write(font,"Creating links...",5,65);
+	bg.blit(s,0,0);
+	s->flip();
+
+	string path, file;
+	string::size_type pos;
+	uint linkCount = 0;
+
+	ledOn();
+	for (uint i = 0; i<files.size(); i++) {
+		pos = files[i].rfind("/");
+		if (pos!=string::npos && pos>0) {
+			path = files[i].substr(0, pos+1);
+			file = files[i].substr(pos+1, files[i].length());
+			if (createLink(path,file,"found "+file.substr(file.length()-3,3)))
+				linkCount++;
+		}
+	}
+
+	ss.clear();
+	ss << linkCount;
+	ss >> str;
+	bg.write(font,str+" links created.",5,80);
+	bg.blit(s,0,0);
+	s->flip();
+
+	system("sync");
+	ledOff();
+}
+
+void GMenu2X::scanPath(string path, vector<string> *files) {
+	DIR *dirp;
+	struct stat st;
+	struct dirent *dptr;
+	string filepath, ext;
+
+	if (path[path.length()-1]!='/') path += "/";
+	if ((dirp = opendir(path.c_str())) == NULL) return;
+
+	while ((dptr = readdir(dirp))) {
+		if (dptr->d_name[0]=='.')
+			continue;
+		filepath = path+dptr->d_name;
+		int statRet = stat(filepath.c_str(), &st);
+		if (S_ISDIR(st.st_mode))
+			scanPath(filepath, files);
+		if (statRet != -1) {
+			ext = filepath.substr(filepath.length()-4,4);
+			if (ext==".gpu" || ext==".gpe")
+				files->push_back(filepath);
+		}
+	}
+	
+	closedir(dirp);
 }
 
 unsigned short GMenu2X::getBatteryLevel() {

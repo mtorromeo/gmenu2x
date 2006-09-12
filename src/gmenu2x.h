@@ -53,8 +53,10 @@ private:
 	unsigned short cpuX;
 	unsigned short getBatteryLevel();
 	void browsePath(string path, vector<string>* directories, vector<string>* files);
-	void createLink(string path, string file);
+	bool createLink(string path, string file, string section="");
 	void setInputSpeed();
+	void scanner();
+	void scanPath(string path, vector<string> *files);
 
 	bool inet, usbnet, samba, web;
 	string ip, defaultgw;
