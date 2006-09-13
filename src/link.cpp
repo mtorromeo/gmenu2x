@@ -148,9 +148,9 @@ bool Link::save() {
 		if (igamma!=0         ) f << "gamma="           << igamma          << endl;
 		if (selectordir!=""   ) f << "selectordir="     << selectordir     << endl;
 		if (selectorfilter!="") f << "selectorfilter="  << selectorfilter  << endl;
-		if (selectorfilter!="") f << "selectorscreens=" << selectorscreens<< endl;
-		if (wrapper           ) f << "wrapper=true"                       << endl;
-		if (dontleave         ) f << "dontleave=true"                     << endl;
+		if (selectorfilter!="") f << "selectorscreens=" << selectorscreens << endl;
+		if (wrapper           ) f << "wrapper=true"                        << endl;
+		if (dontleave         ) f << "dontleave=true"                      << endl;
 		f.close();
 		return true;
 	} else
@@ -238,10 +238,10 @@ void Link::run(string selectedFile) {
 			if (params!="") command += " " + params;
 			system(command.c_str());
 		} else {
-			execlp(exec.c_str(),exec.c_str(), params == "" ? NULL : params.c_str() ,NULL);
 			SDL_Quit();
 			if (gamma()!=0 && gamma()!=gmenu2x->gamma)
 				gmenu2x->setGamma(gamma());
+			execlp(exec.c_str(),exec.c_str(), params == "" ? NULL : params.c_str() ,NULL);
 			//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue
 			//try relaunching gmenu2x
 			chdir(path.c_str());
