@@ -47,8 +47,8 @@ void MenuSettingRGBA::draw(int y) {
 #include "gp2x.h"
 
 void MenuSettingRGBA::manageInput() {
-	if ( gmenu2x->joy[GP2X_BUTTON_Y    ]) setSelPart( constrain(getSelPart()+1,0,255) );
-	if ( gmenu2x->joy[GP2X_BUTTON_X    ]) setSelPart( constrain(getSelPart()-1,0,255) );
+	if ( gmenu2x->joy[GP2X_BUTTON_Y    ]) setSelPart( constrain(getSelPart()+(gmenu2x->joy[GP2X_BUTTON_L]?10:1),0,255) );
+	if ( gmenu2x->joy[GP2X_BUTTON_X    ]) setSelPart( constrain(getSelPart()-(gmenu2x->joy[GP2X_BUTTON_L]?10:1),0,255) );
 	if ( gmenu2x->joy[GP2X_BUTTON_LEFT ]) selPart = constrain(selPart-1,0,3);
 	if ( gmenu2x->joy[GP2X_BUTTON_RIGHT]) selPart = constrain(selPart+1,0,3);
 }
@@ -115,6 +115,7 @@ void MenuSettingRGBA::adjustInput() {
 #ifdef TARGET_GP2X
 	gmenu2x->joy.setInterval(30, GP2X_BUTTON_Y );
 	gmenu2x->joy.setInterval(30, GP2X_BUTTON_X );
+	gmenu2x->joy.setInterval(30, GP2X_BUTTON_L );
 #endif
 }
 

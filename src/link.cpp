@@ -138,19 +138,19 @@ bool Link::save() {
 
 	ofstream f(file.c_str());
 	if (f.is_open()) {
-		if (title!=""         ) f << "title="           << title           << endl;
-		if (description!=""   ) f << "description="     << description     << endl;
-		if (icon!=""          ) f << "icon="            << icon            << endl;
-		if (exec!=""          ) f << "exec="            << exec            << endl;
-		if (params!=""        ) f << "params="          << params          << endl;
-		if (workdir!=""       ) f << "workdir="         << workdir         << endl;
-		if (iclock!=0         ) f << "clock="           << iclock          << endl;
-		if (igamma!=0         ) f << "gamma="           << igamma          << endl;
-		if (selectordir!=""   ) f << "selectordir="     << selectordir     << endl;
-		if (selectorfilter!="") f << "selectorfilter="  << selectorfilter  << endl;
-		if (selectorfilter!="") f << "selectorscreens=" << selectorscreens << endl;
-		if (wrapper           ) f << "wrapper=true"                        << endl;
-		if (dontleave         ) f << "dontleave=true"                      << endl;
+		if (title!=""          ) f << "title="           << title           << endl;
+		if (description!=""    ) f << "description="     << description     << endl;
+		if (icon!=""           ) f << "icon="            << icon            << endl;
+		if (exec!=""           ) f << "exec="            << exec            << endl;
+		if (params!=""         ) f << "params="          << params          << endl;
+		if (workdir!=""        ) f << "workdir="         << workdir         << endl;
+		if (iclock!=0          ) f << "clock="           << iclock          << endl;
+		if (igamma!=0          ) f << "gamma="           << igamma          << endl;
+		if (selectordir!=""    ) f << "selectordir="     << selectordir     << endl;
+		if (selectorfilter!="" ) f << "selectorfilter="  << selectorfilter  << endl;
+		if (selectorscreens!="") f << "selectorscreens=" << selectorscreens << endl;
+		if (wrapper            ) f << "wrapper=true"                        << endl;
+		if (dontleave          ) f << "dontleave=true"                      << endl;
 		f.close();
 		return true;
 	} else
@@ -210,11 +210,24 @@ void Link::run(string selectedFile) {
 		}
 
 		//selectedFile
-		if (params=="")
-			params = selectedFile;
-		else {
-			string::size_type i = params.find("%selector");
-			if (i != string::npos) params.replace(i,9,selectedFile);
+		if (selectedFile!="") {
+			string selectedFileExtension;
+			string::size_type i = selectedFile.rfind(".");
+			if (i != string::npos) {
+				selectedFileExtension = selectedFile.substr(i,selectedFile.length());
+				selectedFile = selectedFile.substr(0,i);
+			}
+
+			if (params=="") {
+				params = getSelectorDir()+selectedFile+selectedFileExtension;
+			} else {
+				i = params.find("[selPath]");
+				if (i != string::npos) params.replace(i,9,getSelectorDir());
+				i = params.find("[selFile]");
+				if (i != string::npos) params.replace(i,9,selectedFile);
+				i = params.find("[selExt]");
+				if (i != string::npos) params.replace(i,8,selectedFileExtension);
+			}
 		}
 	
 		//substitute @ with path
@@ -290,6 +303,7 @@ void Link::setWorkdir(string workdir) {
 
 string Link::getSelectorDir() { return selectordir; }
 void Link::setSelectorDir(string selectordir) {
+	if (selectordir!="" && selectordir[selectordir.length()-1]!='/') selectordir += "/";
 	this->selectordir = selectordir;
 	edited = true;
 }

@@ -106,11 +106,11 @@ bool Selector::exec() {
 		
 		if (screens[selected]!="") {
 			curTick = SDL_GetTicks();
-			if (curTick-selTick>500)
+			if (curTick-selTick>200)
 				gmenu2x->sc[screens[selected]]->blitRight(gmenu2x->s, 310, 46, 160, 160);
 		}
 
-		gmenu2x->drawScrollBar(9,files.size(),firstElement,45,135);
+		gmenu2x->drawScrollBar(9,files.size(),firstElement,46,159);
 		gmenu2x->s->flip();
 
 
@@ -134,7 +134,7 @@ bool Selector::exec() {
 			selTick = SDL_GetTicks();
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK] ) {
-			file = dir+files[selected];
+			file = files[selected];
 			close = true;
 		}
 #else
@@ -159,7 +159,7 @@ bool Selector::exec() {
 					selTick = SDL_GetTicks();
 				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
-					file = dir+files[selected];
+					file = files[selected];
 					close = true;
 				}
 			}

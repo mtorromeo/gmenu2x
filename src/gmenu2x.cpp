@@ -212,6 +212,11 @@ void GMenu2X::writeConfig() {
 	string conffile = path+"gmenu2x.conf";
 	ofstream inf(conffile.c_str());
 	if (inf.is_open()) {
+		if (saveSelection) {
+			startSectionIndex = menu->selSectionIndex();
+			startLinkIndex = menu->selLinkIndex();
+		}
+
 		inf << "selectionColorR=" << selectionColor.r << endl;
 		inf << "selectionColorG=" << selectionColor.g << endl;
 		inf << "selectionColorB=" << selectionColor.b << endl;
@@ -225,8 +230,8 @@ void GMenu2X::writeConfig() {
 		inf << "bottomBarColorB=" << bottomBarColor.b << endl;
 		inf << "bottomBarColorA=" << bottomBarColor.a << endl;
 		inf << "saveSelection=" << ( saveSelection ? "on" : "off" ) << endl;
-		inf << "section=" << menu->selSectionIndex() << endl;
-		inf << "link=" << menu->selLinkIndex() << endl;
+		inf << "section=" << startSectionIndex << endl;
+		inf << "link=" << startLinkIndex << endl;
 		inf << "menuClock=" << menuClock << endl;
 		inf << "maxClock=" << maxClock << endl;
 		inf << "gamma=" << gamma << endl;
@@ -347,7 +352,7 @@ int GMenu2X::main() {
 		drawScrollBar(4,menu->links.size()/6 + ((menu->links.size()%6==0) ? 0 : 1),menu->firstDispRow(),43,159);
 
 		if (menu->selLink()!=NULL) {
-			s->write ( font, menu->selLink()->getDescription(), 160, 220, SFontHAlignCenter, SFontVAlignBottom );
+			s->write ( font, menu->selLink()->getDescription(), 160, 221, SFontHAlignCenter, SFontVAlignBottom );
 			s->write ( font, menu->selLink()->clockStr(maxClock), cpuX, 230, SFontHAlignLeft, SFontVAlignMiddle );
 		}
 
@@ -357,23 +362,13 @@ int GMenu2X::main() {
 		if (tickNow-tickBattery >= 60000) {
 			tickBattery = tickNow;
 			unsigned short battlevel = getBatteryLevel();
-			if (battlevel>100) {
+			if (battlevel>5) {
 				batteryIcon = "imgs/battery/ac.png";
 			} else {
-				if (battlevel<10)
-					batteryIcon = "imgs/battery/0.png";
-				else if (battlevel<30)
-					batteryIcon = "imgs/battery/1.png";
-				else if (battlevel<50)
-					batteryIcon = "imgs/battery/2.png";
-				else if (battlevel<70)
-					batteryIcon = "imgs/battery/3.png";
-				else if (battlevel<90)
-					batteryIcon = "imgs/battery/4.png";
-				else
-					batteryIcon = "imgs/battery/5.png";
-
-				cout << "GMENU2X: Battery level " << battlevel << endl;
+				stringstream ss;
+				ss << battlevel;
+				ss >> batteryIcon;
+				batteryIcon = "imgs/battery/"+batteryIcon+".png";
 			}
 		}
 		sc[batteryIcon]->blit( s, 301, 222 );
@@ -471,7 +466,7 @@ void GMenu2X::options() {
 		bg.blit(s,0,0);
 		drawTopBar(s,15);
 		s->write(font, "Settings", 160, 8, SFontHAlignCenter, SFontVAlignMiddle);
-		drawBottomBar(s,30);
+		drawBottomBar(s,32);
 
 		//selection
 		iY = 18+(sel*17);
@@ -486,18 +481,22 @@ void GMenu2X::options() {
 		}
 
 		//description at bottom
-		s->write(font, voices[sel]->description, 160, 218, SFontHAlignCenter, SFontVAlignMiddle);
+		s->write(font, voices[sel]->description, 160, 221, SFontHAlignCenter, SFontVAlignBottom);
 
 #ifdef TARGET_GP2X
 		joy.update();
 		if ( joy[GP2X_BUTTON_START] ) close = true;
 		if ( joy[GP2X_BUTTON_UP    ] ) {
-			sel = max(0, sel-1);
+			if (sel==0)
+				sel = voices.size()-1;
+			else
+				sel -= 1;
 			setInputSpeed();
 			voices[sel]->adjustInput();
 		}
 		if ( joy[GP2X_BUTTON_DOWN  ] ) {
-			sel = min((int)voices.size()-1, sel+1);
+			sel += 1;
+			if (sel>=(int)voices.size()) sel = 0;
 			setInputSpeed();
 			voices[sel]->adjustInput();
 		}
@@ -508,12 +507,16 @@ void GMenu2X::options() {
 			if ( event.type==SDL_KEYDOWN ) {
 				if ( event.key.keysym.sym==SDLK_ESCAPE ) close = true;
 				if ( event.key.keysym.sym==SDLK_UP ) {
-					sel = max(0, sel-1);
+					if (sel==0)
+						sel = voices.size()-1;
+					else
+						sel -= 1;
 					setInputSpeed();
 					voices[sel]->adjustInput();
 				}
 				if ( event.key.keysym.sym==SDLK_DOWN ) {
-					sel = min((int)voices.size()-1, sel+1);
+					sel += 1;
+					if (sel>=(int)voices.size()) sel = 0;
 					setInputSpeed();
 					voices[sel]->adjustInput();
 				}
@@ -617,6 +620,7 @@ void GMenu2X::editLink() {
 	string linkTitle = menu->selLink()->getTitle();
 	string linkDescription = menu->selLink()->getDescription();
 	string linkIcon = menu->selLink()->getIcon();
+	string linkParams = menu->selLink()->getParams();
 	string linkSelFilter = menu->selLink()->getSelectorFilter();
 	string linkSelDir = menu->selLink()->getSelectorDir();
 	string linkSelScreens = menu->selLink()->getSelectorScreens();
@@ -624,17 +628,18 @@ void GMenu2X::editLink() {
 	int linkGamma = menu->selLink()->gamma();
 
 	vector<MenuSetting *> voices;
-	voices.resize(10);
+	voices.resize(11);
 	voices[0] = new MenuSettingString(this,"Title","Link title",&linkTitle);
 	voices[1] = new MenuSettingString(this,"Description","Link description",&linkDescription);
 	voices[2] = new MenuSettingFile(this,"Icon","Select an icon for the link",&linkIcon,".png,.bmp,.jpg,.jpeg");
 	voices[3] = new MenuSettingInt(this,"Clock (default=200)","Cpu clock frequency to set when launching this link",&linkClock,50,maxClock);
-	voices[4] = new MenuSettingDir(this,"Selector Directory","Directory to scan for the selector",&linkSelDir);
-	voices[5] = new MenuSettingString(this,"Selector Filter","Filter for the selector (Separate values with a comma)",&linkSelFilter);
-	voices[6] = new MenuSettingDir(this,"Selector Screens","Directory of the screenshots for the selector",&linkSelScreens);
-	voices[7] = new MenuSettingInt(this,"Gamma (0=default)","Gamma value to set when launching this link",&linkGamma,0,100);
-	voices[8] = new MenuSettingBool(this,"Wrapper","Explicitly relaunch GMenu2X after this link's execution ends",&menu->selLink()->dontleave);
-	voices[9] = new MenuSettingBool(this,"Don't Leave","Don't quit GMenu2X when launching this link",&menu->selLink()->dontleave);
+	voices[4] = new MenuSettingString(this,"Parameters","Parameters to pass to the application",&linkParams);
+	voices[5] = new MenuSettingDir(this,"Selector Directory","Directory to scan for the selector",&linkSelDir);
+	voices[6] = new MenuSettingString(this,"Selector Filter","Filter for the selector (Separate values with a comma)",&linkSelFilter);
+	voices[7] = new MenuSettingDir(this,"Selector Screenshots","Directory of the screenshots for the selector",&linkSelScreens);
+	voices[8] = new MenuSettingInt(this,"Gamma (0=default)","Gamma value to set when launching this link",&linkGamma,0,100);
+	voices[9] = new MenuSettingBool(this,"Wrapper","Explicitly relaunch GMenu2X after this link's execution ends",&menu->selLink()->dontleave);
+	voices[10] = new MenuSettingBool(this,"Don't Leave","Don't quit GMenu2X when launching this link",&menu->selLink()->dontleave);
 
 	bool close = false;
 	uint i, sel = 0, iY;
@@ -644,7 +649,7 @@ void GMenu2X::editLink() {
 		bg.blit(s,0,0);
 		drawTopBar(s,15);
 		s->write(font, "Edit link", 160, 8, SFontHAlignCenter, SFontVAlignMiddle);
-		drawBottomBar(s,30);
+		drawBottomBar(s,32);
 
 		//selection
 		iY = 18+(sel*17);
@@ -658,19 +663,24 @@ void GMenu2X::editLink() {
 			voices[i]->draw(i*17+18);
 		}
 
+		//drawScrollBar(11,voices.size(),0,18,186);
 		//description at bottom
-		s->write(font, voices[sel]->description, 160, 218, SFontHAlignCenter, SFontVAlignMiddle);
+		s->write(font, voices[sel]->description, 160, 221, SFontHAlignCenter, SFontVAlignBottom);
 
 #ifdef TARGET_GP2X
 		joy.update();
 		if ( joy[GP2X_BUTTON_START] ) close = true;
 		if ( joy[GP2X_BUTTON_UP    ] ) {
-			sel = max(0, sel-1);
+			if (sel==0)
+				sel = voices.size()-1;
+			else
+				sel -= 1;
 			setInputSpeed();
 			voices[sel]->adjustInput();
 		}
 		if ( joy[GP2X_BUTTON_DOWN  ] ) {
-			sel = min((int)voices.size()-1, sel+1);
+			sel += 1;
+			if (sel>=(int)voices.size()) sel = 0;
 			setInputSpeed();
 			voices[sel]->adjustInput();
 		}
@@ -681,12 +691,16 @@ void GMenu2X::editLink() {
 			if ( event.type==SDL_KEYDOWN ) {
 				if ( event.key.keysym.sym==SDLK_ESCAPE ) close = true;
 				if ( event.key.keysym.sym==SDLK_UP ) {
-					sel = max(0, sel-1);
+					if (sel==0)
+						sel = voices.size()-1;
+					else
+						sel -= 1;
 					setInputSpeed();
 					voices[sel]->adjustInput();
 				}
 				if ( event.key.keysym.sym==SDLK_DOWN ) {
-					sel = min((int)voices.size()-1, sel+1);
+					sel += 1;
+					if (sel>=(int)voices.size()) sel = 0;
 					setInputSpeed();
 					voices[sel]->adjustInput();
 				}
@@ -705,6 +719,7 @@ void GMenu2X::editLink() {
 	menu->selLink()->setTitle(linkTitle);
 	menu->selLink()->setDescription(linkDescription);
 	menu->selLink()->setIcon(linkIcon);
+	menu->selLink()->setParams(linkParams);
 	menu->selLink()->setSelectorFilter(linkSelFilter);
 	menu->selLink()->setSelectorDir(linkSelDir);
 	menu->selLink()->setSelectorScreens(linkSelScreens);
@@ -873,27 +888,30 @@ unsigned short GMenu2X::getBatteryLevel() {
 	if (devbatt<0) return 0;
 
 	int battval = 0;
-	unsigned short cbv;
+	unsigned short cbv, min=900, max=0;
 	int v;
 
 	for (int i = 0; i < BATTERY_READS; i ++) {
-		if (read (devbatt, &cbv, 2) == 2)
+		if (read (devbatt, &cbv, 2) == 2) {
 			battval += cbv;
+			if (cbv>max) max = cbv;
+			if (cbv<min) min = cbv;
+		}
 	}
- 	close(devbatt);
+	close(devbatt);
 
- 	battval /= BATTERY_READS;
+	battval -= min+max;
+	battval /= BATTERY_READS-2;
 
-	if (battval>=850) return 101;
-
- 	battval -= 645; //645 ~= 2.3v (0%) , 745 ~= 2.6v (100%)
- 	if (battval<0) battval = 0;
- 	//battval = battval*100/xxx; //max-min=xxx
- 	if (battval>100) battval = 100;
-
- 	return battval;
+	if (battval>=850) return 6;
+	if (battval>815) return 5;
+	if (battval>800) return 4;
+	if (battval>790) return 3;
+	if (battval>750) return 2;
+	if (battval>700) return 1;
+	return 0;
 #else
-	return 101; //>100 = AC Power
+	return 6; //AC Power
 #endif
 }
 
@@ -965,12 +983,16 @@ void GMenu2X::runLink() {
 }
 
 string GMenu2X::getExePath() {
+	char buf[255];
+	string p;
+	/*
 	stringstream ss;
 	ss << "/proc/" << getpid() << "/exe";
-	string p;
 	ss >> p;
-	char buf[255];
 	int l = readlink(p.c_str(),buf,255);
+	*/
+	int l = readlink("/proc/self/exe",buf,255);
+
 	p = buf;
 	p = p.substr(0,l);
 	l = p.rfind("/");

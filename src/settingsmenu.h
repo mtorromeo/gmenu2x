@@ -18,28 +18,26 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef SELECTOR_H_
-#define SELECTOR_H_
+#ifndef SETTINGSMENU_H_
+#define SETTINGSMENU_H_
 
 #include <string>
 #include "gmenu2x.h"
 
-class Link;
-
 using std::string;
 using std::vector;
 
-class Selector {
+class SettingsDialog {
 private:
 	int selRow;
+	string text;
 	GMenu2X *gmenu2x;
-	Link *link;
 
-	void browsePath(string path, vector<string>* files);
+	void browsePath(string path, vector<string>* directories);
 	
 public:
-	string file;
-	Selector(GMenu2X *gmenu2x, Link *link);
+	string path;
+	DirDialog(GMenu2X *gmenu2x, string text);
 	
 	bool exec();
 };

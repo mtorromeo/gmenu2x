@@ -93,7 +93,7 @@ bool FileDialog::exec() {
 		gmenu2x->joy.update();
 		if ( gmenu2x->joy[GP2X_BUTTON_SELECT] ) { close = true; result = false; }
 		if ( gmenu2x->joy[GP2X_BUTTON_UP    ] ) {
-			if ((int)(selected-1)<0)
+			if (selected==0)
 				selected = directories.size()+files.size()-1;
 			else
 				selected -= 1;
@@ -131,7 +131,7 @@ bool FileDialog::exec() {
 			if ( gmenu2x->event.type==SDL_KEYDOWN ) {
 				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) { close = true; result = false; }
 				if ( gmenu2x->event.key.keysym.sym==SDLK_UP ) {
-					if ((int)(selected-1)<0) {
+					if (selected==0) {
 						selected = directories.size()+files.size()-1;
 					} else
 						selected -= 1;
