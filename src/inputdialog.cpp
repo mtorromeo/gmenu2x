@@ -41,14 +41,14 @@ InputDialog::InputDialog(GMenu2X *gmenu2x, string text, string startvalue) {
 	keyboard[2] = "0123456789 \"'";
 	keyboard[3] = "&!?.,:;*+-<=>";
 	keyboard[4] = "()[]{}|/\\@#$%";
-//!"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+//^_`~
 }
 
 bool InputDialog::exec() {
 	bool close = false, ok = true;
 	Surface bg("imgs/bg.png");
 
-	SDL_Rect box = {0, 70, 0, gmenu2x->font->getHeight()+4};
+	SDL_Rect box = {0, 60, 0, gmenu2x->font->getHeight()+4};
 
 	Uint32 caretTick, curTick;
 	bool caretOn = true;
@@ -91,7 +91,10 @@ bool InputDialog::exec() {
 		if ( gmenu2x->joy[GP2X_BUTTON_LEFT ] ) selCol--;
 		if ( gmenu2x->joy[GP2X_BUTTON_RIGHT] ) selCol++;
 		if ( gmenu2x->joy[GP2X_BUTTON_UP   ] ) selRow--;
-		if ( gmenu2x->joy[GP2X_BUTTON_DOWN ] ) selRow++;
+		if ( gmenu2x->joy[GP2X_BUTTON_DOWN ] ) {
+			selRow++;
+			if (selRow==(int)keyboard.size()) selCol = selCol<8 ? 0 : 1;
+		}
 		if ( gmenu2x->joy[GP2X_BUTTON_A] || gmenu2x->joy[GP2X_BUTTON_L] ) input = input.substr(0,input.length()-1);
 		if ( gmenu2x->joy[GP2X_BUTTON_R    ] ) input += " ";
 		if ( gmenu2x->joy[GP2X_BUTTON_Y    ] ) {
@@ -120,7 +123,10 @@ bool InputDialog::exec() {
 				if ( gmenu2x->event.key.keysym.sym==SDLK_LEFT      ) selCol--;
 				if ( gmenu2x->event.key.keysym.sym==SDLK_RIGHT     ) selCol++;
 				if ( gmenu2x->event.key.keysym.sym==SDLK_UP        ) selRow--;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN      ) selRow++;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN      )  {
+					selRow++;
+					if (selRow==(int)keyboard.size()) selCol = selCol<8 ? 0 : 1;
+				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) input = input.substr(0,input.length()-1);
 				if ( gmenu2x->event.key.keysym.sym==SDLK_LSHIFT    ) {
 					if (keyboard[0][0]=='A') {
@@ -149,21 +155,21 @@ bool InputDialog::exec() {
 
 void InputDialog::drawVirtualKeyboard() {
 	//keyboard border
-	gmenu2x->s->rectangle(157-keyboard[0].length()*5, 98, keyboard[0].length()*10+4, keyboard.size()*15+18, gmenu2x->selectionColor);
+	gmenu2x->s->rectangle(157-keyboard[0].length()*5, 88, keyboard[0].length()*10+4, keyboard.size()*15+18, gmenu2x->selectionColor);
 	uint left = 160-keyboard[0].length()*5;
 
-	if (selCol<0) selCol = keyboard[0].length()-1;
+	if (selCol<0) selCol = selRow==(int)keyboard.size() ? 1 : keyboard[0].length()-1;
 	if (selCol>=(int)keyboard[0].length()) selCol = 0;
 	if (selRow<0) selRow = keyboard.size()-1;
 	if (selRow>(int)keyboard.size()) selRow = 0;
 
 	//selection
 	if (selRow<(int)keyboard.size())
-		gmenu2x->s->box(left+selCol*10-1, 100+selRow*15, 10, 13, gmenu2x->selectionColor);
+		gmenu2x->s->box(left+selCol*10-1, 90+selRow*15, 10, 13, gmenu2x->selectionColor);
 	else {
 		if (selCol>1) selCol = 0;
 		if (selCol<0) selCol = 1;
-		gmenu2x->s->box(left+selCol*keyboard[0].length()*5-1, 100+keyboard.size()*15, keyboard[0].length()*5, 14, gmenu2x->selectionColor);
+		gmenu2x->s->box(left+selCol*keyboard[0].length()*5-1, 90+keyboard.size()*15, keyboard[0].length()*5, 14, gmenu2x->selectionColor);
 	}
 
 	//keys
@@ -171,11 +177,11 @@ void InputDialog::drawVirtualKeyboard() {
 		string line = keyboard[l];
 		for (uint x=0; x<line.length(); x++) {
 			string charX = line.substr(x,1);
-			gmenu2x->s->write(gmenu2x->font, charX, left+4+x*10, 108+l*15, SFontHAlignCenter, SFontVAlignMiddle);
+			gmenu2x->s->write(gmenu2x->font, charX, left+4+x*10, 98+l*15, SFontHAlignCenter, SFontVAlignMiddle);
 		}
 	}
 
 	//Ok/Cancel
-	gmenu2x->s->write(gmenu2x->font, "Cancel", (int)(160-keyboard[0].length()*2.5), 108+keyboard.size()*15, SFontHAlignCenter, SFontVAlignMiddle);
-	gmenu2x->s->write(gmenu2x->font, "OK", (int)(160+keyboard[0].length()*2.5), 108+keyboard.size()*15, SFontHAlignCenter, SFontVAlignMiddle);
+	gmenu2x->s->write(gmenu2x->font, "Cancel", (int)(160-keyboard[0].length()*2.5), 98+keyboard.size()*15, SFontHAlignCenter, SFontVAlignMiddle);
+	gmenu2x->s->write(gmenu2x->font, "OK", (int)(160+keyboard[0].length()*2.5), 98+keyboard.size()*15, SFontHAlignCenter, SFontVAlignMiddle);
 }
