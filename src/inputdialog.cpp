@@ -35,11 +35,13 @@ InputDialog::InputDialog(GMenu2X *gmenu2x, string text, string startvalue) {
 	selCol = 0;
 	selRow = 0;
 
-	keyboard.resize(4);
+	keyboard.resize(5);
 	keyboard[0] = "abcdefghijklm";
 	keyboard[1] = "nopqrstuvwxyz";
 	keyboard[2] = "0123456789 \"'";
-	keyboard[3] = "#$%&|?.,:;*+-";
+	keyboard[3] = "&!?.,:;*+-<=>";
+	keyboard[4] = "()[]{}|/\\@#$%";
+//!"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
 }
 
 bool InputDialog::exec() {
