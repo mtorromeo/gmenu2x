@@ -55,6 +55,7 @@
 #include "menusettingbool.h"
 #include "menusettingrgba.h"
 #include "menusettingstring.h"
+#include "menusettingmultistring.h"
 #include "menusettingfile.h"
 #include "menusettingdir.h"
 
@@ -533,6 +534,13 @@ void GMenu2X::contextMenu() {
 }
 
 void GMenu2X::editLink() {
+	vector<string> pathV;
+	split(pathV,menu->selLink()->file,"/");
+	string oldSection = "";
+	if (pathV.size()>1)
+		oldSection = pathV[pathV.size()-2];
+	string newSection = oldSection;
+
 	string linkTitle = menu->selLink()->getTitle();
 	string linkDescription = menu->selLink()->getDescription();
 	string linkIcon = menu->selLink()->getIcon();
@@ -546,6 +554,7 @@ void GMenu2X::editLink() {
 	SettingsDialog sd(this,"Edit link");
 	sd.addSetting(new MenuSettingString(this,"Title","Link title",&linkTitle));
 	sd.addSetting(new MenuSettingString(this,"Description","Link description",&linkDescription));
+	sd.addSetting(new MenuSettingMultiString(this,"Section","The section this link belongs to",&newSection,&menu->sections));
 	sd.addSetting(new MenuSettingFile(this,"Icon","Select an icon for the link",&linkIcon,".png,.bmp,.jpg,.jpeg"));
 	sd.addSetting(new MenuSettingInt(this,"Clock (default=200)","Cpu clock frequency to set when launching this link",&linkClock,50,maxClock));
 	sd.addSetting(new MenuSettingString(this,"Parameters","Parameters to pass to the application",&linkParams));
@@ -566,10 +575,27 @@ void GMenu2X::editLink() {
 	menu->selLink()->setSelectorScreens(linkSelScreens);
 	menu->selLink()->setClock(linkClock);
 	//G menu->selLink()->setGamma(linkGamma);
+
 	ledOn();
+	//if section changed move file and update link->file
+	if (oldSection!=newSection) {
+		if (find(menu->sections.begin(),menu->sections.end(),newSection)==menu->sections.end()) return;
+		string newFileName = "sections/"+newSection+"/"+linkTitle;
+		int x=2;
+		while (fileExists(newFileName)) {
+			string id = "";
+			stringstream ss; ss << x; ss >> id;
+			newFileName = "sections/"+newSection+"/"+linkTitle+id;
+			x++;
+		}
+		rename(menu->selLink()->file.c_str(),newFileName.c_str());
+		menu->selLink()->file = newFileName;
+	}
 	menu->selLink()->save();
 	system("sync");
 	ledOff();
+	if (oldSection!=newSection)
+		menu->setSectionIndex( menu->selSectionIndex() );
 }
 
 void GMenu2X::addLink() {
