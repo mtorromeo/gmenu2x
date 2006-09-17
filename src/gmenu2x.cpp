@@ -49,6 +49,8 @@
 #include "surface.h"
 #include "filedialog.h"
 #include "gmenu2x.h"
+
+#include "settingsdialog.h"
 #include "menusettingint.h"
 #include "menusettingbool.h"
 #include "menusettingrgba.h"
@@ -109,7 +111,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	saveSelection = true;
 	maxClock = 300;
 	menuClock = 100;
-	gamma = 10;
+	//G gamma = 10;
 	startSectionIndex = 0;
 	startLinkIndex = 0;
 
@@ -154,10 +156,10 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 
 	initServices();
 
-	gp2x_init();
-	if (gamma!=10) setGamma(gamma);
+	//G gp2x_init();
+	//G if (gamma!=10) setGamma(gamma);
 	setClock(menuClock);
-	gp2x_deinit();
+	//G gp2x_deinit();
 
 	main();
 	writeConfig();
@@ -200,7 +202,7 @@ void GMenu2X::readConfig() {
 				else if (name=="link") startLinkIndex = atoi(value.c_str());
 				else if (name=="menuClock") menuClock = constrain( atoi(value.c_str()), 50,300 );
 				else if (name=="maxClock") maxClock = constrain( atoi(value.c_str()), 50,300 );
-				else if (name=="gamma") gamma = constrain( atoi(value.c_str()), 1,100 );
+				//G else if (name=="gamma") gamma = constrain( atoi(value.c_str()), 1,100 );
 			}
 			inf.close();
 		}
@@ -234,7 +236,7 @@ void GMenu2X::writeConfig() {
 		inf << "link=" << startLinkIndex << endl;
 		inf << "menuClock=" << menuClock << endl;
 		inf << "maxClock=" << maxClock << endl;
-		inf << "gamma=" << gamma << endl;
+		//G inf << "gamma=" << gamma << endl;
 		inf.close();
 		system("sync");
 	}
@@ -436,107 +438,23 @@ int GMenu2X::main() {
 }
 
 void GMenu2X::options() {
-	Surface bg ("imgs/bg.png");
-
 	int curMenuClock = menuClock;
+	//G int prevgamma = gamma;
 
-	vector<MenuSetting *> voices;
-	voices.resize(7);
-	voices[0] = new MenuSettingBool(this,"Save last selection","Save the last selected link and section on exit",&saveSelection);
-	voices[1] = new MenuSettingInt(this,"Clock for GMenu2X","Set the cpu working frequency when running GMenu2X",&menuClock,50,325);
-	voices[2] = new MenuSettingInt(this,"Maximum overclock","Set the maximum overclock for launching links",&maxClock,50,325);
-	voices[3] = new MenuSettingInt(this,"Gamma","Set gp2x gamma value (default=10)",&gamma,1,100);
-	voices[4] = new MenuSettingRGBA(this,"Top Bar Color","Color of the top bar",&topBarColor);
-	voices[5] = new MenuSettingRGBA(this,"Bottom Bar Color","Color of the bottom bar",&bottomBarColor);
-	voices[6] = new MenuSettingRGBA(this,"Selection Color","Color of the selection and other interface details",&selectionColor);
+	SettingsDialog sd(this,"Settings");
+	sd.addSetting(new MenuSettingBool(this,"Save last selection","Save the last selected link and section on exit",&saveSelection));
+	sd.addSetting(new MenuSettingInt(this,"Clock for GMenu2X","Set the cpu working frequency when running GMenu2X",&menuClock,50,325));
+	sd.addSetting(new MenuSettingInt(this,"Maximum overclock","Set the maximum overclock for launching links",&maxClock,50,325));
+	//G sd.addSetting(new MenuSettingInt(this,"Gamma","Set gp2x gamma value (default=10)",&gamma,1,100));
+	sd.addSetting(new MenuSettingRGBA(this,"Top Bar Color","Color of the top bar",&topBarColor));
+	sd.addSetting(new MenuSettingRGBA(this,"Bottom Bar Color","Color of the bottom bar",&bottomBarColor));
+	sd.addSetting(new MenuSettingRGBA(this,"Selection Color","Color of the selection and other interface details",&selectionColor));
+	sd.exec();
 
-	bool close = false;
-	uint i, sel = 0, iY;
-	voices[sel]->adjustInput();
-
-	gp2x_init();
-	int prevgamma = gamma;
-
-	while (!close) {
-		if (prevgamma!=gamma) {
-			setGamma(gamma);
-			prevgamma = gamma;
-		}
-
-		bg.blit(s,0,0);
-		drawTopBar(s,15);
-		s->write(font, "Settings", 160, 8, SFontHAlignCenter, SFontVAlignMiddle);
-		drawBottomBar(s,32);
-
-		//selection
-		iY = 18+(sel*17);
-		//s->box(2, iY, 316, 16, selectionColor);
-		s->box(2, iY, 158, 16, selectionColor);
-
-		//selected option
-		voices[sel]->drawSelected(iY);
-
-		for (i=0; i<voices.size(); i++) {
-			voices[i]->draw(i*17+18);
-		}
-
-		//description at bottom
-		s->write(font, voices[sel]->description, 160, 221, SFontHAlignCenter, SFontVAlignBottom);
-
-#ifdef TARGET_GP2X
-		joy.update();
-		if ( joy[GP2X_BUTTON_START] ) close = true;
-		if ( joy[GP2X_BUTTON_UP    ] ) {
-			if (sel==0)
-				sel = voices.size()-1;
-			else
-				sel -= 1;
-			setInputSpeed();
-			voices[sel]->adjustInput();
-		}
-		if ( joy[GP2X_BUTTON_DOWN  ] ) {
-			sel += 1;
-			if (sel>=(int)voices.size()) sel = 0;
-			setInputSpeed();
-			voices[sel]->adjustInput();
-		}
-		voices[sel]->manageInput();
-#else
-		while (SDL_PollEvent(&event)) {
-			if ( event.type == SDL_QUIT ) return;
-			if ( event.type==SDL_KEYDOWN ) {
-				if ( event.key.keysym.sym==SDLK_ESCAPE ) close = true;
-				if ( event.key.keysym.sym==SDLK_UP ) {
-					if (sel==0)
-						sel = voices.size()-1;
-					else
-						sel -= 1;
-					setInputSpeed();
-					voices[sel]->adjustInput();
-				}
-				if ( event.key.keysym.sym==SDLK_DOWN ) {
-					sel += 1;
-					if (sel>=(int)voices.size()) sel = 0;
-					setInputSpeed();
-					voices[sel]->adjustInput();
-				}
-				voices[sel]->manageInput();
-			}
-		}
-#endif
-
-		s->flip();
-	}
-
-	gp2x_deinit();
-
-	for (i=0; i<voices.size(); i++) {
-		free(voices[i]);
-	}
+	//G if (prevgamma!=gamma) setGamma(gamma);
 	if (curMenuClock!=menuClock) setClock(menuClock);
 	writeConfig();
 	initBG();
-	setInputSpeed();
 }
 
 void GMenu2X::contextMenu() {
@@ -615,8 +533,6 @@ void GMenu2X::contextMenu() {
 }
 
 void GMenu2X::editLink() {
-	Surface bg ("imgs/bg.png");
-
 	string linkTitle = menu->selLink()->getTitle();
 	string linkDescription = menu->selLink()->getDescription();
 	string linkIcon = menu->selLink()->getIcon();
@@ -625,96 +541,21 @@ void GMenu2X::editLink() {
 	string linkSelDir = menu->selLink()->getSelectorDir();
 	string linkSelScreens = menu->selLink()->getSelectorScreens();
 	int linkClock = menu->selLink()->clock();
-	int linkGamma = menu->selLink()->gamma();
+	//G int linkGamma = menu->selLink()->gamma();
 
-	vector<MenuSetting *> voices;
-	voices.resize(11);
-	voices[0] = new MenuSettingString(this,"Title","Link title",&linkTitle);
-	voices[1] = new MenuSettingString(this,"Description","Link description",&linkDescription);
-	voices[2] = new MenuSettingFile(this,"Icon","Select an icon for the link",&linkIcon,".png,.bmp,.jpg,.jpeg");
-	voices[3] = new MenuSettingInt(this,"Clock (default=200)","Cpu clock frequency to set when launching this link",&linkClock,50,maxClock);
-	voices[4] = new MenuSettingString(this,"Parameters","Parameters to pass to the application",&linkParams);
-	voices[5] = new MenuSettingDir(this,"Selector Directory","Directory to scan for the selector",&linkSelDir);
-	voices[6] = new MenuSettingString(this,"Selector Filter","Filter for the selector (Separate values with a comma)",&linkSelFilter);
-	voices[7] = new MenuSettingDir(this,"Selector Screenshots","Directory of the screenshots for the selector",&linkSelScreens);
-	voices[8] = new MenuSettingInt(this,"Gamma (0=default)","Gamma value to set when launching this link",&linkGamma,0,100);
-	voices[9] = new MenuSettingBool(this,"Wrapper","Explicitly relaunch GMenu2X after this link's execution ends",&menu->selLink()->dontleave);
-	voices[10] = new MenuSettingBool(this,"Don't Leave","Don't quit GMenu2X when launching this link",&menu->selLink()->dontleave);
-
-	bool close = false;
-	uint i, sel = 0, iY;
-	voices[sel]->adjustInput();
-
-	while (!close) {
-		bg.blit(s,0,0);
-		drawTopBar(s,15);
-		s->write(font, "Edit link", 160, 8, SFontHAlignCenter, SFontVAlignMiddle);
-		drawBottomBar(s,32);
-
-		//selection
-		iY = 18+(sel*17);
-		//s->box(2, iY, 316, 16, selectionColor);
-		s->box(2, iY, 158, 16, selectionColor);
-
-		//selected option
-		voices[sel]->drawSelected(iY);
-
-		for (i=0; i<voices.size(); i++) {
-			voices[i]->draw(i*17+18);
-		}
-
-		//drawScrollBar(11,voices.size(),0,18,186);
-		//description at bottom
-		s->write(font, voices[sel]->description, 160, 221, SFontHAlignCenter, SFontVAlignBottom);
-
-#ifdef TARGET_GP2X
-		joy.update();
-		if ( joy[GP2X_BUTTON_START] ) close = true;
-		if ( joy[GP2X_BUTTON_UP    ] ) {
-			if (sel==0)
-				sel = voices.size()-1;
-			else
-				sel -= 1;
-			setInputSpeed();
-			voices[sel]->adjustInput();
-		}
-		if ( joy[GP2X_BUTTON_DOWN  ] ) {
-			sel += 1;
-			if (sel>=(int)voices.size()) sel = 0;
-			setInputSpeed();
-			voices[sel]->adjustInput();
-		}
-		voices[sel]->manageInput();
-#else
-		while (SDL_PollEvent(&event)) {
-			if ( event.type == SDL_QUIT ) return;
-			if ( event.type==SDL_KEYDOWN ) {
-				if ( event.key.keysym.sym==SDLK_ESCAPE ) close = true;
-				if ( event.key.keysym.sym==SDLK_UP ) {
-					if (sel==0)
-						sel = voices.size()-1;
-					else
-						sel -= 1;
-					setInputSpeed();
-					voices[sel]->adjustInput();
-				}
-				if ( event.key.keysym.sym==SDLK_DOWN ) {
-					sel += 1;
-					if (sel>=(int)voices.size()) sel = 0;
-					setInputSpeed();
-					voices[sel]->adjustInput();
-				}
-				voices[sel]->manageInput();
-			}
-		}
-#endif
-
-		s->flip();
-	}
-
-	for (i=0; i<voices.size(); i++) {
-		free(voices[i]);
-	}
+	SettingsDialog sd(this,"Edit link");
+	sd.addSetting(new MenuSettingString(this,"Title","Link title",&linkTitle));
+	sd.addSetting(new MenuSettingString(this,"Description","Link description",&linkDescription));
+	sd.addSetting(new MenuSettingFile(this,"Icon","Select an icon for the link",&linkIcon,".png,.bmp,.jpg,.jpeg"));
+	sd.addSetting(new MenuSettingInt(this,"Clock (default=200)","Cpu clock frequency to set when launching this link",&linkClock,50,maxClock));
+	sd.addSetting(new MenuSettingString(this,"Parameters","Parameters to pass to the application",&linkParams));
+	sd.addSetting(new MenuSettingDir(this,"Selector Directory","Directory to scan for the selector",&linkSelDir));
+	sd.addSetting(new MenuSettingString(this,"Selector Filter","Filter for the selector (Separate values with a comma)",&linkSelFilter));
+	sd.addSetting(new MenuSettingDir(this,"Selector Screenshots","Directory of the screenshots for the selector",&linkSelScreens));
+	//G sd.addSetting(new MenuSettingInt(this,"Gamma (0=default)","Gamma value to set when launching this link",&linkGamma,0,100));
+	sd.addSetting(new MenuSettingBool(this,"Wrapper","Explicitly relaunch GMenu2X after this link's execution ends",&menu->selLink()->dontleave));
+	sd.addSetting(new MenuSettingBool(this,"Don't Leave","Don't quit GMenu2X when launching this link",&menu->selLink()->dontleave));
+	sd.exec();
 
 	menu->selLink()->setTitle(linkTitle);
 	menu->selLink()->setDescription(linkDescription);
@@ -724,14 +565,11 @@ void GMenu2X::editLink() {
 	menu->selLink()->setSelectorDir(linkSelDir);
 	menu->selLink()->setSelectorScreens(linkSelScreens);
 	menu->selLink()->setClock(linkClock);
-	menu->selLink()->setGamma(linkGamma);
+	//G menu->selLink()->setGamma(linkGamma);
 	ledOn();
 	menu->selLink()->save();
 	system("sync");
 	ledOff();
-
-	initBG();
-	setInputSpeed();
 }
 
 void GMenu2X::addLink() {

@@ -39,8 +39,10 @@ Parses links files.
 class Link {
 private:
 	GMenu2X *gmenu2x;
-	string path, sclock, sgamma;
-	int iclock, igamma;
+	string path, sclock;
+	int iclock;
+	//G sting sgamma;
+	//G int igamma;
 	bool edited;
 	string title, description, exec, params, icon, workdir, selectordir, selectorfilter, selectorscreens;
 	void drawRun();
@@ -73,9 +75,11 @@ public:
 	string clockStr(int maxClock);
 	void setClock(int mhz);
 
+/*G
 	int gamma();
 	string gammaStr();
 	void setGamma(int gamma);
+*/
 
 	bool wrapper;
 	bool dontleave;

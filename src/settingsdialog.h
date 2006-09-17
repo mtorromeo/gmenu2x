@@ -18,28 +18,27 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef SETTINGSMENU_H_
-#define SETTINGSMENU_H_
+#ifndef SETTINGSDIALOG_H_
+#define SETTINGSDIALOG_H_
 
 #include <string>
 #include "gmenu2x.h"
+#include "menusetting.h"
 
 using std::string;
 using std::vector;
 
 class SettingsDialog {
 private:
-	int selRow;
+	vector<MenuSetting *> voices;
 	string text;
 	GMenu2X *gmenu2x;
-
-	void browsePath(string path, vector<string>* directories);
 	
 public:
-	string path;
-	DirDialog(GMenu2X *gmenu2x, string text);
+	SettingsDialog(GMenu2X *gmenu2x, string text);
 	
 	bool exec();
+	void addSetting(MenuSetting* set);
 };
 
 #endif /*INPUTDIALOG_H_*/

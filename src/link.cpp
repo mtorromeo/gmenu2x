@@ -32,7 +32,7 @@ Link::Link(GMenu2X *gmenu2x, string path, const char* linkfile) {
 	wrapper = false;
 	dontleave = false;
 	setClock(200);
-	setGamma(0);
+	//G setGamma(0);
 	selectordir = "";
 	selectorfilter = "";
 
@@ -65,8 +65,8 @@ Link::Link(GMenu2X *gmenu2x, string path, const char* linkfile) {
 			if (value=="true") dontleave = true;
 		} else if (name == "clock") {
 			setClock( atoi(value.c_str()) );
-		} else if (name == "gamma") {
-			setGamma( atoi(value.c_str()) );
+		//G } else if (name == "gamma") {
+		//G 	setGamma( atoi(value.c_str()) );
 		} else if (name == "selectordir") {
 			setSelectorDir( value );
 		} else if (name == "selectorfilter") {
@@ -102,6 +102,7 @@ void Link::setClock(int mhz) {
 	edited = true;
 }
 
+/*G
 int Link::gamma() {
 	return igamma;
 }
@@ -119,6 +120,7 @@ void Link::setGamma(int gamma) {
 
 	edited = true;
 }
+*/
 
 bool Link::targetExists() {
 #ifndef TARGET_GP2X
@@ -145,7 +147,7 @@ bool Link::save() {
 		if (params!=""         ) f << "params="          << params          << endl;
 		if (workdir!=""        ) f << "workdir="         << workdir         << endl;
 		if (iclock!=0          ) f << "clock="           << iclock          << endl;
-		if (igamma!=0          ) f << "gamma="           << igamma          << endl;
+		//G if (igamma!=0          ) f << "gamma="           << igamma          << endl;
 		if (selectordir!=""    ) f << "selectordir="     << selectordir     << endl;
 		if (selectorfilter!="" ) f << "selectorfilter="  << selectorfilter  << endl;
 		if (selectorscreens!="") f << "selectorscreens=" << selectorscreens << endl;
@@ -252,8 +254,8 @@ void Link::run(string selectedFile) {
 			system(command.c_str());
 		} else {
 			SDL_Quit();
-			if (gamma()!=0 && gamma()!=gmenu2x->gamma)
-				gmenu2x->setGamma(gamma());
+			//G if (gamma()!=0 && gamma()!=gmenu2x->gamma)
+			//G 	gmenu2x->setGamma(gamma());
 			execlp(exec.c_str(),exec.c_str(), params == "" ? NULL : params.c_str() ,NULL);
 			//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue
 			//try relaunching gmenu2x

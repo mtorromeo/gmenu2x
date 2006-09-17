@@ -54,7 +54,6 @@ private:
 	unsigned short getBatteryLevel();
 	void browsePath(string path, vector<string>* directories, vector<string>* files);
 	bool createLink(string path, string file, string section="");
-	void setInputSpeed();
 	void scanner();
 	void scanPath(string path, vector<string> *files);
 
@@ -86,7 +85,8 @@ public:
 	//Configuration settings
 	RGBAColor selectionColor, topBarColor, bottomBarColor;
 	bool saveSelection, useBorders;
-	int maxClock, menuClock, gamma, startSectionIndex, startLinkIndex;
+	int maxClock, menuClock, startSectionIndex, startLinkIndex;
+	//G int gamma;
 
 	SurfaceCollection sc;
 	Surface *s;
@@ -100,6 +100,7 @@ public:
 
 	void setClock(unsigned mhz);
 	void setGamma(int gamma);
+	void setInputSpeed();
 
 	void ledOn();
 	void ledOff();
