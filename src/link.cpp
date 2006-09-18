@@ -221,26 +221,21 @@ void Link::run(string selectedFile) {
 			}
 
 			if (params=="") {
-				params = getSelectorDir()+selectedFile+selectedFileExtension;
+				params = "\""+getSelectorDir()+selectedFile+selectedFileExtension+"\"";
 			} else {
-				i = params.find("[selPath]");
-				if (i != string::npos) params.replace(i,9,getSelectorDir());
-				i = params.find("[selFile]");
-				if (i != string::npos) params.replace(i,9,selectedFile);
-				i = params.find("[selExt]");
-				if (i != string::npos) params.replace(i,8,selectedFileExtension);
+				params = strreplace(params,"[selPath]",getSelectorDir());
+				params = strreplace(params,"[selFile]",selectedFile);
+				params = strreplace(params,"[selExt]",selectedFileExtension);
 			}
 		}
 	
-		//substitute @ with path
-		string::size_type i = params.find("@");
-		if (i != string::npos) params.replace(i,1,path);
-	
 		//if wrapper put exec in params and wrapper in exec
+		/*
 		if (wrapper) {
 			params = exec + " " + params;
 			exec = path + "scripts/wrapper.sh";
 		}
+		*/
 	
 		if (clock()!=gmenu2x->menuClock)
 			gmenu2x->setClock(clock());
@@ -248,20 +243,22 @@ void Link::run(string selectedFile) {
 		cout << "GMENU2X: Executing '" << title << "' (" << exec << ") (" << params << ")" << endl;
 
 		//check if we have to quit
+		string command = exec;
+		if (params!="") command += " " + params;
+		if (wrapper) command += "; cd \""+path+"\"; ./gmenu2x";
 		if (dontleave) {
-			string command = exec;
-			if (params!="") command += " " + params;
 			system(command.c_str());
 		} else {
 			SDL_Quit();
 			//G if (gamma()!=0 && gamma()!=gmenu2x->gamma)
 			//G 	gmenu2x->setGamma(gamma());
-			execlp(exec.c_str(),exec.c_str(), params == "" ? NULL : params.c_str() ,NULL);
+			execlp("/bin/sh","/bin/sh","-c",command.c_str(),NULL);
 			//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue
 			//try relaunching gmenu2x
 			chdir(path.c_str());
 			execlp("./scripts/wrapper.sh", "./scripts/wrapper.sh", NULL);
 		}
+		
 	
 		chdir(path.c_str());
 	}

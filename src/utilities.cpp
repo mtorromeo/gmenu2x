@@ -90,3 +90,12 @@ bool split (vector<string> &vec, const string &str, const string &delim) {
 
 	return true;
 }
+
+string strreplace (string orig, string search, string replace) {
+	string::size_type pos = orig.find( search, 0 );
+	while (pos != string::npos) {
+		orig.replace(pos,search.length(),replace);
+		pos = orig.find( search, pos+replace.length()-search.length() );
+	}
+	return orig;
+}

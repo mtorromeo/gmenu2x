@@ -31,6 +31,8 @@ using std::string;
 using std::vector;
 
 string trim(const string& s);
+string strreplace (string orig, string search, string replace);
+
 bool fileExists(string file);
 
 int max (int a, int b);

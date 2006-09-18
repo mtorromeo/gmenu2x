@@ -44,7 +44,7 @@ Selector::Selector(GMenu2X *gmenu2x, Link *link) {
 bool Selector::exec() {
 	bool close = false, result = true;
 
-	vector<string> files, screens;
+	vector<string> files, screens, titles;
 
 	string dir = link->getSelectorDir();
 	if (dir[dir.length()-1]!='/') dir += "/";
@@ -71,12 +71,16 @@ bool Selector::exec() {
 	Uint32 selTick = SDL_GetTicks(), curTick;
 	uint i, selected = 0, firstElement = 0, iY;
 	screens.resize(files.size());
+	titles.resize(files.size());
 
+	string noext;
+	string::size_type pos;
 	for (i=0; i<files.size(); i++) {
-		string noext = files[i];
-		string::size_type pos = noext.rfind(".");
+		noext = files[i];
+		pos = noext.rfind(".");
 		if (pos!=string::npos && pos>0)
 			noext = noext.substr(0, pos);
+		titles[i] = noext;
 		cout << "GMENU2X: Searching for screen " << screendir << noext << ".png" << endl;
 		if (fileExists(screendir+noext+".png"))
 			screens[i] = screendir+noext+".png";
@@ -98,10 +102,9 @@ bool Selector::exec() {
 		gmenu2x->s->box(2, iY, 308, 16, gmenu2x->selectionColor);
 
 		//Files
-		for (i=firstElement; i<files.size() && i<firstElement+9; i++) {
+		for (i=firstElement; i<titles.size() && i<firstElement+9; i++) {
 			iY = i-firstElement;
-			gmenu2x->sc["imgs/file.png"]->blit(gmenu2x->s, 5, 46+(iY*18));
-			gmenu2x->s->write(gmenu2x->font, files[i], 24, 53+(iY*18), SFontHAlignLeft, SFontVAlignMiddle);
+			gmenu2x->s->write(gmenu2x->font, titles[i], 5, 53+(iY*18), SFontHAlignLeft, SFontVAlignMiddle);
 		}
 		
 		if (screens[selected]!="") {

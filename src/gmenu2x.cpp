@@ -768,11 +768,11 @@ unsigned short GMenu2X::getBatteryLevel() {
 	battval /= BATTERY_READS-2;
 
 	if (battval>=850) return 6;
-	if (battval>815) return 5;
-	if (battval>800) return 4;
-	if (battval>790) return 3;
-	if (battval>750) return 2;
-	if (battval>700) return 1;
+	if (battval>780) return 5;
+	if (battval>740) return 4;
+	if (battval>700) return 3;
+	if (battval>690) return 2;
+	if (battval>680) return 1;
 	return 0;
 #else
 	return 6; //AC Power
