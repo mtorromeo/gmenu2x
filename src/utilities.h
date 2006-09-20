@@ -29,6 +29,10 @@
 
 using std::string;
 using std::vector;
+class case_less {
+public:
+	bool operator()(string const &left, string const &right) const;
+};
 
 string trim(const string& s);
 string strreplace (string orig, string search, string replace);

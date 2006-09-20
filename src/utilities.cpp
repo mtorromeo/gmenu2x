@@ -21,6 +21,10 @@
 
 using namespace std;
 
+bool case_less::operator()(string const &left, string const &right) const {
+	return strcasecmp(left.c_str(), right.c_str()) < 0;
+}
+
 // General tool to strip spaces from both ends:
 string trim(const string& s) {
   if(s.length() == 0)

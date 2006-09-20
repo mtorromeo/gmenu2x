@@ -121,10 +121,18 @@ bool Selector::exec() {
 		gmenu2x->joy.update();
 		if ( gmenu2x->joy[GP2X_BUTTON_A     ] ) { close = true; result = false; }
 		if ( gmenu2x->joy[GP2X_BUTTON_UP    ] ) {
-			if ((int)(selected-1)<0) {
+			if (selected==0) {
 				selected = files.size()-1;
 			} else {
 				selected -= 1;
+			}
+			selTick = SDL_GetTicks();
+		}
+		if ( gmenu2x->joy[GP2X_BUTTON_L     ] ) {
+			if ((int)(selected-8)<0) {
+				selected = 0;
+			} else {
+				selected -= 8;
 			}
 			selTick = SDL_GetTicks();
 		}
@@ -133,6 +141,14 @@ bool Selector::exec() {
 				selected = 0;
 			} else {
 				selected += 1;
+			}
+			selTick = SDL_GetTicks();
+		}
+		if ( gmenu2x->joy[GP2X_BUTTON_R     ] ) {
+			if (selected+8>=files.size()) {
+				selected = files.size()-1;
+			} else {
+				selected += 8;
 			}
 			selTick = SDL_GetTicks();
 		}
@@ -205,5 +221,5 @@ void Selector::browsePath(string path, vector<string>* files) {
 	}
 
 	closedir(dirp);
-	sort(files->begin(),files->end());
+	sort(files->begin(),files->end(),case_less());
 }

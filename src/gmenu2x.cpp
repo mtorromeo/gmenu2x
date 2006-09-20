@@ -50,6 +50,7 @@
 #include "filedialog.h"
 #include "gmenu2x.h"
 
+#include "inputdialog.h"
 #include "settingsdialog.h"
 #include "menusettingint.h"
 #include "menusettingbool.h"
@@ -479,6 +480,11 @@ void GMenu2X::contextMenu() {
 		voices.push_back(opt);
 		}
 	}
+
+	{
+	MenuOption opt = {"Add section", MakeDelegate(this, &GMenu2X::addSection)};
+	voices.push_back(opt);
+	}
 	{
 	MenuOption opt = {"Scan for applications and games", MakeDelegate(this, &GMenu2X::scanner)};
 	voices.push_back(opt);
@@ -530,6 +536,17 @@ void GMenu2X::contextMenu() {
 #endif
 
 		s->flip();
+	}
+}
+
+void GMenu2X::addLink() {
+	FileDialog fd(this,"Select an application");
+	if (fd.exec()) {
+		ledOn();
+		createLink(fd.path, fd.file);
+		system("sync");
+		ledOff();
+		menu->setSectionIndex( menu->selSectionIndex() ); //Force a reload of current section links
 	}
 }
 
@@ -598,16 +615,6 @@ void GMenu2X::editLink() {
 		menu->setSectionIndex( menu->selSectionIndex() );
 }
 
-void GMenu2X::addLink() {
-	FileDialog fd(this,"Select an application");
-	if (fd.exec()) {
-		ledOn();
-		createLink(fd.path, fd.file);
-		system("sync");
-		ledOff();
-		menu->setSectionIndex( menu->selSectionIndex() ); //Force a reload of current section links
-	}
-}
 void GMenu2X::deleteLink() {
 	ledOn();
 	unlink(menu->selLink()->file.c_str());
@@ -667,6 +674,25 @@ bool GMenu2X::createLink(string path, string file, string section) {
 	}
 
 	return true;
+}
+
+void GMenu2X::addSection() {
+	InputDialog id(this,"Insert a name for the new section");
+	if (id.exec()) {
+		//only if a section with the same name does not exist
+		if (find(menu->sections.begin(),menu->sections.end(),id.input)==menu->sections.end()) {
+			//section directory doesn't exists
+			string sectiondir = "sections/"+id.input;
+			cout << "GMENU2X: mkdir " << sectiondir << endl;
+			ledOn();
+			if (mkdir(sectiondir.c_str(),777)==0) {
+				menu->sections.push_back(id.input);
+				menu->setSectionIndex( menu->sections.size()-1 ); //switch to the new section
+			}
+			system("sync");
+			ledOff();
+		}
+	}
 }
 
 void GMenu2X::scanner() {

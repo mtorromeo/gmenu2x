@@ -46,7 +46,7 @@ Menu::Menu(GMenu2X *gmenu2x, string path) {
 	}
 	
 	closedir(dirp);
-	sort(sections.begin(),sections.end());
+	sort(sections.begin(),sections.end(),case_less());
 	setSectionIndex(0);
 }
 
@@ -183,7 +183,7 @@ void Menu::readLinks() {
 		}
 	}
 	
-	sort(linkfiles.begin(), linkfiles.end());
+	sort(linkfiles.begin(), linkfiles.end(),case_less());
 	for (uint x=0; x<linkfiles.size(); x++) {
 		Link *link = new Link(gmenu2x, path, linkfiles[x].c_str());
 		if (link->targetExists())

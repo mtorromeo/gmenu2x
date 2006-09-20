@@ -98,11 +98,25 @@ bool FileDialog::exec() {
 			else
 				selected -= 1;
 		}
+		if ( gmenu2x->joy[GP2X_BUTTON_L     ] ) {
+			if ((int)(selected-10)<0) {
+				selected = 0;
+			} else {
+				selected -= 8;
+			}
+		}
 		if ( gmenu2x->joy[GP2X_BUTTON_DOWN  ] ) {
 			if (selected+1>=directories.size()+files.size())
 				selected = 0;
 			else
 				selected += 1;
+		}
+		if ( gmenu2x->joy[GP2X_BUTTON_R     ] ) {
+			if (selected+10>=directories.size()+files.size()) {
+				selected = directories.size()+files.size()-1;
+			} else {
+				selected += 10;
+			}
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_A] || gmenu2x->joy[GP2X_BUTTON_LEFT] ) {
 			string::size_type p = path.rfind("/");
@@ -189,8 +203,10 @@ void FileDialog::browsePath(string path, vector<string>* directories, vector<str
 		int statRet = stat(filepath.c_str(), &st);
 		if (statRet == -1) continue;
 		if (S_ISDIR(st.st_mode)) {
-			if (!(path=="/mnt/" && dptr->d_name=="yaffs"))
-				directories->push_back((string)dptr->d_name);
+			string dname = dptr->d_name;
+			cout << dname << endl;
+			if (!(path=="/mnt/" && (dname!="sd" && dname!="ext" && dname!="nand")))
+				directories->push_back(dname);
 		} else {
 			bool filterOk = false;
 			string file = dptr->d_name;
@@ -204,6 +220,6 @@ void FileDialog::browsePath(string path, vector<string>* directories, vector<str
 
 	closedir(dirp);
 
-	sort(directories->begin(),directories->end());
-	sort(files->begin(),files->end());
+	sort(directories->begin(),directories->end(),case_less());
+	sort(files->begin(),files->end(),case_less());
 }
