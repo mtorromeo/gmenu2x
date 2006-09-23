@@ -20,6 +20,9 @@
 
 #include <SDL_gfxPrimitives.h>
 
+#include <iostream>
+using namespace std;
+
 #include "surface.h"
 #include "utilities.h"
 
@@ -30,14 +33,20 @@ Surface::Surface() {
 Surface::Surface(string img) {
 	raw = NULL;
 	load(img);
+	halfW = raw->w/2;
+	halfH = raw->h/2;
 }
 
 Surface::Surface(SDL_Surface *s) {
 	raw = SDL_ConvertSurface( s, s->format, s->flags );
+	halfW = raw->w/2;
+	halfH = raw->h/2;
 }
 
 Surface::Surface(Surface *s) {
 	raw = SDL_ConvertSurface( s->raw, s->raw->format, s->raw->flags );
+	halfW = raw->w/2;
+	halfH = raw->h/2;
 }
 
 Surface::Surface(int w, int h, Uint32 flags) {
@@ -54,6 +63,8 @@ Surface::Surface(int w, int h, Uint32 flags) {
 	amask = 0xff000000;
 #endif
 	raw = SDL_CreateRGBSurface( flags, w, h, 16, rmask, gmask, bmask, amask );
+	halfW = w/2;
+	halfH = h/2;
 }
 
 Surface::~Surface() {
@@ -114,7 +125,10 @@ bool Surface::blit(Surface *destination, int x, int y, int w, int h) {
 }
 
 bool Surface::blitCenter(SDL_Surface *destination, int x, int y, int w, int h) {
-	return blit(destination,x-min(raw->w,w)/2,y-min(raw->h,h)/2,w,h);
+	int oh, ow;
+	if (w==0) ow = halfW; else ow = min(halfW,w/2);
+	if (h==0) oh = halfH; else oh = min(halfH,h/2);
+	return blit(destination,x-ow,y-oh,w,h);
 }
 bool Surface::blitCenter(Surface *destination, int x, int y, int w, int h) {
 	return blitCenter(destination->raw,x,y,w,h);

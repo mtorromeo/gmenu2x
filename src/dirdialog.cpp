@@ -179,7 +179,7 @@ void DirDialog::browsePath(string path, vector<string>* directories) {
 		if (statRet == -1) continue;
 		if (S_ISDIR(st.st_mode)) {
 			string dname = dptr->d_name;
-			if (!(path=="/mnt/" && (dname!="sd" || dname!="ext" || dname!="nand")))
+			if (!(path=="/mnt/" && (dname!="sd" && dname!="ext" && dname!="nand")))
 				directories->push_back(dname);
 		}
 	}

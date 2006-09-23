@@ -1,5 +1,9 @@
 title=SNES
-description=Squidge's Super Nintendo Emulator
+description=Super Nintendo Emulator
 icon=icons/snes.png
-exec=/mnt/sd/snes/squidgesnes.gpe
-clock=266
+exec=/mnt/sda1/snes/squidgesnes.gpe
+params=nrtm load="[selPath][selFile][selExt]"
+clock=240
+selectordir=/mnt/sda1/roms/snes/
+selectorscreens=/home/ryo/roms/gp2x/screens/SNESART/
+wrapper=true

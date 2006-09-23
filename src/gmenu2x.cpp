@@ -240,7 +240,7 @@ void GMenu2X::writeConfig() {
 		inf << "maxClock=" << maxClock << endl;
 		//G inf << "gamma=" << gamma << endl;
 		inf.close();
-		system("sync");
+		sync();
 	}
 	ledOff();
 }
@@ -552,7 +552,7 @@ void GMenu2X::addLink() {
 	if (fd.exec()) {
 		ledOn();
 		createLink(fd.path, fd.file);
-		system("sync");
+		sync();
 		ledOff();
 		menu->setSectionIndex( menu->selSectionIndex() ); //Force a reload of current section links
 	}
@@ -617,7 +617,7 @@ void GMenu2X::editLink() {
 		menu->selLink()->file = newFileName;
 	}
 	menu->selLink()->save();
-	system("sync");
+	sync();
 	ledOff();
 	if (oldSection!=newSection)
 		menu->setSectionIndex( menu->selSectionIndex() );
@@ -627,7 +627,7 @@ void GMenu2X::deleteLink() {
 	ledOn();
 	unlink(menu->selLink()->file.c_str());
 	menu->setSectionIndex( menu->selSectionIndex() ); //Force a reload of current section links
-	system("sync");
+	sync();
 	ledOff();
 }
 
@@ -696,7 +696,7 @@ void GMenu2X::addSection() {
 			if (mkdir(sectiondir.c_str(),0777)==0) {
 				menu->sections.push_back(id.input);
 				menu->setSectionIndex( menu->sections.size()-1 ); //switch to the new section
-				system("sync");
+				sync();
 			}
 			ledOff();
 		}
@@ -719,7 +719,7 @@ void GMenu2X::renameSection() {
 					rename(oldicon.c_str(), newicon.c_str());
 				menu->sections[ menu->selSectionIndex() ] = id.input;
 				menu->setSectionIndex( menu->selSectionIndex() ); //reload sections
-				system("sync");
+				sync();
 			}
 			ledOff();
 		}
@@ -731,7 +731,7 @@ void GMenu2X::deleteSection() {
 	if (rmtree(path+"sections/"+menu->selSection())) {
 		menu->sections.erase( menu->sections.begin()+menu->selSectionIndex() );
 		menu->setSectionIndex(0); //reload sections
-		system("sync");
+		sync();
 	}
 	ledOff();
 }
@@ -783,7 +783,7 @@ void GMenu2X::scanner() {
 	bg.blit(s,0,0);
 	s->flip();
 
-	system("sync");
+	sync();
 	ledOff();
 }
 

@@ -40,6 +40,7 @@ Wrapper around SDL_Surface
 class Surface {
 private:
 	bool locked;
+	int halfW, halfH;
 
 public:
 	Surface();
