@@ -486,6 +486,14 @@ void GMenu2X::contextMenu() {
 	voices.push_back(opt);
 	}
 	{
+	MenuOption opt = {"Rename section", MakeDelegate(this, &GMenu2X::renameSection)};
+	voices.push_back(opt);
+	}
+	{
+	MenuOption opt = {"Delete section", MakeDelegate(this, &GMenu2X::deleteSection)};
+	voices.push_back(opt);
+	}
+	{
 	MenuOption opt = {"Scan for applications and games", MakeDelegate(this, &GMenu2X::scanner)};
 	voices.push_back(opt);
 	}
@@ -509,7 +517,7 @@ void GMenu2X::contextMenu() {
 
 	while (!close) {
 		bg.blit(s,0,0);
-		SDL_FillRect( s->raw, &box, SDL_MapRGB(s->format(),255,255,255) );
+		SDL_FillRect( s->raw, &box, SDL_MapRGB(s->format(),255,255,255));
 		selbox.y = box.y+4+(h+2)*sel;
 		SDL_FillRect( s->raw, &selbox, SDL_MapRGB(s->format(),160,160,160) );
 		rectangleColor( s->raw, box.x+2, box.y+2, box.x+box.w-3, box.y+box.h-3, SDL_MapRGB(s->format(),80,80,80) );
@@ -685,14 +693,47 @@ void GMenu2X::addSection() {
 			string sectiondir = "sections/"+id.input;
 			cout << "GMENU2X: mkdir " << sectiondir << endl;
 			ledOn();
-			if (mkdir(sectiondir.c_str(),777)==0) {
+			if (mkdir(sectiondir.c_str(),0777)==0) {
 				menu->sections.push_back(id.input);
 				menu->setSectionIndex( menu->sections.size()-1 ); //switch to the new section
+				system("sync");
 			}
-			system("sync");
 			ledOff();
 		}
 	}
+}
+
+void GMenu2X::renameSection() {
+	InputDialog id(this,"Insert a name for the new section",menu->selSection());
+	if (id.exec()) {
+		//only if a section with the same name does not exist & !samename
+		if (menu->selSection()!=id.input && find(menu->sections.begin(),menu->sections.end(),id.input)==menu->sections.end()) {
+			//section directory doesn't exists
+			string newsectiondir = "sections/"+id.input;
+			string sectiondir = "sections/"+menu->selSection();
+			cout << "GMENU2X: mv " << sectiondir << " " << newsectiondir << endl;
+			ledOn();
+			if (rename(sectiondir.c_str(), newsectiondir.c_str())==0) {
+				string oldicon = sectiondir+".png", newicon = newsectiondir+".png";
+				if (fileExists(oldicon) && !fileExists(newicon))
+					rename(oldicon.c_str(), newicon.c_str());
+				menu->sections[ menu->selSectionIndex() ] = id.input;
+				menu->setSectionIndex( menu->selSectionIndex() ); //reload sections
+				system("sync");
+			}
+			ledOff();
+		}
+	}
+}
+
+void GMenu2X::deleteSection() {
+	ledOn();
+	if (rmtree(path+"sections/"+menu->selSection())) {
+		menu->sections.erase( menu->sections.begin()+menu->selSectionIndex() );
+		menu->setSectionIndex(0); //reload sections
+		system("sync");
+	}
+	ledOff();
 }
 
 void GMenu2X::scanner() {
@@ -875,12 +916,6 @@ void GMenu2X::runLink() {
 string GMenu2X::getExePath() {
 	char buf[255];
 	string p;
-	/*
-	stringstream ss;
-	ss << "/proc/" << getpid() << "/exe";
-	ss >> p;
-	int l = readlink(p.c_str(),buf,255);
-	*/
 	int l = readlink("/proc/self/exe",buf,255);
 
 	p = buf;

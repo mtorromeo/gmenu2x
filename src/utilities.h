@@ -38,6 +38,7 @@ string trim(const string& s);
 string strreplace (string orig, string search, string replace);
 
 bool fileExists(string file);
+bool rmtree(string path);
 
 int max (int a, int b);
 int min (int a, int b);

@@ -204,7 +204,6 @@ void FileDialog::browsePath(string path, vector<string>* directories, vector<str
 		if (statRet == -1) continue;
 		if (S_ISDIR(st.st_mode)) {
 			string dname = dptr->d_name;
-			cout << dname << endl;
 			if (!(path=="/mnt/" && (dname!="sd" && dname!="ext" && dname!="nand")))
 				directories->push_back(dname);
 		} else {

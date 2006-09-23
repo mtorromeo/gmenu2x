@@ -17,6 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
+//for browsing the filesystem
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <iostream>
+
 #include "utilities.h"
 
 using namespace std;
@@ -43,6 +50,34 @@ bool fileExists(string file) {
 	fin.close();
 
 	return exists;
+}
+
+bool rmtree(string path) {
+	DIR *dirp;
+	struct stat st;
+	struct dirent *dptr;
+	string filepath;
+
+	cout << "RMDIR: " << path << endl;
+
+	if ((dirp = opendir(path.c_str())) == NULL) return false;
+	if (path[path.length()-1]!='/') path += "/";
+
+	while ((dptr = readdir(dirp))) {
+		filepath = dptr->d_name;
+		if (filepath=="." || filepath=="..") continue;
+		filepath = path+filepath;
+		int statRet = stat(filepath.c_str(), &st);
+		if (statRet == -1) continue;
+		if (S_ISDIR(st.st_mode)) {
+			if (!rmtree(filepath)) return false;
+		} else {
+			if (unlink(filepath.c_str())!=0) return false;
+		}
+	}
+	
+	closedir(dirp);
+	return rmdir(path.c_str())==0;
 }
 
 int max (int a, int b) {

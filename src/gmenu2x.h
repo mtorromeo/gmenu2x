@@ -109,6 +109,8 @@ public:
 	void editLink();
 	void deleteLink();
 	void addSection();
+	void renameSection();
+	void deleteSection();
 
 	void initBG();
 	int drawButton(Surface *s, string btn, string text, int x);
