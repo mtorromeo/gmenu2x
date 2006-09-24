@@ -27,6 +27,7 @@ using std::string;
 
 class MenuSettingFile : public MenuSetting {
 private:
+	string originalValue;
 	string *_value;
 	string filter;
 	GMenu2X *gmenu2x;
@@ -39,6 +40,7 @@ public:
 	virtual void manageInput();
 	virtual void adjustInput();
 	virtual void drawSelected(int y);
+	virtual bool edited();
 
 	void setValue(string value);
 	string value();

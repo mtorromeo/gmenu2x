@@ -30,6 +30,7 @@ class MenuSettingRGBA : public MenuSetting {
 private:
 	unsigned short selPart;
 	string strR, strG, strB, strA;
+	RGBAColor originalValue;
 	RGBAColor *_value;
 	GMenu2X *gmenu2x;
 
@@ -41,6 +42,7 @@ public:
 	virtual void manageInput();
 	virtual void adjustInput();
 	virtual void drawSelected(int y);
+	virtual bool edited();
 
 	void setSelPart(unsigned short value);
 	void setR(unsigned short r);

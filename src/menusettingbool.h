@@ -27,6 +27,7 @@ using std::string;
 
 class MenuSettingBool : public MenuSetting {
 private:
+	bool originalValue;
 	bool *_value;
 	string strvalue;
 	GMenu2X *gmenu2x;
@@ -39,6 +40,7 @@ public:
 	virtual void manageInput();
 	virtual void adjustInput();
 	virtual void drawSelected(int y);
+	virtual bool edited();
 
 	void setValue(bool value);
 	bool value();

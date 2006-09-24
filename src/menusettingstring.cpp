@@ -27,6 +27,7 @@ MenuSettingString::MenuSettingString(GMenu2X *gmenu2x, string name, string descr
 	: MenuSetting(gmenu2x,name,description) {
 	this->gmenu2x = gmenu2x;
 	_value = value;
+	originalValue = *value;
 }
 
 void MenuSettingString::draw(int y) {
@@ -67,4 +68,8 @@ void MenuSettingString::adjustInput() {}
 void MenuSettingString::drawSelected(int) {
 	gmenu2x->drawButton(gmenu2x->s, "A", "Clear",
 	gmenu2x->drawButton(gmenu2x->s, "B", "Edit", 10));
+}
+
+bool MenuSettingString::edited() {
+	return originalValue != value();
 }

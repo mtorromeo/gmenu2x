@@ -32,3 +32,4 @@ void MenuSetting::draw(int y) {
 void MenuSetting::manageInput() {}
 void MenuSetting::adjustInput() {}
 void MenuSetting::drawSelected(int) {}
+bool MenuSetting::edited() { return true; }

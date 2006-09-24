@@ -27,6 +27,7 @@ MenuSettingRGBA::MenuSettingRGBA(GMenu2X *gmenu2x, string name, string descripti
 	selPart = 0;
 	this->gmenu2x = gmenu2x;
 	_value = value;
+	originalValue = *value;
 	this->setR(this->value().r);
 	this->setG(this->value().g);
 	this->setB(this->value().b);
@@ -127,4 +128,8 @@ void MenuSettingRGBA::drawSelected(int y) {
 	gmenu2x->drawButton(gmenu2x->s, "X", "Decrease",
 	gmenu2x->drawButton(gmenu2x->s, ">", "Change color component",
 	gmenu2x->drawButton(gmenu2x->s, "<", "/", 10)-4)));
+}
+
+bool MenuSettingRGBA::edited() {
+	return originalValue.r != value().r || originalValue.g != value().g || originalValue.b != value().b || originalValue.a != value().a;
 }

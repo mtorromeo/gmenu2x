@@ -33,6 +33,11 @@ SettingsDialog::SettingsDialog(GMenu2X *gmenu2x, string text) {
 	this->text = text;
 }
 
+SettingsDialog::~SettingsDialog() {
+	for (uint i=0; i<voices.size(); i++)
+		free(voices[i]);
+}
+
 bool SettingsDialog::exec() {
 	Surface bg ("imgs/bg.png");
 
@@ -107,13 +112,16 @@ bool SettingsDialog::exec() {
 		gmenu2x->s->flip();
 	}
 
-	for (i=0; i<voices.size(); i++) {
-		free(voices[i]);
-	}
 	gmenu2x->setInputSpeed();
 	return true;
 }
 
 void SettingsDialog::addSetting(MenuSetting* set) {
 	voices.push_back(set);
+}
+
+bool SettingsDialog::edited() {
+	for (uint i=0; i<voices.size(); i++) 
+		if (voices[i]->edited()) return true;
+	return false;
 }

@@ -27,6 +27,7 @@ MenuSettingMultiString::MenuSettingMultiString(GMenu2X *gmenu2x, string name, st
 	this->gmenu2x = gmenu2x;
 	this->choices = choices;
 	this->value = value;
+	originalValue = *value;
 	setSel( find(choices->begin(),choices->end(),*value)-choices->begin() );
 }
 
@@ -69,4 +70,8 @@ void MenuSettingMultiString::adjustInput() {}
 void MenuSettingMultiString::drawSelected(int) {
 	gmenu2x->drawButton(gmenu2x->s, ">", "Change value",
 	gmenu2x->drawButton(gmenu2x->s, "<", "/", 10)-4);
+}
+
+bool MenuSettingMultiString::edited() {
+	return originalValue != *value;
 }

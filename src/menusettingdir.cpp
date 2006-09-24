@@ -27,6 +27,7 @@ MenuSettingDir::MenuSettingDir(GMenu2X *gmenu2x, string name, string description
 	: MenuSetting(gmenu2x,name,description) {
 	this->gmenu2x = gmenu2x;
 	_value = value;
+	originalValue = *value;
 }
 
 void MenuSettingDir::draw(int y) {
@@ -67,4 +68,8 @@ void MenuSettingDir::adjustInput() {}
 void MenuSettingDir::drawSelected(int) {
 	gmenu2x->drawButton(gmenu2x->s, "A", "Clear",
 	gmenu2x->drawButton(gmenu2x->s, "B", "Select a directory", 10));
+}
+
+bool MenuSettingDir::edited() {
+	return originalValue != value();
 }

@@ -51,6 +51,12 @@ void SurfaceCollection::del(string path) {
 	}
 }
 
+void SurfaceCollection::move(string from, string to) {
+	del(to);
+	surfaces[to] = surfaces[from];
+	surfaces.erase(from);
+}
+
 Surface *SurfaceCollection::operator[](string key) {
 	hash_map<string, Surface*>::iterator i = surfaces.find(key);
 	if (i == surfaces.end())

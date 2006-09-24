@@ -122,8 +122,8 @@ bool split (vector<string> &vec, const string &str, const string &delim) {
 		i = j + delim.size();
 
 		if (i==str.size()) {
-								vec.push_back(std::string());
-								break;
+			vec.push_back(std::string());
+			break;
 		}
 	}
 
@@ -134,7 +134,16 @@ string strreplace (string orig, string search, string replace) {
 	string::size_type pos = orig.find( search, 0 );
 	while (pos != string::npos) {
 		orig.replace(pos,search.length(),replace);
-		pos = orig.find( search, pos+replace.length()-search.length() );
+		pos = orig.find( search, pos+replace.length() );
 	}
 	return orig;
+}
+
+string cmdclean (string cmdline) {
+	string spchars = "\\`$();|{}&'\"*?<>[]!^~-#\n\r ";
+	for (uint i=0; i<spchars.length(); i++) {
+		string curchar = spchars.substr(i,1);
+		cmdline = strreplace(cmdline, curchar, "\\"+curchar);
+	}
+	return cmdline;
 }

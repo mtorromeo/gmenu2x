@@ -27,6 +27,7 @@ MenuSettingInt::MenuSettingInt(GMenu2X *gmenu2x, string name, string description
 	: MenuSetting(gmenu2x,name,description) {
 	this->gmenu2x = gmenu2x;
 	_value = value;
+	originalValue = *value;
 	this->min = min;
 	this->max = max;
 	this->setValue(this->value());
@@ -75,4 +76,8 @@ void MenuSettingInt::drawSelected(int) {
 	gmenu2x->drawButton(gmenu2x->s, ">", "/",
 	gmenu2x->drawButton(gmenu2x->s, "X", "Decrease value",
 	gmenu2x->drawButton(gmenu2x->s, "<", "/", 10)-4))-4);
+}
+
+bool MenuSettingInt::edited() {
+	return originalValue != value();
 }

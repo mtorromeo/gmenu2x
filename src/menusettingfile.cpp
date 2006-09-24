@@ -28,6 +28,7 @@ MenuSettingFile::MenuSettingFile(GMenu2X *gmenu2x, string name, string descripti
 	this->gmenu2x = gmenu2x;
 	this->filter = filter;
 	_value = value;
+	originalValue = *value;
 }
 
 void MenuSettingFile::draw(int y) {
@@ -68,4 +69,8 @@ void MenuSettingFile::adjustInput() {}
 void MenuSettingFile::drawSelected(int) {
 	gmenu2x->drawButton(gmenu2x->s, "A", "Clear",
 	gmenu2x->drawButton(gmenu2x->s, "B", "Select a file", 10));
+}
+
+bool MenuSettingFile::edited() {
+	return originalValue != value();
 }

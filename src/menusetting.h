@@ -45,6 +45,7 @@ public:
 	virtual void manageInput();
 	virtual void adjustInput();
 	virtual void drawSelected(int y);
+	virtual bool edited();
 
 	string name, description;
 };

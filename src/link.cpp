@@ -20,6 +20,7 @@
 #include <fstream>
 #include <sstream>
 #include "link.h"
+#include "menu.h"
 #include "utilities.h"
 #include "selector.h"
 
@@ -229,26 +230,21 @@ void Link::run(string selectedFile) {
 			}
 		}
 	
-		//if wrapper put exec in params and wrapper in exec
-		/*
-		if (wrapper) {
-			params = exec + " " + params;
-			exec = path + "scripts/wrapper.sh";
-		}
-		*/
-	
 		if (clock()!=gmenu2x->menuClock)
 			gmenu2x->setClock(clock());
 	
 		cout << "GMENU2X: Executing '" << title << "' (" << exec << ") (" << params << ")" << endl;
 
 		//check if we have to quit
-		string command = exec;
+		string command = cmdclean(exec);
+		cout << "GMENU2X: exec=" << exec << " - command=" << command << endl;
 		if (params!="") command += " " + params;
-		if (wrapper) command += "; cd \""+path+"\"; ./gmenu2x";
+		if (wrapper) command += "; sync & cd \""+path+"\"; ./gmenu2x";
 		if (dontleave) {
 			system(command.c_str());
 		} else {
+			if (gmenu2x->saveSelection && (gmenu2x->startSectionIndex!=gmenu2x->menu->selSectionIndex() || gmenu2x->startLinkIndex!=gmenu2x->menu->selLinkIndex()))
+				gmenu2x->writeConfig();
 			SDL_Quit();
 			//G if (gamma()!=0 && gamma()!=gmenu2x->gamma)
 			//G 	gmenu2x->setGamma(gamma());

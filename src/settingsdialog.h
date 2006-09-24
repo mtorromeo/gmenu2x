@@ -36,7 +36,9 @@ private:
 	
 public:
 	SettingsDialog(GMenu2X *gmenu2x, string text);
+	~SettingsDialog();
 	
+	bool edited();
 	bool exec();
 	void addSetting(MenuSetting* set);
 };

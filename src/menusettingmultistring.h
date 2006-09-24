@@ -29,6 +29,7 @@ class MenuSettingMultiString : public MenuSetting {
 private:
 	uint selected;
 	string *value;
+	string originalValue;
 	vector<string> *choices;
 	GMenu2X *gmenu2x;
 
@@ -44,6 +45,7 @@ public:
 	virtual void manageInput();
 	virtual void adjustInput();
 	virtual void drawSelected(int y);
+	virtual bool edited();
 };
 
 #endif

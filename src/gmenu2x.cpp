@@ -400,7 +400,7 @@ int GMenu2X::main() {
 			menu->incSectionIndex();
 			offset = menu->links.size()>24 ? 0 : 4;
 		}
-		if ( joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK] && menu->selLink()!=NULL ) runLink();
+		if ( joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK] && menu->selLink()!=NULL ) menu->selLink()->run();
 		if ( joy[GP2X_BUTTON_SELECT] ) contextMenu();
 #else
 		while (SDL_PollEvent(&event)) {
@@ -427,7 +427,7 @@ int GMenu2X::main() {
 					offset = menu->links.size()>24 ? 0 : 4;
 				}
 				if ( event.key.keysym.sym==SDLK_s      ) options();
-				if ( event.key.keysym.sym==SDLK_RETURN && menu->selLink()!=NULL ) runLink();
+				if ( event.key.keysym.sym==SDLK_RETURN && menu->selLink()!=NULL ) menu->selLink()->run();
 				if ( event.key.keysym.sym==SDLK_SPACE  ) contextMenu();
 			}
 		}
@@ -451,12 +451,12 @@ void GMenu2X::options() {
 	sd.addSetting(new MenuSettingRGBA(this,"Top Bar Color","Color of the top bar",&topBarColor));
 	sd.addSetting(new MenuSettingRGBA(this,"Bottom Bar Color","Color of the bottom bar",&bottomBarColor));
 	sd.addSetting(new MenuSettingRGBA(this,"Selection Color","Color of the selection and other interface details",&selectionColor));
-	sd.exec();
-
-	//G if (prevgamma!=gamma) setGamma(gamma);
-	if (curMenuClock!=menuClock) setClock(menuClock);
-	writeConfig();
-	initBG();
+	if (sd.exec() && sd.edited()) {
+		//G if (prevgamma!=gamma) setGamma(gamma);
+		if (curMenuClock!=menuClock) setClock(menuClock);
+		writeConfig();
+		initBG();
+	}
 }
 
 void GMenu2X::contextMenu() {
@@ -589,43 +589,47 @@ void GMenu2X::editLink() {
 	//G sd.addSetting(new MenuSettingInt(this,"Gamma (0=default)","Gamma value to set when launching this link",&linkGamma,0,100));
 	sd.addSetting(new MenuSettingBool(this,"Wrapper","Explicitly relaunch GMenu2X after this link's execution ends",&menu->selLink()->wrapper));
 	sd.addSetting(new MenuSettingBool(this,"Don't Leave","Don't quit GMenu2X when launching this link",&menu->selLink()->dontleave));
-	sd.exec();
 
-	menu->selLink()->setTitle(linkTitle);
-	menu->selLink()->setDescription(linkDescription);
-	menu->selLink()->setIcon(linkIcon);
-	menu->selLink()->setParams(linkParams);
-	menu->selLink()->setSelectorFilter(linkSelFilter);
-	menu->selLink()->setSelectorDir(linkSelDir);
-	menu->selLink()->setSelectorScreens(linkSelScreens);
-	menu->selLink()->setClock(linkClock);
-	//G menu->selLink()->setGamma(linkGamma);
+	if (sd.exec() && sd.edited()) {
+		ledOn();
 
-	ledOn();
-	//if section changed move file and update link->file
-	if (oldSection!=newSection) {
-		if (find(menu->sections.begin(),menu->sections.end(),newSection)==menu->sections.end()) return;
-		string newFileName = "sections/"+newSection+"/"+linkTitle;
-		int x=2;
-		while (fileExists(newFileName)) {
-			string id = "";
-			stringstream ss; ss << x; ss >> id;
-			newFileName = "sections/"+newSection+"/"+linkTitle+id;
-			x++;
+		menu->selLink()->setTitle(linkTitle);
+		menu->selLink()->setDescription(linkDescription);
+		menu->selLink()->setIcon(linkIcon);
+		menu->selLink()->setParams(linkParams);
+		menu->selLink()->setSelectorFilter(linkSelFilter);
+		menu->selLink()->setSelectorDir(linkSelDir);
+		menu->selLink()->setSelectorScreens(linkSelScreens);
+		menu->selLink()->setClock(linkClock);
+		//G menu->selLink()->setGamma(linkGamma);
+
+		//if section changed move file and update link->file
+		if (oldSection!=newSection) {
+			if (find(menu->sections.begin(),menu->sections.end(),newSection)==menu->sections.end()) return;
+			string newFileName = "sections/"+newSection+"/"+linkTitle;
+			int x=2;
+			while (fileExists(newFileName)) {
+				string id = "";
+				stringstream ss; ss << x; ss >> id;
+				newFileName = "sections/"+newSection+"/"+linkTitle+id;
+				x++;
+			}
+			rename(menu->selLink()->file.c_str(),newFileName.c_str());
+			menu->selLink()->file = newFileName;
 		}
-		rename(menu->selLink()->file.c_str(),newFileName.c_str());
-		menu->selLink()->file = newFileName;
+		menu->selLink()->save();
+		sync();
+
+		ledOff();
+		if (oldSection!=newSection)
+			menu->setSectionIndex( menu->selSectionIndex() );
 	}
-	menu->selLink()->save();
-	sync();
-	ledOff();
-	if (oldSection!=newSection)
-		menu->setSectionIndex( menu->selSectionIndex() );
 }
 
 void GMenu2X::deleteLink() {
 	ledOn();
 	unlink(menu->selLink()->file.c_str());
+	sc.del(menu->selLink()->getIcon());
 	menu->setSectionIndex( menu->selSectionIndex() ); //Force a reload of current section links
 	sync();
 	ledOff();
@@ -715,8 +719,10 @@ void GMenu2X::renameSection() {
 			ledOn();
 			if (rename(sectiondir.c_str(), newsectiondir.c_str())==0) {
 				string oldicon = sectiondir+".png", newicon = newsectiondir+".png";
-				if (fileExists(oldicon) && !fileExists(newicon))
+				if (fileExists(oldicon) && !fileExists(newicon)) {
 					rename(oldicon.c_str(), newicon.c_str());
+					sc.move(oldicon, newicon);
+				}
 				menu->sections[ menu->selSectionIndex() ] = id.input;
 				menu->setSectionIndex( menu->selSectionIndex() ); //reload sections
 				sync();
@@ -730,6 +736,7 @@ void GMenu2X::deleteSection() {
 	ledOn();
 	if (rmtree(path+"sections/"+menu->selSection())) {
 		menu->sections.erase( menu->sections.begin()+menu->selSectionIndex() );
+		sc.del("sections/"+menu->selSection()+".png");
 		menu->setSectionIndex(0); //reload sections
 		sync();
 	}
@@ -905,12 +912,6 @@ void GMenu2X::setGamma(int gamma) {
 
 	if (!alreadyInited) gp2x_deinit();
 #endif
-}
-
-void GMenu2X::runLink() {
-	if (saveSelection && (startSectionIndex!=menu->selSectionIndex() || startLinkIndex!=menu->selLinkIndex()))
-		writeConfig();
-	menu->selLink()->run();
 }
 
 string GMenu2X::getExePath() {

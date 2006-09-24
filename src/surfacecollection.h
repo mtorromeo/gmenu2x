@@ -51,6 +51,7 @@ public:
 	void debug();
 	Surface *add(string path);
 	void     del(string path);
+	void     move(string from, string to);
 	bool     exists(string path);
 	Surface *operator[](string);
 };

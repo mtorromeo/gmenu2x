@@ -27,6 +27,7 @@ MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, string name, string descripti
 	: MenuSetting(gmenu2x,name,description) {
 	this->gmenu2x = gmenu2x;
 	_value = value;
+	originalValue = *value;
 	this->setValue(this->value());
 }
 
@@ -60,4 +61,8 @@ void MenuSettingBool::adjustInput() {}
 
 void MenuSettingBool::drawSelected(int) {
 	gmenu2x->drawButton(gmenu2x->s, "B", "Switch", 10);
+}
+
+bool MenuSettingBool::edited() {
+	return originalValue != value();
 }

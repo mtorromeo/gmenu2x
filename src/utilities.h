@@ -36,6 +36,7 @@ public:
 
 string trim(const string& s);
 string strreplace (string orig, string search, string replace);
+string cmdclean (string cmdline);
 
 bool fileExists(string file);
 bool rmtree(string path);

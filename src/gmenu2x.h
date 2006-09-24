@@ -60,7 +60,6 @@ private:
 	bool inet, usbnet, samba, web;
 	string ip, defaultgw;
 	void readConfig();
-	void writeConfig();
 	void readCommonIni();
 	void writeCommonIni();
 	void initServices();
@@ -96,11 +95,11 @@ public:
 	int main();
 	void options();
 	void contextMenu();
-	void runLink();
 
 	void setClock(unsigned mhz);
 	void setGamma(int gamma);
 	void setInputSpeed();
+	void writeConfig();
 
 	void ledOn();
 	void ledOff();
