@@ -81,7 +81,7 @@ bool Selector::exec() {
 		if (pos!=string::npos && pos>0)
 			noext = noext.substr(0, pos);
 		titles[i] = noext;
-		cout << "GMENU2X: Searching for screen " << screendir << noext << ".png" << endl;
+		cout << "\033[0;34mGMENU2X:\033[0m Searching for screen " << screendir << noext << ".png" << endl;
 		if (fileExists(screendir+noext+".png"))
 			screens[i] = screendir+noext+".png";
 		else if (fileExists(screendir+noext+".jpg"))
@@ -99,7 +99,8 @@ bool Selector::exec() {
 		//Selection
 		iY = selected-firstElement;
 		iY = 45+(iY*18);
-		gmenu2x->s->box(2, iY, 308, 16, gmenu2x->selectionColor);
+		if (selected<titles.size())
+			gmenu2x->s->box(2, iY, 308, 16, gmenu2x->selectionColor);
 
 		//Files
 		for (i=firstElement; i<titles.size() && i<firstElement+9; i++) {
@@ -107,7 +108,7 @@ bool Selector::exec() {
 			gmenu2x->s->write(gmenu2x->font, titles[i], 5, 53+(iY*18), SFontHAlignLeft, SFontVAlignMiddle);
 		}
 		
-		if (screens[selected]!="") {
+		if (selected<screens.size() && screens[selected]!="") {
 			curTick = SDL_GetTicks();
 			if (curTick-selTick>200)
 				gmenu2x->sc[screens[selected]]->blitRight(gmenu2x->s, 310, 46, 160, 160);
@@ -153,7 +154,8 @@ bool Selector::exec() {
 			selTick = SDL_GetTicks();
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK] ) {
-			file = files[selected];
+			if (selected<files.size())
+				file = files[selected];
 			close = true;
 		}
 #else
@@ -178,7 +180,8 @@ bool Selector::exec() {
 					selTick = SDL_GetTicks();
 				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
-					file = files[selected];
+					if (selected<files.size())
+						file = files[selected];
 					close = true;
 				}
 			}

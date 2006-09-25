@@ -137,7 +137,7 @@ bool Link::targetExists() {
 
 bool Link::save() {
 	if (!edited) return false;
-	cout << "GMENU2X: Saving link " << title << endl;
+	cout << "\033[0;34mGMENU2X:\033[0m Saving link " << title << endl;
 
 	ofstream f(file.c_str());
 	if (f.is_open()) {
@@ -157,7 +157,7 @@ bool Link::save() {
 		f.close();
 		return true;
 	} else
-		cout << "GMENU2X: Error while opening the file '" << file << "' for write" << endl;
+		cout << "\033[0;34mGMENU2X:\033[0;31m Error while opening the file '" << file << "' for write\033[0m" << endl;
 	return false;
 }
 
@@ -208,7 +208,7 @@ void Link::run(string selectedFile) {
 		}
 		if (wd!="") {
 			if (wd[0]!='/') wd = path + wd;
-			cout << "GMENU2X: chdir '" << wd << "'" << endl;
+			cout << "\033[0;34mGMENU2X:\033[0m chdir '" << wd << "'" << endl;
 			chdir(wd.c_str());
 		}
 
@@ -222,22 +222,21 @@ void Link::run(string selectedFile) {
 			}
 
 			if (params=="") {
-				params = "\""+getSelectorDir()+selectedFile+selectedFileExtension+"\"";
+				params = cmdclean(getSelectorDir()+selectedFile+selectedFileExtension);
 			} else {
-				params = strreplace(params,"[selPath]",getSelectorDir());
-				params = strreplace(params,"[selFile]",selectedFile);
-				params = strreplace(params,"[selExt]",selectedFileExtension);
+				params = strreplace(params,"[selPath]",cmdclean(getSelectorDir()));
+				params = strreplace(params,"[selFile]",cmdclean(selectedFile));
+				params = strreplace(params,"[selExt]",cmdclean(selectedFileExtension));
 			}
 		}
 	
 		if (clock()!=gmenu2x->menuClock)
 			gmenu2x->setClock(clock());
 	
-		cout << "GMENU2X: Executing '" << title << "' (" << exec << ") (" << params << ")" << endl;
+		cout << "\033[0;34mGMENU2X:\033[0m Executing '" << title << "' (" << exec << ") (" << params << ")" << endl;
 
 		//check if we have to quit
 		string command = cmdclean(exec);
-		cout << "GMENU2X: exec=" << exec << " - command=" << command << endl;
 		if (params!="") command += " " + params;
 		if (wrapper) command += "; sync & cd \""+path+"\"; ./gmenu2x";
 		if (dontleave) {

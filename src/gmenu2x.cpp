@@ -126,9 +126,9 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	path = getExePath();
 
 	//Screen
-	cout << "GMENU2X: Initializing screen..." << endl;
+	cout << "\033[0;34mGMENU2X:\033[0m Initializing screen..." << endl;
 	if( SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_JOYSTICK)<0 ) {
-		fprintf(stdout, "Could not initialize SDL: %s\n", SDL_GetError());
+		cout << "\033[0;34mGMENU2X:\033[0;31m Could not initialize SDL:\033[0m " << SDL_GetError() << endl;
 		SDL_Quit();
 	}
 	s = new Surface();
@@ -641,13 +641,13 @@ bool GMenu2X::createLink(string path, string file, string section) {
 	else if (find(menu->sections.begin(),menu->sections.end(),section)==menu->sections.end()) {
 		//section directory doesn't exists
 		string sectiondir = "sections/"+section;
-		cout << "GMENU2X: mkdir " << sectiondir << endl;
+		cout << "\033[0;34mGMENU2X:\033[0m mkdir " << sectiondir << endl;
 		if (mkdir(sectiondir.c_str(),777)==0)
 			menu->sections.push_back(section);
 		else
 			return false;
 	}
-	cout << "GMENU2X: createLink section=" << section << " file=" << file << endl;
+	cout << "\033[0;34mGMENU2X:\033[0m createLink section=" << section << " file=" << file << endl;
 	if (path[path.length()-1]!='/') path += "/";
 
 	string title = file;
@@ -655,7 +655,7 @@ bool GMenu2X::createLink(string path, string file, string section) {
 	if (pos!=string::npos && pos>0)
 		title = title.substr(0, pos);
 
-	cout << "GMENU2X: Creating link " << title << endl;
+	cout << "\033[0;34mGMENU2X:\033[0m Creating link " << title << endl;
 
 	string linkpath = "sections/"+section+"/"+title;
 	int x=2;
@@ -665,7 +665,7 @@ bool GMenu2X::createLink(string path, string file, string section) {
 		ss << x;
 		ss >> linkpath;
 		linkpath = "sections/"+section+"/"+title+linkpath; 
-		cout << "GMENU2X: linkpath=" << linkpath << endl;
+		cout << "\033[0;34mGMENU2X:\033[0m linkpath=" << linkpath << endl;
 		x++;
 	}
 
@@ -681,7 +681,7 @@ bool GMenu2X::createLink(string path, string file, string section) {
 		f << "exec=" << path << file << endl;
 		f.close();
 	} else {
-		cout << "GMENU2X: Error while opening the file '" << linkpath << "' for write" << endl;
+		cout << "\033[0;34mGMENU2X:\033[0;31m Error while opening the file '" << linkpath << "' for write\033[0m" << endl;
 		return false;
 	}
 
@@ -695,7 +695,7 @@ void GMenu2X::addSection() {
 		if (find(menu->sections.begin(),menu->sections.end(),id.input)==menu->sections.end()) {
 			//section directory doesn't exists
 			string sectiondir = "sections/"+id.input;
-			cout << "GMENU2X: mkdir " << sectiondir << endl;
+			cout << "\033[0;34mGMENU2X:\033[0m mkdir " << sectiondir << endl;
 			ledOn();
 			if (mkdir(sectiondir.c_str(),0777)==0) {
 				menu->sections.push_back(id.input);
@@ -715,7 +715,7 @@ void GMenu2X::renameSection() {
 			//section directory doesn't exists
 			string newsectiondir = "sections/"+id.input;
 			string sectiondir = "sections/"+menu->selSection();
-			cout << "GMENU2X: mv " << sectiondir << " " << newsectiondir << endl;
+			cout << "\033[0;34mGMENU2X:\033[0m mv " << sectiondir << " " << newsectiondir << endl;
 			ledOn();
 			if (rename(sectiondir.c_str(), newsectiondir.c_str())==0) {
 				string oldicon = sectiondir+".png", newicon = newsectiondir+".png";
@@ -872,7 +872,7 @@ void GMenu2X::setInputSpeed() {
 
 void GMenu2X::setClock(unsigned mhz) {
 	mhz = constrain(mhz,50,maxClock);
-	cout << "GMENU2X: Setting clock speed at " << mhz << "MHZ" << endl;
+	cout << "\033[0;34mGMENU2X:\033[0m Setting clock speed at " << mhz << "MHZ" << endl;
 #ifdef TARGET_GP2X
 	bool alreadyInited = gp2x_initialized;
 	if (!alreadyInited) gp2x_init();
@@ -892,7 +892,7 @@ void GMenu2X::setClock(unsigned mhz) {
 }
 
 void GMenu2X::setGamma(int gamma) {
-	cout << "GMENU2X: Setting gamma to " << gamma << endl;
+	cout << "\033[0;34mGMENU2X:\033[0m Setting gamma to " << gamma << endl;
 #ifdef TARGET_GP2X
 	bool alreadyInited = gp2x_initialized;
 	if (!alreadyInited) gp2x_init();
@@ -938,7 +938,7 @@ string GMenu2X::getDiskFree() {
 	if (ret==0) {
 		ss << b.f_bfree*b.f_bsize/1048576 << "/" << b.f_blocks*b.f_bsize/1048576 << "MB";
 		ss >> df;
-	} else cout << "GMENU2X: statfs failed with error '" << strerror(errno) << "'" << endl;
+	} else cout << "\033[0;34mGMENU2X:\033[0;31m statfs failed with error '" << strerror(errno) << "'\033[0m" << endl;
 	return df;
 }
 

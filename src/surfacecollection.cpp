@@ -37,7 +37,7 @@ bool SurfaceCollection::exists(string path) {
 }
 
 Surface *SurfaceCollection::add(string path) {
-	cout << "GMENU2X: Adding surface '" << path << "'" << endl;
+	cout << "\033[0;34mGMENU2X:\033[0m Adding surface '" << path << "'" << endl;
 	Surface *s = new Surface(path);
 	surfaces[path] = s;
 	return s;
