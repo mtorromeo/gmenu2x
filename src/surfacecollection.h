@@ -21,19 +21,7 @@
 #define SURFACECOLLECTION_H
 
 #include "surface.h"
-
-#include <ext/hash_map>
-
-using __gnu_cxx::hash_map;
-using __gnu_cxx::hash;
-
-namespace __gnu_cxx {
-	template<> struct hash< std::string > {
-		size_t operator()( const std::string& x ) const {
-			return hash< const char* >()( x.c_str() );
-		}
-	};
-}
+#include "utilities.h"
 
 /**
 Hash Map of surfaces that loads surfaces not already loaded and reuses already loaded ones.

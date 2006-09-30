@@ -42,7 +42,7 @@ bool SettingsDialog::exec() {
 	Surface bg ("imgs/bg.png");
 
 	bool close = false;
-	uint i, sel = 0, iY;
+	uint i, sel = 0, iY, firstElement;
 	voices[sel]->adjustInput();
 
 	while (!close) {
@@ -51,19 +51,25 @@ bool SettingsDialog::exec() {
 		gmenu2x->s->write(gmenu2x->font, text, 160, 8, SFontHAlignCenter, SFontVAlignMiddle);
 		gmenu2x->drawBottomBar(gmenu2x->s,32);
 
+
+		if (sel>firstElement+10) firstElement=sel-10;
+		if (sel<firstElement) firstElement=sel;
+
 		//selection
-		iY = 18+(sel*17);
-		//s->box(2, iY, 316, 16, selectionColor);
-		gmenu2x->s->box(2, iY, 158, 16, gmenu2x->selectionColor);
+		iY = sel-firstElement;
+		iY = 18+(iY*17);
+		if (sel<voices.size())
+			gmenu2x->s->box(2, iY, 158, 16, gmenu2x->selectionColor);
 
 		//selected option
 		voices[sel]->drawSelected(iY);
 
-		for (i=0; i<voices.size(); i++) {
-			voices[i]->draw(i*17+18);
+		for (i=firstElement; i<voices.size() && i<firstElement+11; i++) {
+			iY = i-firstElement;
+			voices[i]->draw(iY*17+18);
 		}
 
-		//gmenu2x->drawScrollBar(11,voices.size(),0,18,186);
+		gmenu2x->drawScrollBar(11,voices.size(),firstElement,18,186);
 		//description at bottom
 		gmenu2x->s->write(gmenu2x->font, voices[sel]->description, 160, 221, SFontHAlignCenter, SFontVAlignBottom);
 

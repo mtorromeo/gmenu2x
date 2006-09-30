@@ -28,6 +28,7 @@
 
 #include "gmenu2x.h"
 #include "surface.h"
+#include "utilities.h"
 
 using std::string;
 
@@ -46,6 +47,8 @@ private:
 	bool edited;
 	string title, description, exec, params, icon, workdir, selectordir, selectorfilter, selectorscreens;
 	void drawRun();
+
+	string aliasfile;
 
 public:
 	Link(GMenu2X *gmenu2x, string path, const char* linkfile);
@@ -68,6 +71,8 @@ public:
 	void setSelectorScreens(string selectorscreens);
 	string getSelectorFilter();
 	void setSelectorFilter(string selectorfilter);
+	string getAliasFile();
+	void setAliasFile(string aliasfile);
 
 	string file;
 

@@ -27,6 +27,19 @@
 #include <string>
 #include <vector>
 
+#include <ext/hash_map>
+
+using __gnu_cxx::hash_map;
+using __gnu_cxx::hash;
+
+namespace __gnu_cxx {
+	template<> struct hash< std::string > {
+		size_t operator()( const std::string& x ) const {
+			return hash< const char* >()( x.c_str() );
+		}
+	};
+}
+
 using std::string;
 using std::vector;
 class case_less {

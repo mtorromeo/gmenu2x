@@ -38,6 +38,7 @@ using namespace std;
 Selector::Selector(GMenu2X *gmenu2x, Link *link) {
 	this->gmenu2x = gmenu2x;
 	this->link = link;
+	loadAliases();
 	selRow = 0;
 }
 
@@ -56,13 +57,13 @@ bool Selector::exec() {
 	Surface bg("imgs/bg.png");
 	gmenu2x->drawTopBar(&bg,40);
 	//link icon
-	if (gmenu2x->menu->selLink()->getIcon() != "")
-		gmenu2x->sc[gmenu2x->menu->selLink()->getIcon()]->blit(&bg,4,4);
+	if (link->getIcon() != "")
+		gmenu2x->sc[link->getIcon()]->blit(&bg,4,4);
 	else
 		gmenu2x->sc["icons/generic.png"]->blit(&bg,4,4);
 	//selector text
-	bg.write(gmenu2x->font,gmenu2x->menu->selLink()->getTitle(),40,13, SFontHAlignLeft, SFontVAlignMiddle);
-	bg.write(gmenu2x->font,gmenu2x->menu->selLink()->getDescription(),40,27, SFontHAlignLeft, SFontVAlignMiddle);
+	bg.write(gmenu2x->font,link->getTitle(),40,13, SFontHAlignLeft, SFontVAlignMiddle);
+	bg.write(gmenu2x->font,link->getDescription(),40,27, SFontHAlignLeft, SFontVAlignMiddle);
 	gmenu2x->drawBottomBar(&bg);
 
 	gmenu2x->drawButton(&bg, "B", "Select file",
@@ -80,7 +81,9 @@ bool Selector::exec() {
 		pos = noext.rfind(".");
 		if (pos!=string::npos && pos>0)
 			noext = noext.substr(0, pos);
-		titles[i] = noext;
+		titles[i] = getAlias(noext);
+		if (titles[i]=="")
+			titles[i] = noext;
 		cout << "\033[0;34mGMENU2X:\033[0m Searching for screen " << screendir << noext << ".png" << endl;
 		if (fileExists(screendir+noext+".png"))
 			screens[i] = screendir+noext+".png";
@@ -93,28 +96,28 @@ bool Selector::exec() {
 	while (!close) {
 		bg.blit(gmenu2x->s,0,0);
 
-		if (selected>firstElement+8) firstElement=selected-8;
+		if (selected>=firstElement+SELECTOR_ELEMENTS) firstElement=selected-SELECTOR_ELEMENTS+1;
 		if (selected<firstElement) firstElement=selected;
 
 		//Selection
 		iY = selected-firstElement;
-		iY = 45+(iY*18);
+		iY = 42+(iY*16);
 		if (selected<titles.size())
-			gmenu2x->s->box(2, iY, 308, 16, gmenu2x->selectionColor);
+			gmenu2x->s->box(1, iY, 309, 14, gmenu2x->selectionColor);
 
 		//Files
-		for (i=firstElement; i<titles.size() && i<firstElement+9; i++) {
+		for (i=firstElement; i<titles.size() && i<firstElement+SELECTOR_ELEMENTS; i++) {
 			iY = i-firstElement;
-			gmenu2x->s->write(gmenu2x->font, titles[i], 5, 53+(iY*18), SFontHAlignLeft, SFontVAlignMiddle);
+			gmenu2x->s->write(gmenu2x->font, titles[i], 4, 49+(iY*16), SFontHAlignLeft, SFontVAlignMiddle);
 		}
 		
 		if (selected<screens.size() && screens[selected]!="") {
 			curTick = SDL_GetTicks();
 			if (curTick-selTick>200)
-				gmenu2x->sc[screens[selected]]->blitRight(gmenu2x->s, 310, 46, 160, 160);
+				gmenu2x->sc[screens[selected]]->blitRight(gmenu2x->s, 311, 42, 160, 160);
 		}
 
-		gmenu2x->drawScrollBar(9,files.size(),firstElement,46,159);
+		gmenu2x->drawScrollBar(SELECTOR_ELEMENTS,files.size(),firstElement,42,175);
 		gmenu2x->s->flip();
 
 
@@ -130,10 +133,10 @@ bool Selector::exec() {
 			selTick = SDL_GetTicks();
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_L     ] ) {
-			if ((int)(selected-8)<0) {
+			if ((int)(selected-SELECTOR_ELEMENTS+1)<0) {
 				selected = 0;
 			} else {
-				selected -= 8;
+				selected -= SELECTOR_ELEMENTS-1;
 			}
 			selTick = SDL_GetTicks();
 		}
@@ -146,10 +149,10 @@ bool Selector::exec() {
 			selTick = SDL_GetTicks();
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_R     ] ) {
-			if (selected+8>=files.size()) {
+			if (selected+SELECTOR_ELEMENTS-1>=files.size()) {
 				selected = files.size()-1;
 			} else {
-				selected += 8;
+				selected += SELECTOR_ELEMENTS-1;
 			}
 			selTick = SDL_GetTicks();
 		}
@@ -225,4 +228,27 @@ void Selector::browsePath(string path, vector<string>* files) {
 
 	closedir(dirp);
 	sort(files->begin(),files->end(),case_less());
+}
+
+void Selector::loadAliases() {
+	aliases.clear();
+	if (fileExists(link->getAliasFile())) {
+		string line;
+		ifstream infile (link->getAliasFile().c_str(), ios_base::in);
+		while (getline(infile, line, '\n')) {
+			string::size_type position = line.find("=");
+			string name = trim(line.substr(0,position));
+			string value = trim(line.substr(position+1));
+			aliases[name] = value;
+		}
+		infile.close();
+	}
+}
+
+string Selector::getAlias(string key) {
+	hash_map<string, string>::iterator i = aliases.find(key);
+	if (i == aliases.end())
+		return "";
+	else
+		return i->second;
 }

@@ -125,6 +125,14 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 
 	path = getExePath();
 
+#ifdef TARGET_GP2X
+	gp2x_init();
+	if (gp2x_memregs[0x2800>>1]&0x100) {
+		gp2x_memregs[0x2906>>1]=512;
+	}
+	gp2x_deinit();
+#endif
+
 	//Screen
 	cout << "\033[0;34mGMENU2X:\033[0m Initializing screen..." << endl;
 	if( SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_JOYSTICK)<0 ) {
@@ -573,6 +581,7 @@ void GMenu2X::editLink() {
 	string linkSelFilter = menu->selLink()->getSelectorFilter();
 	string linkSelDir = menu->selLink()->getSelectorDir();
 	string linkSelScreens = menu->selLink()->getSelectorScreens();
+	string linkSelAliases = menu->selLink()->getAliasFile();
 	int linkClock = menu->selLink()->clock();
 	//G int linkGamma = menu->selLink()->gamma();
 
@@ -586,6 +595,7 @@ void GMenu2X::editLink() {
 	sd.addSetting(new MenuSettingDir(this,"Selector Directory","Directory to scan for the selector",&linkSelDir));
 	sd.addSetting(new MenuSettingString(this,"Selector Filter","Filter for the selector (Separate values with a comma)",&linkSelFilter));
 	sd.addSetting(new MenuSettingDir(this,"Selector Screenshots","Directory of the screenshots for the selector",&linkSelScreens));
+	sd.addSetting(new MenuSettingFile(this,"Selector Aliases","File containing a list of aliases to use for the selector's files",&linkSelAliases));
 	//G sd.addSetting(new MenuSettingInt(this,"Gamma (0=default)","Gamma value to set when launching this link",&linkGamma,0,100));
 	sd.addSetting(new MenuSettingBool(this,"Wrapper","Explicitly relaunch GMenu2X after this link's execution ends",&menu->selLink()->wrapper));
 	sd.addSetting(new MenuSettingBool(this,"Don't Leave","Don't quit GMenu2X when launching this link",&menu->selLink()->dontleave));
@@ -600,6 +610,7 @@ void GMenu2X::editLink() {
 		menu->selLink()->setSelectorFilter(linkSelFilter);
 		menu->selLink()->setSelectorDir(linkSelDir);
 		menu->selLink()->setSelectorScreens(linkSelScreens);
+		menu->selLink()->setAliasFile(linkSelAliases);
 		menu->selLink()->setClock(linkClock);
 		//G menu->selLink()->setGamma(linkGamma);
 

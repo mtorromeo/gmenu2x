@@ -21,7 +21,6 @@
 #include <sstream>
 #include "link.h"
 #include "menu.h"
-#include "utilities.h"
 #include "selector.h"
 
 using namespace std;
@@ -74,6 +73,8 @@ Link::Link(GMenu2X *gmenu2x, string path, const char* linkfile) {
 			setSelectorFilter( value );
 		} else if (name == "selectorscreens") {
 			setSelectorScreens( value );
+		} else if (name == "selectoraliases") {
+			setAliasFile( value );
 		} else {
 			cout << "Unrecognized option: " << name << endl;
 			break;
@@ -152,6 +153,7 @@ bool Link::save() {
 		if (selectordir!=""    ) f << "selectordir="     << selectordir     << endl;
 		if (selectorfilter!="" ) f << "selectorfilter="  << selectorfilter  << endl;
 		if (selectorscreens!="") f << "selectorscreens=" << selectorscreens << endl;
+		if (aliasfile!=""      ) f << "selectoraliases=" << aliasfile       << endl;
 		if (wrapper            ) f << "wrapper=true"                        << endl;
 		if (dontleave          ) f << "dontleave=true"                      << endl;
 		f.close();
@@ -259,57 +261,95 @@ void Link::run(string selectedFile) {
 	}
 }
 
-string Link::getTitle() { return title; }
+string Link::getTitle() {
+	return title;
+}
+
 void Link::setTitle(string title) {
 	this->title = title;
 	edited = true;
 }
 
-string Link::getDescription() { return description; }
+string Link::getDescription() {
+	return description;
+}
+
 void Link::setDescription(string description) {
 	this->description = description;
 	edited = true;
 }
 
-string Link::getExec() { return exec; }
+string Link::getExec() {
+	return exec;
+}
+
 void Link::setExec(string exec) {
 	this->exec = exec;
 	edited = true;
 }
 
-string Link::getParams() { return params; }
+string Link::getParams() {
+	return params;
+}
+
 void Link::setParams(string params) {
 	this->params = params;
 	edited = true;
 }
 
-string Link::getIcon() { return icon; }
+string Link::getIcon() {
+	return icon;
+}
+
 void Link::setIcon(string icon) {
 	this->icon = icon;
 	edited = true;
 }
 
-string Link::getWorkdir() { return workdir; }
+string Link::getWorkdir() {
+	return workdir;
+}
+
 void Link::setWorkdir(string workdir) {
 	this->workdir = workdir;
 	edited = true;
 }
 
-string Link::getSelectorDir() { return selectordir; }
+string Link::getSelectorDir() {
+	return selectordir;
+}
+
 void Link::setSelectorDir(string selectordir) {
 	if (selectordir!="" && selectordir[selectordir.length()-1]!='/') selectordir += "/";
 	this->selectordir = selectordir;
 	edited = true;
 }
 
-string Link::getSelectorFilter() { return selectorfilter; }
+string Link::getSelectorFilter() {
+	return selectorfilter;
+}
+
 void Link::setSelectorFilter(string selectorfilter) {
 	this->selectorfilter = selectorfilter;
 	edited = true;
 }
 
-string Link::getSelectorScreens() { return selectorscreens; }
+string Link::getSelectorScreens() {
+	return selectorscreens;
+}
+
 void Link::setSelectorScreens(string selectorscreens) {
 	this->selectorscreens = selectorscreens;
 	edited = true;
+}
+
+string Link::getAliasFile() {
+	return aliasfile;
+}
+
+void Link::setAliasFile(string aliasfile) {
+	if (fileExists(aliasfile)) {
+		this->aliasfile = aliasfile;
+		edited = true;
+	}
 }

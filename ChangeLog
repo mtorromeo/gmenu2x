@@ -1,6 +1,59 @@
+Gamma configurable in options menu and on a per-link basis
+
+----------
+New in 0.7
+----------
+Removed some unneeded savings.
+
+----------
+New in 0.6
+----------
+Implemented link scanner
+Added options to links for using a selector with them
+Initial support for usbnet, ftp, telnet, samba and web server
+Battery led indicates disk writes (don't turn the gp2x off while the led is on)
+L = PageUp, R = PageDown in lists
+Raised maximum hardcoded clock to 325Mhz and default gmenu2x clock to 100Mhz
+Improved virtual keyboard
+Sorting functions are now case unsensitive (filebrowser, dirdialog, selector)
+Wrapper script removed and fixed a related bugs (wrapper function is still available)
+Link's section changeable
+All link's features are configurable from the interface
+Battery indicator refined
+File selector starts from /mnt instead of /mnt/sd
+Fixed support for fonts of different size
+
+----------
+New in 0.5
+----------
+Added context-menu option to change link icon
+Added options to configure top bar, bottom bar and selection color separately.
+Readded support for imgs/selection.png (used only if present)
+GMenu2X is now working at 50Mhz (configurable)
+Added ability to set the maximum overclock to use with links (hardcoded maximum remains 300Mhz)
+Moved under/overclock functions in gmenu2x (no need for cpu_speed binary)
+"Save last selection" feature disableable
+
+----------
+New in 0.4
+----------
+Fixed flickering in context menu
+Fixed bug that prevented correct launch of some applications
+Interface color configurable (START brings up an options menu) (removed img/selection.png)
+Saves and restores last selected section and link
+Added global config file
+Sections with no icon are displayed with a default one (icons/section.png)
+Added virtual keyboard for editing title and description of links
+Links created through file browser are truncated if too long
+
 ----------
 New in 0.3
 ----------
+Links creatable in-menu using a file browser
+Links deletable in-menu
+Icon associated with gpu/gpe is used when no icon is specified
+Dithered background
+Added battery status indicator
 Added a menu with options binded to the select button
 Clock setting is saved when changed
 Links area scrollable to allow more than 24 links per section

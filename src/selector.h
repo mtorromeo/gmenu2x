@@ -23,6 +23,9 @@
 
 #include <string>
 #include "gmenu2x.h"
+#include "utilities.h"
+
+#define SELECTOR_ELEMENTS 11
 
 class Link;
 
@@ -34,6 +37,10 @@ private:
 	int selRow;
 	GMenu2X *gmenu2x;
 	Link *link;
+
+	hash_map<string, string> aliases;
+	void loadAliases();
+	string getAlias(string key);
 
 	void browsePath(string path, vector<string>* files);
 	
