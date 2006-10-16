@@ -30,19 +30,19 @@
 #include "gp2x.h"
 #endif
 #include "menu.h"
-#include "link.h"
+#include "linkapp.h"
 #include "selector.h"
 
 using namespace std;
 
-Selector::Selector(GMenu2X *gmenu2x, Link *link) {
+Selector::Selector(GMenu2X *gmenu2x, LinkApp *link) {
 	this->gmenu2x = gmenu2x;
 	this->link = link;
 	loadAliases();
 	selRow = 0;
 }
 
-bool Selector::exec() {
+int Selector::exec(int startSelection) {
 	bool close = false, result = true;
 
 	vector<string> files, screens, titles;
@@ -54,7 +54,7 @@ bool Selector::exec() {
 
 	browsePath(dir,&files);
 
-	Surface bg("imgs/bg.png");
+	Surface bg("imgs/bg.png",false);
 	gmenu2x->drawTopBar(&bg,40);
 	//link icon
 	if (link->getIcon() != "")
@@ -70,7 +70,7 @@ bool Selector::exec() {
 	gmenu2x->drawButton(&bg, "A", "Cancel", 10));
 
 	Uint32 selTick = SDL_GetTicks(), curTick;
-	uint i, selected = 0, firstElement = 0, iY;
+	uint i, selected = startSelection, firstElement = 0, iY;
 	screens.resize(files.size());
 	titles.resize(files.size());
 
@@ -93,6 +93,7 @@ bool Selector::exec() {
 			screens[i] = "";
 	}
 	
+	gmenu2x->sc.defaultAlpha = false;
 	while (!close) {
 		bg.blit(gmenu2x->s,0,0);
 
@@ -106,15 +107,17 @@ bool Selector::exec() {
 			gmenu2x->s->box(1, iY, 309, 14, gmenu2x->selectionColor);
 
 		//Files
+		gmenu2x->s->setClipRect(0,41,311,179);
 		for (i=firstElement; i<titles.size() && i<firstElement+SELECTOR_ELEMENTS; i++) {
 			iY = i-firstElement;
 			gmenu2x->s->write(gmenu2x->font, titles[i], 4, 49+(iY*16), SFontHAlignLeft, SFontVAlignMiddle);
 		}
+		gmenu2x->s->clearClipRect();
 		
 		if (selected<screens.size() && screens[selected]!="") {
 			curTick = SDL_GetTicks();
 			if (curTick-selTick>200)
-				gmenu2x->sc[screens[selected]]->blitRight(gmenu2x->s, 311, 42, 160, 160);
+				gmenu2x->sc[screens[selected]]->blitRight(gmenu2x->s, 311, 42, 160, 160, min((curTick-selTick-200)/3,255));
 		}
 
 		gmenu2x->drawScrollBar(SELECTOR_ELEMENTS,files.size(),firstElement,42,175);
@@ -191,13 +194,14 @@ bool Selector::exec() {
 		}
 #endif
 	}
+	gmenu2x->sc.defaultAlpha = true;
 	
 	for (i=0; i<screens.size(); i++) {
 		if (screens[i] != "")
 			gmenu2x->sc.del(screens[i]);
 	}
 
-	return result;
+	return result ? (int)selected : -1;
 }
 
 void Selector::browsePath(string path, vector<string>* files) {

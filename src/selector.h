@@ -27,7 +27,7 @@
 
 #define SELECTOR_ELEMENTS 11
 
-class Link;
+class LinkApp;
 
 using std::string;
 using std::vector;
@@ -36,7 +36,7 @@ class Selector {
 private:
 	int selRow;
 	GMenu2X *gmenu2x;
-	Link *link;
+	LinkApp *link;
 
 	hash_map<string, string> aliases;
 	void loadAliases();
@@ -46,9 +46,9 @@ private:
 	
 public:
 	string file;
-	Selector(GMenu2X *gmenu2x, Link *link);
+	Selector(GMenu2X *gmenu2x, LinkApp *link);
 	
-	bool exec();
+	int exec(int startSelection=0);
 };
 
 #endif /*INPUTDIALOG_H_*/

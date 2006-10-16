@@ -59,10 +59,14 @@ private:
 
 	bool inet, usbnet, samba, web;
 	string ip, defaultgw;
+	int lastSelectorElement;
 	void readConfig();
+	void readTmp();
 	void readCommonIni();
 	void writeCommonIni();
 	void initServices();
+
+	uint numRows, numCols;
 
 	bool gp2x_initialized;
 	unsigned long gp2x_mem;
@@ -99,7 +103,9 @@ public:
 	void setClock(unsigned mhz);
 	void setGamma(int gamma);
 	void setInputSpeed();
+
 	void writeConfig();
+	void writeTmp(int selelem=-1);
 
 	void ledOn();
 	void ledOff();

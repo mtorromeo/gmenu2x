@@ -68,11 +68,13 @@ bool DirDialog::exec() {
 		gmenu2x->s->box(2, iY, 308, 16, gmenu2x->selectionColor);
 
 		//Directories
+		gmenu2x->s->setClipRect(0,16,311,204);
 		for (i=firstElement; i<directories.size() && i<firstElement+11; i++) {
 			iY = i-firstElement;
 			gmenu2x->sc["imgs/folder.png"]->blit(gmenu2x->s, 5, 21+(iY*18));
 			gmenu2x->s->write(gmenu2x->font, directories[i], 24, 29+(iY*18), SFontHAlignLeft, SFontVAlignMiddle);
 		}
+		gmenu2x->s->clearClipRect();
 
 		gmenu2x->drawScrollBar(11,directories.size(),firstElement,20,196);
 		gmenu2x->s->flip();

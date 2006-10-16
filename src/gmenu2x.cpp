@@ -33,8 +33,9 @@
 #include <errno.h>
 
 #ifdef TARGET_GP2X
-#include <SDL_gp2x.h>
+//#include <SDL_gp2x.h>
 #include <SDL_joystick.h>
+#include <SDL_image.h>
 #include "gp2x.h"
 #include <sys/fcntl.h> //for battery
 #endif
@@ -44,6 +45,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 
+#include "linkapp.h"
 #include "menu.h"
 #include "asfont.h"
 #include "surface.h"
@@ -113,6 +115,8 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	saveSelection = true;
 	maxClock = 300;
 	menuClock = 100;
+	numRows = 4;
+	numCols = 6;
 	//G gamma = 10;
 	startSectionIndex = 0;
 	startLinkIndex = 0;
@@ -142,12 +146,16 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	s = new Surface();
 	SDL_JoystickOpen(0);
 	s->raw = SDL_SetVideoMode(320, 240, 16, SDL_HWSURFACE|SDL_DOUBLEBUF);
+	//SDL_SetAlpha(s->raw, SDL_SRCALPHA|SDL_RLEACCEL, 255);
 	SDL_ShowCursor(0);
 
+	sc.add("imgs/font.png",false);
 	font = new ASFont( sc["imgs/font.png"]->raw );
 
 	//Menu structure handler
 	menu = new Menu(this,path);
+	menu->numRows = numRows; numRows = 0;
+	menu->numCols = numCols; numCols = 0;
 	for (uint i=0; i<menu->sections.size(); i++) {
 		string sectionIcon = "sections/"+menu->sections[i]+".png";
 		if (fileExists(sectionIcon))
@@ -170,6 +178,11 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	//G if (gamma!=10) setGamma(gamma);
 	setClock(menuClock);
 	//G gp2x_deinit();
+
+	//recover last session
+	readTmp();
+	if (lastSelectorElement>-1 && menu->selLinkApp()!=NULL && menu->selLinkApp()->getSelectorDir()!="")
+		menu->selLinkApp()->run("",lastSelectorElement);
 
 	main();
 	writeConfig();
@@ -212,6 +225,8 @@ void GMenu2X::readConfig() {
 				else if (name=="link") startLinkIndex = atoi(value.c_str());
 				else if (name=="menuClock") menuClock = constrain( atoi(value.c_str()), 50,300 );
 				else if (name=="maxClock") maxClock = constrain( atoi(value.c_str()), 50,300 );
+				else if (name=="numRows") numRows = constrain( atoi(value.c_str()), 2,4 );
+				else if (name=="numCols") numCols = constrain( atoi(value.c_str()), 1,6 );
 				//G else if (name=="gamma") gamma = constrain( atoi(value.c_str()), 1,100 );
 			}
 			inf.close();
@@ -246,6 +261,8 @@ void GMenu2X::writeConfig() {
 		inf << "link=" << startLinkIndex << endl;
 		inf << "menuClock=" << menuClock << endl;
 		inf << "maxClock=" << maxClock << endl;
+		inf << "numRows=" << menu->numRows << endl;
+		inf << "numCols=" << menu->numCols << endl;
 		//G inf << "gamma=" << gamma << endl;
 		inf.close();
 		sync();
@@ -291,6 +308,42 @@ void GMenu2X::readCommonIni() {
 
 void GMenu2X::writeCommonIni() {}
 
+void GMenu2X::readTmp() {
+	lastSelectorElement = -1;
+	if (fileExists("/tmp/gmenu2x.tmp")) {
+		ifstream inf("/tmp/gmenu2x.tmp", ios_base::in);
+		if (inf.is_open()) {
+			string line;
+			string section = "";
+			while (getline(inf, line, '\n')) {
+				string::size_type pos = line.find("=");
+				string name = trim(line.substr(0,pos));
+				string value = trim(line.substr(pos+1,line.length()));
+
+				if (name=="section")
+					menu->setSectionIndex(atoi(value.c_str()));
+				else if (name=="link")
+					menu->setLinkIndex(atoi(value.c_str()));
+				else if (name=="selectorelem")
+					lastSelectorElement = atoi(value.c_str());
+			}
+			inf.close();
+		}
+	}
+}
+
+void GMenu2X::writeTmp(int selelem) {
+	string conffile = "/tmp/gmenu2x.tmp";
+	ofstream inf(conffile.c_str());
+	if (inf.is_open()) {
+		inf << "section=" << menu->selSectionIndex() << endl;
+		inf << "link=" << menu->selLinkIndex() << endl;
+		if (selelem>-1)
+			inf << "selectorelem=" << selelem << endl;
+		inf.close();
+	}
+}
+
 void GMenu2X::initServices() {
 #ifdef TARGET_GP2X
 	if (usbnet) {
@@ -313,13 +366,33 @@ void GMenu2X::ledOff() {
 }
 
 int GMenu2X::main() {
+	uint linksPerPage, linkH, linkW, linkWd2;
+	int iconXOffset, iconTextOffset;
+
 	bool quit = false, useSelectionPng = fileExists("imgs/selection.png");
-	int x,y,ix, offset = menu->links.size()>24 ? 0 : 4;
+	int x,y,ix, offset;
 	uint i;
 	long tickBattery = -60000, tickNow;
 	string batteryIcon = "imgs/battery/0.png";
+	stringstream ss;
+
+	//framerate
+	long tickFPS = SDL_GetTicks();
+	string fps;
 
 	while (!quit) {
+		if (menu->numRows!=numRows || menu->numCols!=numCols) {
+			numRows = menu->numRows;
+			numCols = menu->numCols;
+			linksPerPage = numRows*numCols;
+			linkH = 165/numRows;
+			linkW = 312/numCols;
+			linkWd2 = linkW/2;
+			iconXOffset = (linkW-32)/2; //10
+			iconTextOffset = numRows < 4 ? 2 : 0;
+			offset = menu->links.size()>linksPerPage ? 0 : 4;
+		}
+
 		//Background
 		sc["imgs/bg.png"]->blit(s,0,0);
 
@@ -341,17 +414,18 @@ int GMenu2X::main() {
 		}
 
 		//Links
-		for (i=menu->firstDispRow()*6; i<(menu->firstDispRow()*6)+24 && i<menu->links.size(); i++) {
-			int ir = i-menu->firstDispRow()*6;
-			x = (ir%6)*52+offset;
-			y = (ir/6+1)*41+1;
-			ix = x+10;
+		s->setClipRect(offset,42,311,166);
+		for (i=menu->firstDispRow()*numCols; i<(menu->firstDispRow()*numCols)+linksPerPage && i<menu->links.size(); i++) {
+			int ir = i-menu->firstDispRow()*numCols;
+			x = (ir%numCols)*linkW+offset;
+			y = ir/numCols*linkH+42;
+			ix = x+iconXOffset;
 
 			if (menu->selLink()==menu->links[i]) {
 				if (useSelectionPng)
-					sc["imgs/selection.png"]->blitCenter(s,x+25,y+20);
+					sc["imgs/selection.png"]->blitCenter(s,x+linkWd2,y+20);
 				else
-					s->box(x, y, 50, 41, selectionColor);
+					s->box(x, y, linkW, 41+iconTextOffset, selectionColor);
 			}
 
 			if (menu->links[i]->getIcon() != "")
@@ -359,13 +433,15 @@ int GMenu2X::main() {
 			else
 				sc["icons/generic.png"]->blit(s,ix,y,32,32);
 
-			s->write( font, menu->links[i]->getTitle(), ix+16, y+43, SFontHAlignCenter, SFontVAlignBottom );
+			s->write( font, menu->links[i]->getTitle(), ix+16, y+43+iconTextOffset, SFontHAlignCenter, SFontVAlignBottom );
 		}
-		drawScrollBar(4,menu->links.size()/6 + ((menu->links.size()%6==0) ? 0 : 1),menu->firstDispRow(),43,159);
+		s->clearClipRect();
+		drawScrollBar(numRows,menu->links.size()/numCols + ((menu->links.size()%numCols==0) ? 0 : 1),menu->firstDispRow(),43,159);
 
 		if (menu->selLink()!=NULL) {
 			s->write ( font, menu->selLink()->getDescription(), 160, 221, SFontHAlignCenter, SFontVAlignBottom );
-			s->write ( font, menu->selLink()->clockStr(maxClock), cpuX, 230, SFontHAlignLeft, SFontVAlignMiddle );
+			if (menu->selLinkApp()!=NULL)
+				s->write ( font, menu->selLinkApp()->clockStr(maxClock), cpuX, 230, SFontHAlignLeft, SFontVAlignMiddle );
 		}
 
 		//battery
@@ -377,13 +453,21 @@ int GMenu2X::main() {
 			if (battlevel>5) {
 				batteryIcon = "imgs/battery/ac.png";
 			} else {
-				stringstream ss;
+				ss.clear();
 				ss << battlevel;
 				ss >> batteryIcon;
 				batteryIcon = "imgs/battery/"+batteryIcon+".png";
 			}
 		}
 		sc[batteryIcon]->blit( s, 301, 222 );
+
+		//framerate
+		ss.clear();
+		ss << 1000/(tickNow-tickFPS);
+		ss >> fps;
+		fps += " FPS";
+		tickFPS = tickNow;
+		s->write( font, fps, 319,1 ,SFontHAlignRight );
 
 #ifdef TARGET_GP2X
 		joy.update();
@@ -394,19 +478,19 @@ int GMenu2X::main() {
 		if ( joy[GP2X_BUTTON_UP   ] ) menu->linkUp();
 		if ( joy[GP2X_BUTTON_DOWN ] ) menu->linkDown();
 		// CLOCK
-		if ( joy[GP2X_BUTTON_VOLDOWN] && !joy[GP2X_BUTTON_VOLUP] )
-			menu->selLink()->setClock( constrain(menu->selLink()->clock()-1,50,maxClock) );
-		if ( joy[GP2X_BUTTON_VOLUP] && !joy[GP2X_BUTTON_VOLDOWN] )
-			menu->selLink()->setClock( constrain(menu->selLink()->clock()+1,50,maxClock) );
-		if ( joy[GP2X_BUTTON_VOLUP] && joy[GP2X_BUTTON_VOLDOWN] ) menu->selLink()->setClock(200);
+		if ( joy[GP2X_BUTTON_VOLDOWN] && !joy[GP2X_BUTTON_VOLUP] && menu->selLinkApp()!=NULL )
+			menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-1,50,maxClock) );
+		if ( joy[GP2X_BUTTON_VOLUP] && !joy[GP2X_BUTTON_VOLDOWN] && menu->selLinkApp()!=NULL )
+			menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+1,50,maxClock) );
+		if ( joy[GP2X_BUTTON_VOLUP] && joy[GP2X_BUTTON_VOLDOWN] && menu->selLinkApp()!=NULL ) menu->selLinkApp()->setClock(200);
 		// SECTIONS
 		if ( joy[GP2X_BUTTON_L     ] ) {
 			menu->decSectionIndex();
-			offset = menu->links.size()>24 ? 0 : 4;
+			offset = menu->links.size()>linksPerPage ? 0 : 4;
 		}
 		if ( joy[GP2X_BUTTON_R     ] ) {
 			menu->incSectionIndex();
-			offset = menu->links.size()>24 ? 0 : 4;
+			offset = menu->links.size()>linksPerPage ? 0 : 4;
 		}
 		if ( joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK] && menu->selLink()!=NULL ) menu->selLink()->run();
 		if ( joy[GP2X_BUTTON_SELECT] ) contextMenu();
@@ -421,18 +505,18 @@ int GMenu2X::main() {
 				if ( event.key.keysym.sym==SDLK_UP     ) menu->linkUp();
 				if ( event.key.keysym.sym==SDLK_DOWN   ) menu->linkDown();
 				// CLOCK
-				if ( event.key.keysym.sym==SDLK_z      )
-					menu->selLink()->setClock( constrain(menu->selLink()->clock()-1,50,maxClock) );
-				if ( event.key.keysym.sym==SDLK_x      )
-					menu->selLink()->setClock( constrain(menu->selLink()->clock()+1,50,maxClock) );
+				if ( event.key.keysym.sym==SDLK_z && menu->selLinkApp()!=NULL )
+					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-1,50,maxClock) );
+				if ( event.key.keysym.sym==SDLK_x && menu->selLinkApp()!=NULL )
+					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+1,50,maxClock) );
 				// SECTIONS
 				if ( event.key.keysym.sym==SDLK_q      ) {
 					menu->decSectionIndex();
-					offset = menu->links.size()>24 ? 0 : 4;
+					offset = menu->links.size()>linksPerPage ? 0 : 4;
 				}
 				if ( event.key.keysym.sym==SDLK_w      ) {
 					menu->incSectionIndex();
-					offset = menu->links.size()>24 ? 0 : 4;
+					offset = menu->links.size()>linksPerPage ? 0 : 4;
 				}
 				if ( event.key.keysym.sym==SDLK_s      ) options();
 				if ( event.key.keysym.sym==SDLK_RETURN && menu->selLink()!=NULL ) menu->selLink()->run();
@@ -455,10 +539,13 @@ void GMenu2X::options() {
 	sd.addSetting(new MenuSettingBool(this,"Save last selection","Save the last selected link and section on exit",&saveSelection));
 	sd.addSetting(new MenuSettingInt(this,"Clock for GMenu2X","Set the cpu working frequency when running GMenu2X",&menuClock,50,325));
 	sd.addSetting(new MenuSettingInt(this,"Maximum overclock","Set the maximum overclock for launching links",&maxClock,50,325));
-	//G sd.addSetting(new MenuSettingInt(this,"Gamma","Set gp2x gamma value (default=10)",&gamma,1,100));
+	sd.addSetting(new MenuSettingInt(this,"Number of columns","Set the number of columns of links to display on a page",(int*)&menu->numCols,1,6));
+	sd.addSetting(new MenuSettingInt(this,"Number of rows","Set the number of rows of links to display on a page",(int*)&menu->numRows,2,4));
+	//G sd.addSetting(new MenuSettingInt(this," = SDL_GetTicks()Gamma","Set gp2x gamma value (default=10)",&gamma,1,100));
 	sd.addSetting(new MenuSettingRGBA(this,"Top Bar Color","Color of the top bar",&topBarColor));
 	sd.addSetting(new MenuSettingRGBA(this,"Bottom Bar Color","Color of the bottom bar",&bottomBarColor));
 	sd.addSetting(new MenuSettingRGBA(this,"Selection Color","Color of the selection and other interface details",&selectionColor));
+
 	if (sd.exec() && sd.edited()) {
 		//G if (prevgamma!=gamma) setGamma(gamma);
 		if (curMenuClock!=menuClock) setClock(menuClock);
@@ -478,7 +565,7 @@ void GMenu2X::contextMenu() {
 	voices.push_back(opt);
 	}
 
-	if (menu->selLink()!=NULL) {
+	if (menu->selLinkApp()!=NULL) {
 		{
 		MenuOption opt = {"Edit "+menu->selLink()->getTitle(), MakeDelegate(this, &GMenu2X::editLink)};
 		voices.push_back(opt);
@@ -567,22 +654,24 @@ void GMenu2X::addLink() {
 }
 
 void GMenu2X::editLink() {
+	if (menu->selLinkApp()==NULL) return;
+
 	vector<string> pathV;
-	split(pathV,menu->selLink()->file,"/");
+	split(pathV,menu->selLinkApp()->file,"/");
 	string oldSection = "";
 	if (pathV.size()>1)
 		oldSection = pathV[pathV.size()-2];
 	string newSection = oldSection;
 
-	string linkTitle = menu->selLink()->getTitle();
-	string linkDescription = menu->selLink()->getDescription();
-	string linkIcon = menu->selLink()->getIcon();
-	string linkParams = menu->selLink()->getParams();
-	string linkSelFilter = menu->selLink()->getSelectorFilter();
-	string linkSelDir = menu->selLink()->getSelectorDir();
-	string linkSelScreens = menu->selLink()->getSelectorScreens();
-	string linkSelAliases = menu->selLink()->getAliasFile();
-	int linkClock = menu->selLink()->clock();
+	string linkTitle = menu->selLinkApp()->getTitle();
+	string linkDescription = menu->selLinkApp()->getDescription();
+	string linkIcon = menu->selLinkApp()->getIcon();
+	string linkParams = menu->selLinkApp()->getParams();
+	string linkSelFilter = menu->selLinkApp()->getSelectorFilter();
+	string linkSelDir = menu->selLinkApp()->getSelectorDir();
+	string linkSelScreens = menu->selLinkApp()->getSelectorScreens();
+	string linkSelAliases = menu->selLinkApp()->getAliasFile();
+	int linkClock = menu->selLinkApp()->clock();
 	//G int linkGamma = menu->selLink()->gamma();
 
 	SettingsDialog sd(this,"Edit link");
@@ -595,24 +684,24 @@ void GMenu2X::editLink() {
 	sd.addSetting(new MenuSettingDir(this,"Selector Directory","Directory to scan for the selector",&linkSelDir));
 	sd.addSetting(new MenuSettingString(this,"Selector Filter","Filter for the selector (Separate values with a comma)",&linkSelFilter));
 	sd.addSetting(new MenuSettingDir(this,"Selector Screenshots","Directory of the screenshots for the selector",&linkSelScreens));
-	sd.addSetting(new MenuSettingFile(this,"Selector Aliases","File containing a list of aliases to use for the selector's files",&linkSelAliases));
+	sd.addSetting(new MenuSettingFile(this,"Selector Aliases","File containing a list of aliases for the selector",&linkSelAliases));
 	//G sd.addSetting(new MenuSettingInt(this,"Gamma (0=default)","Gamma value to set when launching this link",&linkGamma,0,100));
-	sd.addSetting(new MenuSettingBool(this,"Wrapper","Explicitly relaunch GMenu2X after this link's execution ends",&menu->selLink()->wrapper));
-	sd.addSetting(new MenuSettingBool(this,"Don't Leave","Don't quit GMenu2X when launching this link",&menu->selLink()->dontleave));
+	sd.addSetting(new MenuSettingBool(this,"Wrapper","Explicitly relaunch GMenu2X after this link's execution ends",&menu->selLinkApp()->wrapper));
+	sd.addSetting(new MenuSettingBool(this,"Don't Leave","Don't quit GMenu2X when launching this link",&menu->selLinkApp()->dontleave));
 
 	if (sd.exec() && sd.edited()) {
 		ledOn();
 
-		menu->selLink()->setTitle(linkTitle);
-		menu->selLink()->setDescription(linkDescription);
-		menu->selLink()->setIcon(linkIcon);
-		menu->selLink()->setParams(linkParams);
-		menu->selLink()->setSelectorFilter(linkSelFilter);
-		menu->selLink()->setSelectorDir(linkSelDir);
-		menu->selLink()->setSelectorScreens(linkSelScreens);
-		menu->selLink()->setAliasFile(linkSelAliases);
-		menu->selLink()->setClock(linkClock);
-		//G menu->selLink()->setGamma(linkGamma);
+		menu->selLinkApp()->setTitle(linkTitle);
+		menu->selLinkApp()->setDescription(linkDescription);
+		menu->selLinkApp()->setIcon(linkIcon);
+		menu->selLinkApp()->setParams(linkParams);
+		menu->selLinkApp()->setSelectorFilter(linkSelFilter);
+		menu->selLinkApp()->setSelectorDir(linkSelDir);
+		menu->selLinkApp()->setSelectorScreens(linkSelScreens);
+		menu->selLinkApp()->setAliasFile(linkSelAliases);
+		menu->selLinkApp()->setClock(linkClock);
+		//G menu->selLinkApp()->setGamma(linkGamma);
 
 		//if section changed move file and update link->file
 		if (oldSection!=newSection) {
@@ -625,10 +714,10 @@ void GMenu2X::editLink() {
 				newFileName = "sections/"+newSection+"/"+linkTitle+id;
 				x++;
 			}
-			rename(menu->selLink()->file.c_str(),newFileName.c_str());
-			menu->selLink()->file = newFileName;
+			rename(menu->selLinkApp()->file.c_str(),newFileName.c_str());
+			menu->selLinkApp()->file = newFileName;
 		}
-		menu->selLink()->save();
+		menu->selLinkApp()->save();
 		sync();
 
 		ledOff();
@@ -639,8 +728,8 @@ void GMenu2X::editLink() {
 
 void GMenu2X::deleteLink() {
 	ledOn();
-	unlink(menu->selLink()->file.c_str());
-	sc.del(menu->selLink()->getIcon());
+	unlink(menu->selLinkApp()->file.c_str());
+	sc.del(menu->selLinkApp()->getIcon());
 	menu->setSectionIndex( menu->selSectionIndex() ); //Force a reload of current section links
 	sync();
 	ledOff();
@@ -680,8 +769,11 @@ bool GMenu2X::createLink(string path, string file, string section) {
 		x++;
 	}
 
-	if (title.length()>9) {
-		title = title.substr(0,7)+"..";
+	int linkW = 312/menu->numCols;
+	if (font->getTextWidth(title)>linkW) {
+		while (font->getTextWidth(title+"..")>linkW)
+			title = title.substr(0,title.length()-1);
+		title += "..";
 	}
 
 	ofstream f(linkpath.c_str());
@@ -908,15 +1000,14 @@ void GMenu2X::setGamma(int gamma) {
 	bool alreadyInited = gp2x_initialized;
 	if (!alreadyInited) gp2x_init();
 
-	float fgamma = (float)constrain(gamma,1,100)/10.0;
+	float fgamma = (float)constrain(gamma,1,100)/10;
 	fgamma = 1 / fgamma;
 	MEM_REG[0x2880>>1]&=~(1<<12);
 	MEM_REG[0x295C>>1]=0;
 
 	for (int i=0; i<256; i++) {
-		unsigned short s;
 		unsigned char g = (unsigned char)(255.0*pow(i/255.0,fgamma));
-		s = (g<<8) | g;
+		unsigned short s = (g<<8) | g;
 		MEM_REG[0x295E>>1]= s;
 		MEM_REG[0x295E>>1]= g;
 	}
@@ -955,6 +1046,7 @@ string GMenu2X::getDiskFree() {
 
 void GMenu2X::initBG() {
 	sc.del("imgs/bg.png");
+	sc.add("imgs/bg.png",false);
 
 	drawTopBar(sc["imgs/bg.png"],40);
 	drawBottomBar(sc["imgs/bg.png"]);

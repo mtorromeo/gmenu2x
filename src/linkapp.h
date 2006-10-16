@@ -17,39 +17,71 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef LINK_H
-#define LINK_H
+#ifndef LINKAPP_H
+#define LINKAPP_H
 
 #include <string>
 #include <iostream>
+
+#include "link.h"
 
 using std::string;
 
 class GMenu2X;
 
 /**
-Base class that represents a link on screen.
+Parses links files.
 
 	@author Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
 */
-class Link {
-protected:
-	GMenu2X *gmenu2x;
-	bool edited;
-	string title, description, icon;
+class LinkApp : public Link {
+private:
+	string path, sclock;
+	int iclock;
+	//G string sgamma;
+	//G int igamma;
+	string exec, params, workdir, selectordir, selectorfilter, selectorscreens;
+	void drawRun();
+
+	string aliasfile;
 
 public:
-	Link(GMenu2X *gmenu2x);
-	virtual ~Link() {};
+	LinkApp(GMenu2X *gmenu2x, string path, const char* linkfile);
 
-	string getTitle();
-	void setTitle(string title);
-	string getDescription();
-	void setDescription(string description);
-	string getIcon();
-	void setIcon(string icon);
+	string getExec();
+	void setExec(string exec);
+	string getParams();
+	void setParams(string params);
+	string getWorkdir();
+	void setWorkdir(string workdir);
+	string getSelectorDir();
+	void setSelectorDir(string selectordir);
+	string getSelectorScreens();
+	void setSelectorScreens(string selectorscreens);
+	string getSelectorFilter();
+	void setSelectorFilter(string selectorfilter);
+	string getAliasFile();
+	void setAliasFile(string aliasfile);
 
-	virtual void run();
+	string file;
+
+	int clock();
+	string clockStr(int maxClock);
+	void setClock(int mhz);
+
+/*G
+	int gamma();
+	string gammaStr();
+	void setGamma(int gamma);
+*/
+
+	bool wrapper;
+	bool dontleave;
+
+	bool save();
+	void run();
+	void run(string selectedFile, int startSelection=0);
+	bool targetExists();
 };
 
 #endif

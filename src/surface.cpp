@@ -30,15 +30,17 @@ Surface::Surface() {
 	raw = NULL;
 }
 
-Surface::Surface(string img) {
+Surface::Surface(string img, bool alpha) {
 	raw = NULL;
-	load(img);
+	load(img, alpha);
 	halfW = raw->w/2;
 	halfH = raw->h/2;
 }
 
-Surface::Surface(SDL_Surface *s) {
-	raw = SDL_ConvertSurface( s, s->format, s->flags );
+Surface::Surface(SDL_Surface *s, SDL_PixelFormat *fmt, Uint32 flags) {
+	if (fmt==NULL) fmt = s->format;
+	if (flags==0) flags = s->flags;
+	raw = SDL_ConvertSurface( s, fmt, flags );
 	halfW = raw->w/2;
 	halfH = raw->h/2;
 }
@@ -82,12 +84,14 @@ SDL_PixelFormat *Surface::format() {
 		return raw->format;
 }
 
-void Surface::load(string img) {
+void Surface::load(string img, bool alpha) {
 	free();
 	SDL_Surface *buf = IMG_Load(img.c_str());
 	if (buf!=NULL) {
-		//raw = SDL_DisplayFormat(buf);
-		raw = SDL_DisplayFormatAlpha(buf);
+		if (alpha)
+			raw = SDL_DisplayFormatAlpha(buf);
+		else
+			raw = SDL_DisplayFormat(buf);
 		SDL_FreeSurface(buf);
 	}
 }
@@ -113,61 +117,106 @@ void Surface::flip() {
 	SDL_Flip(raw);
 }
 
-bool Surface::blit(SDL_Surface *destination, int x, int y, int w, int h) {
+bool Surface::blit(SDL_Surface *destination, int x, int y, int w, int h, int a) {
+	if (destination == NULL || a==0) return false;
+
 	SDL_Rect src = {0,0,w,h};
 	SDL_Rect dest;
 	dest.x = x;
 	dest.y = y;
+	if (a>0 && a!=raw->format->alpha)
+		SDL_SetAlpha(raw, SDL_SRCALPHA|SDL_RLEACCEL, a);
 	return SDL_BlitSurface(raw, (w==0 || h==0) ? NULL : &src, destination, &dest);
 }
-bool Surface::blit(Surface *destination, int x, int y, int w, int h) {
-	return blit(destination->raw,x,y,w,h);
+bool Surface::blit(Surface *destination, int x, int y, int w, int h, int a) {
+	return blit(destination->raw,x,y,w,h,a);
 }
 
-bool Surface::blitCenter(SDL_Surface *destination, int x, int y, int w, int h) {
+bool Surface::blitCenter(SDL_Surface *destination, int x, int y, int w, int h, int a) {
 	int oh, ow;
 	if (w==0) ow = halfW; else ow = min(halfW,w/2);
 	if (h==0) oh = halfH; else oh = min(halfH,h/2);
-	return blit(destination,x-ow,y-oh,w,h);
+	return blit(destination,x-ow,y-oh,w,h,a);
 }
-bool Surface::blitCenter(Surface *destination, int x, int y, int w, int h) {
-	return blitCenter(destination->raw,x,y,w,h);
+bool Surface::blitCenter(Surface *destination, int x, int y, int w, int h, int a) {
+	return blitCenter(destination->raw,x,y,w,h,a);
 }
 
-bool Surface::blitRight(SDL_Surface *destination, int x, int y, int w, int h) {
-	return blit(destination,x-min(raw->w,w),y,w,h);
+bool Surface::blitRight(SDL_Surface *destination, int x, int y, int w, int h, int a) {
+	return blit(destination,x-min(raw->w,w),y,w,h,a);
 }
-bool Surface::blitRight(Surface *destination, int x, int y, int w, int h) {
-	return blitRight(destination->raw,x,y,w,h);
+bool Surface::blitRight(Surface *destination, int x, int y, int w, int h, int a) {
+	return blitRight(destination->raw,x,y,w,h,a);
+}
+
+void Surface::putPixel(int x, int y, SDL_Color color) {
+	putPixel(x,y, SDL_MapRGB( raw->format , color.r , color.g , color.b ));
 }
 
 void Surface::putPixel(int x, int y, Uint32 color) {
-	int bpp = raw->format->BytesPerPixel;
-	// Here p is the address to the pixel we want to set
-	Uint8 *p = (Uint8 *)raw->pixels + y * raw->pitch + x * bpp;
+	//determine position
+	char* pPosition = ( char* ) raw->pixels ;
+	//offset by y
+	pPosition += ( raw->pitch * y ) ;
+	//offset by x
+	pPosition += ( raw->format->BytesPerPixel * x ) ;
+	//copy pixel data
+	memcpy ( pPosition , &color , raw->format->BytesPerPixel ) ;
+}
 
-	switch(bpp) {
-	case 1:
-			*p = color;
-			break;
-	case 2:
-			*(Uint16 *)p = color;
-			break;
-	case 3:
-			if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-					p[0] = (color >> 16) & 0xff;
-					p[1] = (color >> 8) & 0xff;
-					p[2] = color & 0xff;
-			} else {
-					p[0] = color & 0xff;
-					p[1] = (color >> 8) & 0xff;
-					p[2] = (color >> 16) & 0xff;
+SDL_Color Surface::pixelColor(int x, int y) {
+	SDL_Color color;
+	Uint32 col = pixel(x,y);
+	SDL_GetRGB( col, raw->format, &color.r, &color.g, &color.b );
+	return color;
+}
+
+Uint32 Surface::pixel(int x, int y) {
+	//determine position
+	char* pPosition = ( char* ) raw->pixels ;
+	//offset by y
+	pPosition += ( raw->pitch * y ) ;
+	//offset by x
+	pPosition += ( raw->format->BytesPerPixel * x ) ;
+	//copy pixel data
+	Uint32 col = 0;
+	memcpy ( &col , pPosition , raw->format->BytesPerPixel ) ;
+	return col;
+}
+
+void Surface::blendAdd(Surface *target, int x, int y) {
+	SDL_Color targetcol, blendcol;
+	for (int iy=0; iy<raw->h; iy++)
+		if (iy+y >= 0 && iy+y < target->raw->h)
+			for (int ix=0; ix<raw->w; ix++) {
+				if (ix+x >= 0 && ix+x < target->raw->w) {
+					blendcol = pixelColor(ix,iy);
+					targetcol = target->pixelColor(ix+x,iy+y);
+					targetcol.r = min(targetcol.r+blendcol.r, 255);
+					targetcol.g = min(targetcol.g+blendcol.g, 255);
+					targetcol.b = min(targetcol.b+blendcol.b, 255);
+					target->putPixel(ix+x,iy+y,targetcol);
+				}
 			}
-			break;
-	case 4:
-			*(Uint32 *)p = color;
-			break;
-	}
+
+/*
+	Uint32 bcol, tcol;
+	char *pPos, *tpPos;
+	for (int iy=0; iy<raw->h; iy++)
+		if (iy+y >= 0 && iy+y < target->raw->h) {
+			pPos = (char*)raw->pixels + raw->pitch*iy;
+			tpPos = (char*)target->raw->pixels + target->raw->pitch*(iy+y);
+
+			for (int ix=0; ix<raw->w; ix++) {
+				memcpy(&bcol, pPos, raw->format->BytesPerPixel);
+				memcpy(&tcol, tpPos, target->raw->format->BytesPerPixel);
+				//memcpy(tpPos, &bcol, target->raw->format->BytesPerPixel);
+				pPos += raw->format->BytesPerPixel;
+				tpPos += target->raw->format->BytesPerPixel;
+				target->putPixel(ix+x,iy+y,bcol);
+			}
+		}
+*/
 }
 
 void Surface::write(ASFont *font, string text, int x, int y, const unsigned short halign, const unsigned short valign) {
@@ -198,4 +247,13 @@ int Surface::hline(Sint16 x, Sint16 y, Sint16 w, Uint8 r, Uint8 g, Uint8 b, Uint
 }
 int Surface::hline(Sint16 x, Sint16 y, Sint16 w, RGBAColor c) {
 	return hline(x,y,w,c.r,c.g,c.b,c.a);
+}
+
+void Surface::clearClipRect() {
+	SDL_SetClipRect(raw,NULL);
+}
+
+void Surface::setClipRect(int x, int y, int w, int h) {
+	SDL_Rect rect = {x,y,w,h};
+	SDL_SetClipRect(raw,&rect);
 }

@@ -33,11 +33,13 @@ private:
 	hash_map<string, Surface*> surfaces;
 
 public:
-	SurfaceCollection();
+	SurfaceCollection(bool defaultAlpha=true);
 	~SurfaceCollection();
 
+	bool defaultAlpha;
 	void debug();
-	Surface *add(string path);
+	Surface *add(Surface *s, string path);
+	Surface *add(string path, bool alpha=true);
 	void     del(string path);
 	void     move(string from, string to);
 	bool     exists(string path);

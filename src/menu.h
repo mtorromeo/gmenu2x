@@ -20,13 +20,16 @@
 #ifndef MENU_H
 #define MENU_H
 
+#include <string>
 #include <vector>
-#include "link.h"
 #include "SFont.h"
-#include "gmenu2x.h"
 
 using std::string;
 using std::vector;
+
+class Link;
+class LinkApp;
+class GMenu2X;
 
 /**
 Handles the menu structure
@@ -46,6 +49,8 @@ public:
 	Menu(GMenu2X *gmenu2x, string path);
 	~Menu();
 
+	uint numRows, numCols;
+
 	vector<string> sections;
 	int selSectionIndex();
 	string selSection();
@@ -58,6 +63,7 @@ public:
 	vector<Link*> links;
 	int selLinkIndex();
 	Link *selLink();
+	LinkApp *selLinkApp();
 	void linkLeft();
 	void linkRight();
 	void linkUp();

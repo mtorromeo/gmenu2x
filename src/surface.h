@@ -44,8 +44,8 @@ private:
 
 public:
 	Surface();
-	Surface(string img);
-	Surface(SDL_Surface *s);
+	Surface(string img, bool alpha=true);
+	Surface(SDL_Surface *s, SDL_PixelFormat *fmt = NULL, Uint32 flags = 0);
 	Surface(Surface *s);
 	Surface(int w, int h, Uint32 flags = SDL_HWSURFACE|SDL_SRCALPHA);
 	~Surface();
@@ -53,19 +53,28 @@ public:
 	SDL_Surface *raw;
 
 	void free();
-	void load(string img);
+	void load(string img, bool alpha=true);
 	void lock();
 	void unlock();
 	void flip();
 	SDL_PixelFormat *format();
-	void putPixel(int,int,Uint32);
 
-	bool blit(Surface *destination, int x, int y, int w=0, int h=0);
-	bool blit(SDL_Surface *destination, int x, int y, int w=0, int h=0);
-	bool blitCenter(Surface *destination, int x, int y, int w=0, int h=0);
-	bool blitCenter(SDL_Surface *destination, int x, int y, int w=0, int h=0);
-	bool blitRight(Surface *destination, int x, int y, int w=0, int h=0);
-	bool blitRight(SDL_Surface *destination, int x, int y, int w=0, int h=0);
+	void putPixel(int,int,SDL_Color);
+	void putPixel(int,int,Uint32);
+	SDL_Color pixelColor(int,int);
+	Uint32 pixel(int,int);
+
+	void blendAdd(Surface*, int,int);
+
+	void clearClipRect();
+	void setClipRect(int x, int y, int w, int h);
+
+	bool blit(Surface *destination, int x, int y, int w=0, int h=0, int a=-1);
+	bool blit(SDL_Surface *destination, int x, int y, int w=0, int h=0, int a=-1);
+	bool blitCenter(Surface *destination, int x, int y, int w=0, int h=0, int a=-1);
+	bool blitCenter(SDL_Surface *destination, int x, int y, int w=0, int h=0, int a=-1);
+	bool blitRight(Surface *destination, int x, int y, int w=0, int h=0, int a=-1);
+	bool blitRight(SDL_Surface *destination, int x, int y, int w=0, int h=0, int a=-1);
 
 	void write(ASFont *font, string text, int x, int y, const unsigned short halign=0, const unsigned short valign=0);
 

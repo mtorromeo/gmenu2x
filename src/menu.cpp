@@ -21,7 +21,11 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
+
+#include "link.h"
+#include "linkapp.h"
 #include "menu.h"
+#include "utilities.h"
 
 using namespace std;
 
@@ -29,6 +33,9 @@ Menu::Menu(GMenu2X *gmenu2x, string path) {
 	this->gmenu2x = gmenu2x;
 	this->path = path;
 	iFirstDispSection = 0;
+
+	numRows = 4;
+	numCols = 6;
 
 	DIR *dirp;
 	struct stat st;
@@ -96,34 +103,34 @@ uint Menu::firstDispSection() {
 }
 
 void Menu::linkLeft() {
-	if (iLink%6 == 0)
-		setLinkIndex( (int)links.size()>iLink+5 ? iLink+5 : links.size()-1 );
+	if (iLink%numCols == 0)
+		setLinkIndex( links.size()>iLink+numCols-1 ? iLink+numCols-1 : links.size()-1 );
 	else
 		setLinkIndex(iLink-1);
 }
 
 void Menu::linkRight() {
-	if (iLink%6 == 5 || iLink == (int)links.size()-1)
-		setLinkIndex(iLink-iLink%6);
+	if (iLink%numCols == (numCols-1) || iLink == (int)links.size()-1)
+		setLinkIndex(iLink-iLink%numCols);
 	else
 		setLinkIndex(iLink+1);
 }
 
 void Menu::linkUp() {
-	int l = iLink-6;
+	int l = iLink-numCols;
 	if (l<0) {
-		int rows = links.size()/6+1;
-		l = (rows*6)+l;
+		int rows = links.size()/numCols+1;
+		l = (rows*numCols)+l;
 		if (l >= (int)links.size())
-			l -= 6;
+			l -= numCols;
 	}
 	setLinkIndex(l);
 }
 
 void Menu::linkDown() {
-	uint l = iLink+6;
+	uint l = iLink+numCols;
 	if (l >= links.size())
-		l %= 6;
+		l %= numCols;
 	setLinkIndex(l);
 }
 
@@ -140,16 +147,20 @@ Link *Menu::selLink() {
 	return links[iLink];
 }
 
+LinkApp *Menu::selLinkApp() {
+	return dynamic_cast<LinkApp*>(selLink());
+}
+
 void Menu::setLinkIndex(int i) {
 	if (i<0)
 		i=links.size()-1;
 	else if (i>=(int)links.size())
 		i=0;
 
-	if (i>=(int)iFirstDispRow*6+24)
-		iFirstDispRow = i/6-3;
-	else if (i<(int)iFirstDispRow*6)
-		iFirstDispRow = i/6;
+	if (i>=(int)(iFirstDispRow*numCols+numCols*numRows))
+		iFirstDispRow = i/numCols-numRows+1;
+	else if (i<(int)(iFirstDispRow*numCols))
+		iFirstDispRow = i/numCols;
 
 	iLink = i;
 }
@@ -185,7 +196,7 @@ void Menu::readLinks() {
 	
 	sort(linkfiles.begin(), linkfiles.end(),case_less());
 	for (uint x=0; x<linkfiles.size(); x++) {
-		Link *link = new Link(gmenu2x, path, linkfiles[x].c_str());
+		LinkApp *link = new LinkApp(gmenu2x, path, linkfiles[x].c_str());
 		if (link->targetExists())
 			links.push_back( link );
 		else

@@ -22,7 +22,9 @@
 
 using namespace std;
 
-SurfaceCollection::SurfaceCollection() {}
+SurfaceCollection::SurfaceCollection(bool defaultAlpha) {
+	this->defaultAlpha = defaultAlpha;
+}
 
 SurfaceCollection::~SurfaceCollection() {}
 
@@ -37,9 +39,15 @@ bool SurfaceCollection::exists(string path) {
 	return surfaces.find(path) != surfaces.end();
 }
 
-Surface *SurfaceCollection::add(string path) {
+Surface *SurfaceCollection::add(Surface *s, string path) {
 	cout << "\033[0;34mGMENU2X:\033[0m Adding surface '" << path << "'" << endl;
-	Surface *s = new Surface(path);
+	surfaces[path] = s;
+	return s;
+}
+
+Surface *SurfaceCollection::add(string path, bool alpha) {
+	cout << "\033[0;34mGMENU2X:\033[0m Adding surface '" << path << "'" << endl;
+	Surface *s = new Surface(path,alpha);
 	surfaces[path] = s;
 	return s;
 }
@@ -49,6 +57,7 @@ void SurfaceCollection::del(string path) {
 	if (i != surfaces.end()) {
 		free(i->second);
 		surfaces.erase(i);
+		cout << "\033[0;34mGMENU2X:\033[0m Freed surface '" << path << "'" << endl;
 	}
 }
 
@@ -61,7 +70,7 @@ void SurfaceCollection::move(string from, string to) {
 Surface *SurfaceCollection::operator[](string key) {
 	hash_map<string, Surface*>::iterator i = surfaces.find(key);
 	if (i == surfaces.end())
-		return add(key);
+		return add(key, defaultAlpha);
 	else
 		return i->second;
 }

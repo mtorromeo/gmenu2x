@@ -58,16 +58,20 @@ bool SettingsDialog::exec() {
 		//selection
 		iY = sel-firstElement;
 		iY = 18+(iY*17);
+		gmenu2x->s->setClipRect(0,16,311,192);
 		if (sel<voices.size())
-			gmenu2x->s->box(2, iY, 158, 16, gmenu2x->selectionColor);
+			gmenu2x->s->box(2, iY, 148, 16, gmenu2x->selectionColor);
 
 		//selected option
+		gmenu2x->s->clearClipRect();
 		voices[sel]->drawSelected(iY);
+		gmenu2x->s->setClipRect(0,16,311,192);
 
 		for (i=firstElement; i<voices.size() && i<firstElement+11; i++) {
 			iY = i-firstElement;
 			voices[i]->draw(iY*17+18);
 		}
+		gmenu2x->s->clearClipRect();
 
 		gmenu2x->drawScrollBar(11,voices.size(),firstElement,18,186);
 		//description at bottom
