@@ -1,0 +1,6 @@
+title=eBook
+icon=icons/ebook.png
+exec=/usr/gp2x/gp2xmenu
+params=--disable-autorun --enable-terminate --view-ebook
+clock=75
+wrapper=true

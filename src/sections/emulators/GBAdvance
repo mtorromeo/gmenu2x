@@ -1,0 +1,9 @@
+title=GBAdvance
+description=vba2xg
+icon=/mnt/sd/Icons/Videogames/gba-purple.png
+exec=/mnt/sd/vba2x/vba.gpe
+clock=280
+selectordir=/mnt/sd/roms/gba/
+selectorfilter=.zip,.vba
+selectorscreens=/mnt/sd/roms/gba
+wrapper=true

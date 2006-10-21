@@ -1,0 +1,5 @@
+title=PcEngine
+description=gp2xengine
+icon=/mnt/sd/Icons/Videogames/tg16.png
+exec=/mnt/sd/gp2xengine/gp2xengine.gpe
+clock=200

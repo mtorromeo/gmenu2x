@@ -1,0 +1,7 @@
+title=USB Off
+description=Deactivate USB connection
+icon=icons/usb.png
+exec=/bin/sh
+params=scripts/usboff.sh
+workdir=.
+dontleave=true
