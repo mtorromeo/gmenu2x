@@ -1,4 +1,0 @@
-title=eBook
-icon=icons/ebook.png
-exec=/usr/gp2x/EBookViewer
-wrapper=true

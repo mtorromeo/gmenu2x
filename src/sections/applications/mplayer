@@ -1,4 +1,0 @@
-title=Movies
-icon=icons/mplayer.png
-exec=/usr/gp2x/mplayer
-wrapper=true

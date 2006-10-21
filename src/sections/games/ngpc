@@ -1,9 +1,0 @@
-title=Race!
-description=NeoGeo Pocket Color emulator
-icon=icons/neogeopocket.png
-exec=/mnt/sd/ngpc/race
-clock=200
-selectordir=/mnt/sd/roms/ngpc/
-selectorfilter=.ngp,.ngc
-selectorscreens=/mnt/sd/ngpc/screens
-wrapper=true

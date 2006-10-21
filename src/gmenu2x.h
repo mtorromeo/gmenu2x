@@ -47,17 +47,40 @@ class Menu;
 
 class GMenu2X {
 private:
-	string path;
+	string path; //!< Contains the working directory of GMenu2X
+	/*!
+	Retrieves the parent directory of GMenu2X.
+	This functions is used to initialize the "path" variable.
+	@see path
+	@return String containing the parent directory
+	*/
 	string getExePath();
+	/*!
+	Retrieves the free disk space on the sd
+	@return String containing a human readable representation of the free disk space
+	*/
 	string getDiskFree();
-	unsigned short cpuX;
+	unsigned short cpuX; //!< Offset for displaying cpu clock information
+	/*!
+	Reads the current battery state and returns a number representing it's level of charge
+	@return A number representing battery charge. 0 means fully discharged. 5 means fully charged. 6 represents a gp2x using AC power.
+	*/
 	unsigned short getBatteryLevel();
 	void browsePath(string path, vector<string>* directories, vector<string>* files);
-	bool createLink(string path, string file, string section="");
+	/*!
+	Starts the scanning of the nand and sd filesystems, searching for gpe and gpu files and creating the links in 2 dedicated sections.
+	*/
 	void scanner();
+	/*!
+	Performs the actual scan in the given path and populates the files vector with the results. The creation of the links is not performed here.
+	@see scanner
+	*/
 	void scanPath(string path, vector<string> *files);
 
-	bool inet, usbnet, samba, web;
+	bool inet, //!< Represents the configuration of the basic network services. @see readCommonIni @see usbnet @see samba @see web
+		usbnet,
+		samba,
+		web;
 	string ip, defaultgw;
 	int lastSelectorElement;
 	void readConfig();
@@ -65,6 +88,8 @@ private:
 	void readCommonIni();
 	void writeCommonIni();
 	void initServices();
+
+	void initMenu();
 
 	uint numRows, numCols;
 

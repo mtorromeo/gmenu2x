@@ -254,7 +254,7 @@ void LinkApp::run(string selectedFile, int startSelection) {
 		//check if we have to quit
 		string command = cmdclean(exec);
 		if (params!="") command += " " + params;
-		if (wrapper) command += "; sync & cd \""+path+"\"; exec ./gmenu2x";
+		if (wrapper) command += "; sync & cd "+cmdclean(path)+"; exec ./gmenu2x";
 		if (dontleave) {
 			system(command.c_str());
 		} else {

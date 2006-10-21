@@ -1,9 +1,0 @@
-title=SNES
-description=Super Nintendo Emulator
-icon=icons/snes.png
-exec=/mnt/sda1/snes/squidgesnes.gpe
-params=nrtm load=[selFullPath]
-clock=240
-selectordir=/mnt/sd/fish.d/completions/
-selectorscreens=/home/ryo/roms/gp2x/screens/SNESART/
-wrapper=true

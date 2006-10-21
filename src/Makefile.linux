@@ -2,12 +2,12 @@ CC = gcc
 CXX = g++
 STRIP = strip
 
-CFLAGS = -I"/usr/include" `sdl-config --cflags` -Wall -pg #-O2
+CFLAGS = -I"/usr/include" `sdl-config --cflags` -Wall -pg -fprofile-generate #-O2
 CXXFLAGS = $(CFLAGS)
-LDFLAGS = -L"/usr/lib" `sdl-config --libs` -lfreetype -lSDL_image -lSDL_gfx -ljpeg -lpng12 -lz #-lSDL_gfx
+LDFLAGS = -L"/usr/lib" `sdl-config --libs` -lfreetype -lSDL_image -lSDL_gfx -ljpeg -lpng12 -lz -fprofile-generate #-lSDL_gfx
 
 TARGET = gmenu
-OBJS = gmenu2x.o surface.o link.o linkapp.o SFont.o asfont.o menu.o surfacecollection.o utilities.o filedialog.o dirdialog.o inputdialog.o settingsdialog.o menusetting.o menusettingint.o menusettingbool.o menusettingrgba.o menusettingstring.o menusettingmultistring.o menusettingfile.o menusettingdir.o selector.o
+OBJS = gmenu2x.o surface.o link.o linkapp.o linkaction.o SFont.o asfont.o menu.o surfacecollection.o utilities.o filedialog.o dirdialog.o inputdialog.o settingsdialog.o menusetting.o menusettingint.o menusettingbool.o menusettingrgba.o menusettingstring.o menusettingmultistring.o menusettingfile.o menusettingdir.o selector.o
 
 %.o: %.cpp
 		$(CXX) $(CFLAGS) -c $<
@@ -23,5 +23,4 @@ $(TARGET): $(OBJS)
 #		$(STRIP) $(TARGET) #Don't strip if symbols are needed for gprof
 
 clean:
-		rm -f *.o
-		rm -f $(TARGET)
+		rm -f *.o *.gcda *.gcno $(TARGET)

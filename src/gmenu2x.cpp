@@ -46,6 +46,7 @@
 #include <dirent.h>
 
 #include "linkapp.h"
+#include "linkaction.h"
 #include "menu.h"
 #include "asfont.h"
 #include "surface.h"
@@ -152,18 +153,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	sc.add("imgs/font.png",false);
 	font = new ASFont( sc["imgs/font.png"]->raw );
 
-	//Menu structure handler
-	menu = new Menu(this,path);
-	menu->numRows = numRows; numRows = 0;
-	menu->numCols = numCols; numCols = 0;
-	for (uint i=0; i<menu->sections.size(); i++) {
-		string sectionIcon = "sections/"+menu->sections[i]+".png";
-		if (fileExists(sectionIcon))
-			sc.add(sectionIcon);
-	}
-	menu->setSectionIndex(startSectionIndex);
-	menu->setLinkIndex(startLinkIndex);
-
+	initMenu();
 	initBG();
 
 	//Events
@@ -195,6 +185,61 @@ GMenu2X::~GMenu2X() {
 	free(menu);
 	free(s);
 	free(font);
+}
+
+void GMenu2X::initBG() {
+	sc.del("imgs/bg.png");
+	sc.add("imgs/bg.png",false);
+
+	drawTopBar(sc["imgs/bg.png"],40);
+	drawBottomBar(sc["imgs/bg.png"]);
+
+	Surface sd("imgs/sd.png");
+	Surface cpu("imgs/cpu.png");
+	string df = getDiskFree();
+
+	sd.blit( sc["imgs/bg.png"], 3, 222 );
+	sc["imgs/bg.png"]->write( font, df, 22, 230, SFontHAlignLeft, SFontVAlignMiddle );
+	cpuX = 27+font->getTextWidth(df);
+	cpu.blit( sc["imgs/bg.png"], cpuX, 222 );
+	cpuX += 19;
+
+	//301-3-16
+	int serviceX = 282;
+	if (web) {
+		Surface webserver("imgs/webserver.png");
+		webserver.blit( sc["imgs/bg.png"], serviceX, 222 );
+		serviceX -= 19;
+	}
+	if (samba) {
+		Surface sambaS("imgs/samba.png");
+		sambaS.blit( sc["imgs/bg.png"], serviceX, 222 );
+		serviceX -= 19;
+	}
+	if (inet) {
+		Surface inetS("imgs/inet.png");
+		inetS.blit( sc["imgs/bg.png"], serviceX, 222 );
+		serviceX -= 19;
+	}
+}
+
+void GMenu2X::initMenu() {
+	//Menu structure handler
+	menu = new Menu(this,path);
+	menu->numRows = numRows; numRows = 0;
+	menu->numCols = numCols; numCols = 0;
+	for (uint i=0; i<menu->sections.size(); i++) {
+		string sectionIcon = "sections/"+menu->sections[i]+".png";
+		if (fileExists(sectionIcon))
+			sc.add(sectionIcon);
+
+		if (menu->sections[i]=="settings") {
+			menu->addActionLink(i,"GMenu2X",MakeDelegate(this,&GMenu2X::options),"Configure GMenu2X's options",sectionIcon);
+		}
+	}
+
+	menu->setSectionIndex(startSectionIndex);
+	menu->setLinkIndex(startLinkIndex);
 }
 
 void GMenu2X::readConfig() {
@@ -377,8 +422,10 @@ int GMenu2X::main() {
 	stringstream ss;
 
 	//framerate
+	/*
 	long tickFPS = SDL_GetTicks();
 	string fps;
+	*/
 
 	while (!quit) {
 		if (menu->numRows!=numRows || menu->numCols!=numCols) {
@@ -390,7 +437,7 @@ int GMenu2X::main() {
 			linkWd2 = linkW/2;
 			iconXOffset = (linkW-32)/2; //10
 			iconTextOffset = numRows < 4 ? 2 : 0;
-			offset = menu->links.size()>linksPerPage ? 0 : 4;
+			offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
 		}
 
 		//Background
@@ -415,28 +462,28 @@ int GMenu2X::main() {
 
 		//Links
 		s->setClipRect(offset,42,311,166);
-		for (i=menu->firstDispRow()*numCols; i<(menu->firstDispRow()*numCols)+linksPerPage && i<menu->links.size(); i++) {
+		for (i=menu->firstDispRow()*numCols; i<(menu->firstDispRow()*numCols)+linksPerPage && i<menu->sectionLinks()->size(); i++) {
 			int ir = i-menu->firstDispRow()*numCols;
 			x = (ir%numCols)*linkW+offset;
 			y = ir/numCols*linkH+42;
 			ix = x+iconXOffset;
 
-			if (menu->selLink()==menu->links[i]) {
+			if (i==(uint)menu->selLinkIndex()) {
 				if (useSelectionPng)
 					sc["imgs/selection.png"]->blitCenter(s,x+linkWd2,y+20);
 				else
 					s->box(x, y, linkW, 41+iconTextOffset, selectionColor);
 			}
 
-			if (menu->links[i]->getIcon() != "")
-				sc[menu->links[i]->getIcon()]->blit(s,ix,y,32,32);
+			if (menu->sectionLinks()->at(i)->getIcon() != "")
+				sc[menu->sectionLinks()->at(i)->getIcon()]->blit(s,ix,y,32,32);
 			else
 				sc["icons/generic.png"]->blit(s,ix,y,32,32);
 
-			s->write( font, menu->links[i]->getTitle(), ix+16, y+43+iconTextOffset, SFontHAlignCenter, SFontVAlignBottom );
+			s->write( font, menu->sectionLinks()->at(i)->getTitle(), ix+16, y+43+iconTextOffset, SFontHAlignCenter, SFontVAlignBottom );
 		}
 		s->clearClipRect();
-		drawScrollBar(numRows,menu->links.size()/numCols + ((menu->links.size()%numCols==0) ? 0 : 1),menu->firstDispRow(),43,159);
+		drawScrollBar(numRows,menu->sectionLinks()->size()/numCols + ((menu->sectionLinks()->size()%numCols==0) ? 0 : 1),menu->firstDispRow(),43,159);
 
 		if (menu->selLink()!=NULL) {
 			s->write ( font, menu->selLink()->getDescription(), 160, 221, SFontHAlignCenter, SFontVAlignBottom );
@@ -462,12 +509,14 @@ int GMenu2X::main() {
 		sc[batteryIcon]->blit( s, 301, 222 );
 
 		//framerate
+		/*
 		ss.clear();
 		ss << 1000/(tickNow-tickFPS);
 		ss >> fps;
 		fps += " FPS";
 		tickFPS = tickNow;
 		s->write( font, fps, 319,1 ,SFontHAlignRight );
+		*/
 
 #ifdef TARGET_GP2X
 		joy.update();
@@ -486,11 +535,11 @@ int GMenu2X::main() {
 		// SECTIONS
 		if ( joy[GP2X_BUTTON_L     ] ) {
 			menu->decSectionIndex();
-			offset = menu->links.size()>linksPerPage ? 0 : 4;
+			offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
 		}
 		if ( joy[GP2X_BUTTON_R     ] ) {
 			menu->incSectionIndex();
-			offset = menu->links.size()>linksPerPage ? 0 : 4;
+			offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
 		}
 		if ( joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK] && menu->selLink()!=NULL ) menu->selLink()->run();
 		if ( joy[GP2X_BUTTON_SELECT] ) contextMenu();
@@ -512,11 +561,11 @@ int GMenu2X::main() {
 				// SECTIONS
 				if ( event.key.keysym.sym==SDLK_q      ) {
 					menu->decSectionIndex();
-					offset = menu->links.size()>linksPerPage ? 0 : 4;
+					offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
 				}
 				if ( event.key.keysym.sym==SDLK_w      ) {
 					menu->incSectionIndex();
-					offset = menu->links.size()>linksPerPage ? 0 : 4;
+					offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
 				}
 				if ( event.key.keysym.sym==SDLK_s      ) options();
 				if ( event.key.keysym.sym==SDLK_RETURN && menu->selLink()!=NULL ) menu->selLink()->run();
@@ -646,10 +695,9 @@ void GMenu2X::addLink() {
 	FileDialog fd(this,"Select an application");
 	if (fd.exec()) {
 		ledOn();
-		createLink(fd.path, fd.file);
+		menu->addLink(fd.path, fd.file);
 		sync();
 		ledOff();
-		menu->setSectionIndex( menu->selSectionIndex() ); //Force a reload of current section links
 	}
 }
 
@@ -728,67 +776,9 @@ void GMenu2X::editLink() {
 
 void GMenu2X::deleteLink() {
 	ledOn();
-	unlink(menu->selLinkApp()->file.c_str());
-	sc.del(menu->selLinkApp()->getIcon());
-	menu->setSectionIndex( menu->selSectionIndex() ); //Force a reload of current section links
+	menu->deleteSelectedLink();
 	sync();
 	ledOff();
-}
-
-bool GMenu2X::createLink(string path, string file, string section) {
-	if (section=="")
-		section = menu->selSection();
-	else if (find(menu->sections.begin(),menu->sections.end(),section)==menu->sections.end()) {
-		//section directory doesn't exists
-		string sectiondir = "sections/"+section;
-		cout << "\033[0;34mGMENU2X:\033[0m mkdir " << sectiondir << endl;
-		if (mkdir(sectiondir.c_str(),777)==0)
-			menu->sections.push_back(section);
-		else
-			return false;
-	}
-	cout << "\033[0;34mGMENU2X:\033[0m createLink section=" << section << " file=" << file << endl;
-	if (path[path.length()-1]!='/') path += "/";
-
-	string title = file;
-	string::size_type pos = title.rfind(".");
-	if (pos!=string::npos && pos>0)
-		title = title.substr(0, pos);
-
-	cout << "\033[0;34mGMENU2X:\033[0m Creating link " << title << endl;
-
-	string linkpath = "sections/"+section+"/"+title;
-	int x=2;
-	while (fileExists(linkpath)) {
-		stringstream ss;
-		linkpath = "";
-		ss << x;
-		ss >> linkpath;
-		linkpath = "sections/"+section+"/"+title+linkpath; 
-		cout << "\033[0;34mGMENU2X:\033[0m linkpath=" << linkpath << endl;
-		x++;
-	}
-
-	int linkW = 312/menu->numCols;
-	if (font->getTextWidth(title)>linkW) {
-		while (font->getTextWidth(title+"..")>linkW)
-			title = title.substr(0,title.length()-1);
-		title += "..";
-	}
-
-	ofstream f(linkpath.c_str());
-	if (f.is_open()) {
-		f << "title=" << title << endl;
-		if (fileExists(path+title+".png"))
-			f << "icon=" << path << title << ".png" << endl;
-		f << "exec=" << path << file << endl;
-		f.close();
-	} else {
-		cout << "\033[0;34mGMENU2X:\033[0;31m Error while opening the file '" << linkpath << "' for write\033[0m" << endl;
-		return false;
-	}
-
-	return true;
 }
 
 void GMenu2X::addSection() {
@@ -826,7 +816,7 @@ void GMenu2X::renameSection() {
 					rename(oldicon.c_str(), newicon.c_str());
 					sc.move(oldicon, newicon);
 				}
-				menu->sections[ menu->selSectionIndex() ] = id.input;
+				menu->sections[menu->selSectionIndex()] = id.input;
 				menu->setSectionIndex( menu->selSectionIndex() ); //reload sections
 				sync();
 			}
@@ -881,7 +871,7 @@ void GMenu2X::scanner() {
 		if (pos!=string::npos && pos>0) {
 			path = files[i].substr(0, pos+1);
 			file = files[i].substr(pos+1, files[i].length());
-			if (createLink(path,file,"found "+file.substr(file.length()-3,3)))
+			if (menu->addLink(path,file,"found "+file.substr(file.length()-3,3)))
 				linkCount++;
 		}
 	}
@@ -1042,42 +1032,6 @@ string GMenu2X::getDiskFree() {
 		ss >> df;
 	} else cout << "\033[0;34mGMENU2X:\033[0;31m statfs failed with error '" << strerror(errno) << "'\033[0m" << endl;
 	return df;
-}
-
-void GMenu2X::initBG() {
-	sc.del("imgs/bg.png");
-	sc.add("imgs/bg.png",false);
-
-	drawTopBar(sc["imgs/bg.png"],40);
-	drawBottomBar(sc["imgs/bg.png"]);
-
-	Surface sd("imgs/sd.png");
-	Surface cpu("imgs/cpu.png");
-	string df = getDiskFree();
-
-	sd.blit( sc["imgs/bg.png"], 3, 222 );
-	sc["imgs/bg.png"]->write( font, df, 22, 230, SFontHAlignLeft, SFontVAlignMiddle );
-	cpuX = 27+font->getTextWidth(df);
-	cpu.blit( sc["imgs/bg.png"], cpuX, 222 );
-	cpuX += 19;
-
-	//301-3-16
-	int serviceX = 282;
-	if (web) {
-		Surface webserver("imgs/webserver.png");
-		webserver.blit( sc["imgs/bg.png"], serviceX, 222 );
-		serviceX -= 19;
-	}
-	if (samba) {
-		Surface sambaS("imgs/samba.png");
-		sambaS.blit( sc["imgs/bg.png"], serviceX, 222 );
-		serviceX -= 19;
-	}
-	if (inet) {
-		Surface inetS("imgs/inet.png");
-		inetS.blit( sc["imgs/bg.png"], serviceX, 222 );
-		serviceX -= 19;
-	}
 }
 
 int GMenu2X::drawButton(Surface *s, string btn, string text, int x) {
