@@ -197,7 +197,8 @@ bool Menu::addLink(string path, string file, string section) {
 		f << "exec=" << path << file << endl;
 		f.close();
 
-		if (int isection = find(sections.begin(),sections.end(),section) != sections.end())
+		int isection = find(sections.begin(),sections.end(),section) - sections.begin();
+		if (isection>0 && isection<(int)sections.size())
 			links[isection].push_back( new LinkApp(gmenu2x, path, linkpath.c_str()) );
 	} else {
 		cout << "\033[0;34mGMENU2X:\033[0;31m Error while opening the file '" << linkpath << "' for write\033[0m" << endl;
