@@ -18,37 +18,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef SELECTOR_H_
-#define SELECTOR_H_
+//for browsing the filesystem
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <dirent.h>
 
-#include <string>
-#include "gmenu2x.h"
-#include "utilities.h"
+#include "filelister.h"
 
-#define SELECTOR_ELEMENTS 11
+using namespace std;
 
-class LinkApp;
-
-using std::string;
-using std::vector;
-
-class Selector {
-private:
-	int selRow;
-	GMenu2X *gmenu2x;
-	LinkApp *link;
-
-	hash_map<string, string> aliases;
-	void loadAliases();
-	string getAlias(string key);
-
-	void browsePath(string path, vector<string>* files);
-	
-public:
-	string file;
-	Selector(GMenu2X *gmenu2x, LinkApp *link);
-	
-	int exec(int startSelection=0);
-};
-
-#endif /*SELECTOR_H_*/
+FileLister::FileLister(string startPath) {
+}
