@@ -22,16 +22,26 @@
 #define FILELISTER_H_
 
 #include <string>
+#include <vector>
 
 using std::string;
 using std::vector;
 
 class FileLister {
 private:
-	void browsePath(string path, vector<string>* directories, vector<string>* files);
-	
+	string path, filter;
+	void browse();
+	bool showDirectories, showFiles;
+
 public:
-	FileLister(string startPath);
+	FileLister(string startPath, bool showDirectories = true, bool showFiles = true);
+
+	vector<string> directories, files;
+
+	string getPath();
+	void setPath(string path);
+	string getFilter();
+	void setFilter(string filter);
 };
 
 #endif /*FILELISTER_H_*/
