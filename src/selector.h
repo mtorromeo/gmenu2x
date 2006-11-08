@@ -28,6 +28,7 @@
 #define SELECTOR_ELEMENTS 11
 
 class LinkApp;
+class FileLister;
 
 using std::string;
 using std::vector;
@@ -41,12 +42,12 @@ private:
 	hash_map<string, string> aliases;
 	void loadAliases();
 	string getAlias(string key);
-
-	void browsePath(string path, vector<string>* files);
+	void prepare(FileLister *fl, vector<string> *screens, vector<string> *titles);
+	void freeScreenshots(vector<string> *screens);
 	
 public:
-	string file;
-	Selector(GMenu2X *gmenu2x, LinkApp *link);
+	string file, dir;
+	Selector(GMenu2X *gmenu2x, LinkApp *link, string selectorDir="");
 	
 	int exec(int startSelection=0);
 };

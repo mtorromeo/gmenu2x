@@ -50,7 +50,7 @@ bool InputDialog::exec() {
 
 	SDL_Rect box = {0, 60, 0, gmenu2x->font->getHeight()+4};
 
-	Uint32 caretTick, curTick;
+	Uint32 caretTick = 0, curTick;
 	bool caretOn = true;
 
 	gmenu2x->drawTopBar(&bg,15);

@@ -30,13 +30,19 @@ using std::vector;
 class FileLister {
 private:
 	string path, filter;
-	void browse();
 	bool showDirectories, showFiles;
 
 public:
 	FileLister(string startPath, bool showDirectories = true, bool showFiles = true);
+	void browse();
 
 	vector<string> directories, files;
+	uint size();
+	uint dirCount();
+	uint fileCount();
+	string operator[](uint);
+	bool isFile(uint);
+	bool isDirectory(uint);
 
 	string getPath();
 	void setPath(string path);

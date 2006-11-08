@@ -80,7 +80,8 @@ public:
 
 	bool save();
 	void run();
-	void run(string selectedFile, int startSelection=0);
+	void selector(int startSelection=0, string selectorDir="");
+	void launch(string selectedFile="", string selectedDir="");
 	bool targetExists();
 };
 

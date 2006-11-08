@@ -42,7 +42,7 @@ bool SettingsDialog::exec() {
 	Surface bg ("imgs/bg.png");
 
 	bool close = false;
-	uint i, sel = 0, iY, firstElement;
+	uint i, sel = 0, iY, firstElement = 0;
 	voices[sel]->adjustInput();
 
 	while (!close) {

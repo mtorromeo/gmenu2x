@@ -171,8 +171,8 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 
 	//recover last session
 	readTmp();
-	if (lastSelectorElement>-1 && menu->selLinkApp()!=NULL && menu->selLinkApp()->getSelectorDir()!="")
-		menu->selLinkApp()->run("",lastSelectorElement);
+	if (lastSelectorElement>-1 && menu->selLinkApp()!=NULL && (menu->selLinkApp()->getSelectorDir()!="" || lastSelectorDir!=""))
+		menu->selLinkApp()->selector(lastSelectorElement,lastSelectorDir);
 
 	main();
 	writeConfig();
@@ -371,13 +371,15 @@ void GMenu2X::readTmp() {
 					menu->setLinkIndex(atoi(value.c_str()));
 				else if (name=="selectorelem")
 					lastSelectorElement = atoi(value.c_str());
+				else if (name=="selectordir")
+					lastSelectorDir = value;
 			}
 			inf.close();
 		}
 	}
 }
 
-void GMenu2X::writeTmp(int selelem) {
+void GMenu2X::writeTmp(int selelem, string selectordir) {
 	string conffile = "/tmp/gmenu2x.tmp";
 	ofstream inf(conffile.c_str());
 	if (inf.is_open()) {
@@ -385,6 +387,8 @@ void GMenu2X::writeTmp(int selelem) {
 		inf << "link=" << menu->selLinkIndex() << endl;
 		if (selelem>-1)
 			inf << "selectorelem=" << selelem << endl;
+		if (selectordir!="")
+			inf << "selectordir=" << selectordir << endl;
 		inf.close();
 	}
 }
@@ -411,11 +415,11 @@ void GMenu2X::ledOff() {
 }
 
 int GMenu2X::main() {
-	uint linksPerPage, linkH, linkW, linkWd2;
-	int iconXOffset, iconTextOffset;
+	uint linksPerPage = 0, linkH = 0, linkW = 0, linkWd2 = 0;
+	int iconXOffset = 0, iconTextOffset = 0;
 
 	bool quit = false, useSelectionPng = fileExists("imgs/selection.png");
-	int x,y,ix, offset;
+	int x,y,ix, offset = 0;
 	uint i;
 	long tickBattery = -60000, tickNow;
 	string batteryIcon = "imgs/battery/0.png";

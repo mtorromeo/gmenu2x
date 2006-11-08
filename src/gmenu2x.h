@@ -81,7 +81,7 @@ private:
 		usbnet,
 		samba,
 		web;
-	string ip, defaultgw;
+	string ip, defaultgw, lastSelectorDir;
 	int lastSelectorElement;
 	void readConfig();
 	void readTmp();
@@ -130,7 +130,7 @@ public:
 	void setInputSpeed();
 
 	void writeConfig();
-	void writeTmp(int selelem=-1);
+	void writeTmp(int selelem=-1, string selectordir="");
 
 	void ledOn();
 	void ledOff();

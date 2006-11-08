@@ -31,7 +31,7 @@ using namespace std;
 FileLister::FileLister(string startPath, bool showDirectories, bool showFiles) {
 	this->showDirectories = showDirectories;
 	this->showFiles = showFiles;
-	setPath(startPath);
+	path = startPath;
 }
 
 string FileLister::getPath() {
@@ -60,23 +60,24 @@ void FileLister::browse() {
 		vector<string> vfilter;
 		split(vfilter,getFilter(),",");
 
-		string filepath;
+		string filepath, file;
 		struct stat st;
 		struct dirent *dptr;
 
 		while ((dptr = readdir(dirp))) {
-			if (dptr->d_name[0]=='.') continue;
-			filepath = path+dptr->d_name;
+			file = dptr->d_name;
+			if (file[0]=='.') continue;
+			filepath = path+file;
 			int statRet = stat(filepath.c_str(), &st);
 			if (statRet == -1) continue;
 
 			if (S_ISDIR(st.st_mode)) {
 				if (!showDirectories) continue;
-				directories.push_back(dptr->d_name);
+				if (!(path=="/mnt/" && (file!="sd" && file!="ext" && file!="nand")))
+					directories.push_back(file);
 			} else {
 				if (!showFiles) continue;
 				bool filterOk = false;
-				string file = dptr->d_name;
 				for (uint i = 0; i<vfilter.size() && !filterOk; i++)
 					filterOk = file.substr(file.length()-vfilter[i].length(),vfilter[i].length())==vfilter[i];
 				if (filterOk) files.push_back(file);
@@ -87,4 +88,29 @@ void FileLister::browse() {
 		sort(files.begin(),files.end(),case_less());
 		sort(directories.begin(),directories.end(),case_less());
 	}
+}
+
+uint FileLister::size() {
+	return files.size()+directories.size();
+}
+uint FileLister::dirCount() {
+	return directories.size();
+}
+uint FileLister::fileCount() {
+	return files.size();
+}
+
+string FileLister::operator[](uint x) {
+	if (x<directories.size())
+		return directories[x];
+	else
+		return files[x-directories.size()];
+}
+
+bool FileLister::isFile(uint x) {
+	return x>=directories.size() && x<size();
+}
+
+bool FileLister::isDirectory(uint x) {
+	return x<directories.size();
 }

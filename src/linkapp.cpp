@@ -197,101 +197,105 @@ void LinkApp::drawRun() {
 }
 
 void LinkApp::run() {
-	run("");
+	if (selectordir!="")
+		selector();
+	else
+		launch();
 }
 
-void LinkApp::run(string selectedFile, int startSelection) {
-	if (selectordir!="" && selectedFile=="") {
-		//Run selector interface
-		Selector sel(gmenu2x, this);
-		int selection = sel.exec(startSelection);
-		if (selection!=-1) {
-			gmenu2x->writeTmp(selection);
-			run(sel.file);
-		}
+void LinkApp::selector(int startSelection, string selectorDir) {
+	//Run selector interface
+	Selector sel(gmenu2x, this, selectorDir);
+	int selection = sel.exec(startSelection);
+	if (selection!=-1) {
+		gmenu2x->writeTmp(selection,sel.dir);
+		launch(sel.file, sel.dir);
+	}
+}
 
-	} else {
-		drawRun();
-		save();
+void LinkApp::launch(string selectedFile, string selectedDir) {
+	drawRun();
+	save();
 #ifndef TARGET_GP2X
-		//delay for testing
-		SDL_Delay(1000);
+	//delay for testing
+	SDL_Delay(1000);
 #endif
 
-		//Set correct working directory
-		string wd = workdir;
-		if (wd=="") {
-			string::size_type pos = exec.rfind("/");
-			if (pos!=string::npos)
-				wd = exec.substr(0,pos);
-		}
-		if (wd!="") {
-			if (wd[0]!='/') wd = path + wd;
-			cout << "\033[0;34mGMENU2X:\033[0m chdir '" << wd << "'" << endl;
-			chdir(wd.c_str());
-		}
-
-		//selectedFile
-		if (selectedFile!="") {
-			string selectedFileExtension;
-			string::size_type i = selectedFile.rfind(".");
-			if (i != string::npos) {
-				selectedFileExtension = selectedFile.substr(i,selectedFile.length());
-				selectedFile = selectedFile.substr(0,i);
-			}
-
-			if (params=="") {
-				params = cmdclean(getSelectorDir()+selectedFile+selectedFileExtension);
-			} else {
-				params = strreplace(params,"[selFullPath]",cmdclean(getSelectorDir()+selectedFile+selectedFileExtension));
-				params = strreplace(params,"[selPath]",cmdclean(getSelectorDir()));
-				params = strreplace(params,"[selFile]",cmdclean(selectedFile));
-				params = strreplace(params,"[selExt]",cmdclean(selectedFileExtension));
-			}
-		}
-	
-		if (clock()!=gmenu2x->menuClock)
-			gmenu2x->setClock(clock());
-	
-		cout << "\033[0;34mGMENU2X:\033[0m Executing '" << title << "' (" << exec << ") (" << params << ")" << endl;
-
-		//check if we have to quit
-		string command = cmdclean(exec);
-		
-		// Check to see if permissions are desirable
-		struct stat fstat;
-		if( stat( command.c_str(), &fstat ) == 0 ) {
-			struct stat newstat = fstat;
-			if( S_IRUSR != ( fstat.st_mode & S_IRUSR ) )
-				newstat.st_mode |= S_IRUSR;
-			if( S_IXUSR != ( fstat.st_mode & S_IXUSR ) )
-				newstat.st_mode |= S_IXUSR;
-			if( fstat.st_mode != newstat.st_mode )
-				chmod( command.c_str(), newstat.st_mode );
-		} // else, well.. we are no worse off :)
-		
-		if (params!="") command += " " + params;
-		if (wrapper) command += "; sync & cd "+cmdclean(path)+"; exec ./gmenu2x";
-		if (dontleave) {
-			system(command.c_str());
-		} else {
-			if (gmenu2x->saveSelection && (gmenu2x->startSectionIndex!=gmenu2x->menu->selSectionIndex() || gmenu2x->startLinkIndex!=gmenu2x->menu->selLinkIndex()))
-				gmenu2x->writeConfig();
-			if (selectedFile=="")
-				gmenu2x->writeTmp();
-			SDL_Quit();
-			//G if (gamma()!=0 && gamma()!=gmenu2x->gamma)
-			//G 	gmenu2x->setGamma(gamma());
-			execlp("/bin/sh","/bin/sh","-c",command.c_str(),NULL);
-			//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue
-			//try relaunching gmenu2x
-			chdir(path.c_str());
-			execlp("./gmenu2x", "./gmenu2x", NULL);
-		}
-		
-	
-		chdir(path.c_str());
+	//Set correct working directory
+	string wd = workdir;
+	if (wd=="") {
+		string::size_type pos = exec.rfind("/");
+		if (pos!=string::npos)
+			wd = exec.substr(0,pos);
 	}
+	if (wd!="") {
+		if (wd[0]!='/') wd = path + wd;
+		cout << "\033[0;34mGMENU2X:\033[0m chdir '" << wd << "'" << endl;
+		chdir(wd.c_str());
+	}
+
+	//selectedFile
+	if (selectedFile!="") {
+		string selectedFileExtension;
+		string::size_type i = selectedFile.rfind(".");
+		if (i != string::npos) {
+			selectedFileExtension = selectedFile.substr(i,selectedFile.length());
+			selectedFile = selectedFile.substr(0,i);
+		}
+
+		if (selectedDir=="")
+			selectedDir = getSelectorDir();
+		if (params=="") {
+			params = cmdclean(selectedDir+selectedFile+selectedFileExtension);
+		} else {
+			params = strreplace(params,"[selFullPath]",cmdclean(selectedDir+selectedFile+selectedFileExtension));
+			params = strreplace(params,"[selPath]",cmdclean(selectedDir));
+			params = strreplace(params,"[selFile]",cmdclean(selectedFile));
+			params = strreplace(params,"[selExt]",cmdclean(selectedFileExtension));
+		}
+	}
+
+	if (clock()!=gmenu2x->menuClock)
+		gmenu2x->setClock(clock());
+
+	cout << "\033[0;34mGMENU2X:\033[0m Executing '" << title << "' (" << exec << ") (" << params << ")" << endl;
+
+	//check if we have to quit
+	string command = cmdclean(exec);
+	
+	// Check to see if permissions are desirable
+	struct stat fstat;
+	if( stat( command.c_str(), &fstat ) == 0 ) {
+		struct stat newstat = fstat;
+		if( S_IRUSR != ( fstat.st_mode & S_IRUSR ) )
+			newstat.st_mode |= S_IRUSR;
+		if( S_IXUSR != ( fstat.st_mode & S_IXUSR ) )
+			newstat.st_mode |= S_IXUSR;
+		if( fstat.st_mode != newstat.st_mode )
+			chmod( command.c_str(), newstat.st_mode );
+	} // else, well.. we are no worse off :)
+	
+	if (params!="") command += " " + params;
+	if (wrapper) command += "; sync & cd "+cmdclean(path)+"; exec ./gmenu2x";
+	if (dontleave) {
+		system(command.c_str());
+	} else {
+		if (gmenu2x->saveSelection && (gmenu2x->startSectionIndex!=gmenu2x->menu->selSectionIndex() || gmenu2x->startLinkIndex!=gmenu2x->menu->selLinkIndex()))
+			gmenu2x->writeConfig();
+		if (selectedFile=="")
+			gmenu2x->writeTmp();
+		SDL_Quit();
+		//G if (gamma()!=0 && gamma()!=gmenu2x->gamma)
+		//G 	gmenu2x->setGamma(gamma());
+		execlp("/bin/sh","/bin/sh","-c",command.c_str(),NULL);
+		//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue
+		//try relaunching gmenu2x
+		chdir(path.c_str());
+		execlp("./gmenu2x", "./gmenu2x", NULL);
+	}
+	
+
+	chdir(path.c_str());
 }
 
 string LinkApp::getExec() {
