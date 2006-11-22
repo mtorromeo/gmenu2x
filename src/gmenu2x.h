@@ -123,6 +123,7 @@ public:
 	//Status functions
 	int main();
 	void options();
+	void activateUsb();
 	void contextMenu();
 
 	void setClock(unsigned mhz);

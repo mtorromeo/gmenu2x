@@ -53,6 +53,7 @@
 #include "filedialog.h"
 #include "gmenu2x.h"
 
+#include "messagebox.h"
 #include "inputdialog.h"
 #include "settingsdialog.h"
 #include "menusettingint.h"
@@ -235,6 +236,7 @@ void GMenu2X::initMenu() {
 
 		if (menu->sections[i]=="settings") {
 			menu->addActionLink(i,"GMenu2X",MakeDelegate(this,&GMenu2X::options),"Configure GMenu2X's options",sectionIcon);
+			menu->addActionLink(i,"USB",MakeDelegate(this,&GMenu2X::activateUsb),"Activate Usb","icons/usb.png");
 		}
 	}
 
@@ -605,6 +607,13 @@ void GMenu2X::options() {
 		writeConfig();
 		initBG();
 	}
+}
+
+void GMenu2X::activateUsb() {
+	system("scripts/usbon.sh");
+	MessageBox mb(this,"USB Enabled","icons/usb.png");
+	mb.exec();
+	system("scripts/usboff.sh");
 }
 
 void GMenu2X::contextMenu() {

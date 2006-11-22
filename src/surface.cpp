@@ -231,12 +231,19 @@ void Surface::operator = (Surface *s) {
 int Surface::box(Sint16 x, Sint16 y, Sint16 w, Sint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
 	return boxRGBA(raw,x,y,x+w,y+h,r,g,b,a);
 }
+int Surface::box(Sint16 x, Sint16 y, Sint16 w, Sint16 h, Uint8 r, Uint8 g, Uint8 b) {
+	SDL_Rect re = {x,y,w,h};
+	return SDL_FillRect(raw, &re, SDL_MapRGB(format(),r,g,b));
+}
 int Surface::box(Sint16 x, Sint16 y, Sint16 w, Sint16 h, RGBAColor c) {
 	return box(x,y,w,h,c.r,c.g,c.b,c.a);
 }
 
 int Surface::rectangle(Sint16 x, Sint16 y, Sint16 w, Sint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
 	return rectangleRGBA(raw,x,y,x+w,y+h,r,g,b,a);
+}
+int Surface::rectangle(Sint16 x, Sint16 y, Sint16 w, Sint16 h, Uint8 r, Uint8 g, Uint8 b) {
+	return rectangleColor(raw, x,y,x+w,y+h, SDL_MapRGB(format(),r,g,b));
 }
 int Surface::rectangle(Sint16 x, Sint16 y, Sint16 w, Sint16 h, RGBAColor c) {
 	return rectangle(x,y,w,h,c.r,c.g,c.b,c.a);
