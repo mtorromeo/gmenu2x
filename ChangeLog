@@ -1,9 +1,29 @@
 Gamma configurable in options menu and on a per-link basis
 
 ----------
+New in 0.8
+----------
+Added some confirmation dialogs
+Changed cancel button from A to X
+Added link to mount nand on usb
+Implemented virtual links (gmenu2x settings, usb)
+Added messageboxes
+Added links for firmware 2.1.x
+Directories browseable from selector
+Added a blending effect to selector screenshots.
+Fixed some minor bugs.
+
+----------
 New in 0.7
 ----------
+GMenu2X always returns to last section/game/selector used (until shutdown)
+New params magic value: [selFullPath] which equals [selPath][selFile][selExt]
+Params magic values ([selFile] & Co.) are now automatically escaped, so quotes are not needed (and may cause problems)
+Added support for an optional alias file for the selector that display the full name of roms.
+Fixed bug with links with special characters.
 Removed some unneeded savings.
+Number of rows and columns on the links page configurable.
+Various little fixes and tweaks
 
 ----------
 New in 0.6
