@@ -39,7 +39,7 @@ void MenuSettingDir::draw(int y) {
 #include "gp2x.h"
 
 void MenuSettingDir::manageInput() {
-	if ( gmenu2x->joy[GP2X_BUTTON_A] ) setValue("");
+	if ( gmenu2x->joy[GP2X_BUTTON_X] ) setValue("");
 	if ( gmenu2x->joy[GP2X_BUTTON_B] ) {
 		DirDialog dd(gmenu2x,description);
 		if (dd.exec()) setValue( dd.path );
@@ -66,7 +66,7 @@ string MenuSettingDir::value() {
 void MenuSettingDir::adjustInput() {}
 
 void MenuSettingDir::drawSelected(int) {
-	gmenu2x->drawButton(gmenu2x->s, "A", "Clear",
+	gmenu2x->drawButton(gmenu2x->s, "X", "Clear",
 	gmenu2x->drawButton(gmenu2x->s, "B", "Select a directory", 10));
 }
 

@@ -123,7 +123,9 @@ public:
 	//Status functions
 	int main();
 	void options();
-	void activateUsb();
+	void activateSdUsb();
+	void activateNandUsb();
+	void activateRootUsb();
 	void contextMenu();
 
 	void setClock(unsigned mhz);
@@ -144,7 +146,8 @@ public:
 	void deleteSection();
 
 	void initBG();
-	int drawButton(Surface *s, string btn, string text, int x);
+	int drawButton(Surface *s, string btn, string text, int x, int y=230);
+	int drawButtonRight(Surface *s, string btn, string text, int x, int y=230);
 	void drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height);
 	void drawTopBar(Surface *s=NULL, uint height=20);
 	void drawBottomBar(Surface *s=NULL, uint height=20);

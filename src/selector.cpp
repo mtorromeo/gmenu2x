@@ -70,7 +70,7 @@ int Selector::exec(int startSelection) {
 
 	gmenu2x->drawButton(&bg, "S", "Exit",
 	gmenu2x->drawButton(&bg, "B", "Select file",
-	gmenu2x->drawButton(&bg, "A", "Up one directory", 10)));
+	gmenu2x->drawButton(&bg, "X", "Up one directory", 10)));
 
 	Uint32 selTick = SDL_GetTicks(), curTick;
 	uint i, firstElement = 0, iY;
@@ -153,7 +153,7 @@ int Selector::exec(int startSelection) {
 			}
 			selTick = SDL_GetTicks();
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_A] ) {
+		if ( gmenu2x->joy[GP2X_BUTTON_X] ) {
 			string::size_type p = dir.rfind("/", dir.size()-2);
 			if (p==string::npos || dir.substr(0,4)!="/mnt" || p<4) {
 				close = true;

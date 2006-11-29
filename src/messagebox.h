@@ -21,6 +21,11 @@
 #ifndef MESSAGEBOX_H_
 #define MESSAGEBOX_H_
 
+#define MB_BTN_B 0
+#define MB_BTN_X 1
+#define MB_BTN_START 2
+#define MB_BTN_SELECT 3
+
 #include <string>
 #include "gmenu2x.h"
 
@@ -34,6 +39,8 @@ private:
 
 public:
 	MessageBox(GMenu2X *gmenu2x, string text, string icon="");
+	vector<string> buttons;
+	vector<string> buttonLabels;
 	int exec();
 };
 

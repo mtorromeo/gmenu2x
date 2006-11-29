@@ -40,12 +40,16 @@ bool SurfaceCollection::exists(string path) {
 }
 
 Surface *SurfaceCollection::add(Surface *s, string path) {
+	if (!fileExists(path)) return NULL;
+
 	cout << "\033[0;34mGMENU2X:\033[0m Adding surface '" << path << "'" << endl;
 	surfaces[path] = s;
 	return s;
 }
 
 Surface *SurfaceCollection::add(string path, bool alpha) {
+	if (!fileExists(path)) return NULL;
+
 	cout << "\033[0;34mGMENU2X:\033[0m Adding surface '" << path << "'" << endl;
 	Surface *s = new Surface(path,alpha);
 	surfaces[path] = s;

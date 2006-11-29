@@ -4,10 +4,12 @@
 #define ASFONT_H
 
 #include <string>
+#include <vector>
 #include <SDL.h>
 #include "SFont.h"
 
 using std::string;
+using std::vector;
 
 const unsigned short SFontHAlignLeft   = 0;
 const unsigned short SFontHAlignRight  = 1;
@@ -29,8 +31,10 @@ public:
 	int getHalfHeight();
 	int getTextWidth(const char* text);
 	int getTextWidth(const string& text);
+	int getTextWidth(vector<string> *text);
 	void write(SDL_Surface* surface, const char* text, int x, int y);
 	void write(SDL_Surface* surface, const std::string& text, int x, int y, const unsigned short halign = 0, const unsigned short valign = 0);
+	void write(SDL_Surface* surface, vector<string> *text, int x, int y, const unsigned short halign = 0, const unsigned short valign = 0);
 	void write(Surface* surface, const std::string& text, int x, int y, const unsigned short halign = 0, const unsigned short valign = 0);
 
 private:

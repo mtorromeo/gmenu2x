@@ -40,7 +40,7 @@ void MenuSettingFile::draw(int y) {
 #include "gp2x.h"
 
 void MenuSettingFile::manageInput() {
-	if ( gmenu2x->joy[GP2X_BUTTON_A] ) setValue("");
+	if ( gmenu2x->joy[GP2X_BUTTON_X] ) setValue("");
 	if ( gmenu2x->joy[GP2X_BUTTON_B] ) {
 		FileDialog fd(gmenu2x,description,filter);
 		if (fd.exec()) setValue( fd.path+"/"+fd.file );
@@ -67,7 +67,7 @@ string MenuSettingFile::value() {
 void MenuSettingFile::adjustInput() {}
 
 void MenuSettingFile::drawSelected(int) {
-	gmenu2x->drawButton(gmenu2x->s, "A", "Clear",
+	gmenu2x->drawButton(gmenu2x->s, "X", "Clear",
 	gmenu2x->drawButton(gmenu2x->s, "B", "Select a file", 10));
 }
 

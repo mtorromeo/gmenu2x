@@ -61,7 +61,7 @@ bool InputDialog::exec() {
 	gmenu2x->drawButton(&bg, "B", "Confirm",
 	gmenu2x->drawButton(&bg, "R", "Space",
 	gmenu2x->drawButton(&bg, "L", "Backspace",
-	gmenu2x->drawButton(&bg, "A", "/", 10)-4))));
+	gmenu2x->drawButton(&bg, "X", "/", 10)-4))));
 
 	while (!close) {
 		bg.blit(gmenu2x->s,0,0);
@@ -95,7 +95,7 @@ bool InputDialog::exec() {
 			selRow++;
 			if (selRow==(int)keyboard.size()) selCol = selCol<8 ? 0 : 1;
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_A] || gmenu2x->joy[GP2X_BUTTON_L] ) input = input.substr(0,input.length()-1);
+		if ( gmenu2x->joy[GP2X_BUTTON_X] || gmenu2x->joy[GP2X_BUTTON_L] ) input = input.substr(0,input.length()-1);
 		if ( gmenu2x->joy[GP2X_BUTTON_R    ] ) input += " ";
 		if ( gmenu2x->joy[GP2X_BUTTON_Y    ] ) {
 			if (keyboard[0][0]=='A') {

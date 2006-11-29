@@ -54,7 +54,7 @@ bool FileDialog::exec() {
 	gmenu2x->drawBottomBar(&bg);
 
 	gmenu2x->drawButton(&bg, "B", "Enter folder/Confirm",
-	gmenu2x->drawButton(&bg, "A", "Up one folder", 10));
+	gmenu2x->drawButton(&bg, "X", "Up one folder", 10));
 	
 
 	uint i, selected = 0, firstElement = 0, iY, ds;
@@ -120,7 +120,7 @@ bool FileDialog::exec() {
 				selected += 10;
 			}
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_A] || gmenu2x->joy[GP2X_BUTTON_LEFT] ) {
+		if ( gmenu2x->joy[GP2X_BUTTON_X] || gmenu2x->joy[GP2X_BUTTON_LEFT] ) {
 			string::size_type p = path.rfind("/");
 			if (p==string::npos || path.substr(0,4)!="/mnt" || p<4)
 				return false;

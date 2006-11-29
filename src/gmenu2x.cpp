@@ -32,11 +32,10 @@
 #include <sys/vfs.h>
 #include <errno.h>
 
+#include "gp2x.h"
 #ifdef TARGET_GP2X
 //#include <SDL_gp2x.h>
 #include <SDL_joystick.h>
-#include <SDL_image.h>
-#include "gp2x.h"
 #include <sys/fcntl.h> //for battery
 #endif
 
@@ -236,7 +235,9 @@ void GMenu2X::initMenu() {
 
 		if (menu->sections[i]=="settings") {
 			menu->addActionLink(i,"GMenu2X",MakeDelegate(this,&GMenu2X::options),"Configure GMenu2X's options",sectionIcon);
-			menu->addActionLink(i,"USB",MakeDelegate(this,&GMenu2X::activateUsb),"Activate Usb","icons/usb.png");
+			menu->addActionLink(i,"USB Sd",MakeDelegate(this,&GMenu2X::activateSdUsb),"Activate Usb on SD","icons/usb.png");
+			menu->addActionLink(i,"USB Nand",MakeDelegate(this,&GMenu2X::activateNandUsb),"Activate Usb on Nand","icons/usb.png");
+			//menu->addActionLink(i,"USB Root",MakeDelegate(this,&GMenu2X::activateRootUsb),"Activate Usb on the root of the Gp2x Filesystem","icons/usb.png");
 		}
 	}
 
@@ -609,11 +610,43 @@ void GMenu2X::options() {
 	}
 }
 
-void GMenu2X::activateUsb() {
-	system("scripts/usbon.sh");
-	MessageBox mb(this,"USB Enabled","icons/usb.png");
-	mb.exec();
-	system("scripts/usboff.sh");
+void GMenu2X::activateSdUsb() {
+	if (usbnet) {
+		MessageBox mb(this,"Operation not permitted.\nYou should disable Usb Networking to do this.");
+		mb.exec();
+	} else {
+		system("scripts/usbon.sh sd");
+		MessageBox mb(this,"USB Enabled (SD)","icons/usb.png");
+		mb.buttons[GP2X_BUTTON_B] = "Turn off";
+		mb.exec();
+		system("scripts/usboff.sh");
+	}
+}
+
+void GMenu2X::activateNandUsb() {
+	if (usbnet) {
+		MessageBox mb(this,"Operation not permitted.\nYou should disable Usb Networking to do this.");
+		mb.exec();
+	} else {
+		system("scripts/usbon.sh nand");
+		MessageBox mb(this,"USB Enabled (NAND)","icons/usb.png");
+		mb.buttons[GP2X_BUTTON_B] = "Turn off";
+		mb.exec();
+		system("scripts/usboff.sh");
+	}
+}
+
+void GMenu2X::activateRootUsb() {
+	if (usbnet) {
+		MessageBox mb(this,"Operation not permitted.\nYou should disable Usb Networking to do this.");
+		mb.exec();
+	} else {
+		system("scripts/usbon.sh root");
+		MessageBox mb(this,"USB Enabled (ROOT)","icons/usb.png");
+		mb.buttons[GP2X_BUTTON_B] = "Turn off";
+		mb.exec();
+		system("scripts/usboff.sh");
+	}
 }
 
 void GMenu2X::contextMenu() {
@@ -839,14 +872,19 @@ void GMenu2X::renameSection() {
 }
 
 void GMenu2X::deleteSection() {
-	ledOn();
-	if (rmtree(path+"sections/"+menu->selSection())) {
-		menu->sections.erase( menu->sections.begin()+menu->selSectionIndex() );
-		sc.del("sections/"+menu->selSection()+".png");
-		menu->setSectionIndex(0); //reload sections
-		sync();
+	MessageBox mb(this,"You will lose all the links in this section. Are you sure?");
+	mb.buttons[GP2X_BUTTON_B] = "Yes";
+	mb.buttons[GP2X_BUTTON_X] = "No";
+	if (mb.exec() == GP2X_BUTTON_B) {
+		ledOn();
+		if (rmtree(path+"sections/"+menu->selSection())) {
+			menu->sections.erase( menu->sections.begin()+menu->selSectionIndex() );
+			sc.del("sections/"+menu->selSection()+".png");
+			menu->setSectionIndex(0); //reload sections
+			sync();
+		}
+		ledOff();
 	}
-	ledOff();
 }
 
 void GMenu2X::scanner() {
@@ -966,7 +1004,7 @@ void GMenu2X::setInputSpeed() {
 	joy.setInterval(30,  GP2X_BUTTON_VOLUP  );
 	joy.setInterval(500, GP2X_BUTTON_START  );
 	joy.setInterval(500, GP2X_BUTTON_SELECT );
-	joy.setInterval(300, GP2X_BUTTON_A      );
+	joy.setInterval(300, GP2X_BUTTON_X      );
 	joy.setInterval(1000,GP2X_BUTTON_B      );
 	joy.setInterval(1000,GP2X_BUTTON_CLICK  );
 	joy.setInterval(300, GP2X_BUTTON_L      );
@@ -1047,11 +1085,18 @@ string GMenu2X::getDiskFree() {
 	return df;
 }
 
-int GMenu2X::drawButton(Surface *s, string btn, string text, int x) {
-	filledCircleRGBA(s->raw, x, 230, 7, 0,0,0,255);
-	s->write(font, btn, x+1, 230, SFontHAlignCenter, SFontVAlignMiddle);
-	s->write(font, text, x+11, 230, SFontHAlignLeft, SFontVAlignMiddle);
+int GMenu2X::drawButton(Surface *s, string btn, string text, int x, int y) {
+	filledCircleRGBA(s->raw, x, y, 7, 0,0,0,255);
+	s->write(font, btn, x+1, y, SFontHAlignCenter, SFontVAlignMiddle);
+	s->write(font, text, x+11, y, SFontHAlignLeft, SFontVAlignMiddle);
 	return x+24+font->getTextWidth(text);
+}
+
+int GMenu2X::drawButtonRight(Surface *s, string btn, string text, int x, int y) {
+	filledCircleRGBA(s->raw, x-7, y, 7, 0,0,0,255);
+	s->write(font, btn, x-6, y, SFontHAlignCenter, SFontVAlignMiddle);
+	s->write(font, text, x-16, y, SFontHAlignRight, SFontVAlignMiddle);
+	return x-29-font->getTextWidth(text);
 }
 
 void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height) {

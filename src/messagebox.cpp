@@ -21,9 +21,7 @@
 #include <SDL.h>
 #include <SDL_gfxPrimitives.h>
 
-#ifdef TARGET_GP2X
 #include "gp2x.h"
-#endif
 #include "messagebox.h"
 
 using namespace std;
@@ -32,6 +30,32 @@ MessageBox::MessageBox(GMenu2X *gmenu2x, string text, string icon) {
 	this->gmenu2x = gmenu2x;
 	this->text = text;
 	this->icon = icon;
+	
+	buttons.resize(19);
+	buttonLabels.resize(19);
+	for (uint x=0; x<buttons.size(); x++) {
+		buttons[x] = "";
+		buttonLabels[x] = "";
+	}
+	
+	//Default enabled button
+	buttons[GP2X_BUTTON_B] = "OK";
+	
+	//Default labels
+	buttonLabels[GP2X_BUTTON_UP] = "^";
+	buttonLabels[GP2X_BUTTON_DOWN] = "v";
+	buttonLabels[GP2X_BUTTON_LEFT] = "<";
+	buttonLabels[GP2X_BUTTON_RIGHT] = ">";
+	buttonLabels[GP2X_BUTTON_A] = "A";
+	buttonLabels[GP2X_BUTTON_B] = "B";
+	buttonLabels[GP2X_BUTTON_X] = "X";
+	buttonLabels[GP2X_BUTTON_Y] = "Y";
+	buttonLabels[GP2X_BUTTON_L] = "L";
+	buttonLabels[GP2X_BUTTON_R] = "R";
+	buttonLabels[GP2X_BUTTON_START] = "S";
+	buttonLabels[GP2X_BUTTON_SELECT] = "S";
+	buttonLabels[GP2X_BUTTON_VOLUP] = "+";
+	buttonLabels[GP2X_BUTTON_VOLDOWN] = "-";
 }
 
 int MessageBox::exec() {
@@ -49,22 +73,22 @@ int MessageBox::exec() {
 	int x = 160-halfBoxW;
 
 	//outer box
-	bg.box(x-2, 97, boxW+5, 47, 255,255,255);
+	bg.box(x-2, 90, boxW+5, 61, 255,255,255);
 	//draw inner rectangle
-	bg.rectangle(x, 99, boxW, 42, 80,80,80);
-	//text
+	bg.rectangle(x, 92, boxW, 36, 80,80,80);
+	//icon+text
 	x += 10;
 	if (gmenu2x->sc[icon] != NULL) {
-		gmenu2x->sc[icon]->blit( &bg, x-3, 104 );
+		gmenu2x->sc[icon]->blit( &bg, x-3, 94 );
 		x += 37;
 	}
-	bg.write( gmenu2x->font, text, x, 121, SFontHAlignLeft, SFontVAlignMiddle );
+	bg.write( gmenu2x->font, text, x, 110, SFontHAlignLeft, SFontVAlignMiddle );
 
-	/*
-	gmenu2x->drawButton(&bg, "S", "Confirm",
-	gmenu2x->drawButton(&bg, "B", "Enter folder",
-	gmenu2x->drawButton(&bg, "A", "Up one folder", 10)));
-	*/
+	int btnX = 158+halfBoxW;
+	for (uint i=0; i<buttons.size(); i++) {
+		if (buttons[i]!="")
+			btnX = gmenu2x->drawButtonRight(&bg, buttonLabels[i], buttons[i], btnX, 140);
+	}
 	
 	bg.blit(gmenu2x->s,0,0);
 	gmenu2x->s->flip();
@@ -72,11 +96,11 @@ int MessageBox::exec() {
 	while (result<0) {
 #ifdef TARGET_GP2X
 		gmenu2x->joy.update();
-		if ( (gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK]) && selected<directories.size() ) result = 1;
-		if ( gmenu2x->joy[GP2X_BUTTON_START] ) result = 0;
+		for (uint i=0; i<buttons.size(); i++)
+			if (buttons[i]!="" && gmenu2x->joy[i]) result = i;
 #else
 		while (SDL_PollEvent(&gmenu2x->event)) {
-			if ( gmenu2x->event.type == SDL_QUIT ) result = 0;
+			if ( gmenu2x->event.type == SDL_QUIT ) result = GP2X_BUTTON_X;
 			if ( gmenu2x->event.type==SDL_KEYDOWN ) {
 				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) result = 0;
 				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) result = 1;

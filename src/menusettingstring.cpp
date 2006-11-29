@@ -39,7 +39,7 @@ void MenuSettingString::draw(int y) {
 #include "gp2x.h"
 
 void MenuSettingString::manageInput() {
-	if ( gmenu2x->joy[GP2X_BUTTON_A] ) setValue("");
+	if ( gmenu2x->joy[GP2X_BUTTON_X] ) setValue("");
 	if ( gmenu2x->joy[GP2X_BUTTON_B] ) {
 		InputDialog id(gmenu2x,description,value());
 		if (id.exec()) setValue(id.input);
@@ -66,7 +66,7 @@ string MenuSettingString::value() {
 void MenuSettingString::adjustInput() {}
 
 void MenuSettingString::drawSelected(int) {
-	gmenu2x->drawButton(gmenu2x->s, "A", "Clear",
+	gmenu2x->drawButton(gmenu2x->s, "X", "Clear",
 	gmenu2x->drawButton(gmenu2x->s, "B", "Edit", 10));
 }
 
