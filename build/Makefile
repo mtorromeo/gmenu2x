@@ -12,10 +12,10 @@ LDFLAGS = -static -L$(CHAINPREFIX)/lib `$(CHAINPREFIX)/bin/sdl-config --libs` -l
 TARGET = gmenu2x
 OBJS = gmenu2x.o surface.o surfacecollection.o link.o linkapp.o linkaction.o SFont.o asfont.o joystick.o menu.o utilities.o dirdialog.o filedialog.o inputdialog.o settingsdialog.o textdialog.o menusetting.o menusettingint.o menusettingbool.o menusettingrgba.o menusettingstring.o menusettingmultistring.o menusettingfile.o menusettingdir.o selector.o filelister.o messagebox.o
 
-%.o: src/%.cpp
+%.o: ../src/%.cpp
 		$(CXX) $(CFLAGS) -c $<
 
-%.o: src/%.c
+%.o: ../src/%.c
 		$(CC) $(CFLAGS) -c $<
 
 all: $(TARGET)
