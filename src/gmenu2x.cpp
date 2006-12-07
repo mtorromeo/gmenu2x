@@ -1007,7 +1007,7 @@ void GMenu2X::scanPath(string path, vector<string> *files) {
 				files->push_back(filepath);
 		}
 	}
-	
+
 	closedir(dirp);
 }
 
