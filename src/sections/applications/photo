@@ -1,6 +1,0 @@
-title=Photo
-icon=icons/photo.png
-exec=/usr/gp2x/gp2xmenu
-params=--disable-autorun --enable-terminate --view-photo
-clock=100
-wrapper=true

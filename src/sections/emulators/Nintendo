@@ -1,9 +1,0 @@
-title=Nintendo
-description=GpFCE
-icon=/mnt/sd/Icons/Videogames/nes.png
-exec=/mnt/sd/GpFce/gpfce
-clock=200
-selectordir=/mnt/sd/roms/nes/
-selectorfilter=.nes,.zip
-selectorscreens=/mnt/sd/screens/nes
-wrapper=true

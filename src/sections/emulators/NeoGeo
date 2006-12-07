@@ -1,5 +1,0 @@
-title=Neo Geo
-description=GnGeo2X
-icon=/mnt/sd/Icons/Videogames/neogeo.png
-exec=/mnt/sd/neogeo/rage2x.gpe
-clock=200

@@ -285,11 +285,11 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 	if (volume()>=0)
 		gmenu2x->setVolume(volume());
 
-	cout << "\033[0;34mGMENU2X:\033[0m Executing '" << title << "' (" << exec << ") (" << params << ")" << endl;
+	cout << "\033[0;34mGMENU2X:\033[0m Executing '" << title << "' (" << exec << " " << params << ")" << endl;
 
 	//check if we have to quit
 	string command = cmdclean(exec);
-	
+
 	// Check to see if permissions are desirable
 	struct stat fstat;
 	if( stat( command.c_str(), &fstat ) == 0 ) {
@@ -301,7 +301,7 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 		if( fstat.st_mode != newstat.st_mode )
 			chmod( command.c_str(), newstat.st_mode );
 	} // else, well.. we are no worse off :)
-	
+
 	if (params!="") command += " " + params;
 	if (wrapper) command += "; sync & cd "+cmdclean(path)+"; exec ./gmenu2x";
 	if (dontleave) {
@@ -320,7 +320,7 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 		chdir(path.c_str());
 		execlp("./gmenu2x", "./gmenu2x", NULL);
 	}
-	
+
 
 	chdir(path.c_str());
 }

@@ -1,6 +1,0 @@
-title=Explorer
-icon=icons/explorer.png
-exec=/usr/gp2x/gp2xmenu
-params=--disable-autorun --enable-terminate --view-explorer
-clock=75
-wrapper=true

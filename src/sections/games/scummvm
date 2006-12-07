@@ -1,5 +1,0 @@
-title=Scumm
-description=Scumm emulator
-icon=/mnt/sd/Icons/scummvmpq9.png
-exec=/mnt/sd/scummvm/scummvm.gpe
-clock=200

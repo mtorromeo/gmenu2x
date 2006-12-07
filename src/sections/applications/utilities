@@ -1,6 +1,0 @@
-title=Utilities
-icon=sections/applications.png
-exec=/usr/gp2x/gp2xmenu
-params=--disable-autorun --enable-terminate --view-utility
-clock=75
-wrapper=true

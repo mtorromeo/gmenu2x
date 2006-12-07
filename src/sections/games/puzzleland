@@ -1,5 +1,0 @@
-title=puzzleland
-icon=/mnt/sd/puzzleland/puzzleland.png
-exec=/mnt/sd/puzzleland/puzzleland
-clock=200
-wrapper=true
