@@ -1,0 +1,5 @@
+title=openglad
+icon=/mnt/sd/Icons/exultsx6.png
+exec=/mnt/sd/openglad2x/openglad
+clock=200
+dontleave=true

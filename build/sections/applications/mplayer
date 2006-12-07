@@ -1,0 +1,5 @@
+title=Movies
+icon=icons/mplayer.png
+exec=/usr/gp2x/mplayer
+clock=200
+wrapper=true

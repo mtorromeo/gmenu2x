@@ -1,0 +1,5 @@
+title=NK SNES
+description=Super Nintendo Emulator
+icon=/mnt/sd/Icons/Videogames/snes.png
+exec=/mnt/sd/snes-mod/snesgp2x.gpe
+clock=200

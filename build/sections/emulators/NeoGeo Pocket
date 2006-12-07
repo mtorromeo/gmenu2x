@@ -1,0 +1,9 @@
+title=NeoGeo Pocket
+description=Race!
+icon=/mnt/sd/Icons/Videogames/ngpc white.png
+exec=/mnt/sd/ngpc/race
+clock=160
+selectordir=/mnt/sd/roms/ngpc/
+selectorfilter=.ngp,.ngc
+selectorscreens=/mnt/sd/screens/ngpc
+wrapper=true
