@@ -44,6 +44,10 @@
 #include <sys/types.h>
 #include <dirent.h>
 
+//for soundcard
+#include <sys/ioctl.h>
+#include <linux/soundcard.h>
+
 #include "linkapp.h"
 #include "linkaction.h"
 #include "menu.h"
@@ -55,6 +59,7 @@
 #include "messagebox.h"
 #include "inputdialog.h"
 #include "settingsdialog.h"
+#include "textdialog.h"
 #include "menusettingint.h"
 #include "menusettingbool.h"
 #include "menusettingrgba.h"
@@ -116,6 +121,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	saveSelection = true;
 	maxClock = 300;
 	menuClock = 100;
+	globalVolume = 100;
 	numRows = 4;
 	numCols = 6;
 	//G gamma = 10;
@@ -167,6 +173,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	//G gp2x_init();
 	//G if (gamma!=10) setGamma(gamma);
 	setClock(menuClock);
+	setVolume(globalVolume);
 	//G gp2x_deinit();
 
 	//recover last session
@@ -191,16 +198,20 @@ void GMenu2X::initBG() {
 	sc.del("imgs/bg.png");
 	sc.add("imgs/bg.png",false);
 
-	drawTopBar(sc["imgs/bg.png"],40);
+	drawTopBar(sc["imgs/bg.png"]);
 	drawBottomBar(sc["imgs/bg.png"]);
 
 	Surface sd("imgs/sd.png");
 	Surface cpu("imgs/cpu.png");
+	Surface volume("imgs/volume.png");
 	string df = getDiskFree();
 
 	sd.blit( sc["imgs/bg.png"], 3, 222 );
 	sc["imgs/bg.png"]->write( font, df, 22, 230, SFontHAlignLeft, SFontVAlignMiddle );
-	cpuX = 27+font->getTextWidth(df);
+	volumeX = 27+font->getTextWidth(df);
+	volume.blit( sc["imgs/bg.png"], volumeX, 222 );
+	volumeX += 19;
+	cpuX = volumeX+font->getTextWidth("100")+5;
 	cpu.blit( sc["imgs/bg.png"], cpuX, 222 );
 	cpuX += 19;
 
@@ -237,12 +248,33 @@ void GMenu2X::initMenu() {
 			menu->addActionLink(i,"GMenu2X",MakeDelegate(this,&GMenu2X::options),"Configure GMenu2X's options",sectionIcon);
 			menu->addActionLink(i,"USB Sd",MakeDelegate(this,&GMenu2X::activateSdUsb),"Activate Usb on SD","icons/usb.png");
 			menu->addActionLink(i,"USB Nand",MakeDelegate(this,&GMenu2X::activateNandUsb),"Activate Usb on Nand","icons/usb.png");
+			menu->addActionLink(i,"About",MakeDelegate(this,&GMenu2X::about),"Info about GMenu2X","icons/about.png");
 			//menu->addActionLink(i,"USB Root",MakeDelegate(this,&GMenu2X::activateRootUsb),"Activate Usb on the root of the Gp2x Filesystem","icons/usb.png");
 		}
 	}
 
 	menu->setSectionIndex(startSectionIndex);
 	menu->setLinkIndex(startLinkIndex);
+}
+
+void GMenu2X::about() {
+	vector<string> text;
+	split(text,"GMenu2X is developed by Massimiliano \"Ryo\" Torromeo, and is released under the GPL-v2 license.\n\
+Website: http://gmenu2x.sourceforge.net\n\
+E-Mail & PayPal account: massimiliano.torromeo@gmail.com\n\n\
+----\n\
+ Thanks to the following donors\n\
+----\n\
+Eclipse (www.gp2x.de)\n\
+Tecnologie creative (www.tecnologiecreative.it)\n\
+TelcoLou\n\
+gaterooze\n\
+deepmenace\n\
+superfly\n\
+and all the anonymous donors...\n\
+(If I missed to list you or if you want to be removed, contact me.)","\n");
+	TextDialog td(this, "GMenu2X", "Version 0.8 (Build date: "+string(__DATE__)+")", "icons/about.png", &text);
+	td.exec();
 }
 
 void GMenu2X::readConfig() {
@@ -273,6 +305,7 @@ void GMenu2X::readConfig() {
 				else if (name=="link") startLinkIndex = atoi(value.c_str());
 				else if (name=="menuClock") menuClock = constrain( atoi(value.c_str()), 50,300 );
 				else if (name=="maxClock") maxClock = constrain( atoi(value.c_str()), 50,300 );
+				else if (name=="globalVolume") globalVolume = constrain( atoi(value.c_str()), 0,100 );
 				else if (name=="numRows") numRows = constrain( atoi(value.c_str()), 2,4 );
 				else if (name=="numCols") numCols = constrain( atoi(value.c_str()), 1,6 );
 				//G else if (name=="gamma") gamma = constrain( atoi(value.c_str()), 1,100 );
@@ -309,6 +342,7 @@ void GMenu2X::writeConfig() {
 		inf << "link=" << startLinkIndex << endl;
 		inf << "menuClock=" << menuClock << endl;
 		inf << "maxClock=" << maxClock << endl;
+		inf << "globalVolume=" << globalVolume << endl;
 		inf << "numRows=" << menu->numRows << endl;
 		inf << "numCols=" << menu->numCols << endl;
 		//G inf << "gamma=" << gamma << endl;
@@ -494,8 +528,10 @@ int GMenu2X::main() {
 
 		if (menu->selLink()!=NULL) {
 			s->write ( font, menu->selLink()->getDescription(), 160, 221, SFontHAlignCenter, SFontVAlignBottom );
-			if (menu->selLinkApp()!=NULL)
+			if (menu->selLinkApp()!=NULL) {
 				s->write ( font, menu->selLinkApp()->clockStr(maxClock), cpuX, 230, SFontHAlignLeft, SFontVAlignMiddle );
+				s->write ( font, menu->selLinkApp()->volumeStr(), volumeX, 230, SFontHAlignLeft, SFontVAlignMiddle );
+			}
 		}
 
 		//battery
@@ -533,12 +569,21 @@ int GMenu2X::main() {
 		if ( joy[GP2X_BUTTON_RIGHT] ) menu->linkRight();
 		if ( joy[GP2X_BUTTON_UP   ] ) menu->linkUp();
 		if ( joy[GP2X_BUTTON_DOWN ] ) menu->linkDown();
-		// CLOCK
-		if ( joy[GP2X_BUTTON_VOLDOWN] && !joy[GP2X_BUTTON_VOLUP] && menu->selLinkApp()!=NULL )
-			menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-1,50,maxClock) );
-		if ( joy[GP2X_BUTTON_VOLUP] && !joy[GP2X_BUTTON_VOLDOWN] && menu->selLinkApp()!=NULL )
-			menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+1,50,maxClock) );
-		if ( joy[GP2X_BUTTON_VOLUP] && joy[GP2X_BUTTON_VOLDOWN] && menu->selLinkApp()!=NULL ) menu->selLinkApp()->setClock(200);
+		if ( joy[GP2X_BUTTON_A    ] ) {
+			// VOLUME
+			if ( joy[GP2X_BUTTON_VOLDOWN] && !joy[GP2X_BUTTON_VOLUP] && menu->selLinkApp()!=NULL )
+				menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()-1,-1,100) );
+			if ( joy[GP2X_BUTTON_VOLUP] && !joy[GP2X_BUTTON_VOLDOWN] && menu->selLinkApp()!=NULL )
+				menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()+1,-1,100) );;
+			if ( joy[GP2X_BUTTON_VOLUP] && joy[GP2X_BUTTON_VOLDOWN] && menu->selLinkApp()!=NULL ) menu->selLinkApp()->setVolume(-1);
+		} else {
+			// CLOCK
+			if ( joy[GP2X_BUTTON_VOLDOWN] && !joy[GP2X_BUTTON_VOLUP] && menu->selLinkApp()!=NULL )
+				menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-1,50,maxClock) );
+			if ( joy[GP2X_BUTTON_VOLUP] && !joy[GP2X_BUTTON_VOLDOWN] && menu->selLinkApp()!=NULL )
+				menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+1,50,maxClock) );
+			if ( joy[GP2X_BUTTON_VOLUP] && joy[GP2X_BUTTON_VOLDOWN] && menu->selLinkApp()!=NULL ) menu->selLinkApp()->setClock(200);
+		}
 		// SECTIONS
 		if ( joy[GP2X_BUTTON_L     ] ) {
 			menu->decSectionIndex();
@@ -589,12 +634,14 @@ int GMenu2X::main() {
 
 void GMenu2X::options() {
 	int curMenuClock = menuClock;
+	int curGlobalVolume = globalVolume;
 	//G int prevgamma = gamma;
 
 	SettingsDialog sd(this,"Settings");
 	sd.addSetting(new MenuSettingBool(this,"Save last selection","Save the last selected link and section on exit",&saveSelection));
 	sd.addSetting(new MenuSettingInt(this,"Clock for GMenu2X","Set the cpu working frequency when running GMenu2X",&menuClock,50,325));
 	sd.addSetting(new MenuSettingInt(this,"Maximum overclock","Set the maximum overclock for launching links",&maxClock,50,325));
+	sd.addSetting(new MenuSettingInt(this,"Global Volume","Set the default volume fo the gp2x soundcard",&globalVolume,0,100));
 	sd.addSetting(new MenuSettingInt(this,"Number of columns","Set the number of columns of links to display on a page",(int*)&menu->numCols,1,6));
 	sd.addSetting(new MenuSettingInt(this,"Number of rows","Set the number of rows of links to display on a page",(int*)&menu->numRows,2,4));
 	//G sd.addSetting(new MenuSettingInt(this," = SDL_GetTicks()Gamma","Set gp2x gamma value (default=10)",&gamma,1,100));
@@ -605,6 +652,7 @@ void GMenu2X::options() {
 	if (sd.exec() && sd.edited()) {
 		//G if (prevgamma!=gamma) setGamma(gamma);
 		if (curMenuClock!=menuClock) setClock(menuClock);
+		if (curGlobalVolume!=globalVolume) setVolume(globalVolume);
 		writeConfig();
 		initBG();
 	}
@@ -664,8 +712,7 @@ void GMenu2X::contextMenu() {
 		{
 		MenuOption opt = {"Edit "+menu->selLink()->getTitle(), MakeDelegate(this, &GMenu2X::editLink)};
 		voices.push_back(opt);
-		}
-		{
+		}{
 		MenuOption opt = {"Delete "+menu->selLink()->getTitle()+" link", MakeDelegate(this, &GMenu2X::deleteLink)};
 		voices.push_back(opt);
 		}
@@ -674,16 +721,13 @@ void GMenu2X::contextMenu() {
 	{
 	MenuOption opt = {"Add section", MakeDelegate(this, &GMenu2X::addSection)};
 	voices.push_back(opt);
-	}
-	{
+	}{
 	MenuOption opt = {"Rename section", MakeDelegate(this, &GMenu2X::renameSection)};
 	voices.push_back(opt);
-	}
-	{
+	}{
 	MenuOption opt = {"Delete section", MakeDelegate(this, &GMenu2X::deleteSection)};
 	voices.push_back(opt);
-	}
-	{
+	}{
 	MenuOption opt = {"Scan for applications and games", MakeDelegate(this, &GMenu2X::scanner)};
 	voices.push_back(opt);
 	}
@@ -766,6 +810,7 @@ void GMenu2X::editLink() {
 	string linkSelScreens = menu->selLinkApp()->getSelectorScreens();
 	string linkSelAliases = menu->selLinkApp()->getAliasFile();
 	int linkClock = menu->selLinkApp()->clock();
+	int linkVolume = menu->selLinkApp()->volume();
 	//G int linkGamma = menu->selLink()->gamma();
 
 	SettingsDialog sd(this,"Edit link");
@@ -774,6 +819,7 @@ void GMenu2X::editLink() {
 	sd.addSetting(new MenuSettingMultiString(this,"Section","The section this link belongs to",&newSection,&menu->sections));
 	sd.addSetting(new MenuSettingFile(this,"Icon","Select an icon for the link",&linkIcon,".png,.bmp,.jpg,.jpeg"));
 	sd.addSetting(new MenuSettingInt(this,"Clock (default=200)","Cpu clock frequency to set when launching this link",&linkClock,50,maxClock));
+	sd.addSetting(new MenuSettingInt(this,"Volume (default=-1)","Volume to set for this link",&linkVolume,-1,100));
 	sd.addSetting(new MenuSettingString(this,"Parameters","Parameters to pass to the application",&linkParams));
 	sd.addSetting(new MenuSettingDir(this,"Selector Directory","Directory to scan for the selector",&linkSelDir));
 	sd.addSetting(new MenuSettingString(this,"Selector Filter","Filter for the selector (Separate values with a comma)",&linkSelFilter));
@@ -795,6 +841,7 @@ void GMenu2X::editLink() {
 		menu->selLinkApp()->setSelectorScreens(linkSelScreens);
 		menu->selLinkApp()->setAliasFile(linkSelAliases);
 		menu->selLinkApp()->setClock(linkClock);
+		menu->selLinkApp()->setVolume(linkVolume);
 		//G menu->selLinkApp()->setGamma(linkGamma);
 
 		//if section changed move file and update link->file
@@ -1002,6 +1049,7 @@ void GMenu2X::setInputSpeed() {
 	joy.setInterval(150);
 	joy.setInterval(30,  GP2X_BUTTON_VOLDOWN);
 	joy.setInterval(30,  GP2X_BUTTON_VOLUP  );
+	joy.setInterval(30,  GP2X_BUTTON_A      );
 	joy.setInterval(500, GP2X_BUTTON_START  );
 	joy.setInterval(500, GP2X_BUTTON_SELECT );
 	joy.setInterval(300, GP2X_BUTTON_X      );
@@ -1054,6 +1102,17 @@ void GMenu2X::setGamma(int gamma) {
 	}
 
 	if (!alreadyInited) gp2x_deinit();
+#endif
+}
+
+void GMenu2X::setVolume(int vol) {
+#ifdef TARGET_GP2X
+	unsigned long soundDev = open("/dev/mixer", O_RDWR);
+	if (soundDev) {
+		vol =(((vol*0x50)/100)<<8)|((vol*0x50)/100);
+		ioctl(soundDev, SOUND_MIXER_WRITE_PCM, &vol);
+		close(soundDev);
+	}
 #endif
 }
 

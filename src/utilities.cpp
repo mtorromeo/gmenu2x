@@ -100,7 +100,7 @@ float constrain (float x, float imin, float imax) {
 	return min( imax, max(imin,x) );
 }
 
-bool split (vector<string> &vec, const string &str, const string &delim) {
+bool split (vector<string> &vec, const string &str, const string &delim, bool destructive) {
 	vec.clear();
 
 	if (delim.empty()) {
@@ -118,8 +118,13 @@ bool split (vector<string> &vec, const string &str, const string &delim) {
 			break;
 		}
 
+		if (!destructive)
+			j += delim.size();
+
 		vec.push_back(str.substr(i,j-i));
-		i = j + delim.size();
+		
+		if (destructive)
+			i = j + delim.size();
 
 		if (i==str.size()) {
 			vec.push_back(std::string());

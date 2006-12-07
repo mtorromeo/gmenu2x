@@ -62,6 +62,6 @@ float max (float a, float b);
 float min (float a, float b);
 float constrain (float x, float imin, float imax);
 
-bool split (vector<string> &vec, const string &str, const string &delim);
+bool split (vector<string> &vec, const string &str, const string &delim, bool destructive=true);
 
 #endif

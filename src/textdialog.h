@@ -17,76 +17,27 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef LINKAPP_H
-#define LINKAPP_H
+
+#ifndef TEXTDIALOG_H_
+#define TEXTDIALOG_H_
 
 #include <string>
-#include <iostream>
-
-#include "link.h"
+#include "gmenu2x.h"
 
 using std::string;
+using std::vector;
 
-class GMenu2X;
-
-/**
-Parses links files.
-
-	@author Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
-*/
-class LinkApp : public Link {
+class TextDialog {
 private:
-	string path, sclock, svolume;
-	int iclock, ivolume;
-	//G string sgamma;
-	//G int igamma;
-	string exec, params, workdir, selectordir, selectorfilter, selectorscreens;
-	void drawRun();
-
-	string aliasfile;
-
+	vector<string> *text;
+	string title, description, icon;
+	GMenu2X *gmenu2x;
+	
+	void preProcess();
+	
 public:
-	LinkApp(GMenu2X *gmenu2x, string path, const char* linkfile);
-
-	string getExec();
-	void setExec(string exec);
-	string getParams();
-	void setParams(string params);
-	string getWorkdir();
-	void setWorkdir(string workdir);
-	string getSelectorDir();
-	void setSelectorDir(string selectordir);
-	string getSelectorScreens();
-	void setSelectorScreens(string selectorscreens);
-	string getSelectorFilter();
-	void setSelectorFilter(string selectorfilter);
-	string getAliasFile();
-	void setAliasFile(string aliasfile);
-
-	string file;
-
-	int clock();
-	string clockStr(int maxClock);
-	void setClock(int mhz);
-
-	int volume();
-	string volumeStr();
-	void setVolume(int vol);
-
-/*G
-	int gamma();
-	string gammaStr();
-	void setGamma(int gamma);
-*/
-
-	bool wrapper;
-	bool dontleave;
-
-	bool save();
-	void run();
-	void selector(int startSelection=0, string selectorDir="");
-	void launch(string selectedFile="", string selectedDir="");
-	bool targetExists();
+	TextDialog(GMenu2X *gmenu2x, string title, string description, string icon, vector<string> *text);
+	void exec();
 };
 
-#endif
+#endif /*TEXTDIALOG_H_*/

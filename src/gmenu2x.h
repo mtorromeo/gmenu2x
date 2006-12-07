@@ -61,6 +61,7 @@ private:
 	*/
 	string getDiskFree();
 	unsigned short cpuX; //!< Offset for displaying cpu clock information
+	unsigned short volumeX; //!< Offset for displaying volume level
 	/*!
 	Reads the current battery state and returns a number representing it's level of charge
 	@return A number representing battery charge. 0 means fully discharged. 5 means fully charged. 6 represents a gp2x using AC power.
@@ -113,7 +114,7 @@ public:
 	//Configuration settings
 	RGBAColor selectionColor, topBarColor, bottomBarColor;
 	bool saveSelection, useBorders;
-	int maxClock, menuClock, startSectionIndex, startLinkIndex;
+	int maxClock, menuClock, startSectionIndex, startLinkIndex, globalVolume;
 	//G int gamma;
 
 	SurfaceCollection sc;
@@ -126,10 +127,12 @@ public:
 	void activateSdUsb();
 	void activateNandUsb();
 	void activateRootUsb();
+	void about();
 	void contextMenu();
 
 	void setClock(unsigned mhz);
 	void setGamma(int gamma);
+	void setVolume(int vol);
 	void setInputSpeed();
 
 	void writeConfig();
@@ -149,7 +152,7 @@ public:
 	int drawButton(Surface *s, string btn, string text, int x, int y=230);
 	int drawButtonRight(Surface *s, string btn, string text, int x, int y=230);
 	void drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height);
-	void drawTopBar(Surface *s=NULL, uint height=20);
+	void drawTopBar(Surface *s=NULL, uint height=40);
 	void drawBottomBar(Surface *s=NULL, uint height=20);
 
 	Menu* menu;

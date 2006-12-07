@@ -3,6 +3,7 @@ Gamma configurable in options menu and on a per-link basis
 ----------
 New in 0.8
 ----------
+Implemented volume control (per-link and globally)
 Added some confirmation dialogs
 Changed cancel button from A to X
 Added link to mount nand on usb

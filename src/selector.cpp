@@ -57,7 +57,7 @@ int Selector::exec(int startSelection) {
 	fl.browse();
 
 	Surface bg("imgs/bg.png",false);
-	gmenu2x->drawTopBar(&bg,40);
+	gmenu2x->drawTopBar(&bg);
 	//link icon
 	if (link->getIcon() != "")
 		gmenu2x->sc[link->getIcon()]->blit(&bg,4,4);

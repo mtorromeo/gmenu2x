@@ -37,6 +37,7 @@ LinkApp::LinkApp(GMenu2X *gmenu2x, string path, const char* linkfile)
 	wrapper = false;
 	dontleave = false;
 	setClock(200);
+	setVolume(-1);
 	//G setGamma(0);
 	selectordir = "";
 	selectorfilter = "";
@@ -76,6 +77,8 @@ LinkApp::LinkApp(GMenu2X *gmenu2x, string path, const char* linkfile)
 			setClock( atoi(value.c_str()) );
 		//G } else if (name == "gamma") {
 		//G 	setGamma( atoi(value.c_str()) );
+		} else if (name == "volume") {
+			setVolume( atoi(value.c_str()) );
 		} else if (name == "selectordir") {
 			setSelectorDir( value );
 		} else if (name == "selectorfilter") {
@@ -109,6 +112,27 @@ void LinkApp::setClock(int mhz) {
 	sclock = "";
 	ss << iclock << "MHZ";
 	ss >> sclock;
+
+	edited = true;
+}
+
+int LinkApp::volume() {
+	return ivolume;
+}
+
+string LinkApp::volumeStr() {
+	return svolume;
+}
+
+void LinkApp::setVolume(int vol) {
+	ivolume = constrain(vol,-1,100);
+	stringstream ss;
+	svolume = "";
+	if (ivolume<0)
+		ss << gmenu2x->globalVolume;
+	else
+		ss << ivolume;
+	ss >> svolume;
 
 	edited = true;
 }
@@ -158,6 +182,7 @@ bool LinkApp::save() {
 		if (params!=""         ) f << "params="          << params          << endl;
 		if (workdir!=""        ) f << "workdir="         << workdir         << endl;
 		if (iclock!=0          ) f << "clock="           << iclock          << endl;
+		if (ivolume>0          ) f << "volume="          << ivolume         << endl;
 		//G if (igamma!=0          ) f << "gamma="           << igamma          << endl;
 		if (selectordir!=""    ) f << "selectordir="     << selectordir     << endl;
 		if (selectorfilter!="" ) f << "selectorfilter="  << selectorfilter  << endl;
@@ -257,6 +282,8 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 
 	if (clock()!=gmenu2x->menuClock)
 		gmenu2x->setClock(clock());
+	if (volume()>=0)
+		gmenu2x->setVolume(volume());
 
 	cout << "\033[0;34mGMENU2X:\033[0m Executing '" << title << "' (" << exec << ") (" << params << ")" << endl;
 
