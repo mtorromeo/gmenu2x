@@ -74,6 +74,10 @@ using namespace std;
 using namespace fastdelegate;
 
 int main(int argc, char *argv[]) {
+	cout << "----" << endl;
+	cout << "GMenu2X starting: If you read this message in the logs, check http://gmenu2x.sourceforge.net/page/Troubleshooting for a solution" << endl;
+	cout << "----" << endl;
+
 	signal(SIGINT,&exit);
 	GMenu2X app(argc,argv);
 	return 0;
@@ -105,6 +109,7 @@ if (gp2x_initialized) {
 
 GMenu2X::GMenu2X(int argc, char *argv[]) {
 	gp2x_initialized = false;
+
 	//Initialize configuration settings to default
 	topBarColor.r = 255;
 	topBarColor.g = 255;
@@ -119,6 +124,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	selectionColor.b = 255;
 	selectionColor.a = 130;
 	saveSelection = true;
+	outputLogs = false;
 	maxClock = 300;
 	menuClock = 100;
 	globalVolume = 100;
@@ -145,7 +151,6 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 #endif
 
 	//Screen
-	cout << "\033[0;34mGMENU2X:\033[0m Initializing screen..." << endl;
 	if( SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_JOYSTICK)<0 ) {
 		cout << "\033[0;34mGMENU2X:\033[0;31m Could not initialize SDL:\033[0m " << SDL_GetError() << endl;
 		SDL_Quit();
@@ -248,6 +253,8 @@ void GMenu2X::initMenu() {
 			menu->addActionLink(i,"GMenu2X",MakeDelegate(this,&GMenu2X::options),"Configure GMenu2X's options",sectionIcon);
 			menu->addActionLink(i,"USB Sd",MakeDelegate(this,&GMenu2X::activateSdUsb),"Activate Usb on SD","icons/usb.png");
 			menu->addActionLink(i,"USB Nand",MakeDelegate(this,&GMenu2X::activateNandUsb),"Activate Usb on Nand","icons/usb.png");
+			if (fileExists(path+"log.txt"))
+				menu->addActionLink(i,"Log Viewer",MakeDelegate(this,&GMenu2X::viewLog),"Displays last launched program's output","icons/ebook.png");
 			menu->addActionLink(i,"About",MakeDelegate(this,&GMenu2X::about),"Info about GMenu2X","icons/about.png");
 			//menu->addActionLink(i,"USB Root",MakeDelegate(this,&GMenu2X::activateRootUsb),"Activate Usb on the root of the Gp2x Filesystem","icons/usb.png");
 		}
@@ -277,6 +284,35 @@ and all the anonymous donors...\n\
 	td.exec();
 }
 
+void GMenu2X::viewLog() {
+	string logfile = path+"log.txt";
+	if (fileExists(logfile)) {
+		ifstream inf(logfile.c_str(), ios_base::in);
+		if (inf.is_open()) {
+			vector<string> log;
+
+			string line;
+			while (getline(inf, line, '\n'))
+				log.push_back(line);
+			inf.close();
+
+			TextDialog td(this, "Log Viewer", "Displays last launched program's output", "icons/ebook.png", &log);
+			td.exec();
+
+			MessageBox mb(this, "Do you want to delete the log file?", "icons/ebook.png");
+			mb.buttons[GP2X_BUTTON_B] = "Yes";
+			mb.buttons[GP2X_BUTTON_X] = "No";
+			if (mb.exec() == GP2X_BUTTON_B) {
+				ledOn();
+				unlink(logfile.c_str());
+				sync();
+				menu->deleteSelectedLink();
+				ledOff();
+			}
+		}
+	}
+}
+
 void GMenu2X::readConfig() {
 	string conffile = path+"gmenu2x.conf";
 	if (fileExists(conffile)) {
@@ -301,6 +337,7 @@ void GMenu2X::readConfig() {
 				else if (name=="bottomBarColorB") bottomBarColor.b = constrain( atoi(value.c_str()), 0, 255 );
 				else if (name=="bottomBarColorA") bottomBarColor.a = constrain( atoi(value.c_str()), 0, 255 );
 				else if (name=="saveSelection") saveSelection = value == "on" ? true : false;
+				else if (name=="outputLogs") outputLogs = value == "on" ? true : false;
 				else if (name=="section") startSectionIndex = atoi(value.c_str());
 				else if (name=="link") startLinkIndex = atoi(value.c_str());
 				else if (name=="menuClock") menuClock = constrain( atoi(value.c_str()), 50,300 );
@@ -338,6 +375,7 @@ void GMenu2X::writeConfig() {
 		inf << "bottomBarColorB=" << bottomBarColor.b << endl;
 		inf << "bottomBarColorA=" << bottomBarColor.a << endl;
 		inf << "saveSelection=" << ( saveSelection ? "on" : "off" ) << endl;
+		inf << "outputLogs=" << ( outputLogs ? "on" : "off" ) << endl;
 		inf << "section=" << startSectionIndex << endl;
 		inf << "link=" << startLinkIndex << endl;
 		inf << "menuClock=" << menuClock << endl;
@@ -572,9 +610,9 @@ int GMenu2X::main() {
 		if ( joy[GP2X_BUTTON_A    ] ) {
 			// VOLUME
 			if ( joy[GP2X_BUTTON_VOLDOWN] && !joy[GP2X_BUTTON_VOLUP] && menu->selLinkApp()!=NULL )
-				menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()-1,-1,100) );
+				menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()-1,0,100) );
 			if ( joy[GP2X_BUTTON_VOLUP] && !joy[GP2X_BUTTON_VOLDOWN] && menu->selLinkApp()!=NULL )
-				menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()+1,-1,100) );;
+				menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()+1,0,100) );;
 			if ( joy[GP2X_BUTTON_VOLUP] && joy[GP2X_BUTTON_VOLDOWN] && menu->selLinkApp()!=NULL ) menu->selLinkApp()->setVolume(-1);
 		} else {
 			// CLOCK
@@ -642,6 +680,7 @@ void GMenu2X::options() {
 	sd.addSetting(new MenuSettingInt(this,"Clock for GMenu2X","Set the cpu working frequency when running GMenu2X",&menuClock,50,325));
 	sd.addSetting(new MenuSettingInt(this,"Maximum overclock","Set the maximum overclock for launching links",&maxClock,50,325));
 	sd.addSetting(new MenuSettingInt(this,"Global Volume","Set the default volume fo the gp2x soundcard",&globalVolume,0,100));
+	sd.addSetting(new MenuSettingBool(this,"Output logs","Logs the output of the links. Use the Log Viewer to read them.",&outputLogs));
 	sd.addSetting(new MenuSettingInt(this,"Number of columns","Set the number of columns of links to display on a page",(int*)&menu->numCols,1,6));
 	sd.addSetting(new MenuSettingInt(this,"Number of rows","Set the number of rows of links to display on a page",(int*)&menu->numRows,2,4));
 	//G sd.addSetting(new MenuSettingInt(this," = SDL_GetTicks()Gamma","Set gp2x gamma value (default=10)",&gamma,1,100));
@@ -807,6 +846,7 @@ void GMenu2X::editLink() {
 	string linkParams = menu->selLinkApp()->getParams();
 	string linkSelFilter = menu->selLinkApp()->getSelectorFilter();
 	string linkSelDir = menu->selLinkApp()->getSelectorDir();
+	bool linkSelBrowser = menu->selLinkApp()->getSelectorBrowser();
 	string linkSelScreens = menu->selLinkApp()->getSelectorScreens();
 	string linkSelAliases = menu->selLinkApp()->getAliasFile();
 	int linkClock = menu->selLinkApp()->clock();
@@ -822,6 +862,7 @@ void GMenu2X::editLink() {
 	sd.addSetting(new MenuSettingInt(this,"Volume (default=-1)","Volume to set for this link",&linkVolume,-1,100));
 	sd.addSetting(new MenuSettingString(this,"Parameters","Parameters to pass to the application",&linkParams));
 	sd.addSetting(new MenuSettingDir(this,"Selector Directory","Directory to scan for the selector",&linkSelDir));
+	sd.addSetting(new MenuSettingBool(this,"Selector Browser","Allow the selector to change directory",&linkSelBrowser));
 	sd.addSetting(new MenuSettingString(this,"Selector Filter","Filter for the selector (Separate values with a comma)",&linkSelFilter));
 	sd.addSetting(new MenuSettingDir(this,"Selector Screenshots","Directory of the screenshots for the selector",&linkSelScreens));
 	sd.addSetting(new MenuSettingFile(this,"Selector Aliases","File containing a list of aliases for the selector",&linkSelAliases));
@@ -838,6 +879,7 @@ void GMenu2X::editLink() {
 		menu->selLinkApp()->setParams(linkParams);
 		menu->selLinkApp()->setSelectorFilter(linkSelFilter);
 		menu->selLinkApp()->setSelectorDir(linkSelDir);
+		menu->selLinkApp()->setSelectorBrowser(linkSelBrowser);
 		menu->selLinkApp()->setSelectorScreens(linkSelScreens);
 		menu->selLinkApp()->setAliasFile(linkSelAliases);
 		menu->selLinkApp()->setClock(linkClock);
@@ -881,7 +923,6 @@ void GMenu2X::addSection() {
 		if (find(menu->sections.begin(),menu->sections.end(),id.input)==menu->sections.end()) {
 			//section directory doesn't exists
 			string sectiondir = "sections/"+id.input;
-			cout << "\033[0;34mGMENU2X:\033[0m mkdir " << sectiondir << endl;
 			ledOn();
 			if (mkdir(sectiondir.c_str(),0777)==0) {
 				menu->sections.push_back(id.input);
@@ -901,7 +942,6 @@ void GMenu2X::renameSection() {
 			//section directory doesn't exists
 			string newsectiondir = "sections/"+id.input;
 			string sectiondir = "sections/"+menu->selSection();
-			cout << "\033[0;34mGMENU2X:\033[0m mv " << sectiondir << " " << newsectiondir << endl;
 			ledOn();
 			if (rename(sectiondir.c_str(), newsectiondir.c_str())==0) {
 				string oldicon = sectiondir+".png", newicon = newsectiondir+".png";
@@ -925,9 +965,7 @@ void GMenu2X::deleteSection() {
 	if (mb.exec() == GP2X_BUTTON_B) {
 		ledOn();
 		if (rmtree(path+"sections/"+menu->selSection())) {
-			menu->sections.erase( menu->sections.begin()+menu->selSectionIndex() );
-			sc.del("sections/"+menu->selSection()+".png");
-			menu->setSectionIndex(0); //reload sections
+			menu->deleteSelectedSection();
 			sync();
 		}
 		ledOff();
@@ -937,6 +975,9 @@ void GMenu2X::deleteSection() {
 void GMenu2X::scanner() {
 	Surface bg("imgs/bg.png");
 	drawTopBar(&bg,15);
+	drawBottomBar(&bg);
+	drawButton(&bg, "X", "Exit",
+	drawButton(&bg, "B", "/", 10)-4);
 	bg.write(font,"Link Scanner",160,7,SFontHAlignCenter,SFontVAlignMiddle);
 	bg.write(font,"Scanning SD filesystem...",5,20);
 	bg.blit(s,0,0);
@@ -980,6 +1021,17 @@ void GMenu2X::scanner() {
 	bg.write(font,str+" links created.",5,80);
 	bg.blit(s,0,0);
 	s->flip();
+
+	bool close = false;
+	while (!close) {
+#ifdef TARGET_GP2X
+		joy.update();
+		if (joy[GP2X_BUTTON_START] || joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_X]) close = true;
+#else
+		while (SDL_PollEvent(&event))
+			if (event.key.keysym.sym==SDLK_ESCAPE || event.key.keysym.sym==SDLK_RETURN) close = true;
+#endif
+	}
 
 	sync();
 	ledOff();
@@ -1064,7 +1116,6 @@ void GMenu2X::setInputSpeed() {
 
 void GMenu2X::setClock(unsigned mhz) {
 	mhz = constrain(mhz,50,maxClock);
-	cout << "\033[0;34mGMENU2X:\033[0m Setting clock speed at " << mhz << "MHZ" << endl;
 #ifdef TARGET_GP2X
 	bool alreadyInited = gp2x_initialized;
 	if (!alreadyInited) gp2x_init();
@@ -1084,7 +1135,6 @@ void GMenu2X::setClock(unsigned mhz) {
 }
 
 void GMenu2X::setGamma(int gamma) {
-	cout << "\033[0;34mGMENU2X:\033[0m Setting gamma to " << gamma << endl;
 #ifdef TARGET_GP2X
 	bool alreadyInited = gp2x_initialized;
 	if (!alreadyInited) gp2x_init();

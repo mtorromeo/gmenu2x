@@ -58,7 +58,9 @@ bool rmtree(string path) {
 	struct dirent *dptr;
 	string filepath;
 
-	cout << "RMDIR: " << path << endl;
+#ifdef DEBUG
+	cout << "RMTREE: " << path << endl;
+#endif
 
 	if ((dirp = opendir(path.c_str())) == NULL) return false;
 	if (path[path.length()-1]!='/') path += "/";
@@ -75,7 +77,7 @@ bool rmtree(string path) {
 			if (unlink(filepath.c_str())!=0) return false;
 		}
 	}
-	
+
 	closedir(dirp);
 	return rmdir(path.c_str())==0;
 }
@@ -122,7 +124,7 @@ bool split (vector<string> &vec, const string &str, const string &delim, bool de
 			j += delim.size();
 
 		vec.push_back(str.substr(i,j-i));
-		
+
 		if (destructive)
 			i = j + delim.size();
 

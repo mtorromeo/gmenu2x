@@ -36,15 +36,12 @@ Joystick::~Joystick() {
 void Joystick::init( int joynum ) {
 	SDL_JoystickEventState(SDL_IGNORE);
 	joystick = SDL_JoystickOpen(joynum);
-	cout << "\033[0;34mGMENU2X:\033[0m Joystick " << (joystick!=NULL) << endl;
 	numButtons = SDL_JoystickNumButtons(joystick);
-	cout << "\033[0;34mGMENU2X:\033[0m " << numButtons << " buttons" << endl;
 	for (int x=0; x<numButtons; x++) {
 		buttons.push_back(false);
 		joyTick.push_back(0);
 		interval.push_back(0);
 	}
-	cout << "\033[0;34mGMENU2X:\033[0m Joystick initialized" << endl;
 }
 
 void Joystick::update() {

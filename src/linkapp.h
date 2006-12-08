@@ -41,6 +41,7 @@ private:
 	//G string sgamma;
 	//G int igamma;
 	string exec, params, workdir, selectordir, selectorfilter, selectorscreens;
+	bool selectorbrowser;
 	void drawRun();
 
 	string aliasfile;
@@ -56,6 +57,8 @@ public:
 	void setWorkdir(string workdir);
 	string getSelectorDir();
 	void setSelectorDir(string selectordir);
+	bool getSelectorBrowser();
+	void setSelectorBrowser(bool value);
 	string getSelectorScreens();
 	void setSelectorScreens(string selectorscreens);
 	string getSelectorFilter();

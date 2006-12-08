@@ -3,11 +3,13 @@ Gamma configurable in options menu and on a per-link basis
 ----------
 New in 0.8
 ----------
+Implemented link's output logs with a log viewer (Disabled by default)
+Implemented a simple text reader used in various situations
 Implemented volume control (per-link and globally)
 Added some confirmation dialogs
 Changed cancel button from A to X
-Added link to mount nand on usb
-Implemented virtual links (gmenu2x settings, usb)
+Added link to mount nand on usb with a dialog notification if usb is used for networking
+Implemented virtual links (gmenu2x settings, usb, log viewer, about)
 Added messageboxes
 Added links for firmware 2.1.x
 Directories browseable from selector

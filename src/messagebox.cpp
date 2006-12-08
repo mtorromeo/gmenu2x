@@ -30,17 +30,17 @@ MessageBox::MessageBox(GMenu2X *gmenu2x, string text, string icon) {
 	this->gmenu2x = gmenu2x;
 	this->text = text;
 	this->icon = icon;
-	
+
 	buttons.resize(19);
 	buttonLabels.resize(19);
 	for (uint x=0; x<buttons.size(); x++) {
 		buttons[x] = "";
 		buttonLabels[x] = "";
 	}
-	
+
 	//Default enabled button
 	buttons[GP2X_BUTTON_B] = "OK";
-	
+
 	//Default labels
 	buttonLabels[GP2X_BUTTON_UP] = "^";
 	buttonLabels[GP2X_BUTTON_DOWN] = "v";
@@ -64,7 +64,7 @@ int MessageBox::exec() {
 	Surface bg(gmenu2x->s);
 	//Darken background
 	bg.box(0, 0, 320, 240, 0,0,0,150);
-	
+
 	int textW = gmenu2x->font->getTextWidth(text);
 	int boxW = textW + 20;
 	if (gmenu2x->sc[icon] != NULL)
@@ -89,7 +89,7 @@ int MessageBox::exec() {
 		if (buttons[i]!="")
 			btnX = gmenu2x->drawButtonRight(&bg, buttonLabels[i], buttons[i], btnX, 140);
 	}
-	
+
 	bg.blit(gmenu2x->s,0,0);
 	gmenu2x->s->flip();
 
@@ -102,8 +102,8 @@ int MessageBox::exec() {
 		while (SDL_PollEvent(&gmenu2x->event)) {
 			if ( gmenu2x->event.type == SDL_QUIT ) result = GP2X_BUTTON_X;
 			if ( gmenu2x->event.type==SDL_KEYDOWN ) {
-				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) result = 0;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) result = 1;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) result = GP2X_BUTTON_X;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) result = GP2X_BUTTON_B;
 			}
 		}
 #endif

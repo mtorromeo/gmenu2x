@@ -56,7 +56,7 @@ Menu::Menu(GMenu2X *gmenu2x, string path) {
 			links.push_back(ll);
 		}
 	}
-	
+
 	closedir(dirp);
 	sort(sections.begin(),sections.end(),case_less());
 	setSectionIndex(0);
@@ -135,7 +135,6 @@ string Menu::sectionPath(int section) {
    LINKS MANAGEMENT
   ====================================*/
 bool Menu::addActionLink(uint section, string title, LinkRunAction action, string description, string icon) {
-	cout << "\033[0;34mGMENU2X:\033[0m Adding action link " << sectionLinks(section)->size() << endl;
 	if (section>=sections.size()) return false;
 
 	LinkAction *linkact = new LinkAction(gmenu2x,action);
@@ -144,7 +143,6 @@ bool Menu::addActionLink(uint section, string title, LinkRunAction action, strin
 	linkact->setIcon(icon);
 
 	sectionLinks(section)->push_back(linkact);
-	cout << "\033[0;34mGMENU2X:\033[0m Link added " << sectionLinks(section)->size() << endl;
 	return true;
 }
 
@@ -154,21 +152,19 @@ bool Menu::addLink(string path, string file, string section) {
 	else if (find(sections.begin(),sections.end(),section)==sections.end()) {
 		//section directory doesn't exists
 		string sectiondir = "sections/"+section;
-		cout << "\033[0;34mGMENU2X:\033[0m mkdir " << sectiondir << endl;
-		if (mkdir(sectiondir.c_str(),777)==0)
+		if (mkdir(sectiondir.c_str(),0777)==0) {
 			sections.push_back(section);
-		else
+			linklist ll;
+			links.push_back(ll);
+		} else
 			return false;
 	}
-	cout << "\033[0;34mGMENU2X:\033[0m addLink section=" << section << " file=" << file << endl;
 	if (path[path.length()-1]!='/') path += "/";
 
 	string title = file;
 	string::size_type pos = title.rfind(".");
 	if (pos!=string::npos && pos>0)
 		title = title.substr(0, pos);
-
-	cout << "\033[0;34mGMENU2X:\033[0m Creating link " << title << endl;
 
 	string linkpath = "sections/"+section+"/"+title;
 	int x=2;
@@ -177,8 +173,7 @@ bool Menu::addLink(string path, string file, string section) {
 		linkpath = "";
 		ss << x;
 		ss >> linkpath;
-		linkpath = "sections/"+section+"/"+title+linkpath; 
-		cout << "\033[0;34mGMENU2X:\033[0m linkpath=" << linkpath << endl;
+		linkpath = "sections/"+section+"/"+title+linkpath;
 		x++;
 	}
 
@@ -198,10 +193,16 @@ bool Menu::addLink(string path, string file, string section) {
 		f.close();
 
 		int isection = find(sections.begin(),sections.end(),section) - sections.begin();
-		if (isection>0 && isection<(int)sections.size())
+		if (isection>0 && isection<(int)sections.size()) {
+#ifdef DEBUG
+			cout << "\033[0;34mGMENU2X:\033[0m Section: " << sections[isection] << "(" << isection << ")" << endl;
+#endif
 			links[isection].push_back( new LinkApp(gmenu2x, path, linkpath.c_str()) );
+		}
 	} else {
+#ifdef DEBUG
 		cout << "\033[0;34mGMENU2X:\033[0;31m Error while opening the file '" << linkpath << "' for write\033[0m" << endl;
+#endif
 		return false;
 	}
 
@@ -209,13 +210,24 @@ bool Menu::addLink(string path, string file, string section) {
 }
 
 void Menu::deleteSelectedLink() {
-	if (selLinkApp()!=NULL) {
-		cout << "\033[0;34mGMENU2X:\033[0m Deleting link " << selLink()->getTitle() << endl;
+#ifdef DEBUG
+	cout << "\033[0;34mGMENU2X:\033[0m Deleting link " << selLink()->getTitle() << endl;
+#endif
+	if (selLinkApp()!=NULL)
 		unlink(selLinkApp()->file.c_str());
-		gmenu2x->sc.del(selLink()->getIcon());
-		sectionLinks()->erase( sectionLinks()->begin() + selLinkIndex() );
-		setLinkIndex(selLinkIndex());
-	}
+	gmenu2x->sc.del(selLink()->getIcon());
+	sectionLinks()->erase( sectionLinks()->begin() + selLinkIndex() );
+	setLinkIndex(selLinkIndex());
+}
+
+void Menu::deleteSelectedSection() {
+#ifdef DEBUG
+	cout << "\033[0;34mGMENU2X:\033[0m Deleting section " << selSection() << endl;
+#endif
+	gmenu2x->sc.del("sections/"+selSection()+".png");
+	links.erase( links.begin()+selSectionIndex() );
+	sections.erase( sections.begin()+selSectionIndex() );
+	setSectionIndex(0); //reload sections
 }
 
 void Menu::linkLeft() {
@@ -279,7 +291,7 @@ void Menu::setLinkIndex(int i) {
 
 void Menu::readLinks() {
 	vector<string> linkfiles;
-	
+
 	iLink = 0;
 	iFirstDispRow = 0;
 
@@ -293,7 +305,7 @@ void Menu::readLinks() {
 		linkfiles.clear();
 
 		if ((dirp = opendir(sectionPath(i).c_str())) == NULL) continue;
-	
+
 		while ((dptr = readdir(dirp))) {
 			if (dptr->d_name[0]=='.') continue;
 			filepath = sectionPath(i)+dptr->d_name;
@@ -303,7 +315,7 @@ void Menu::readLinks() {
 				linkfiles.push_back(filepath);
 			}
 		}
-		
+
 		sort(linkfiles.begin(), linkfiles.end(),case_less());
 		for (uint x=0; x<linkfiles.size(); x++) {
 			LinkApp *link = new LinkApp(gmenu2x, path, linkfiles[x].c_str());
@@ -312,7 +324,7 @@ void Menu::readLinks() {
 			else
 				free(link);
 		}
-		
+
 		closedir(dirp);
 	}
 }

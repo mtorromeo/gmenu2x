@@ -68,6 +68,7 @@ public:
 	bool addActionLink(uint section, string title, LinkRunAction action, string description="", string icon="");
 	bool addLink(string path, string file, string section="");
 	void deleteSelectedLink();
+	void deleteSelectedSection();
 
 	int selLinkIndex();
 	Link *selLink();

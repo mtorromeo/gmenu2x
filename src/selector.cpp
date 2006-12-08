@@ -52,7 +52,7 @@ int Selector::exec(int startSelection) {
 	bool close = false, result = true;
 	vector<string> screens, titles;
 
-	FileLister fl(dir);
+	FileLister fl(dir, link->getSelectorBrowser());
 	fl.setFilter(link->getSelectorFilter());
 	fl.browse();
 
@@ -68,18 +68,23 @@ int Selector::exec(int startSelection) {
 	bg.write(gmenu2x->font,link->getDescription(),40,27, SFontHAlignLeft, SFontVAlignMiddle);
 	gmenu2x->drawBottomBar(&bg);
 
-	gmenu2x->drawButton(&bg, "S", "Exit",
-	gmenu2x->drawButton(&bg, "B", "Select file",
-	gmenu2x->drawButton(&bg, "X", "Up one directory", 10)));
+	if (link->getSelectorBrowser()) {
+		gmenu2x->drawButton(&bg, "S", "Exit",
+		gmenu2x->drawButton(&bg, "B", "Select file",
+		gmenu2x->drawButton(&bg, "X", "Up one directory", 10)));
+	} else {
+		gmenu2x->drawButton(&bg, "X", "Exit",
+		gmenu2x->drawButton(&bg, "B", "Select file", 10));
+	}
 
 	Uint32 selTick = SDL_GetTicks(), curTick;
 	uint i, firstElement = 0, iY;
 	screens.resize(fl.files.size());
 	titles.resize(fl.files.size());
-	
+
 	prepare(&fl,&screens,&titles);
 	uint selected = constrain(startSelection,0,fl.size()-1);
-	
+
 	//Add the folder icon manually to be sure to load it with alpha support since we are going to disable it for screenshots
 	if (!gmenu2x->sc.exists("imgs/folder.png"))
 		gmenu2x->sc.add("imgs/folder.png");
@@ -107,7 +112,7 @@ int Selector::exec(int startSelection) {
 				gmenu2x->s->write(gmenu2x->font, titles[i-fl.dirCount()], 4, 49+(iY*16), SFontHAlignLeft, SFontVAlignMiddle);
 		}
 		gmenu2x->s->clearClipRect();
-		
+
 		if (selected-fl.dirCount()<screens.size() && screens[selected-fl.dirCount()]!="") {
 			curTick = SDL_GetTicks();
 			if (curTick-selTick>200)
@@ -154,16 +159,21 @@ int Selector::exec(int startSelection) {
 			selTick = SDL_GetTicks();
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_X] ) {
-			string::size_type p = dir.rfind("/", dir.size()-2);
-			if (p==string::npos || dir.substr(0,4)!="/mnt" || p<4) {
+			if (link->getSelectorBrowser()) {
+				string::size_type p = dir.rfind("/", dir.size()-2);
+				if (p==string::npos || dir.substr(0,4)!="/mnt" || p<4) {
+					close = true;
+					result = false;
+				} else {
+					dir = dir.substr(0,p+1);
+					cout << dir << endl;
+					selected = 0;
+					firstElement = 0;
+					prepare(&fl,&screens,&titles);
+				}
+			} else {
 				close = true;
 				result = false;
-			} else {
-				dir = dir.substr(0,p+1);
-				cout << dir << endl;
-				selected = 0;
-				firstElement = 0;
-				prepare(&fl,&screens,&titles);
 			}
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK] ) {
@@ -199,16 +209,21 @@ int Selector::exec(int startSelection) {
 					selTick = SDL_GetTicks();
 				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) {
-					string::size_type p = dir.rfind("/", dir.size()-2);
-					if (p==string::npos || dir.substr(0,4)!="/mnt" || p<4) {
+					if (link->getSelectorBrowser()) {
+						string::size_type p = dir.rfind("/", dir.size()-2);
+						if (p==string::npos || dir.substr(0,4)!="/mnt" || p<4) {
+							close = true;
+							result = false;
+						} else {
+							dir = dir.substr(0,p+1);
+							cout << dir << endl;
+							selected = 0;
+							firstElement = 0;
+							prepare(&fl,&screens,&titles);
+						}
+					} else {
 						close = true;
 						result = false;
-					} else {
-						dir = dir.substr(0,p+1);
-						cout << dir << endl;
-						selected = 0;
-						firstElement = 0;
-						prepare(&fl,&screens,&titles);
 					}
 				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
@@ -240,7 +255,7 @@ void Selector::prepare(FileLister *fl, vector<string> *screens, vector<string> *
 
 	string screendir = link->getSelectorScreens();
 	if (screendir != "" && screendir[screendir.length()-1]!='/') screendir += "/";
-	
+
 	string noext;
 	string::size_type pos;
 	for (uint i=0; i<fl->files.size(); i++) {
@@ -251,7 +266,9 @@ void Selector::prepare(FileLister *fl, vector<string> *screens, vector<string> *
 		titles->at(i) = getAlias(noext);
 		if (titles->at(i)=="")
 			titles->at(i) = noext;
+#ifdef DEBUG
 		cout << "\033[0;34mGMENU2X:\033[0m Searching for screen " << screendir << noext << ".png" << endl;
+#endif
 		if (fileExists(screendir+noext+".png"))
 			screens->at(i) = screendir+noext+".png";
 		else if (fileExists(screendir+noext+".jpg"))

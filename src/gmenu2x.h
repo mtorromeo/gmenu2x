@@ -113,7 +113,7 @@ public:
 
 	//Configuration settings
 	RGBAColor selectionColor, topBarColor, bottomBarColor;
-	bool saveSelection, useBorders;
+	bool saveSelection, outputLogs;
 	int maxClock, menuClock, startSectionIndex, startLinkIndex, globalVolume;
 	//G int gamma;
 
@@ -128,6 +128,7 @@ public:
 	void activateNandUsb();
 	void activateRootUsb();
 	void about();
+	void viewLog();
 	void contextMenu();
 
 	void setClock(unsigned mhz);

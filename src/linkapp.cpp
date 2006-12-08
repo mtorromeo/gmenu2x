@@ -41,6 +41,7 @@ LinkApp::LinkApp(GMenu2X *gmenu2x, string path, const char* linkfile)
 	//G setGamma(0);
 	selectordir = "";
 	selectorfilter = "";
+	selectorbrowser = false;
 
 	string line;
 	ifstream infile (linkfile, ios_base::in);
@@ -81,6 +82,8 @@ LinkApp::LinkApp(GMenu2X *gmenu2x, string path, const char* linkfile)
 			setVolume( atoi(value.c_str()) );
 		} else if (name == "selectordir") {
 			setSelectorDir( value );
+		} else if (name == "selectorbrowser") {
+			if (value=="true") selectorbrowser = true;
 		} else if (name == "selectorfilter") {
 			setSelectorFilter( value );
 		} else if (name == "selectorscreens") {
@@ -171,7 +174,6 @@ bool LinkApp::targetExists() {
 
 bool LinkApp::save() {
 	if (!edited) return false;
-	cout << "\033[0;34mGMENU2X:\033[0m Saving link " << title << endl;
 
 	ofstream f(file.c_str());
 	if (f.is_open()) {
@@ -185,6 +187,7 @@ bool LinkApp::save() {
 		if (ivolume>0          ) f << "volume="          << ivolume         << endl;
 		//G if (igamma!=0          ) f << "gamma="           << igamma          << endl;
 		if (selectordir!=""    ) f << "selectordir="     << selectordir     << endl;
+		if (selectorbrowser    ) f << "selectorbrowser=true"                << endl;
 		if (selectorfilter!="" ) f << "selectorfilter="  << selectorfilter  << endl;
 		if (selectorscreens!="") f << "selectorscreens=" << selectorscreens << endl;
 		if (aliasfile!=""      ) f << "selectoraliases=" << aliasfile       << endl;
@@ -255,7 +258,6 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 	}
 	if (wd!="") {
 		if (wd[0]!='/') wd = path + wd;
-		cout << "\033[0;34mGMENU2X:\033[0m chdir '" << wd << "'" << endl;
 		chdir(wd.c_str());
 	}
 
@@ -285,7 +287,9 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 	if (volume()>=0)
 		gmenu2x->setVolume(volume());
 
+#ifdef DEBUG
 	cout << "\033[0;34mGMENU2X:\033[0m Executing '" << title << "' (" << exec << " " << params << ")" << endl;
+#endif
 
 	//check if we have to quit
 	string command = cmdclean(exec);
@@ -303,6 +307,7 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 	} // else, well.. we are no worse off :)
 
 	if (params!="") command += " " + params;
+	if (gmenu2x->outputLogs) command += " &> " + cmdclean(path) + "/log.txt";
 	if (wrapper) command += "; sync & cd "+cmdclean(path)+"; exec ./gmenu2x";
 	if (dontleave) {
 		system(command.c_str());
@@ -359,6 +364,15 @@ string LinkApp::getSelectorDir() {
 void LinkApp::setSelectorDir(string selectordir) {
 	if (selectordir!="" && selectordir[selectordir.length()-1]!='/') selectordir += "/";
 	this->selectordir = selectordir;
+	edited = true;
+}
+
+bool LinkApp::getSelectorBrowser() {
+	return selectorbrowser;
+}
+
+void LinkApp::setSelectorBrowser(bool value) {
+	selectorbrowser = value;
 	edited = true;
 }
 

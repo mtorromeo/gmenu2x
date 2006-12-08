@@ -40,16 +40,16 @@ TextDialog::TextDialog(GMenu2X *gmenu2x, string title, string description, strin
 void TextDialog::preProcess() {
 	uint i=0;
 	string row;
-	
+
 	while (i<text->size()) {
 		//clean this row
 		row = trim(text->at(i));
-		
+
 		//check if this row is not too long
 		if (gmenu2x->font->getTextWidth(row)>305) {
 			vector<string> words;
 			split(words, row, " ");
-			
+
 			uint numWords = words.size();
 			//find the maximum number of rows that can be printed on screen
 			while (gmenu2x->font->getTextWidth(row)>305 && numWords>0) {
@@ -59,22 +59,22 @@ void TextDialog::preProcess() {
 					row += words[x] + " ";
 				row = trim(row);
 			}
-			
+
 			//if numWords==0 then the string must be printed as-is, it cannot be split
 			if (numWords>0) {
 				vector<string>::iterator it = text->begin();
 				it += i;
-			
+
 				//delete the original string and replace with the shorter version
 				text->erase(it);
 				text->insert(it, row);
-				
+
 				//build the remaining text in another row
 				row = "";
 				for (uint x=numWords; x<words.size(); x++)
 					row += words[x] + " ";
 				row = trim(row);
-				
+
 				if (!row.empty())
 					text->insert(it+1, row);
 			}
@@ -89,7 +89,7 @@ void TextDialog::exec() {
 	Surface bg("imgs/bg.png");
 	gmenu2x->drawTopBar(&bg);
 	gmenu2x->drawBottomBar(&bg);
-	
+
 	//link icon
 	Surface sIcon(icon);
 	sIcon.blit(&bg,4,4);
@@ -97,8 +97,9 @@ void TextDialog::exec() {
 	bg.write(gmenu2x->font,title,40,13, SFontHAlignLeft, SFontVAlignMiddle);
 	bg.write(gmenu2x->font,description,40,27, SFontHAlignLeft, SFontVAlignMiddle);
 
+	gmenu2x->drawButton(&bg, "X", "Exit",
 	gmenu2x->drawButton(&bg, "v", "Scroll",
-	gmenu2x->drawButton(&bg, "^", "", 10)-4);
+	gmenu2x->drawButton(&bg, "^", "/", 10)-4));
 
 	uint firstRow = 0, rowsPerPage = 180/gmenu2x->font->getHeight(), i;
 	int rowY;
@@ -108,7 +109,7 @@ void TextDialog::exec() {
 		//Text
 		gmenu2x->s->setClipRect(0,412,311,180);
 		gmenu2x->s->clearClipRect();
-		
+
 		for (i=firstRow; i<firstRow+rowsPerPage && i<text->size(); i++) {
 			if (text->at(i)=="----") { //draw a line
 				rowY = 42+(int)((i-firstRow+0.5)*gmenu2x->font->getHeight());
@@ -128,7 +129,7 @@ void TextDialog::exec() {
 		gmenu2x->joy.update();
 		if ( gmenu2x->joy[GP2X_BUTTON_UP] && firstRow>0 ) firstRow--;
 		if ( gmenu2x->joy[GP2X_BUTTON_DOWN] && firstRow+rowsPerPage<text->size() ) firstRow++;
-		if ( gmenu2x->joy[GP2X_BUTTON_START] ) close = true;
+		if ( gmenu2x->joy[GP2X_BUTTON_START] || gmenu2x->joy[GP2X_BUTTON_X] ) close = true;
 #else
 		while (SDL_PollEvent(&gmenu2x->event)) {
 			if ( gmenu2x->event.type == SDL_QUIT ) close = true;
