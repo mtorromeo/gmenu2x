@@ -62,12 +62,8 @@ void TextDialog::preProcess() {
 
 			//if numWords==0 then the string must be printed as-is, it cannot be split
 			if (numWords>0) {
-				vector<string>::iterator it = text->begin();
-				it += i;
-
-				//delete the original string and replace with the shorter version
-				text->erase(it);
-				text->insert(it, row);
+				//replace with the shorter version
+				text->at(i) = row;
 
 				//build the remaining text in another row
 				row = "";
@@ -76,7 +72,7 @@ void TextDialog::preProcess() {
 				row = trim(row);
 
 				if (!row.empty())
-					text->insert(it+1, row);
+					text->insert(text->begin()+i+1, row);
 			}
 		}
 		i++;
