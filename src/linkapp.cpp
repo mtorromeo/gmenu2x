@@ -26,6 +26,11 @@
 #include "linkapp.h"
 #include "menu.h"
 #include "selector.h"
+#include "textdialog.h"
+
+#ifdef TARGET_GP2X
+#include "gp2x.h"
+#endif
 
 using namespace std;
 
@@ -33,6 +38,7 @@ LinkApp::LinkApp(GMenu2X *gmenu2x, string path, const char* linkfile)
 	: Link(gmenu2x) {
 	this->gmenu2x = gmenu2x;
 	this->path = path;
+	manual = "";
 	file = linkfile;
 	wrapper = false;
 	dontleave = false;
@@ -70,6 +76,8 @@ LinkApp::LinkApp(GMenu2X *gmenu2x, string path, const char* linkfile)
 			params = value;
 		} else if (name == "workdir") {
 			workdir = value;
+		} else if (name == "manual") {
+			manual = value;
 		} else if (name == "wrapper") {
 			if (value=="true") wrapper = true;
 		} else if (name == "dontleave") {
@@ -183,6 +191,7 @@ bool LinkApp::save() {
 		if (exec!=""           ) f << "exec="            << exec            << endl;
 		if (params!=""         ) f << "params="          << params          << endl;
 		if (workdir!=""        ) f << "workdir="         << workdir         << endl;
+		if (manual!=""         ) f << "manual="          << manual          << endl;
 		if (iclock!=0          ) f << "clock="           << iclock          << endl;
 		if (ivolume>0          ) f << "volume="          << ivolume         << endl;
 		//G if (igamma!=0          ) f << "gamma="           << igamma          << endl;
@@ -229,6 +238,92 @@ void LinkApp::run() {
 		selector();
 	else
 		launch();
+}
+
+void LinkApp::showManual() {
+	if (manual=="") return;
+
+	// Png manuals
+	string::size_type pos = manual.rfind(".man.png");
+	if (pos == manual.size()-8) {
+		Surface bg("imgs/bg.png");
+		Surface pngman(manual);
+		stringstream ss;
+		string pageStatus;
+
+		bool close = false, repaint = true;
+		int page=0, pagecount=pngman.raw->w/320;
+
+		ss << pagecount;
+		string spagecount;
+		ss >> spagecount;
+
+		while (!close) {
+			if (repaint) {
+				bg.blit(gmenu2x->s, 0, 0);
+				pngman.blit(gmenu2x->s, -page*320, 0);
+
+				gmenu2x->drawBottomBar();
+				gmenu2x->drawButton(gmenu2x->s, "X", "Exit",
+				gmenu2x->drawButton(gmenu2x->s, ">", "Change page",
+				gmenu2x->drawButton(gmenu2x->s, "<", "/", 10)-4));
+
+				ss.clear();
+				ss << page+1;
+				ss >> pageStatus;
+				pageStatus = "Page: "+pageStatus+"/"+spagecount;
+				gmenu2x->s->write(gmenu2x->font, pageStatus, 310, 230, SFontHAlignRight, SFontVAlignMiddle);
+
+				gmenu2x->s->flip();
+				repaint = false;
+			}
+
+#ifdef TARGET_GP2X
+			gmenu2x->joy.update();
+			if ( gmenu2x->joy[GP2X_BUTTON_Y] || gmenu2x->joy[GP2X_BUTTON_X] || gmenu2x->joy[GP2X_BUTTON_START] ) close = true;
+			if ( gmenu2x->joy[GP2X_BUTTON_LEFT] && page>0 ) { page--; repaint=true; }
+			if ( gmenu2x->joy[GP2X_BUTTON_RIGHT] && page<pagecount-1 ) { page++; repaint=true; }
+#else
+			while (SDL_PollEvent(&gmenu2x->event)) {
+				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) close = true;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_LEFT && page>0 ) { page--; repaint=true; }
+				if ( gmenu2x->event.key.keysym.sym==SDLK_RIGHT && page<pagecount-1 ) { page++; repaint=true; }
+			}
+#endif
+		}
+		return;
+	}
+
+	// Txt manuals
+	pos = manual.rfind(".man.txt");
+	if (pos != string::npos) {
+		vector<string> txtman;
+
+		string line;
+		ifstream infile(manual.c_str(), ios_base::in);
+		if (infile.is_open()) {
+			while (getline(infile, line, '\n')) txtman.push_back(line);
+			infile.close();
+
+			TextDialog td(gmenu2x, getTitle(), "Manual", getIcon(), &txtman);
+			td.exec();
+		}
+
+		return;
+	}
+
+	//Readmes
+	vector<string> readme;
+
+	string line;
+	ifstream infile(manual.c_str(), ios_base::in);
+	if (infile.is_open()) {
+		while (getline(infile, line, '\n')) readme.push_back(line);
+		infile.close();
+
+		TextDialog td(gmenu2x, getTitle(), "ReadMe", getIcon(), &readme);
+		td.exec();
+	}
 }
 
 void LinkApp::selector(int startSelection, string selectorDir) {
@@ -354,6 +449,15 @@ string LinkApp::getWorkdir() {
 
 void LinkApp::setWorkdir(string workdir) {
 	this->workdir = workdir;
+	edited = true;
+}
+
+string LinkApp::getManual() {
+	return manual;
+}
+
+void LinkApp::setManual(string manual) {
+	this->manual = manual;
 	edited = true;
 }
 

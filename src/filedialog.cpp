@@ -30,13 +30,14 @@
 #include "gp2x.h"
 #endif
 #include "filedialog.h"
+#include "filelister.h"
 
 using namespace std;
 
 FileDialog::FileDialog(GMenu2X *gmenu2x, string text, string filter) {
 	this->gmenu2x = gmenu2x;
 	this->text = text;
-	split(this->filter,filter,",");
+	this->filter = filter;
 	selRow = 0;
 }
 
@@ -44,9 +45,9 @@ bool FileDialog::exec() {
 	bool close = false, result = true;
 	path = "/mnt";
 
-	vector<string> directories;
-	vector<string> files;
-	browsePath(path,&directories,&files);
+	FileLister fl(path);
+	fl.setFilter(filter);
+	fl.browse();
 
 	Surface bg("imgs/bg.png");
 	gmenu2x->drawTopBar(&bg,15);
@@ -55,9 +56,9 @@ bool FileDialog::exec() {
 
 	gmenu2x->drawButton(&bg, "B", "Enter folder/Confirm",
 	gmenu2x->drawButton(&bg, "X", "Up one folder", 10));
-	
 
-	uint i, selected = 0, firstElement = 0, iY, ds;
+
+	uint i, selected = 0, firstElement = 0, iY;
 
 	while (!close) {
 		bg.blit(gmenu2x->s,0,0);
@@ -70,24 +71,19 @@ bool FileDialog::exec() {
 		iY = 20+(iY*18);
 		gmenu2x->s->box(2, iY, 308, 16, gmenu2x->selectionColor);
 
-		//Directories
+		//Files & Directories
 		gmenu2x->s->setClipRect(0,16,311,204);
-		for (i=firstElement; i<directories.size() && i<firstElement+11; i++) {
+		for (i=firstElement; i<fl.size() && i<firstElement+11; i++) {
 			iY = i-firstElement;
-			gmenu2x->sc["imgs/folder.png"]->blit(gmenu2x->s, 5, 21+(iY*18));
-			gmenu2x->s->write(gmenu2x->font, directories[i], 24, 29+(iY*18), SFontHAlignLeft, SFontVAlignMiddle);
-		}
-
-		//Files
-		ds = directories.size();
-		for (; i<files.size()+ds && i<firstElement+11; i++) {
-			iY = i-firstElement;
-			gmenu2x->sc["imgs/file.png"]->blit(gmenu2x->s, 5, 21+(iY*18));
-			gmenu2x->s->write(gmenu2x->font, files[i-ds], 24, 29+(iY*18), SFontHAlignLeft, SFontVAlignMiddle);
+			if (fl.isDirectory(i))
+				gmenu2x->sc["imgs/folder.png"]->blit(gmenu2x->s, 5, 21+(iY*18));
+			else
+				gmenu2x->sc["imgs/file.png"]->blit(gmenu2x->s, 5, 21+(iY*18));
+			gmenu2x->s->write(gmenu2x->font, fl[i], 24, 29+(iY*18), SFontHAlignLeft, SFontVAlignMiddle);
 		}
 		gmenu2x->s->clearClipRect();
 
-		gmenu2x->drawScrollBar(11,directories.size()+files.size(),firstElement,20,196);
+		gmenu2x->drawScrollBar(11,fl.size(),firstElement,20,196);
 		gmenu2x->s->flip();
 
 
@@ -96,7 +92,7 @@ bool FileDialog::exec() {
 		if ( gmenu2x->joy[GP2X_BUTTON_SELECT] ) { close = true; result = false; }
 		if ( gmenu2x->joy[GP2X_BUTTON_UP    ] ) {
 			if (selected==0)
-				selected = directories.size()+files.size()-1;
+				selected = fl.size()-1;
 			else
 				selected -= 1;
 		}
@@ -108,14 +104,14 @@ bool FileDialog::exec() {
 			}
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_DOWN  ] ) {
-			if (selected+1>=directories.size()+files.size())
+			if (selected+1>=fl.size())
 				selected = 0;
 			else
 				selected += 1;
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_R     ] ) {
-			if (selected+10>=directories.size()+files.size()) {
-				selected = directories.size()+files.size()-1;
+			if (selected+10>=fl.size()) {
+				selected = fl.size()-1;
 			} else {
 				selected += 10;
 			}
@@ -127,16 +123,16 @@ bool FileDialog::exec() {
 			else
 				path = path.substr(0,p);
 			selected = 0;
-			browsePath(path,&directories,&files);
+			fl.setPath(path);
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK] ) {
-			if (selected<directories.size()) {
-				path += "/"+directories[selected];
+			if (fl.isDirectory(selected)) {
+				path += "/"+fl[selected];
 				selected = 0;
-				browsePath(path,&directories,&files);
+				fl.setPath(path);
 			} else {
-				if (selected-directories.size()<files.size()) {
-					file = files[selected-directories.size()];
+				if (fl.isFile(selected)) {
+					file = fl[selected];
 					close = true;
 				}
 			}
@@ -148,12 +144,12 @@ bool FileDialog::exec() {
 				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) { close = true; result = false; }
 				if ( gmenu2x->event.key.keysym.sym==SDLK_UP ) {
 					if (selected==0) {
-						selected = directories.size()+files.size()-1;
+						selected = fl.size()-1;
 					} else
 						selected -= 1;
 				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN ) {
-					if (selected+1>=directories.size()+files.size())
+					if (selected+1>=fl.size())
 						selected = 0;
 					else
 						selected += 1;
@@ -165,16 +161,16 @@ bool FileDialog::exec() {
 					else
 						path = path.substr(0,p);
 					selected = 0;
-					browsePath(path,&directories,&files);
+					fl.setPath(path);
 				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
-					if (selected<directories.size()) {
-						path += "/"+directories[selected];
+					if (fl.isDirectory(selected)) {
+						path += "/"+fl[selected];
 						selected = 0;
-						browsePath(path,&directories,&files);
+						fl.setPath(path);
 					} else {
-						if (selected-directories.size()<files.size()) {
-							file = files[selected-directories.size()];
+						if (fl.isFile(selected)) {
+							file = fl[selected];
 							close = true;
 						}
 					}
@@ -185,42 +181,4 @@ bool FileDialog::exec() {
 	}
 
 	return result;
-}
-
-void FileDialog::browsePath(string path, vector<string>* directories, vector<string>* files) {
-	DIR *dirp;
-	struct stat st;
-	struct dirent *dptr;
-	string filepath;
-
-	directories->clear();
-	files->clear();
-
-	if ((dirp = opendir(path.c_str())) == NULL) return;
-	if (path[path.length()-1]!='/') path += "/";
-
-	while ((dptr = readdir(dirp))) {
-		if (dptr->d_name[0]=='.') continue;
-		filepath = path+dptr->d_name;
-		int statRet = stat(filepath.c_str(), &st);
-		if (statRet == -1) continue;
-		if (S_ISDIR(st.st_mode)) {
-			string dname = dptr->d_name;
-			if (!(path=="/mnt/" && (dname!="sd" && dname!="ext" && dname!="nand")))
-				directories->push_back(dname);
-		} else {
-			bool filterOk = false;
-			string file = dptr->d_name;
-			for (uint i = 0; i<filter.size() && !filterOk; i++) {
-				filterOk = file.substr(file.length()-filter[i].length(),filter[i].length())==filter[i];
-			}
-			if (filterOk)
-				files->push_back(file);
-		}
-	}
-
-	closedir(dirp);
-
-	sort(directories->begin(),directories->end(),case_less());
-	sort(files->begin(),files->end(),case_less());
 }

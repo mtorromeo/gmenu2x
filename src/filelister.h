@@ -45,7 +45,7 @@ public:
 	bool isDirectory(uint);
 
 	string getPath();
-	void setPath(string path);
+	void setPath(string path, bool doBrowse=true);
 	string getFilter();
 	void setFilter(string filter);
 };

@@ -22,6 +22,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <errno.h>
+#include <iostream>
 
 #include "filelister.h"
 #include "utilities.h"
@@ -31,15 +33,17 @@ using namespace std;
 FileLister::FileLister(string startPath, bool showDirectories, bool showFiles) {
 	this->showDirectories = showDirectories;
 	this->showFiles = showFiles;
-	path = startPath;
+	setPath(startPath,false);
 }
 
 string FileLister::getPath() {
 	return path;
 }
-void FileLister::setPath(string path) {
+void FileLister::setPath(string path, bool doBrowse) {
+	if (path[path.length()-1]!='/') path += "/";
 	this->path = path;
-	browse();
+	if (doBrowse)
+		browse();
 }
 
 string FileLister::getFilter() {
@@ -52,10 +56,13 @@ void FileLister::setFilter(string filter) {
 void FileLister::browse() {
 	directories.clear();
 	files.clear();
-	
+
 	if (showDirectories || showFiles) {
 		DIR *dirp;
-		if ((dirp = opendir(path.c_str())) == NULL) return;
+		if ((dirp = opendir(path.c_str())) == NULL) {
+			cout << "Error: opendir(" << path << ")" << endl;
+			return;
+		}
 
 		vector<string> vfilter;
 		split(vfilter,getFilter(),",");
@@ -69,7 +76,10 @@ void FileLister::browse() {
 			if (file[0]=='.') continue;
 			filepath = path+file;
 			int statRet = stat(filepath.c_str(), &st);
-			if (statRet == -1) continue;
+			if (statRet == -1) {
+				cout << "\033[0;34mGMENU2X:\033[0;31m stat failed on '" << filepath << "' with error '" << strerror(errno) << "'\033[0m" << endl;
+				continue;
+			}
 
 			if (S_ISDIR(st.st_mode)) {
 				if (!showDirectories) continue;
@@ -79,11 +89,12 @@ void FileLister::browse() {
 				if (!showFiles) continue;
 				bool filterOk = false;
 				for (uint i = 0; i<vfilter.size() && !filterOk; i++)
-					filterOk = file.substr(file.length()-vfilter[i].length(),vfilter[i].length())==vfilter[i];
+					if (vfilter[i].length()<=file.length())
+						filterOk = file.substr(file.length()-vfilter[i].length(),vfilter[i].length())==vfilter[i];
 				if (filterOk) files.push_back(file);
 			}
 		}
-	
+
 		closedir(dirp);
 		sort(files.begin(),files.end(),case_less());
 		sort(directories.begin(),directories.end(),case_less());

@@ -1,3 +1,4 @@
 title=ladykiller
+icon=/mnt/sd/ladykiller/ladykill.png
 exec=/mnt/sd/ladykiller/ladykiller.gpe
 clock=200

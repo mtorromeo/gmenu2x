@@ -129,7 +129,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	menuClock = 100;
 	globalVolume = 100;
 	numRows = 4;
-	numCols = 6;
+	numCols = 5;
 	//G gamma = 10;
 	startSectionIndex = 0;
 	startLinkIndex = 0;
@@ -496,7 +496,7 @@ int GMenu2X::main() {
 	bool quit = false, useSelectionPng = fileExists("imgs/selection.png");
 	int x,y,ix, offset = 0;
 	uint i;
-	long tickBattery = -60000, tickNow;
+	long tickBattery = -60000, tickNow, tickIndicatorBlink=0;
 	string batteryIcon = "imgs/battery/0.png";
 	stringstream ss;
 
@@ -507,6 +507,7 @@ int GMenu2X::main() {
 	*/
 
 	while (!quit) {
+		tickNow = SDL_GetTicks();
 		if (menu->numRows!=numRows || menu->numCols!=numCols) {
 			numRows = menu->numRows;
 			numCols = menu->numCols;
@@ -552,6 +553,13 @@ int GMenu2X::main() {
 					sc["imgs/selection.png"]->blitCenter(s,x+linkWd2,y+20);
 				else
 					s->box(x, y, linkW, 41+iconTextOffset, selectionColor);
+
+				//Manual indicator
+				if (menu->selLinkApp()!=NULL && !menu->selLinkApp()->getManual().empty() && tickNow-tickIndicatorBlink>=300) {
+					sc["imgs/manual_indicator.png"]->blit(s,ix+33,y+1,8,8);
+					if (tickNow-tickIndicatorBlink>=600)
+						tickIndicatorBlink = tickNow;
+				}
 			}
 
 			if (menu->sectionLinks()->at(i)->getIcon() != "")
@@ -572,8 +580,6 @@ int GMenu2X::main() {
 			}
 		}
 
-		//battery
-		tickNow = SDL_GetTicks();
 		//check battery status every 60 seconds
 		if (tickNow-tickBattery >= 60000) {
 			tickBattery = tickNow;
@@ -607,6 +613,7 @@ int GMenu2X::main() {
 		if ( joy[GP2X_BUTTON_RIGHT] ) menu->linkRight();
 		if ( joy[GP2X_BUTTON_UP   ] ) menu->linkUp();
 		if ( joy[GP2X_BUTTON_DOWN ] ) menu->linkDown();
+		if ( joy[GP2X_BUTTON_Y] && menu->selLinkApp()!=NULL ) menu->selLinkApp()->showManual();
 		if ( joy[GP2X_BUTTON_A    ] ) {
 			// VOLUME
 			if ( joy[GP2X_BUTTON_VOLDOWN] && !joy[GP2X_BUTTON_VOLUP] && menu->selLinkApp()!=NULL )
@@ -643,6 +650,7 @@ int GMenu2X::main() {
 				if ( event.key.keysym.sym==SDLK_RIGHT  ) menu->linkRight();
 				if ( event.key.keysym.sym==SDLK_UP     ) menu->linkUp();
 				if ( event.key.keysym.sym==SDLK_DOWN   ) menu->linkDown();
+				if ( event.key.keysym.sym==SDLK_y && menu->selLinkApp()!=NULL ) menu->selLinkApp()->showManual();
 				// CLOCK
 				if ( event.key.keysym.sym==SDLK_z && menu->selLinkApp()!=NULL )
 					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-1,50,maxClock) );
@@ -843,6 +851,7 @@ void GMenu2X::editLink() {
 	string linkTitle = menu->selLinkApp()->getTitle();
 	string linkDescription = menu->selLinkApp()->getDescription();
 	string linkIcon = menu->selLinkApp()->getIcon();
+	string linkManual = menu->selLinkApp()->getManual();
 	string linkParams = menu->selLinkApp()->getParams();
 	string linkSelFilter = menu->selLinkApp()->getSelectorFilter();
 	string linkSelDir = menu->selLinkApp()->getSelectorDir();
@@ -858,6 +867,7 @@ void GMenu2X::editLink() {
 	sd.addSetting(new MenuSettingString(this,"Description","Link description",&linkDescription));
 	sd.addSetting(new MenuSettingMultiString(this,"Section","The section this link belongs to",&newSection,&menu->sections));
 	sd.addSetting(new MenuSettingFile(this,"Icon","Select an icon for the link",&linkIcon,".png,.bmp,.jpg,.jpeg"));
+	sd.addSetting(new MenuSettingFile(this,"Manual","Select a graphic/textual manual or a readme",&linkManual,".man.png,.txt"));
 	sd.addSetting(new MenuSettingInt(this,"Clock (default=200)","Cpu clock frequency to set when launching this link",&linkClock,50,maxClock));
 	sd.addSetting(new MenuSettingInt(this,"Volume (default=-1)","Volume to set for this link",&linkVolume,-1,100));
 	sd.addSetting(new MenuSettingString(this,"Parameters","Parameters to pass to the application",&linkParams));
@@ -876,6 +886,7 @@ void GMenu2X::editLink() {
 		menu->selLinkApp()->setTitle(linkTitle);
 		menu->selLinkApp()->setDescription(linkDescription);
 		menu->selLinkApp()->setIcon(linkIcon);
+		menu->selLinkApp()->setManual(linkManual);
 		menu->selLinkApp()->setParams(linkParams);
 		menu->selLinkApp()->setSelectorFilter(linkSelFilter);
 		menu->selLinkApp()->setSelectorDir(linkSelDir);
@@ -910,10 +921,17 @@ void GMenu2X::editLink() {
 }
 
 void GMenu2X::deleteLink() {
-	ledOn();
-	menu->deleteSelectedLink();
-	sync();
-	ledOff();
+	if (menu->selLinkApp()!=NULL) {
+		MessageBox mb(this, "Deleting "+menu->selLink()->getTitle()+"\nAre you sure?", menu->selLink()->getIcon());
+		mb.buttons[GP2X_BUTTON_B] = "Yes";
+		mb.buttons[GP2X_BUTTON_X] = "No";
+		if (mb.exec() == GP2X_BUTTON_B) {
+			ledOn();
+			menu->deleteSelectedLink();
+			sync();
+			ledOff();
+		}
+	}
 }
 
 void GMenu2X::addSection() {

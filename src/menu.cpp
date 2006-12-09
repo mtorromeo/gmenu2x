@@ -22,10 +22,12 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <algorithm>
 
 #include "gmenu2x.h"
 #include "linkapp.h"
 #include "menu.h"
+#include "filelister.h"
 #include "utilities.h"
 
 using namespace std;
@@ -176,6 +178,9 @@ bool Menu::addLink(string path, string file, string section) {
 		linkpath = "sections/"+section+"/"+title+linkpath;
 		x++;
 	}
+#ifdef DEBUG
+	cout << "\033[0;34mGMENU2X:\033[0m Adding link: " << linkpath << endl;
+#endif
 
 	int linkW = 312/numCols;
 	if (gmenu2x->font->getTextWidth(title)>linkW) {
@@ -184,12 +189,40 @@ bool Menu::addLink(string path, string file, string section) {
 		title += "..";
 	}
 
+	//search for a manual
+	pos = file.rfind(".");
+	string exename = path+file.substr(0,pos);
+	string manual = "";
+	if (fileExists(exename+".man.png")) {
+		manual = exename+".man.png";
+	} else if (fileExists(exename+".man.txt")) {
+		manual = exename+".man.txt";
+	} else {
+		//scan directory for a file like *readme*
+		FileLister fl(path, false);
+		fl.setFilter(".txt");
+		fl.browse();
+		bool found = false;
+		for (uint x=0; x<fl.size() && !found; x++) {
+			string lcfilename = fl[x];
+			transform(lcfilename.begin(), lcfilename.end(), lcfilename.begin(), (int(*)(int)) tolower);
+			if (lcfilename.find("readme") != string::npos) {
+				found = true;
+				manual = path+fl.files[x];
+			}
+		}
+	}
+#ifdef DEBUG
+	cout << "\033[0;34mGMENU2X:\033[0m Manual: " << manual << endl;
+#endif
+
 	ofstream f(linkpath.c_str());
 	if (f.is_open()) {
 		f << "title=" << title << endl;
 		if (fileExists(path+title+".png"))
 			f << "icon=" << path << title << ".png" << endl;
 		f << "exec=" << path << file << endl;
+		f << "manual=" << manual << endl;
 		f.close();
 
 		int isection = find(sections.begin(),sections.end(),section) - sections.begin();

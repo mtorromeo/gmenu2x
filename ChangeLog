@@ -3,6 +3,7 @@ Gamma configurable in options menu and on a per-link basis
 ----------
 New in 0.8
 ----------
+Added support for game manuals (.man.png, .man.txt or readmes)
 Implemented link's output logs with a log viewer (Disabled by default)
 Implemented a simple text reader used in various situations
 Implemented volume control (per-link and globally)

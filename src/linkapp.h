@@ -40,7 +40,7 @@ private:
 	int iclock, ivolume;
 	//G string sgamma;
 	//G int igamma;
-	string exec, params, workdir, selectordir, selectorfilter, selectorscreens;
+	string exec, params, workdir, manual, selectordir, selectorfilter, selectorscreens;
 	bool selectorbrowser;
 	void drawRun();
 
@@ -55,6 +55,8 @@ public:
 	void setParams(string params);
 	string getWorkdir();
 	void setWorkdir(string workdir);
+	string getManual();
+	void setManual(string manual);
 	string getSelectorDir();
 	void setSelectorDir(string selectordir);
 	bool getSelectorBrowser();
@@ -87,6 +89,7 @@ public:
 
 	bool save();
 	void run();
+	void showManual();
 	void selector(int startSelection=0, string selectorDir="");
 	void launch(string selectedFile="", string selectedDir="");
 	bool targetExists();

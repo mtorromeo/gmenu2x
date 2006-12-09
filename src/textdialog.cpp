@@ -87,6 +87,7 @@ void TextDialog::exec() {
 	gmenu2x->drawBottomBar(&bg);
 
 	//link icon
+	if (!fileExists(icon)) icon = "icons/ebook.png";
 	Surface sIcon(icon);
 	sIcon.blit(&bg,4,4);
 	//selector text
@@ -109,8 +110,8 @@ void TextDialog::exec() {
 		for (i=firstRow; i<firstRow+rowsPerPage && i<text->size(); i++) {
 			if (text->at(i)=="----") { //draw a line
 				rowY = 42+(int)((i-firstRow+0.5)*gmenu2x->font->getHeight());
-				gmenu2x->s->hline(5,rowY,305,255,255,255,255);
-				gmenu2x->s->hline(5,rowY+1,305,0,0,0,255);
+				gmenu2x->s->hline(5,rowY,304,255,255,255,255);
+				gmenu2x->s->hline(5,rowY+1,304,0,0,0,255);
 			} else {
 				rowY = 42+(i-firstRow)*gmenu2x->font->getHeight();
 				gmenu2x->font->write(gmenu2x->s, text->at(i), 5, rowY);
@@ -123,8 +124,20 @@ void TextDialog::exec() {
 
 #ifdef TARGET_GP2X
 		gmenu2x->joy.update();
-		if ( gmenu2x->joy[GP2X_BUTTON_UP] && firstRow>0 ) firstRow--;
+		if ( gmenu2x->joy[GP2X_BUTTON_UP  ] && firstRow>0 ) firstRow--;
 		if ( gmenu2x->joy[GP2X_BUTTON_DOWN] && firstRow+rowsPerPage<text->size() ) firstRow++;
+		if ( gmenu2x->joy[GP2X_BUTTON_L   ] ) {
+			if (firstRow>=rowsPerPage-1)
+				firstRow-= rowsPerPage-1;
+			else
+				firstRow = 0;
+		}
+		if ( gmenu2x->joy[GP2X_BUTTON_R   ] ) {
+			if (firstRow+rowsPerPage*2-1<text->size())
+				firstRow+= rowsPerPage-1;
+			else
+				firstRow = max(0,text->size()-rowsPerPage);
+		}
 		if ( gmenu2x->joy[GP2X_BUTTON_START] || gmenu2x->joy[GP2X_BUTTON_X] ) close = true;
 #else
 		while (SDL_PollEvent(&gmenu2x->event)) {
