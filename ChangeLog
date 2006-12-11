@@ -1,5 +1,13 @@
 Gamma configurable in options menu and on a per-link basis
 
+------------
+New in 0.8.1
+------------
+Fixed crash on section creation.
+Fixed moving links between sections.
+Fixed creating links in the first section.
+Fixed alpha support for font.png
+
 ----------
 New in 0.8
 ----------
@@ -15,6 +23,7 @@ Added messageboxes
 Added links for firmware 2.1.x
 Directories browseable from selector
 Added a blending effect to selector screenshots.
+Updated the README with basic instructions (website is still recommended)
 Fixed some minor bugs.
 
 ----------

@@ -153,12 +153,7 @@ bool Menu::addLink(string path, string file, string section) {
 		section = selSection();
 	else if (find(sections.begin(),sections.end(),section)==sections.end()) {
 		//section directory doesn't exists
-		string sectiondir = "sections/"+section;
-		if (mkdir(sectiondir.c_str(),0777)==0) {
-			sections.push_back(section);
-			linklist ll;
-			links.push_back(ll);
-		} else
+		if (!addSection(section))
 			return false;
 	}
 	if (path[path.length()-1]!='/') path += "/";
@@ -226,7 +221,7 @@ bool Menu::addLink(string path, string file, string section) {
 		f.close();
 
 		int isection = find(sections.begin(),sections.end(),section) - sections.begin();
-		if (isection>0 && isection<(int)sections.size()) {
+		if (isection>=0 && isection<(int)sections.size()) {
 #ifdef DEBUG
 			cout << "\033[0;34mGMENU2X:\033[0m Section: " << sections[isection] << "(" << isection << ")" << endl;
 #endif
@@ -240,6 +235,17 @@ bool Menu::addLink(string path, string file, string section) {
 	}
 
 	return true;
+}
+
+bool Menu::addSection(string sectionName) {
+	string sectiondir = "sections/"+sectionName;
+	if (mkdir(sectiondir.c_str(),0777)==0) {
+		sections.push_back(sectionName);
+		linklist ll;
+		links.push_back(ll);
+		return true;
+	}
+	return false;
 }
 
 void Menu::deleteSelectedLink() {
@@ -261,6 +267,19 @@ void Menu::deleteSelectedSection() {
 	links.erase( links.begin()+selSectionIndex() );
 	sections.erase( sections.begin()+selSectionIndex() );
 	setSectionIndex(0); //reload sections
+}
+
+bool Menu::linkChangeSection(uint linkIndex, uint oldSectionIndex, uint newSectionIndex) {
+	if (oldSectionIndex<sections.size() && newSectionIndex<sections.size() && linkIndex<sectionLinks(oldSectionIndex)->size()) {
+		Link *l = sectionLinks(oldSectionIndex)->at(linkIndex);
+		sectionLinks(oldSectionIndex)->erase(sectionLinks(oldSectionIndex)->begin()+linkIndex);
+		sectionLinks(newSectionIndex)->push_back(l);
+		//Select the same link in the new position
+		setSectionIndex(newSectionIndex);
+		setLinkIndex(sectionLinks(newSectionIndex)->size()-1);
+		return true;
+	}
+	return false;
 }
 
 void Menu::linkLeft() {

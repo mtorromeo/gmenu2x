@@ -26,7 +26,7 @@
 #include "linkapp.h"
 #include "menu.h"
 #include "selector.h"
-#include "textdialog.h"
+#include "textmanualdialog.h"
 
 #ifdef TARGET_GP2X
 #include "gp2x.h"
@@ -244,8 +244,7 @@ void LinkApp::showManual() {
 	if (manual=="") return;
 
 	// Png manuals
-	string::size_type pos = manual.rfind(".man.png");
-	if (pos == manual.size()-8) {
+	if (manual.substr(manual.size()-8,8)==".man.png") {
 		Surface bg("imgs/bg.png");
 		Surface pngman(manual);
 		stringstream ss;
@@ -295,8 +294,7 @@ void LinkApp::showManual() {
 	}
 
 	// Txt manuals
-	pos = manual.rfind(".man.txt");
-	if (pos != string::npos) {
+	if (manual.substr(manual.size()-8,8)==".man.txt") {
 		vector<string> txtman;
 
 		string line;
@@ -305,8 +303,8 @@ void LinkApp::showManual() {
 			while (getline(infile, line, '\n')) txtman.push_back(line);
 			infile.close();
 
-			TextDialog td(gmenu2x, getTitle(), "Manual", getIcon(), &txtman);
-			td.exec();
+			TextManualDialog tmd(gmenu2x, getTitle(), getIcon(), &txtman);
+			tmd.exec();
 		}
 
 		return;

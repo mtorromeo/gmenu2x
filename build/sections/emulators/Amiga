@@ -1,5 +1,5 @@
 title=Amiga
 description=UAE-2X
 exec=/mnt/sd/uae2x_01alpha/uae2x-tweak.gpe
-manual=/mnt/sd/uae4all/README_GP2X.txt
+manual=/mnt/sd/uae4all/uae4all.man.txt
 clock=200

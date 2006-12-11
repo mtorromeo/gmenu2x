@@ -17,72 +17,29 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MENU_H
-#define MENU_H
+
+#ifndef TEXTMANUALDIALOG_H_
+#define TEXTMANUALDIALOG_H_
 
 #include <string>
-#include <vector>
-#include "SFont.h"
-#include "linkaction.h"
+#include "textdialog.h"
+#include "gmenu2x.h"
 
 using std::string;
 using std::vector;
 
-class LinkApp;
-class GMenu2X;
-
-typedef vector<Link*> linklist;
-
-/**
-Handles the menu structure
-
-	@author Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
-*/
-class Menu {
-private:
-	GMenu2X *gmenu2x;
-	string path;
-	int iSection, iLink;
-	uint iFirstDispSection, iFirstDispRow;
-	void readLinks();
-	void freeLinks();
-
-public:
-	Menu(GMenu2X *gmenu2x, string path);
-	~Menu();
-
-	uint numRows, numCols;
-
-	vector<string> sections;
-	vector<linklist> links;
-	linklist *sectionLinks(int i = -1);
-
-	int selSectionIndex();
-	string selSection();
-	void decSectionIndex();
-	void incSectionIndex();
-	void setSectionIndex(int i);
-	uint firstDispSection();
-	uint firstDispRow();
-
-	bool addActionLink(uint section, string title, LinkRunAction action, string description="", string icon="");
-	bool addLink(string path, string file, string section="");
-	bool addSection(string sectionName);
-	void deleteSelectedLink();
-	void deleteSelectedSection();
-
-	bool linkChangeSection(uint linkIndex, uint oldSectionIndex, uint newSectionIndex);
-
-	int selLinkIndex();
-	Link *selLink();
-	LinkApp *selLinkApp();
-	void linkLeft();
-	void linkRight();
-	void linkUp();
-	void linkDown();
-	void setLinkIndex(int i);
-
-	string sectionPath(int section = -1);
+struct ManualPage {
+	string title;
+	vector<string> text;
 };
 
-#endif
+class TextManualDialog : public TextDialog {
+private:
+	vector<ManualPage> pages;
+
+public:
+	TextManualDialog(GMenu2X *gmenu2x, string title, string icon, vector<string> *text);
+	void exec();
+};
+
+#endif /*TEXTMANUALDIALOG_H_*/

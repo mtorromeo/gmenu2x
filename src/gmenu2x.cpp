@@ -161,7 +161,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	//SDL_SetAlpha(s->raw, SDL_SRCALPHA|SDL_RLEACCEL, 255);
 	SDL_ShowCursor(0);
 
-	sc.add("imgs/font.png",false);
+	sc.add("imgs/font.png",true);
 	font = new ASFont( sc["imgs/font.png"]->raw );
 
 	initMenu();
@@ -847,6 +847,9 @@ void GMenu2X::editLink() {
 	if (pathV.size()>1)
 		oldSection = pathV[pathV.size()-2];
 	string newSection = oldSection;
+#ifdef DEBUG
+	cout << "Old Section: " << oldSection << endl;
+#endif
 
 	string linkTitle = menu->selLinkApp()->getTitle();
 	string linkDescription = menu->selLinkApp()->getDescription();
@@ -897,11 +900,15 @@ void GMenu2X::editLink() {
 		menu->selLinkApp()->setVolume(linkVolume);
 		//G menu->selLinkApp()->setGamma(linkGamma);
 
+#ifdef DEBUG
+		cout << "New Section: " << newSection << endl;
+#endif
 		//if section changed move file and update link->file
 		if (oldSection!=newSection) {
-			if (find(menu->sections.begin(),menu->sections.end(),newSection)==menu->sections.end()) return;
+			vector<string>::iterator newSectionIndex = find(menu->sections.begin(),menu->sections.end(),newSection);
+			if (newSectionIndex==menu->sections.end()) return;
 			string newFileName = "sections/"+newSection+"/"+linkTitle;
-			int x=2;
+			uint x=2;
 			while (fileExists(newFileName)) {
 				string id = "";
 				stringstream ss; ss << x; ss >> id;
@@ -910,13 +917,15 @@ void GMenu2X::editLink() {
 			}
 			rename(menu->selLinkApp()->file.c_str(),newFileName.c_str());
 			menu->selLinkApp()->file = newFileName;
+#ifdef DEBUG
+			cout << "New section index: " << newSectionIndex - menu->sections.begin() << endl;
+#endif
+			menu->linkChangeSection(menu->selLinkIndex(), menu->selSectionIndex(), newSectionIndex - menu->sections.begin());
 		}
 		menu->selLinkApp()->save();
 		sync();
 
 		ledOff();
-		if (oldSection!=newSection)
-			menu->setSectionIndex( menu->selSectionIndex() );
 	}
 }
 
@@ -940,10 +949,8 @@ void GMenu2X::addSection() {
 		//only if a section with the same name does not exist
 		if (find(menu->sections.begin(),menu->sections.end(),id.input)==menu->sections.end()) {
 			//section directory doesn't exists
-			string sectiondir = "sections/"+id.input;
 			ledOn();
-			if (mkdir(sectiondir.c_str(),0777)==0) {
-				menu->sections.push_back(id.input);
+			if (menu->addSection(id.input)) {
 				menu->setSectionIndex( menu->sections.size()-1 ); //switch to the new section
 				sync();
 			}
@@ -968,7 +975,6 @@ void GMenu2X::renameSection() {
 					sc.move(oldicon, newicon);
 				}
 				menu->sections[menu->selSectionIndex()] = id.input;
-				menu->setSectionIndex( menu->selSectionIndex() ); //reload sections
 				sync();
 			}
 			ledOff();

@@ -21,82 +21,51 @@
 #ifdef TARGET_GP2X
 #include "gp2x.h"
 #endif
-#include "textdialog.h"
+#include <sstream>
+#include "textmanualdialog.h"
 
 using namespace std;
 
-TextDialog::TextDialog(GMenu2X *gmenu2x, string title, string description, string icon, vector<string> *text) {
+TextManualDialog::TextManualDialog(GMenu2X *gmenu2x, string title, string icon, vector<string> *text)
+	: TextDialog(gmenu2x,title,"",icon,text) {
 	this->gmenu2x = gmenu2x;
-	this->text = text;
-	this->title = title;
-	this->description = description;
-	this->icon = icon;
-	preProcess();
-}
 
-void TextDialog::preProcess() {
-	uint i=0;
-	string row;
-
-	while (i<text->size()) {
-		//clean this row
-		row = trim(text->at(i));
-
-		//check if this row is not too long
-		if (gmenu2x->font->getTextWidth(row)>305) {
-			vector<string> words;
-			split(words, row, " ");
-
-			uint numWords = words.size();
-			//find the maximum number of rows that can be printed on screen
-			while (gmenu2x->font->getTextWidth(row)>305 && numWords>0) {
-				numWords--;
-				row = "";
-				for (uint x=0; x<numWords; x++)
-					row += words[x] + " ";
-				row = trim(row);
-			}
-
-			//if numWords==0 then the string must be printed as-is, it cannot be split
-			if (numWords>0) {
-				//replace with the shorter version
-				text->at(i) = row;
-
-				//build the remaining text in another row
-				row = "";
-				for (uint x=numWords; x<words.size(); x++)
-					row += words[x] + " ";
-				row = trim(row);
-
-				if (!row.empty())
-					text->insert(text->begin()+i+1, row);
-			}
-		}
-		i++;
-	}
-}
-
-void TextDialog::drawText(vector<string> *text, uint firstRow, uint rowsPerPage) {
-	gmenu2x->s->setClipRect(0,41,310,180);
-
-	for (uint i=firstRow; i<firstRow+rowsPerPage && i<text->size(); i++) {
-		int rowY;
-		if (text->at(i)=="----") { //draw a line
-			rowY = 42+(int)((i-firstRow+0.5)*gmenu2x->font->getHeight());
-			gmenu2x->s->hline(5,rowY,304,255,255,255,255);
-			gmenu2x->s->hline(5,rowY+1,304,0,0,0,255);
+	//split the text in multiple pages
+	for (uint i=0; i<text->size(); i++) {
+		string line = trim(text->at(i));
+		if (line[0]=='[' && line[line.length()-1]==']') {
+			ManualPage mp;
+			mp.title = line.substr(1,line.length()-2);
+			pages.push_back(mp);
 		} else {
-			rowY = 42+(i-firstRow)*gmenu2x->font->getHeight();
-			gmenu2x->font->write(gmenu2x->s, text->at(i), 5, rowY);
+			if (pages.size()==0) {
+				ManualPage mp;
+				mp.title = "Untitled";
+				pages.push_back(mp);
+			}
+			pages[pages.size()-1].text.push_back(text->at(i));
 		}
 	}
+	if (pages.size()==0) {
+		ManualPage mp;
+		mp.title = "Untitled";
+		pages.push_back(mp);
+	}
 
-	gmenu2x->s->clearClipRect();
-	gmenu2x->drawScrollBar(rowsPerPage,text->size(),firstRow,42,175);
+	//delete first and last blank lines from each page
+	for (uint page=0; page<pages.size(); page++) {
+		//first lines
+		while (trim(pages[page].text[0])=="")
+			pages[page].text.erase(pages[page].text.begin());
+		//last lines
+		while (trim(pages[page].text[pages[page].text.size()-1])=="")
+			pages[page].text.erase(pages[page].text.end());
+	}
 }
 
-void TextDialog::exec() {
+void TextManualDialog::exec() {
 	bool close = false;
+	uint page=0;
 
 	Surface bg("imgs/bg.png");
 	gmenu2x->drawTopBar(&bg);
@@ -107,24 +76,39 @@ void TextDialog::exec() {
 	Surface sIcon(icon);
 	sIcon.blit(&bg,4,4);
 	//selector text
-	bg.write(gmenu2x->font,title,40,13, SFontHAlignLeft, SFontVAlignMiddle);
-	bg.write(gmenu2x->font,description,40,27, SFontHAlignLeft, SFontVAlignMiddle);
+	bg.write(gmenu2x->font,title+(description.empty() ? "" : ": "+description),40,13, SFontHAlignLeft, SFontVAlignMiddle);
 
 	gmenu2x->drawButton(&bg, "X", "Exit",
+	gmenu2x->drawButton(&bg, ">", "Change page",
+	gmenu2x->drawButton(&bg, "<", "/",
 	gmenu2x->drawButton(&bg, "v", "Scroll",
-	gmenu2x->drawButton(&bg, "^", "/", 10)-4));
+	gmenu2x->drawButton(&bg, "^", "/", 10)-4))-4));
 
 	uint firstRow = 0, rowsPerPage = 180/gmenu2x->font->getHeight();
+	stringstream ss;
+	ss << pages.size();
+	string spagecount;
+	ss >> spagecount;
+	string pageStatus;
 	while (!close) {
 		bg.blit(gmenu2x->s,0,0);
-		drawText(text, firstRow, rowsPerPage);
-		gmenu2x->s->flip();
+		gmenu2x->s->write(gmenu2x->font,pages[page].title,40,27, SFontHAlignLeft, SFontVAlignMiddle);
+		drawText(&pages[page].text, firstRow, rowsPerPage);
 
+		ss.clear();
+		ss << page+1;
+		ss >> pageStatus;
+		pageStatus = "Page: "+pageStatus+"/"+spagecount;
+		gmenu2x->s->write(gmenu2x->font, pageStatus, 310, 230, SFontHAlignRight, SFontVAlignMiddle);
+
+		gmenu2x->s->flip();
 
 #ifdef TARGET_GP2X
 		gmenu2x->joy.update();
-		if ( gmenu2x->joy[GP2X_BUTTON_UP  ] && firstRow>0 ) firstRow--;
-		if ( gmenu2x->joy[GP2X_BUTTON_DOWN] && firstRow+rowsPerPage<text->size() ) firstRow++;
+		if ( gmenu2x->joy[GP2X_BUTTON_UP   ] && firstRow>0 ) firstRow--;
+		if ( gmenu2x->joy[GP2X_BUTTON_DOWN ] && firstRow+rowsPerPage<text->size() ) firstRow++;
+		if ( gmenu2x->joy[GP2X_BUTTON_LEFT ] && page>0 ) page--;
+		if ( gmenu2x->joy[GP2X_BUTTON_RIGHT] && page<pages.size()-1 ) page++;
 		if ( gmenu2x->joy[GP2X_BUTTON_L   ] ) {
 			if (firstRow>=rowsPerPage-1)
 				firstRow-= rowsPerPage-1;
@@ -145,6 +129,8 @@ void TextDialog::exec() {
 				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) close = true;
 				if ( gmenu2x->event.key.keysym.sym==SDLK_UP && firstRow>0 ) firstRow--;
 				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN && firstRow+rowsPerPage<text->size() ) firstRow++;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_LEFT && page>0 ) page--;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_RIGHT && page<pages.size()-1 ) page++;
 			}
 		}
 #endif
