@@ -110,9 +110,9 @@ void TextDialog::exec() {
 	bg.write(gmenu2x->font,title,40,13, SFontHAlignLeft, SFontVAlignMiddle);
 	bg.write(gmenu2x->font,description,40,27, SFontHAlignLeft, SFontVAlignMiddle);
 
-	gmenu2x->drawButton(&bg, "X", "Exit",
-	gmenu2x->drawButton(&bg, "v", "Scroll",
-	gmenu2x->drawButton(&bg, "^", "/", 10)-4));
+	gmenu2x->drawButton(&bg, "x", "Exit",
+	gmenu2x->drawButton(&bg, "down", "Scroll",
+	gmenu2x->drawButton(&bg, "up", "", 5)-10));
 
 	uint firstRow = 0, rowsPerPage = 180/gmenu2x->font->getHeight();
 	while (!close) {

@@ -51,9 +51,9 @@ bool DirDialog::exec() {
 	bg.write(gmenu2x->font,"Directory Browser: "+text,160,8, SFontHAlignCenter, SFontVAlignMiddle);
 	gmenu2x->drawBottomBar(&bg);
 
-	gmenu2x->drawButton(&bg, "S", "Confirm",
-	gmenu2x->drawButton(&bg, "B", "Enter folder",
-	gmenu2x->drawButton(&bg, "X", "Up one folder", 10)));
+	gmenu2x->drawButton(&bg, "start", "Confirm",
+	gmenu2x->drawButton(&bg, "b", "Enter folder",
+	gmenu2x->drawButton(&bg, "x", "Up one folder", 5)));
 
 	uint i, selected = 0, firstElement = 0, iY;
 	while (!close) {

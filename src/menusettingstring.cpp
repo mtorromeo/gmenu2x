@@ -66,8 +66,8 @@ string MenuSettingString::value() {
 void MenuSettingString::adjustInput() {}
 
 void MenuSettingString::drawSelected(int) {
-	gmenu2x->drawButton(gmenu2x->s, "X", "Clear",
-	gmenu2x->drawButton(gmenu2x->s, "B", "Edit", 10));
+	gmenu2x->drawButton(gmenu2x->s, "x", "Clear",
+	gmenu2x->drawButton(gmenu2x->s, "b", "Edit", 5));
 }
 
 bool MenuSettingString::edited() {

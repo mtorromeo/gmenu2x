@@ -263,9 +263,9 @@ void LinkApp::showManual() {
 				pngman.blit(gmenu2x->s, -page*320, 0);
 
 				gmenu2x->drawBottomBar();
-				gmenu2x->drawButton(gmenu2x->s, "X", "Exit",
-				gmenu2x->drawButton(gmenu2x->s, ">", "Change page",
-				gmenu2x->drawButton(gmenu2x->s, "<", "/", 10)-4));
+				gmenu2x->drawButton(gmenu2x->s, "x", "Exit",
+				gmenu2x->drawButton(gmenu2x->s, "right", "Change page",
+				gmenu2x->drawButton(gmenu2x->s, "left", "", 5)-10));
 
 				ss.clear();
 				ss << page+1;

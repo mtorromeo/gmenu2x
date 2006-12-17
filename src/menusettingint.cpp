@@ -72,10 +72,10 @@ void MenuSettingInt::adjustInput() {
 }
 
 void MenuSettingInt::drawSelected(int) {
-	gmenu2x->drawButton(gmenu2x->s, "Y", "Increase value",
-	gmenu2x->drawButton(gmenu2x->s, ">", "/",
-	gmenu2x->drawButton(gmenu2x->s, "X", "Decrease value",
-	gmenu2x->drawButton(gmenu2x->s, "<", "/", 10)-4))-4);
+	gmenu2x->drawButton(gmenu2x->s, "y", "Increase value",
+	gmenu2x->drawButton(gmenu2x->s, "right", "",
+	gmenu2x->drawButton(gmenu2x->s, "x", "Decrease value",
+	gmenu2x->drawButton(gmenu2x->s, "left", "", 5)-10))-10);
 }
 
 bool MenuSettingInt::edited() {

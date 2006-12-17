@@ -60,7 +60,7 @@ bool MenuSettingBool::value() {
 void MenuSettingBool::adjustInput() {}
 
 void MenuSettingBool::drawSelected(int) {
-	gmenu2x->drawButton(gmenu2x->s, "B", "Switch", 10);
+	gmenu2x->drawButton(gmenu2x->s, "b", "Switch", 5);
 }
 
 bool MenuSettingBool::edited() {

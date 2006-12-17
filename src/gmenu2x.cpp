@@ -1220,17 +1220,24 @@ string GMenu2X::getDiskFree() {
 }
 
 int GMenu2X::drawButton(Surface *s, string btn, string text, int x, int y) {
-	filledCircleRGBA(s->raw, x, y, 7, 0,0,0,255);
-	s->write(font, btn, x+1, y, SFontHAlignCenter, SFontVAlignMiddle);
-	s->write(font, text, x+11, y, SFontHAlignLeft, SFontVAlignMiddle);
-	return x+24+font->getTextWidth(text);
+	if (sc["imgs/buttons/"+btn+".png"] != NULL) {
+		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
+		x += sc["imgs/buttons/"+btn+".png"]->raw->w+3;
+		s->write(font, text, x, y, SFontHAlignLeft, SFontVAlignMiddle);
+		return x+8+font->getTextWidth(text);
+	}
+	return x+8;
 }
 
 int GMenu2X::drawButtonRight(Surface *s, string btn, string text, int x, int y) {
-	filledCircleRGBA(s->raw, x-7, y, 7, 0,0,0,255);
-	s->write(font, btn, x-6, y, SFontHAlignCenter, SFontVAlignMiddle);
-	s->write(font, text, x-16, y, SFontHAlignRight, SFontVAlignMiddle);
-	return x-29-font->getTextWidth(text);
+	if (sc["imgs/buttons/"+btn+".png"] != NULL) {
+		x -= 16;
+		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
+		x -= 3;
+		s->write(font, text, x, y, SFontHAlignRight, SFontVAlignMiddle);
+		return x-8-font->getTextWidth(text);
+	}
+	return x-8;
 }
 
 void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height) {

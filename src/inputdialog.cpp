@@ -57,11 +57,11 @@ bool InputDialog::exec() {
 	gmenu2x->drawBottomBar(&bg);
 	bg.write(gmenu2x->font, text, 160, 8, SFontHAlignCenter, SFontVAlignMiddle);
 
-	gmenu2x->drawButton(&bg, "Y", "Shift",
-	gmenu2x->drawButton(&bg, "B", "Confirm",
-	gmenu2x->drawButton(&bg, "R", "Space",
-	gmenu2x->drawButton(&bg, "L", "Backspace",
-	gmenu2x->drawButton(&bg, "X", "/", 10)-4))));
+	gmenu2x->drawButton(&bg, "y", "Shift",
+	gmenu2x->drawButton(&bg, "b", "Confirm",
+	gmenu2x->drawButton(&bg, "r", "Space",
+	gmenu2x->drawButton(&bg, "l", "Backspace",
+	gmenu2x->drawButton(&bg, "x", "", 5)-10))));
 
 	while (!close) {
 		bg.blit(gmenu2x->s,0,0);

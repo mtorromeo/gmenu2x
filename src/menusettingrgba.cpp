@@ -124,10 +124,10 @@ void MenuSettingRGBA::drawSelected(int y) {
 	int x = 170+selPart*35;
 	gmenu2x->s->box( x, y, 34, 16, gmenu2x->selectionColor );
 
-	gmenu2x->drawButton(gmenu2x->s, "Y", "Increase",
-	gmenu2x->drawButton(gmenu2x->s, "X", "Decrease",
-	gmenu2x->drawButton(gmenu2x->s, ">", "Change color component",
-	gmenu2x->drawButton(gmenu2x->s, "<", "/", 10)-4)));
+	gmenu2x->drawButton(gmenu2x->s, "y", "Increase",
+	gmenu2x->drawButton(gmenu2x->s, "x", "Decrease",
+	gmenu2x->drawButton(gmenu2x->s, "right", "Change color component",
+	gmenu2x->drawButton(gmenu2x->s, "left", "", 5)-10)));
 }
 
 bool MenuSettingRGBA::edited() {

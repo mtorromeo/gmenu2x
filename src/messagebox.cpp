@@ -42,20 +42,20 @@ MessageBox::MessageBox(GMenu2X *gmenu2x, string text, string icon) {
 	buttons[GP2X_BUTTON_B] = "OK";
 
 	//Default labels
-	buttonLabels[GP2X_BUTTON_UP] = "^";
-	buttonLabels[GP2X_BUTTON_DOWN] = "v";
-	buttonLabels[GP2X_BUTTON_LEFT] = "<";
-	buttonLabels[GP2X_BUTTON_RIGHT] = ">";
-	buttonLabels[GP2X_BUTTON_A] = "A";
-	buttonLabels[GP2X_BUTTON_B] = "B";
-	buttonLabels[GP2X_BUTTON_X] = "X";
-	buttonLabels[GP2X_BUTTON_Y] = "Y";
-	buttonLabels[GP2X_BUTTON_L] = "L";
-	buttonLabels[GP2X_BUTTON_R] = "R";
-	buttonLabels[GP2X_BUTTON_START] = "S";
-	buttonLabels[GP2X_BUTTON_SELECT] = "S";
-	buttonLabels[GP2X_BUTTON_VOLUP] = "+";
-	buttonLabels[GP2X_BUTTON_VOLDOWN] = "-";
+	buttonLabels[GP2X_BUTTON_UP] = "up";
+	buttonLabels[GP2X_BUTTON_DOWN] = "down";
+	buttonLabels[GP2X_BUTTON_LEFT] = "left";
+	buttonLabels[GP2X_BUTTON_RIGHT] = "right";
+	buttonLabels[GP2X_BUTTON_A] = "a";
+	buttonLabels[GP2X_BUTTON_B] = "b";
+	buttonLabels[GP2X_BUTTON_X] = "x";
+	buttonLabels[GP2X_BUTTON_Y] = "y";
+	buttonLabels[GP2X_BUTTON_L] = "l";
+	buttonLabels[GP2X_BUTTON_R] = "r";
+	buttonLabels[GP2X_BUTTON_START] = "start";
+	buttonLabels[GP2X_BUTTON_SELECT] = "select";
+	buttonLabels[GP2X_BUTTON_VOLUP] = "vol+";
+	buttonLabels[GP2X_BUTTON_VOLDOWN] = "vol-";
 }
 
 int MessageBox::exec() {
