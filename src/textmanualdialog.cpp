@@ -106,9 +106,9 @@ void TextManualDialog::exec() {
 #ifdef TARGET_GP2X
 		gmenu2x->joy.update();
 		if ( gmenu2x->joy[GP2X_BUTTON_UP   ] && firstRow>0 ) firstRow--;
-		if ( gmenu2x->joy[GP2X_BUTTON_DOWN ] && firstRow+rowsPerPage<text->size() ) firstRow++;
-		if ( gmenu2x->joy[GP2X_BUTTON_LEFT ] && page>0 ) page--;
-		if ( gmenu2x->joy[GP2X_BUTTON_RIGHT] && page<pages.size()-1 ) page++;
+		if ( gmenu2x->joy[GP2X_BUTTON_DOWN ] && firstRow+rowsPerPage<pages[page].text.size() ) firstRow++;
+		if ( gmenu2x->joy[GP2X_BUTTON_LEFT ] && page>0 ) { page--; firstRow=0; }
+		if ( gmenu2x->joy[GP2X_BUTTON_RIGHT] && page<pages.size()-1 ) { page++; firstRow=0; }
 		if ( gmenu2x->joy[GP2X_BUTTON_L   ] ) {
 			if (firstRow>=rowsPerPage-1)
 				firstRow-= rowsPerPage-1;
@@ -128,9 +128,9 @@ void TextManualDialog::exec() {
 			if ( gmenu2x->event.type==SDL_KEYDOWN ) {
 				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) close = true;
 				if ( gmenu2x->event.key.keysym.sym==SDLK_UP && firstRow>0 ) firstRow--;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN && firstRow+rowsPerPage<text->size() ) firstRow++;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_LEFT && page>0 ) page--;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_RIGHT && page<pages.size()-1 ) page++;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN && firstRow+rowsPerPage<pages[page].text.size() ) firstRow++;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_LEFT && page>0 ) { page--; firstRow=0; }
+				if ( gmenu2x->event.key.keysym.sym==SDLK_RIGHT && page<pages.size()-1 ) { page++; firstRow=0; }
 			}
 		}
 #endif

@@ -968,10 +968,11 @@ void GMenu2X::renameSection() {
 			string newsectiondir = "sections/"+id.input;
 			string sectiondir = "sections/"+menu->selSection();
 			ledOn();
-			if (rename(sectiondir.c_str(), newsectiondir.c_str())==0) {
+			if (rename(sectiondir.c_str(), "tmpsection")==0 && rename("tmpsection", newsectiondir.c_str())==0) {
 				string oldicon = sectiondir+".png", newicon = newsectiondir+".png";
 				if (fileExists(oldicon) && !fileExists(newicon)) {
-					rename(oldicon.c_str(), newicon.c_str());
+					rename(oldicon.c_str(), "tmpsectionicon");
+					rename("tmpsectionicon", newicon.c_str());
 					sc.move(oldicon, newicon);
 				}
 				menu->sections[menu->selSectionIndex()] = id.input;
