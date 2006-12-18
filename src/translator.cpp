@@ -34,6 +34,21 @@ bool Translator::exists(string term) {
 }
 
 void Translator::setLang(string lang) {
+	translations.clear();
+
+	string line;
+	ifstream infile ("translations/"+lang, ios_base::in);
+	if (infile.is_open()) {
+		while (getline(infile, line, '\n')) {
+			line = trim(line);
+			if (line=="") continue;
+			if (line[0]=='#') continue;
+
+			string::size_type position = line.find("=");
+			translations[ trim(line.substr(0,position)) ] = trim(line.substr(position+1));
+		}
+		infile.close();
+	}
 }
 
 void Translator::translate(string term) {
