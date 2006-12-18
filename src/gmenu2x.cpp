@@ -1207,11 +1207,7 @@ string GMenu2X::getDiskFree() {
 	string df = "";
 	struct statfs b;
 
-#ifdef TARGET_GP2X
 	int ret = statfs("/mnt/sd", &b);
-#else
-	int ret = statfs("/mnt/sda1", &b);
-#endif
 	if (ret==0) {
 		ss << b.f_bfree*b.f_bsize/1048576 << "/" << b.f_blocks*b.f_bsize/1048576 << "MB";
 		ss >> df;
