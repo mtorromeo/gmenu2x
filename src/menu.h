@@ -22,7 +22,6 @@
 
 #include <string>
 #include <vector>
-#include "SFont.h"
 #include "linkaction.h"
 
 using std::string;
