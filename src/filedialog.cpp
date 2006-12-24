@@ -54,8 +54,8 @@ bool FileDialog::exec() {
 	bg.write(gmenu2x->font,"File Browser: "+text,160,8, SFontHAlignCenter, SFontVAlignMiddle);
 	gmenu2x->drawBottomBar(&bg);
 
-	gmenu2x->drawButton(&bg, "b", "Enter folder/Confirm",
-	gmenu2x->drawButton(&bg, "x", "Up one folder", 5));
+	gmenu2x->drawButton(&bg, "b", gmenu2x->tr["Enter folder/Confirm"],
+	gmenu2x->drawButton(&bg, "x", gmenu2x->tr["Up one folder"], 5));
 
 
 	uint i, selected = 0, firstElement = 0, iY;

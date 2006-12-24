@@ -24,6 +24,7 @@
 #include <string>
 #include <iostream>
 #include "surfacecollection.h"
+#include "translator.h"
 #include "FastDelegate.h"
 #include "utilities.h"
 
@@ -118,6 +119,7 @@ public:
 	//G int gamma;
 
 	SurfaceCollection sc;
+	Translator tr;
 	Surface *s;
 	ASFont *font;
 

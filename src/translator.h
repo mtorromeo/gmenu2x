@@ -29,16 +29,18 @@ Hash Map of translation strings.
 */
 class Translator {
 private:
+	string _lang;
 	hash_map<string, string> translations;
 
 public:
 	Translator(string lang="");
 	~Translator();
 
+	string lang();
 	void setLang(string lang);
 	bool exists(string term);
 	string translate(string term);
-	string *operator[](string term);
+	string operator[](string term);
 };
 
 #endif

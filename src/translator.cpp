@@ -18,11 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "surfacecollection.h"
+#include <iostream>
+#include "translator.h"
 
 using namespace std;
 
 Translator::Translator(string lang) {
+	_lang = "";
 	if (!lang.empty())
 		setLang(lang);
 }
@@ -37,7 +39,7 @@ void Translator::setLang(string lang) {
 	translations.clear();
 
 	string line;
-	ifstream infile ("translations/"+lang, ios_base::in);
+	ifstream infile (string("translations/"+lang).c_str(), ios_base::in);
 	if (infile.is_open()) {
 		while (getline(infile, line, '\n')) {
 			line = trim(line);
@@ -48,17 +50,27 @@ void Translator::setLang(string lang) {
 			translations[ trim(line.substr(0,position)) ] = trim(line.substr(position+1));
 		}
 		infile.close();
+		_lang = lang;
 	}
 }
 
-void Translator::translate(string term) {
+string Translator::translate(string term) {
+	if (_lang.empty()) return term;
+
 	hash_map<string, string>::iterator i = translations.find(term);
-	if (i == translations.end())
+	if (i == translations.end()) {
+#ifdef DEBUG
+		cout << "Untranslated string: " << term << endl;
+#endif
 		return term;
-	else
+	} else
 		return i->second;
 }
 
-string *Translator::operator[](string term) {
-	translate(term);
+string Translator::operator[](string term) {
+	return translate(term);
+}
+
+string Translator::lang() {
+	return _lang;
 }

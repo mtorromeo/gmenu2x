@@ -67,8 +67,8 @@ string MenuSettingFile::value() {
 void MenuSettingFile::adjustInput() {}
 
 void MenuSettingFile::drawSelected(int) {
-	gmenu2x->drawButton(gmenu2x->s, "x", "Clear",
-	gmenu2x->drawButton(gmenu2x->s, "b", "Select a file", 5));
+	gmenu2x->drawButton(gmenu2x->s, "x", gmenu2x->tr["Clear"],
+	gmenu2x->drawButton(gmenu2x->s, "b", gmenu2x->tr["Select a file"], 5));
 }
 
 bool MenuSettingFile::edited() {

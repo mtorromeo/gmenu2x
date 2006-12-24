@@ -1,5 +1,12 @@
 Gamma configurable in options menu and on a per-link basis
 
+----------
+New in 0.9
+----------
+Added support for translations (Italian, Dutch and French included)
+Use of a new font code which supports (some) utf8 characters
+Added graphics for gp2x buttons
+
 ------------
 New in 0.8.1
 ------------

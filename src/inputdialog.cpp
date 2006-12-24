@@ -57,10 +57,10 @@ bool InputDialog::exec() {
 	gmenu2x->drawBottomBar(&bg);
 	bg.write(gmenu2x->font, text, 160, 8, SFontHAlignCenter, SFontVAlignMiddle);
 
-	gmenu2x->drawButton(&bg, "y", "Shift",
-	gmenu2x->drawButton(&bg, "b", "Confirm",
-	gmenu2x->drawButton(&bg, "r", "Space",
-	gmenu2x->drawButton(&bg, "l", "Backspace",
+	gmenu2x->drawButton(&bg, "y", gmenu2x->tr["Shift"],
+	gmenu2x->drawButton(&bg, "b", gmenu2x->tr["Confirm"],
+	gmenu2x->drawButton(&bg, "r", gmenu2x->tr["Space"],
+	gmenu2x->drawButton(&bg, "l", gmenu2x->tr["Backspace"],
 	gmenu2x->drawButton(&bg, "x", "", 5)-10))));
 
 	while (!close) {
@@ -182,6 +182,6 @@ void InputDialog::drawVirtualKeyboard() {
 	}
 
 	//Ok/Cancel
-	gmenu2x->s->write(gmenu2x->font, "Cancel", (int)(160-keyboard[0].length()*2.5), 98+keyboard.size()*15, SFontHAlignCenter, SFontVAlignMiddle);
-	gmenu2x->s->write(gmenu2x->font, "OK", (int)(160+keyboard[0].length()*2.5), 98+keyboard.size()*15, SFontHAlignCenter, SFontVAlignMiddle);
+	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["Cancel"], (int)(160-keyboard[0].length()*2.5), 98+keyboard.size()*15, SFontHAlignCenter, SFontVAlignMiddle);
+	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["OK"], (int)(160+keyboard[0].length()*2.5), 98+keyboard.size()*15, SFontHAlignCenter, SFontVAlignMiddle);
 }

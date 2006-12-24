@@ -263,14 +263,14 @@ void LinkApp::showManual() {
 				pngman.blit(gmenu2x->s, -page*320, 0);
 
 				gmenu2x->drawBottomBar();
-				gmenu2x->drawButton(gmenu2x->s, "x", "Exit",
-				gmenu2x->drawButton(gmenu2x->s, "right", "Change page",
+				gmenu2x->drawButton(gmenu2x->s, "x", gmenu2x->tr["Exit"],
+				gmenu2x->drawButton(gmenu2x->s, "right", gmenu2x->tr["Change page"],
 				gmenu2x->drawButton(gmenu2x->s, "left", "", 5)-10));
 
 				ss.clear();
 				ss << page+1;
 				ss >> pageStatus;
-				pageStatus = "Page: "+pageStatus+"/"+spagecount;
+				pageStatus = gmenu2x->tr["Page"]+": "+pageStatus+"/"+spagecount;
 				gmenu2x->s->write(gmenu2x->font, pageStatus, 310, 230, SFontHAlignRight, SFontVAlignMiddle);
 
 				gmenu2x->s->flip();

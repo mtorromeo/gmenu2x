@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 #include <SDL.h>
-#include "SFont.h"
+#include "sfontplus.h"
 
 using std::string;
 using std::vector;
@@ -20,11 +20,11 @@ const unsigned short SFontVAlignMiddle = 2;
 
 class Surface;
 
-class ASFont
-{
+class ASFont {
 public:
-	ASFont(SDL_Surface* surface);
-	ASFont(Surface* surface);
+	ASFont(SDL_Surface* font);
+	ASFont(Surface* font);
+	ASFont(string font);
 	~ASFont();
 
 	int getHeight();
@@ -38,7 +38,7 @@ public:
 	void write(Surface* surface, const std::string& text, int x, int y, const unsigned short halign = 0, const unsigned short valign = 0);
 
 private:
-	SFont_Font* font;
+	SFontPlus font;
 	int halfHeight;
 };
 

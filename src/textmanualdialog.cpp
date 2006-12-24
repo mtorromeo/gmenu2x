@@ -78,10 +78,10 @@ void TextManualDialog::exec() {
 	//selector text
 	bg.write(gmenu2x->font,title+(description.empty() ? "" : ": "+description),40,13, SFontHAlignLeft, SFontVAlignMiddle);
 
-	gmenu2x->drawButton(&bg, "x", "Exit",
-	gmenu2x->drawButton(&bg, "right", "Change page",
+	gmenu2x->drawButton(&bg, "x", gmenu2x->tr["Exit"],
+	gmenu2x->drawButton(&bg, "right", gmenu2x->tr["Change page"],
 	gmenu2x->drawButton(&bg, "left", "",
-	gmenu2x->drawButton(&bg, "down", "Scroll",
+	gmenu2x->drawButton(&bg, "down", gmenu2x->tr["Scroll"],
 	gmenu2x->drawButton(&bg, "up", "", 5)-10))-10));
 
 	uint firstRow = 0, rowsPerPage = 180/gmenu2x->font->getHeight();

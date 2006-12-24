@@ -52,9 +52,11 @@
 #include "linkaction.h"
 #include "menu.h"
 #include "asfont.h"
+#include "sfontplus.h"
 #include "surface.h"
 #include "filedialog.h"
 #include "gmenu2x.h"
+#include "filelister.h"
 
 #include "messagebox.h"
 #include "inputdialog.h"
@@ -161,8 +163,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	//SDL_SetAlpha(s->raw, SDL_SRCALPHA|SDL_RLEACCEL, 255);
 	SDL_ShowCursor(0);
 
-	sc.add("imgs/font.png",true);
-	font = new ASFont( sc["imgs/font.png"]->raw );
+	font = new ASFont("imgs/font.png");
 
 	initMenu();
 	initBG();
@@ -250,13 +251,13 @@ void GMenu2X::initMenu() {
 			sc.add(sectionIcon);
 
 		if (menu->sections[i]=="settings") {
-			menu->addActionLink(i,"GMenu2X",MakeDelegate(this,&GMenu2X::options),"Configure GMenu2X's options",sectionIcon);
-			menu->addActionLink(i,"USB Sd",MakeDelegate(this,&GMenu2X::activateSdUsb),"Activate Usb on SD","icons/usb.png");
-			menu->addActionLink(i,"USB Nand",MakeDelegate(this,&GMenu2X::activateNandUsb),"Activate Usb on Nand","icons/usb.png");
+			menu->addActionLink(i,"GMenu2X",MakeDelegate(this,&GMenu2X::options),tr["Configure GMenu2X's options"],sectionIcon);
+			menu->addActionLink(i,"USB Sd",MakeDelegate(this,&GMenu2X::activateSdUsb),tr["Activate Usb on SD"],"icons/usb.png");
+			menu->addActionLink(i,"USB Nand",MakeDelegate(this,&GMenu2X::activateNandUsb),tr["Activate Usb on Nand"],"icons/usb.png");
 			if (fileExists(path+"log.txt"))
-				menu->addActionLink(i,"Log Viewer",MakeDelegate(this,&GMenu2X::viewLog),"Displays last launched program's output","icons/ebook.png");
-			menu->addActionLink(i,"About",MakeDelegate(this,&GMenu2X::about),"Info about GMenu2X","icons/about.png");
-			//menu->addActionLink(i,"USB Root",MakeDelegate(this,&GMenu2X::activateRootUsb),"Activate Usb on the root of the Gp2x Filesystem","icons/usb.png");
+				menu->addActionLink(i,tr["Log Viewer"],MakeDelegate(this,&GMenu2X::viewLog),tr["Displays last launched program's output"],"icons/ebook.png");
+			menu->addActionLink(i,tr["About"],MakeDelegate(this,&GMenu2X::about),tr["Info about GMenu2X"],"icons/about.png");
+			//menu->addActionLink(i,"USB Root",MakeDelegate(this,&GMenu2X::activateRootUsb),tr["Activate Usb on the root of the Gp2x Filesystem"],"icons/usb.png");
 		}
 	}
 
@@ -272,15 +273,17 @@ E-Mail & PayPal account: massimiliano.torromeo@gmail.com\n\n\
 ----\n\
  Thanks to the following donors\n\
 ----\n\
-Eclipse (www.gp2x.de)\n\
+EvilDragon (www.gp2x.de)\n\
 Tecnologie creative (www.tecnologiecreative.it)\n\
 TelcoLou\n\
 gaterooze\n\
 deepmenace\n\
 superfly\n\
+halo9\n\
+sbock\n\
 and all the anonymous donors...\n\
 (If I missed to list you or if you want to be removed, contact me.)","\n");
-	TextDialog td(this, "GMenu2X", "Version 0.8 (Build date: "+string(__DATE__)+")", "icons/about.png", &text);
+	TextDialog td(this, "GMenu2X", "Version 0.9 (Build date: "+string(__DATE__)+")", "icons/about.png", &text);
 	td.exec();
 }
 
@@ -296,12 +299,12 @@ void GMenu2X::viewLog() {
 				log.push_back(line);
 			inf.close();
 
-			TextDialog td(this, "Log Viewer", "Displays last launched program's output", "icons/ebook.png", &log);
+			TextDialog td(this, tr["Log Viewer"], tr["Displays last launched program's output"], "icons/ebook.png", &log);
 			td.exec();
 
-			MessageBox mb(this, "Do you want to delete the log file?", "icons/ebook.png");
-			mb.buttons[GP2X_BUTTON_B] = "Yes";
-			mb.buttons[GP2X_BUTTON_X] = "No";
+			MessageBox mb(this, tr["Do you want to delete the log file?"], "icons/ebook.png");
+			mb.buttons[GP2X_BUTTON_B] = tr["Yes"];
+			mb.buttons[GP2X_BUTTON_X] = tr["No"];
 			if (mb.exec() == GP2X_BUTTON_B) {
 				ledOn();
 				unlink(logfile.c_str());
@@ -345,6 +348,7 @@ void GMenu2X::readConfig() {
 				else if (name=="globalVolume") globalVolume = constrain( atoi(value.c_str()), 0,100 );
 				else if (name=="numRows") numRows = constrain( atoi(value.c_str()), 2,4 );
 				else if (name=="numCols") numCols = constrain( atoi(value.c_str()), 1,6 );
+				else if (name=="lang") tr.setLang(value);
 				//G else if (name=="gamma") gamma = constrain( atoi(value.c_str()), 1,100 );
 			}
 			inf.close();
@@ -362,6 +366,7 @@ void GMenu2X::writeConfig() {
 			startLinkIndex = menu->selLinkIndex();
 		}
 
+		if (!tr.lang().empty()) inf << "lang=" << tr.lang() << endl;
 		inf << "selectionColorR=" << selectionColor.r << endl;
 		inf << "selectionColorG=" << selectionColor.g << endl;
 		inf << "selectionColorB=" << selectionColor.b << endl;
@@ -479,13 +484,19 @@ void GMenu2X::initServices() {
 
 void GMenu2X::ledOn() {
 #ifdef TARGET_GP2X
-	SDL_SYS_JoystickGp2xSys(joy.joystick, BATT_LED_ON);
+	gp2x_init();
+	gp2x_memregs[0x106E >> 1] ^= 16;
+	gp2x_deinit();
+	//SDL_SYS_JoystickGp2xSys(joy.joystick, BATT_LED_ON);
 #endif
 }
 
 void GMenu2X::ledOff() {
 #ifdef TARGET_GP2X
-	SDL_SYS_JoystickGp2xSys(joy.joystick, BATT_LED_OFF);
+	gp2x_init();
+	gp2x_memregs[0x106E >> 1] ^= 16;
+	gp2x_deinit();
+	//SDL_SYS_JoystickGp2xSys(joy.joystick, BATT_LED_OFF);
 #endif
 }
 
@@ -567,7 +578,7 @@ int GMenu2X::main() {
 			else
 				sc["icons/generic.png"]->blit(s,ix,y,32,32);
 
-			s->write( font, menu->sectionLinks()->at(i)->getTitle(), ix+16, y+43+iconTextOffset, SFontHAlignCenter, SFontVAlignBottom );
+			s->write( font, menu->sectionLinks()->at(i)->getTitle(), ix+16, y+42+iconTextOffset, SFontHAlignCenter, SFontVAlignBottom );
 		}
 		s->clearClipRect();
 		drawScrollBar(numRows,menu->sectionLinks()->size()/numCols + ((menu->sectionLinks()->size()%numCols==0) ? 0 : 1),menu->firstDispRow(),43,159);
@@ -604,6 +615,8 @@ int GMenu2X::main() {
 		tickFPS = tickNow;
 		s->write( font, fps, 319,1 ,SFontHAlignRight );
 		*/
+
+		s->flip();
 
 #ifdef TARGET_GP2X
 		joy.update();
@@ -671,8 +684,6 @@ int GMenu2X::main() {
 			}
 		}
 #endif
-
-		s->flip();
 	}
 
 	return -1;
@@ -683,23 +694,31 @@ void GMenu2X::options() {
 	int curGlobalVolume = globalVolume;
 	//G int prevgamma = gamma;
 
-	SettingsDialog sd(this,"Settings");
-	sd.addSetting(new MenuSettingBool(this,"Save last selection","Save the last selected link and section on exit",&saveSelection));
-	sd.addSetting(new MenuSettingInt(this,"Clock for GMenu2X","Set the cpu working frequency when running GMenu2X",&menuClock,50,325));
-	sd.addSetting(new MenuSettingInt(this,"Maximum overclock","Set the maximum overclock for launching links",&maxClock,50,325));
-	sd.addSetting(new MenuSettingInt(this,"Global Volume","Set the default volume fo the gp2x soundcard",&globalVolume,0,100));
-	sd.addSetting(new MenuSettingBool(this,"Output logs","Logs the output of the links. Use the Log Viewer to read them.",&outputLogs));
-	sd.addSetting(new MenuSettingInt(this,"Number of columns","Set the number of columns of links to display on a page",(int*)&menu->numCols,1,6));
-	sd.addSetting(new MenuSettingInt(this,"Number of rows","Set the number of rows of links to display on a page",(int*)&menu->numRows,2,4));
-	//G sd.addSetting(new MenuSettingInt(this," = SDL_GetTicks()Gamma","Set gp2x gamma value (default=10)",&gamma,1,100));
-	sd.addSetting(new MenuSettingRGBA(this,"Top Bar Color","Color of the top bar",&topBarColor));
-	sd.addSetting(new MenuSettingRGBA(this,"Bottom Bar Color","Color of the bottom bar",&bottomBarColor));
-	sd.addSetting(new MenuSettingRGBA(this,"Selection Color","Color of the selection and other interface details",&selectionColor));
+	FileLister fl("translations");
+	fl.browse();
+	fl.files.insert(fl.files.begin(),"English");
+	string lang = tr.lang();
+
+	SettingsDialog sd(this,tr["Settings"]);
+	sd.addSetting(new MenuSettingMultiString(this,tr["Language"],tr["Set the language used by GMenu2X"],&lang,&fl.files));
+	sd.addSetting(new MenuSettingBool(this,tr["Save last selection"],tr["Save the last selected link and section on exit"],&saveSelection));
+	sd.addSetting(new MenuSettingInt(this,tr["Clock for GMenu2X"],tr["Set the cpu working frequency when running GMenu2X"],&menuClock,50,325));
+	sd.addSetting(new MenuSettingInt(this,tr["Maximum overclock"],tr["Set the maximum overclock for launching links"],&maxClock,50,325));
+	sd.addSetting(new MenuSettingInt(this,tr["Global Volume"],tr["Set the default volume for the gp2x soundcard"],&globalVolume,0,100));
+	sd.addSetting(new MenuSettingBool(this,tr["Output logs"],tr["Logs the output of the links. Use the Log Viewer to read them."],&outputLogs));
+	sd.addSetting(new MenuSettingInt(this,tr["Number of columns"],tr["Set the number of columns of links to display on a page"],(int*)&menu->numCols,1,6));
+	sd.addSetting(new MenuSettingInt(this,tr["Number of rows"],tr["Set the number of rows of links to display on a page"],(int*)&menu->numRows,2,4));
+	//G sd.addSetting(new MenuSettingInt(this,tr["Gamma"],tr["Set gp2x gamma value (default=10)"],&gamma,1,100));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Top Bar Color"],tr["Color of the top bar"],&topBarColor));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Bottom Bar Color"],tr["Color of the bottom bar"],&bottomBarColor));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Selection Color"],tr["Color of the selection and other interface details"],&selectionColor));
 
 	if (sd.exec() && sd.edited()) {
 		//G if (prevgamma!=gamma) setGamma(gamma);
 		if (curMenuClock!=menuClock) setClock(menuClock);
 		if (curGlobalVolume!=globalVolume) setVolume(globalVolume);
+		if (lang == "English") lang = "";
+		if (lang != tr.lang()) tr.setLang(lang);
 		writeConfig();
 		initBG();
 	}
@@ -707,12 +726,12 @@ void GMenu2X::options() {
 
 void GMenu2X::activateSdUsb() {
 	if (usbnet) {
-		MessageBox mb(this,"Operation not permitted.\nYou should disable Usb Networking to do this.");
+		MessageBox mb(this,tr["Operation not permitted."]+"\n"+tr["You should disable Usb Networking to do this."]);
 		mb.exec();
 	} else {
 		system("scripts/usbon.sh sd");
-		MessageBox mb(this,"USB Enabled (SD)","icons/usb.png");
-		mb.buttons[GP2X_BUTTON_B] = "Turn off";
+		MessageBox mb(this,tr["USB Enabled (SD)"],"icons/usb.png");
+		mb.buttons[GP2X_BUTTON_B] = tr["Turn off"];
 		mb.exec();
 		system("scripts/usboff.sh");
 	}
@@ -720,12 +739,12 @@ void GMenu2X::activateSdUsb() {
 
 void GMenu2X::activateNandUsb() {
 	if (usbnet) {
-		MessageBox mb(this,"Operation not permitted.\nYou should disable Usb Networking to do this.");
+		MessageBox mb(this,tr["Operation not permitted."]+"\n"+tr["You should disable Usb Networking to do this."]);
 		mb.exec();
 	} else {
 		system("scripts/usbon.sh nand");
-		MessageBox mb(this,"USB Enabled (NAND)","icons/usb.png");
-		mb.buttons[GP2X_BUTTON_B] = "Turn off";
+		MessageBox mb(this,tr["USB Enabled (Nand)"],"icons/usb.png");
+		mb.buttons[GP2X_BUTTON_B] = tr["Turn off"];
 		mb.exec();
 		system("scripts/usboff.sh");
 	}
@@ -733,12 +752,12 @@ void GMenu2X::activateNandUsb() {
 
 void GMenu2X::activateRootUsb() {
 	if (usbnet) {
-		MessageBox mb(this,"Operation not permitted.\nYou should disable Usb Networking to do this.");
+		MessageBox mb(this,tr["Operation not permitted."]+"\n"+tr["You should disable Usb Networking to do this."]);
 		mb.exec();
 	} else {
 		system("scripts/usbon.sh root");
-		MessageBox mb(this,"USB Enabled (ROOT)","icons/usb.png");
-		mb.buttons[GP2X_BUTTON_B] = "Turn off";
+		MessageBox mb(this,tr["USB Enabled (Root)"],"icons/usb.png");
+		mb.buttons[GP2X_BUTTON_B] = tr["Turn off"];
 		mb.exec();
 		system("scripts/usboff.sh");
 	}
@@ -766,16 +785,16 @@ void GMenu2X::contextMenu() {
 	}
 
 	{
-	MenuOption opt = {"Add section", MakeDelegate(this, &GMenu2X::addSection)};
+	MenuOption opt = {tr["Add section"], MakeDelegate(this, &GMenu2X::addSection)};
 	voices.push_back(opt);
 	}{
-	MenuOption opt = {"Rename section", MakeDelegate(this, &GMenu2X::renameSection)};
+	MenuOption opt = {tr["Rename section"], MakeDelegate(this, &GMenu2X::renameSection)};
 	voices.push_back(opt);
 	}{
-	MenuOption opt = {"Delete section", MakeDelegate(this, &GMenu2X::deleteSection)};
+	MenuOption opt = {tr["Delete section"], MakeDelegate(this, &GMenu2X::deleteSection)};
 	voices.push_back(opt);
 	}{
-	MenuOption opt = {"Scan for applications and games", MakeDelegate(this, &GMenu2X::scanner)};
+	MenuOption opt = {tr["Scan for applications and games"], MakeDelegate(this, &GMenu2X::scanner)};
 	voices.push_back(opt);
 	}
 
@@ -829,7 +848,7 @@ void GMenu2X::contextMenu() {
 }
 
 void GMenu2X::addLink() {
-	FileDialog fd(this,"Select an application");
+	FileDialog fd(this,tr["Select an application"]);
 	if (fd.exec()) {
 		ledOn();
 		menu->addLink(fd.path, fd.file);
@@ -865,23 +884,23 @@ void GMenu2X::editLink() {
 	int linkVolume = menu->selLinkApp()->volume();
 	//G int linkGamma = menu->selLink()->gamma();
 
-	SettingsDialog sd(this,"Edit link");
-	sd.addSetting(new MenuSettingString(this,"Title","Link title",&linkTitle));
-	sd.addSetting(new MenuSettingString(this,"Description","Link description",&linkDescription));
-	sd.addSetting(new MenuSettingMultiString(this,"Section","The section this link belongs to",&newSection,&menu->sections));
-	sd.addSetting(new MenuSettingFile(this,"Icon","Select an icon for the link",&linkIcon,".png,.bmp,.jpg,.jpeg"));
-	sd.addSetting(new MenuSettingFile(this,"Manual","Select a graphic/textual manual or a readme",&linkManual,".man.png,.txt"));
-	sd.addSetting(new MenuSettingInt(this,"Clock (default=200)","Cpu clock frequency to set when launching this link",&linkClock,50,maxClock));
-	sd.addSetting(new MenuSettingInt(this,"Volume (default=-1)","Volume to set for this link",&linkVolume,-1,100));
-	sd.addSetting(new MenuSettingString(this,"Parameters","Parameters to pass to the application",&linkParams));
-	sd.addSetting(new MenuSettingDir(this,"Selector Directory","Directory to scan for the selector",&linkSelDir));
-	sd.addSetting(new MenuSettingBool(this,"Selector Browser","Allow the selector to change directory",&linkSelBrowser));
-	sd.addSetting(new MenuSettingString(this,"Selector Filter","Filter for the selector (Separate values with a comma)",&linkSelFilter));
-	sd.addSetting(new MenuSettingDir(this,"Selector Screenshots","Directory of the screenshots for the selector",&linkSelScreens));
-	sd.addSetting(new MenuSettingFile(this,"Selector Aliases","File containing a list of aliases for the selector",&linkSelAliases));
-	//G sd.addSetting(new MenuSettingInt(this,"Gamma (0=default)","Gamma value to set when launching this link",&linkGamma,0,100));
-	sd.addSetting(new MenuSettingBool(this,"Wrapper","Explicitly relaunch GMenu2X after this link's execution ends",&menu->selLinkApp()->wrapper));
-	sd.addSetting(new MenuSettingBool(this,"Don't Leave","Don't quit GMenu2X when launching this link",&menu->selLinkApp()->dontleave));
+	SettingsDialog sd(this,tr["Edit link"]);
+	sd.addSetting(new MenuSettingString(this,tr["Title"],tr["Link title"],&linkTitle));
+	sd.addSetting(new MenuSettingString(this,tr["Description"],tr["Link description"],&linkDescription));
+	sd.addSetting(new MenuSettingMultiString(this,tr["Section"],tr["The section this link belongs to"],&newSection,&menu->sections));
+	sd.addSetting(new MenuSettingFile(this,tr["Icon"],tr["Select an icon for the link"],&linkIcon,".png,.bmp,.jpg,.jpeg"));
+	sd.addSetting(new MenuSettingFile(this,tr["Manual"],tr["Select a graphic/textual manual or a readme"],&linkManual,".man.png,.txt"));
+	sd.addSetting(new MenuSettingInt(this,tr["Clock (default: 200)"],tr["Cpu clock frequency to set when launching this link"],&linkClock,50,maxClock));
+	sd.addSetting(new MenuSettingInt(this,tr["Volume (default: -1)"],tr["Volume to set for this link"],&linkVolume,-1,100));
+	sd.addSetting(new MenuSettingString(this,tr["Parameters"],tr["Parameters to pass to the application"],&linkParams));
+	sd.addSetting(new MenuSettingDir(this,tr["Selector Directory"],tr["Directory to scan for the selector"],&linkSelDir));
+	sd.addSetting(new MenuSettingBool(this,tr["Selector Browser"],tr["Allow the selector to change directory"],&linkSelBrowser));
+	sd.addSetting(new MenuSettingString(this,tr["Selector Filter"],tr["Filter for the selector (Separate values with a comma)"],&linkSelFilter));
+	sd.addSetting(new MenuSettingDir(this,tr["Selector Screenshots"],tr["Directory of the screenshots for the selector"],&linkSelScreens));
+	sd.addSetting(new MenuSettingFile(this,tr["Selector Aliases"],tr["File containing a list of aliases for the selector"],&linkSelAliases));
+	//G sd.addSetting(new MenuSettingInt(this,tr["Gamma (0=default)"],tr["Gamma value to set when launching this link"],&linkGamma,0,100));
+	sd.addSetting(new MenuSettingBool(this,tr["Wrapper"],tr["Explicitly relaunch GMenu2X after this link's execution ends"],&menu->selLinkApp()->wrapper));
+	sd.addSetting(new MenuSettingBool(this,tr["Don't Leave"],tr["Don't quit GMenu2X when launching this link"],&menu->selLinkApp()->dontleave));
 
 	if (sd.exec() && sd.edited()) {
 		ledOn();
@@ -931,9 +950,9 @@ void GMenu2X::editLink() {
 
 void GMenu2X::deleteLink() {
 	if (menu->selLinkApp()!=NULL) {
-		MessageBox mb(this, "Deleting "+menu->selLink()->getTitle()+"\nAre you sure?", menu->selLink()->getIcon());
-		mb.buttons[GP2X_BUTTON_B] = "Yes";
-		mb.buttons[GP2X_BUTTON_X] = "No";
+		MessageBox mb(this, "Deleting "+menu->selLink()->getTitle()+"\n"+tr["Are you sure?"], menu->selLink()->getIcon());
+		mb.buttons[GP2X_BUTTON_B] = tr["Yes"];
+		mb.buttons[GP2X_BUTTON_X] = tr["No"];
 		if (mb.exec() == GP2X_BUTTON_B) {
 			ledOn();
 			menu->deleteSelectedLink();
@@ -944,7 +963,7 @@ void GMenu2X::deleteLink() {
 }
 
 void GMenu2X::addSection() {
-	InputDialog id(this,"Insert a name for the new section");
+	InputDialog id(this,tr["Insert a name for the new section"]);
 	if (id.exec()) {
 		//only if a section with the same name does not exist
 		if (find(menu->sections.begin(),menu->sections.end(),id.input)==menu->sections.end()) {
@@ -960,7 +979,7 @@ void GMenu2X::addSection() {
 }
 
 void GMenu2X::renameSection() {
-	InputDialog id(this,"Insert a name for the new section",menu->selSection());
+	InputDialog id(this,tr["Insert a new name for this section"],menu->selSection());
 	if (id.exec()) {
 		//only if a section with the same name does not exist & !samename
 		if (menu->selSection()!=id.input && find(menu->sections.begin(),menu->sections.end(),id.input)==menu->sections.end()) {
@@ -984,9 +1003,9 @@ void GMenu2X::renameSection() {
 }
 
 void GMenu2X::deleteSection() {
-	MessageBox mb(this,"You will lose all the links in this section. Are you sure?");
-	mb.buttons[GP2X_BUTTON_B] = "Yes";
-	mb.buttons[GP2X_BUTTON_X] = "No";
+	MessageBox mb(this,tr["You will lose all the links in this section."]+"\n"+tr["Are you sure?"]);
+	mb.buttons[GP2X_BUTTON_B] = tr["Yes"];
+	mb.buttons[GP2X_BUTTON_X] = tr["No"];
 	if (mb.exec() == GP2X_BUTTON_B) {
 		ledOn();
 		if (rmtree(path+"sections/"+menu->selSection())) {
@@ -1001,17 +1020,17 @@ void GMenu2X::scanner() {
 	Surface bg("imgs/bg.png");
 	drawTopBar(&bg,15);
 	drawBottomBar(&bg);
-	drawButton(&bg, "X", "Exit",
-	drawButton(&bg, "B", "/", 10)-4);
-	bg.write(font,"Link Scanner",160,7,SFontHAlignCenter,SFontVAlignMiddle);
-	bg.write(font,"Scanning SD filesystem...",5,20);
+	drawButton(&bg, "x", tr["Exit"],
+	drawButton(&bg, "b", "", 5)-10);
+	bg.write(font,tr["Link Scanner"],160,7,SFontHAlignCenter,SFontVAlignMiddle);
+	bg.write(font,tr["Scanning SD filesystem..."],5,20);
 	bg.blit(s,0,0);
 	s->flip();
 
 	vector<string> files;
 	scanPath("/mnt/sd",&files);
 
-	bg.write(font,"Scanning NAND filesystem...",5,35);
+	bg.write(font,tr["Scanning NAND filesystem..."],5,35);
 	bg.blit(s,0,0);
 	s->flip();
 	scanPath("/mnt/nand",&files);
@@ -1021,7 +1040,7 @@ void GMenu2X::scanner() {
 	string str = "";
 	ss >> str;
 	bg.write(font,str+" files found.",5,50);
-	bg.write(font,"Creating links...",5,65);
+	bg.write(font,tr["Creating links..."],5,65);
 	bg.blit(s,0,0);
 	s->flip();
 

@@ -48,12 +48,12 @@ bool DirDialog::exec() {
 
 	Surface bg("imgs/bg.png");
 	gmenu2x->drawTopBar(&bg,15);
-	bg.write(gmenu2x->font,"Directory Browser: "+text,160,8, SFontHAlignCenter, SFontVAlignMiddle);
+	bg.write(gmenu2x->font,gmenu2x->tr["Directory Browser"]+": "+text,160,8, SFontHAlignCenter, SFontVAlignMiddle);
 	gmenu2x->drawBottomBar(&bg);
 
-	gmenu2x->drawButton(&bg, "start", "Confirm",
-	gmenu2x->drawButton(&bg, "b", "Enter folder",
-	gmenu2x->drawButton(&bg, "x", "Up one folder", 5)));
+	gmenu2x->drawButton(&bg, "start", gmenu2x->tr["Confirm"],
+	gmenu2x->drawButton(&bg, "b", gmenu2x->tr["Enter folder"],
+	gmenu2x->drawButton(&bg, "x", gmenu2x->tr["Up one folder"], 5)));
 
 	uint i, selected = 0, firstElement = 0, iY;
 	while (!close) {

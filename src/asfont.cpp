@@ -2,22 +2,31 @@
 #include "surface.h"
 #include "utilities.h"
 
-ASFont::ASFont(SDL_Surface* surface) {
-	font = SFont_InitFont(surface);
+#include <iostream>
+
+using namespace std;
+
+ASFont::ASFont(SDL_Surface* font) {
+	this->font.initFont(font);
 	halfHeight = getHeight()/2;
 }
 
-ASFont::ASFont(Surface* surface) {
-	font = SFont_InitFont(surface->raw);
+ASFont::ASFont(Surface* font) {
+	this->font.initFont(font->raw);
+	halfHeight = getHeight()/2;
+}
+
+ASFont::ASFont(string font) {
+	this->font.initFont(font);
 	halfHeight = getHeight()/2;
 }
 
 ASFont::~ASFont() {
-	SFont_FreeFont(font);
+	font.freeFont();
 }
 
 void ASFont::write(SDL_Surface* surface, const char* text, int x, int y) {
-	SFont_Write(surface, font, x, y, text);
+	font.write(surface, text, x, y);
 }
 
 void ASFont::write(SDL_Surface* surface, const std::string& text, int x, int y, const unsigned short halign, const unsigned short valign) {
@@ -39,7 +48,7 @@ void ASFont::write(SDL_Surface* surface, const std::string& text, int x, int y, 
 		break;
 	}
 
-	write(surface, text.c_str(), x, y);
+	font.write(surface, text, x, y);
 }
 void ASFont::write(SDL_Surface* surface, vector<string> *text, int x, int y, const unsigned short halign, const unsigned short valign) {
 	switch (valign) {
@@ -61,8 +70,8 @@ void ASFont::write(SDL_Surface* surface, vector<string> *text, int x, int y, con
 			ix -= getTextWidth(text->at(i));
 			break;
 		}
-		
-		write(surface, text->at(i).c_str(), x, y+getHeight()*i);
+
+		font.write(surface, text->at(i), x, y+getHeight()*i);
 	}
 }
 
@@ -76,14 +85,14 @@ void ASFont::write(Surface* surface, const std::string& text, int x, int y, cons
 }
 
 int ASFont::getHeight() {
-	return SFont_TextHeight(font);
+	return font.getHeight();
 }
 int ASFont::getHalfHeight() {
 	return halfHeight;
 }
 
 int ASFont::getTextWidth(const char* text) {
-	return SFont_TextWidth(font, text);
+	return font.getTextWidth(text);
 }
 int ASFont::getTextWidth(const std::string& text) {
 	if (text.find("\n",0)!=string::npos) {

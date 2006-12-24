@@ -68,7 +68,7 @@ void MenuSettingMultiString::setSel(int sel) {
 void MenuSettingMultiString::adjustInput() {}
 
 void MenuSettingMultiString::drawSelected(int) {
-	gmenu2x->drawButton(gmenu2x->s, "right", "Change value",
+	gmenu2x->drawButton(gmenu2x->s, "right", gmenu2x->tr["Change value"],
 	gmenu2x->drawButton(gmenu2x->s, "left", "", 5)-10);
 }
 
