@@ -49,41 +49,37 @@ bool FileDialog::exec() {
 	fl.setFilter(filter);
 	fl.browse();
 
-	Surface bg("imgs/bg.png");
-	gmenu2x->drawTopBar(&bg,15);
-	bg.write(gmenu2x->font,"File Browser: "+text,160,8, SFontHAlignCenter, SFontVAlignMiddle);
-	gmenu2x->drawBottomBar(&bg);
-
-	gmenu2x->drawButton(&bg, "b", gmenu2x->tr["Enter folder/Confirm"],
-	gmenu2x->drawButton(&bg, "x", gmenu2x->tr["Up one folder"], 5));
-
-
 	uint i, selected = 0, firstElement = 0, iY;
-
 	while (!close) {
-		bg.blit(gmenu2x->s,0,0);
+		gmenu2x->sc["imgs/bg.png"]->blit(gmenu2x->s,0,0);
+		gmenu2x->drawTitleIcon("icons/explorer.png",true);
+		gmenu2x->writeTitle("File Browser");
+		gmenu2x->writeSubTitle(text);
 
-		if (selected>firstElement+10) firstElement=selected-10;
+		gmenu2x->drawButton(gmenu2x->s, "x", gmenu2x->tr["Up one folder"],
+		gmenu2x->drawButton(gmenu2x->s, "b", gmenu2x->tr["Enter folder/Confirm"], 5));
+
+		if (selected>firstElement+9) firstElement=selected-9;
 		if (selected<firstElement) firstElement=selected;
 
 		//Selection
 		iY = selected-firstElement;
-		iY = 20+(iY*18);
+		iY = 44+(iY*17);
 		gmenu2x->s->box(2, iY, 308, 16, gmenu2x->selectionColor);
 
 		//Files & Directories
-		gmenu2x->s->setClipRect(0,16,311,204);
-		for (i=firstElement; i<fl.size() && i<firstElement+11; i++) {
+		gmenu2x->s->setClipRect(0,41,311,179);
+		for (i=firstElement; i<fl.size() && i<firstElement+10; i++) {
 			iY = i-firstElement;
 			if (fl.isDirectory(i))
-				gmenu2x->sc["imgs/folder.png"]->blit(gmenu2x->s, 5, 21+(iY*18));
+				gmenu2x->sc["imgs/folder.png"]->blit(gmenu2x->s, 5, 45+(iY*17));
 			else
-				gmenu2x->sc["imgs/file.png"]->blit(gmenu2x->s, 5, 21+(iY*18));
-			gmenu2x->s->write(gmenu2x->font, fl[i], 24, 29+(iY*18), SFontHAlignLeft, SFontVAlignMiddle);
+				gmenu2x->sc["imgs/file.png"]->blit(gmenu2x->s, 5, 45+(iY*17));
+			gmenu2x->s->write(gmenu2x->font, fl[i], 24, 52+(iY*17), SFontHAlignLeft, SFontVAlignMiddle);
 		}
 		gmenu2x->s->clearClipRect();
 
-		gmenu2x->drawScrollBar(11,fl.size(),firstElement,20,196);
+		gmenu2x->drawScrollBar(10,fl.size(),firstElement,44,170);
 		gmenu2x->s->flip();
 
 
@@ -97,10 +93,10 @@ bool FileDialog::exec() {
 				selected -= 1;
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_L     ] ) {
-			if ((int)(selected-10)<0) {
+			if ((int)(selected-9)<0) {
 				selected = 0;
 			} else {
-				selected -= 8;
+				selected -= 9;
 			}
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_DOWN  ] ) {
@@ -110,10 +106,10 @@ bool FileDialog::exec() {
 				selected += 1;
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_R     ] ) {
-			if (selected+10>=fl.size()) {
+			if (selected+9>=fl.size()) {
 				selected = fl.size()-1;
 			} else {
-				selected += 10;
+				selected += 9;
 			}
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_X] || gmenu2x->joy[GP2X_BUTTON_LEFT] ) {

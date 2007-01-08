@@ -39,7 +39,7 @@ SettingsDialog::~SettingsDialog() {
 }
 
 bool SettingsDialog::exec() {
-	Surface bg ("imgs/bg.png");
+	Surface bg ("imgs/bg.png",gmenu2x->skin);
 
 	bool close = false;
 	uint i, sel = 0, iY, firstElement = 0;
@@ -47,35 +47,41 @@ bool SettingsDialog::exec() {
 
 	while (!close) {
 		bg.blit(gmenu2x->s,0,0);
-		gmenu2x->drawTopBar(gmenu2x->s,15);
-		gmenu2x->s->write(gmenu2x->font, text, 160, 8, SFontHAlignCenter, SFontVAlignMiddle);
-		gmenu2x->drawBottomBar(gmenu2x->s,32);
 
+		gmenu2x->drawTopBar(gmenu2x->s);
+		//link icon
+		if (gmenu2x->sc["sections/settings.png"] != NULL)
+			gmenu2x->sc["sections/settings.png"]->blit(gmenu2x->s,4,4);
+		else
+			gmenu2x->sc["icons/generic.png"]->blit(gmenu2x->s,4,4);
+		gmenu2x->s->write(gmenu2x->font, text, 40,13, SFontHAlignLeft, SFontVAlignMiddle);
+		gmenu2x->drawBottomBar(gmenu2x->s);
 
 		if (sel>firstElement+10) firstElement=sel-10;
 		if (sel<firstElement) firstElement=sel;
 
 		//selection
 		iY = sel-firstElement;
-		iY = 18+(iY*17);
-		gmenu2x->s->setClipRect(0,16,311,192);
+		iY = 42+(iY*16);
+		gmenu2x->s->setClipRect(0,41,311,175);
 		if (sel<voices.size())
-			gmenu2x->s->box(2, iY, 148, 16, gmenu2x->selectionColor);
+			gmenu2x->s->box(1, iY, 148, 14, gmenu2x->selectionColor);
+		gmenu2x->s->clearClipRect();
 
 		//selected option
-		gmenu2x->s->clearClipRect();
 		voices[sel]->drawSelected(iY);
-		gmenu2x->s->setClipRect(0,16,311,192);
 
+		gmenu2x->s->setClipRect(0,41,311,175);
 		for (i=firstElement; i<voices.size() && i<firstElement+11; i++) {
 			iY = i-firstElement;
-			voices[i]->draw(iY*17+18);
+			voices[i]->draw(iY*16+42);
 		}
 		gmenu2x->s->clearClipRect();
 
-		gmenu2x->drawScrollBar(11,voices.size(),firstElement,18,186);
-		//description at bottom
-		gmenu2x->s->write(gmenu2x->font, voices[sel]->description, 160, 221, SFontHAlignCenter, SFontVAlignBottom);
+		gmenu2x->drawScrollBar(11,voices.size(),firstElement,42,175);
+
+		//description
+		gmenu2x->s->write(gmenu2x->font, voices[sel]->description, 40,27, SFontHAlignLeft, SFontVAlignMiddle);
 
 #ifdef TARGET_GP2X
 		gmenu2x->joy.update();
@@ -131,7 +137,7 @@ void SettingsDialog::addSetting(MenuSetting* set) {
 }
 
 bool SettingsDialog::edited() {
-	for (uint i=0; i<voices.size(); i++) 
+	for (uint i=0; i<voices.size(); i++)
 		if (voices[i]->edited()) return true;
 	return false;
 }

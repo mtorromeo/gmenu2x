@@ -31,19 +31,26 @@ Hash Map of surfaces that loads surfaces not already loaded and reuses already l
 class SurfaceCollection {
 private:
 	hash_map<string, Surface*> surfaces;
+	string skin;
 
 public:
-	SurfaceCollection(bool defaultAlpha=true);
+	SurfaceCollection(bool defaultAlpha=true, string skin="default");
 	~SurfaceCollection();
+	void setSkin(string skin);
 
 	bool defaultAlpha;
 	void debug();
+
 	Surface *add(Surface *s, string path);
 	Surface *add(string path, bool alpha=true);
+	Surface *addSkinRes(string path, bool alpha=true);
 	void     del(string path);
+	void     clear();
 	void     move(string from, string to);
 	bool     exists(string path);
+
 	Surface *operator[](string);
+	Surface *skinRes(string);
 };
 
 #endif

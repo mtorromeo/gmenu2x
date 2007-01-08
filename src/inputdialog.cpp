@@ -35,43 +35,38 @@ InputDialog::InputDialog(GMenu2X *gmenu2x, string text, string startvalue) {
 	selCol = 0;
 	selRow = 0;
 
+	// !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÀÈÉÌÒÚÄËÏÖÜßàèéìòùäëïöü
 	keyboard.resize(5);
-	keyboard[0] = "abcdefghijklm";
-	keyboard[1] = "nopqrstuvwxyz";
-	keyboard[2] = "0123456789 \"'";
-	keyboard[3] = "&!?.,:;*+-<=>";
-	keyboard[4] = "()[]{}|/\\@#$%";
-//^_`~
+	keyboard[0] = "abcdefghijklmnopqrs";
+	keyboard[1] = "tuvwxyzàèéìòùäëïöü ";
+	keyboard[2] = "0123456789 \"'      ";
+	keyboard[3] = "&!?.,:;*+-<=>      ";
+	keyboard[4] = "()[]{}|/\\@#$%      ";
 }
 
 bool InputDialog::exec() {
-	bool close = false, ok = true;
-	Surface bg("imgs/bg.png");
-
 	SDL_Rect box = {0, 60, 0, gmenu2x->font->getHeight()+4};
 
 	Uint32 caretTick = 0, curTick;
 	bool caretOn = true;
 
-	gmenu2x->drawTopBar(&bg,15);
-	gmenu2x->drawBottomBar(&bg);
-	bg.write(gmenu2x->font, text, 160, 8, SFontHAlignCenter, SFontVAlignMiddle);
-
-	gmenu2x->drawButton(&bg, "y", gmenu2x->tr["Shift"],
-	gmenu2x->drawButton(&bg, "b", gmenu2x->tr["Confirm"],
-	gmenu2x->drawButton(&bg, "r", gmenu2x->tr["Space"],
-	gmenu2x->drawButton(&bg, "l", gmenu2x->tr["Backspace"],
-	gmenu2x->drawButton(&bg, "x", "", 5)-10))));
-
+	bool close = false, ok = true;
 	while (!close) {
-		bg.blit(gmenu2x->s,0,0);
+		gmenu2x->sc["imgs/bg.png"]->blit(gmenu2x->s,0,0);
+		gmenu2x->writeTitle(text);
+
+		gmenu2x->drawButton(gmenu2x->s, "y", gmenu2x->tr["Shift"],
+		gmenu2x->drawButton(gmenu2x->s, "b", gmenu2x->tr["Confirm"],
+		gmenu2x->drawButton(gmenu2x->s, "r", gmenu2x->tr["Space"],
+		gmenu2x->drawButton(gmenu2x->s, "l", gmenu2x->tr["Backspace"],
+		gmenu2x->drawButton(gmenu2x->s, "x", "", 5)-10))));
 
 		box.w = gmenu2x->font->getTextWidth(input)+18;
 		box.x = 160-box.w/2;
 		gmenu2x->s->box(box.x, box.y, box.w, box.h, gmenu2x->selectionColor);
 		gmenu2x->s->rectangle(box.x, box.y, box.w, box.h, gmenu2x->selectionColor);
 
-		gmenu2x->s->write(gmenu2x->font, input, box.x+5, box.y+box.h, SFontHAlignLeft, SFontVAlignBottom);
+		gmenu2x->s->write(gmenu2x->font, input, box.x+5, box.y+box.h-2, SFontHAlignLeft, SFontVAlignBottom);
 
 		curTick = SDL_GetTicks();
 		if (curTick-caretTick>=600) {
@@ -95,15 +90,18 @@ bool InputDialog::exec() {
 			selRow++;
 			if (selRow==(int)keyboard.size()) selCol = selCol<8 ? 0 : 1;
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_X] || gmenu2x->joy[GP2X_BUTTON_L] ) input = input.substr(0,input.length()-1);
+		if ( gmenu2x->joy[GP2X_BUTTON_X] || gmenu2x->joy[GP2X_BUTTON_L] ) {
+			//                                      check for utf8 characters
+			input = input.substr(0,input.length()-( (unsigned char)input[input.length()-2]==0xc3 ? 2 : 1 ));
+		}
 		if ( gmenu2x->joy[GP2X_BUTTON_R    ] ) input += " ";
 		if ( gmenu2x->joy[GP2X_BUTTON_Y    ] ) {
 			if (keyboard[0][0]=='A') {
-				keyboard[0] = "abcdefghijklm";
-				keyboard[1] = "nopqrstuvwxyz";
+				keyboard[0] = "abcdefghijklmnopqrs";
+				keyboard[1] = "tuvwxyzàèéìòùäëïöü ";
 			} else {
-				keyboard[0] = "ABCDEFGHIJKLM";
-				keyboard[1] = "NOPQRSTUVWXYZ";
+				keyboard[0] = "ABCDEFGHIJKLMNOPQRS";
+				keyboard[1] = "TUVWXYZÀÈÉÌÒÚÄËÏÖÜ ";
 			}
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK] ) {
@@ -111,8 +109,15 @@ bool InputDialog::exec() {
 				if (selCol==0)
 					ok = false;
 				close = true;
-			} else
-				input += keyboard[selRow][selCol];
+			} else {
+				bool utf8;
+				for (uint x=0, xc=0; x<keyboard[selRow].length(); x++) {
+					utf8 = (unsigned char)keyboard[selRow][x]==0xc3;
+					if (xc==selCol) input += keyboard[selRow].substr(x, utf8 ? 2 : 1);
+					if (utf8) x++;
+					xc++;
+				}
+			}
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_START] ) close = true;
 #else
@@ -127,14 +132,17 @@ bool InputDialog::exec() {
 					selRow++;
 					if (selRow==(int)keyboard.size()) selCol = selCol<8 ? 0 : 1;
 				}
-				if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) input = input.substr(0,input.length()-1);
+				if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) {
+					//                                      check for utf8 characters
+					input = input.substr(0,input.length()-( (unsigned char)input[input.length()-2]==0xc3 ? 2 : 1 ));
+				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_LSHIFT    ) {
 					if (keyboard[0][0]=='A') {
-						keyboard[0] = "abcdefghijklm";
-						keyboard[1] = "nopqrstuvwxyz";
+						keyboard[0] = "abcdefghijklmnopqrs";
+						keyboard[1] = "tuvwxyzàèéìòùäëïöü ";
 					} else {
-						keyboard[0] = "ABCDEFGHIJKLM";
-						keyboard[1] = "NOPQRSTUVWXYZ";
+						keyboard[0] = "ABCDEFGHIJKLMNOPQRS";
+						keyboard[1] = "TUVWXYZÀÈÉÌÒÚÄËÏÖÜ ";
 					}
 				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN    ) {
@@ -142,8 +150,16 @@ bool InputDialog::exec() {
 						if (selCol==0)
 							ok = false;
 						close = true;
-					} else
-						input += keyboard[selRow][selCol];
+					} else {
+						bool utf8;
+						int xc=0;
+						for (uint x=0; x<keyboard[selRow].length(); x++) {
+							utf8 = (unsigned char)keyboard[selRow][x]==0xc3;
+							if (xc==selCol) input += keyboard[selRow].substr(x, utf8 ? 2 : 1);
+							if (utf8) x++;
+							xc++;
+						}
+					}
 				}
 			}
 		}
@@ -175,13 +191,20 @@ void InputDialog::drawVirtualKeyboard() {
 	//keys
 	for (uint l=0; l<keyboard.size(); l++) {
 		string line = keyboard[l];
-		for (uint x=0; x<line.length(); x++) {
-			string charX = line.substr(x,1);
-			gmenu2x->s->write(gmenu2x->font, charX, left+4+x*10, 98+l*15, SFontHAlignCenter, SFontVAlignMiddle);
+		for (uint x=0, xc=0; x<line.length(); x++) {
+			string charX;
+			//utf8 characters
+			if ((unsigned char)line[x]==0xc3) {
+				charX = line.substr(x,2);
+				x++;
+			} else
+				charX = line[x];
+			gmenu2x->s->write(gmenu2x->font, charX, left+4+xc*10, 96+l*15, SFontHAlignCenter, SFontVAlignMiddle);
+			xc++;
 		}
 	}
 
 	//Ok/Cancel
-	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["Cancel"], (int)(160-keyboard[0].length()*2.5), 98+keyboard.size()*15, SFontHAlignCenter, SFontVAlignMiddle);
-	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["OK"], (int)(160+keyboard[0].length()*2.5), 98+keyboard.size()*15, SFontHAlignCenter, SFontVAlignMiddle);
+	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["Cancel"], (int)(160-keyboard[0].length()*2.5), 96+keyboard.size()*15, SFontHAlignCenter, SFontVAlignMiddle);
+	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["OK"], (int)(160+keyboard[0].length()*2.5), 96+keyboard.size()*15, SFontHAlignCenter, SFontVAlignMiddle);
 }

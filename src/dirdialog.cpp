@@ -30,6 +30,7 @@
 #include "gp2x.h"
 #endif
 #include "dirdialog.h"
+#include "filelister.h"
 
 using namespace std;
 
@@ -43,40 +44,38 @@ bool DirDialog::exec() {
 	bool close = false, result = true;
 	path = "/mnt";
 
-	vector<string> directories;
-	browsePath(path,&directories);
-
-	Surface bg("imgs/bg.png");
-	gmenu2x->drawTopBar(&bg,15);
-	bg.write(gmenu2x->font,gmenu2x->tr["Directory Browser"]+": "+text,160,8, SFontHAlignCenter, SFontVAlignMiddle);
-	gmenu2x->drawBottomBar(&bg);
-
-	gmenu2x->drawButton(&bg, "start", gmenu2x->tr["Confirm"],
-	gmenu2x->drawButton(&bg, "b", gmenu2x->tr["Enter folder"],
-	gmenu2x->drawButton(&bg, "x", gmenu2x->tr["Up one folder"], 5)));
+	FileLister fl(path,true,false);
+	fl.browse();
 
 	uint i, selected = 0, firstElement = 0, iY;
 	while (!close) {
-		bg.blit(gmenu2x->s,0,0);
+		gmenu2x->sc["imgs/bg.png"]->blit(gmenu2x->s,0,0);
+		gmenu2x->drawTitleIcon("icons/explorer.png",true);
+		gmenu2x->writeTitle("Directory Browser");
+		gmenu2x->writeSubTitle(text);
 
-		if (selected>firstElement+10) firstElement=selected-10;
+		gmenu2x->drawButton(gmenu2x->s, "start", gmenu2x->tr["Confirm"],
+		gmenu2x->drawButton(gmenu2x->s, "x", gmenu2x->tr["Up one folder"],
+		gmenu2x->drawButton(gmenu2x->s, "b", gmenu2x->tr["Enter folder"], 5)));
+
+		if (selected>firstElement+9) firstElement=selected-9;
 		if (selected<firstElement) firstElement=selected;
 
 		//Selection
 		iY = selected-firstElement;
-		iY = 20+(iY*18);
+		iY = 44+(iY*17);
 		gmenu2x->s->box(2, iY, 308, 16, gmenu2x->selectionColor);
 
 		//Directories
-		gmenu2x->s->setClipRect(0,16,311,204);
-		for (i=firstElement; i<directories.size() && i<firstElement+11; i++) {
+		gmenu2x->s->setClipRect(0,41,311,179);
+		for (i=firstElement; i<fl.size() && i<firstElement+10; i++) {
 			iY = i-firstElement;
-			gmenu2x->sc["imgs/folder.png"]->blit(gmenu2x->s, 5, 21+(iY*18));
-			gmenu2x->s->write(gmenu2x->font, directories[i], 24, 29+(iY*18), SFontHAlignLeft, SFontVAlignMiddle);
+			gmenu2x->sc["imgs/folder.png"]->blit(gmenu2x->s, 5, 45+(iY*17));
+			gmenu2x->s->write(gmenu2x->font, fl[i], 24, 52+(iY*17), SFontHAlignLeft, SFontVAlignMiddle);
 		}
 		gmenu2x->s->clearClipRect();
 
-		gmenu2x->drawScrollBar(11,directories.size(),firstElement,20,196);
+		gmenu2x->drawScrollBar(10,fl.size(),firstElement,44,170);
 		gmenu2x->s->flip();
 
 
@@ -85,28 +84,28 @@ bool DirDialog::exec() {
 		if ( gmenu2x->joy[GP2X_BUTTON_SELECT] ) { close = true; result = false; }
 		if ( gmenu2x->joy[GP2X_BUTTON_UP    ] ) {
 			if (selected==0)
-				selected = directories.size()-1;
+				selected = fl.size()-1;
 			else
 				selected -= 1;
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_L     ] ) {
-			if ((int)(selected-10)<0) {
+			if ((int)(selected-9)<0) {
 				selected = 0;
 			} else {
-				selected -= 10;
+				selected -= 9;
 			}
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_DOWN  ] ) {
-			if (selected+1>=directories.size())
+			if (selected+1>=fl.size())
 				selected = 0;
 			else
 				selected += 1;
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_R     ] ) {
-			if (selected+10>=directories.size()) {
-				selected = directories.size()-1;
+			if (selected+9>=fl.size()) {
+				selected = fl.size()-1;
 			} else {
-				selected += 10;
+				selected += 9;
 			}
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_X] || gmenu2x->joy[GP2X_BUTTON_LEFT] ) {
@@ -116,12 +115,12 @@ bool DirDialog::exec() {
 			else
 				path = path.substr(0,p);
 			selected = 0;
-			browsePath(path,&directories);
+			fl.setPath(path);
 		}
-		if ( (gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK]) && selected<directories.size() ) {
-			path += "/"+directories[selected];
+		if ( (gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK]) && selected<fl.size() ) {
+			path += "/"+fl[selected];
 			selected = 0;
-			browsePath(path,&directories);
+			fl.setPath(path);
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_START] ) close = true;
 #else
@@ -131,12 +130,12 @@ bool DirDialog::exec() {
 				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) { close = true; result = false; }
 				if ( gmenu2x->event.key.keysym.sym==SDLK_UP ) {
 					if (selected==0) {
-						selected = directories.size()-1;
+						selected = fl.size()-1;
 					} else
 						selected -= 1;
 				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN ) {
-					if (selected+1>=directories.size())
+					if (selected+1>=fl.size())
 						selected = 0;
 					else
 						selected += 1;
@@ -148,12 +147,12 @@ bool DirDialog::exec() {
 					else
 						path = path.substr(0,p);
 					selected = 0;
-					browsePath(path,&directories);
+					fl.setPath(path);
 				}
-				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN && selected<directories.size()) {
-					path += "/"+directories[selected];
+				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN && selected<fl.size()) {
+					path += "/"+fl[selected];
 					selected = 0;
-					browsePath(path,&directories);
+					fl.setPath(path);
 				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_s ) close = true;
 			}
@@ -162,30 +161,4 @@ bool DirDialog::exec() {
 	}
 
 	return result;
-}
-
-void DirDialog::browsePath(string path, vector<string>* directories) {
-	DIR *dirp;
-	struct stat st;
-	struct dirent *dptr;
-	string filepath;
-	directories->clear();
-
-	if ((dirp = opendir(path.c_str())) == NULL) return;
-	if (path[path.length()-1]!='/') path += "/";
-
-	while ((dptr = readdir(dirp))) {
-		if (dptr->d_name[0]=='.') continue;
-		filepath = path+dptr->d_name;
-		int statRet = stat(filepath.c_str(), &st);
-		if (statRet == -1) continue;
-		if (S_ISDIR(st.st_mode)) {
-			string dname = dptr->d_name;
-			if (!(path=="/mnt/" && (dname!="sd" && dname!="ext" && dname!="nand")))
-				directories->push_back(dname);
-		}
-	}
-
-	closedir(dirp);
-	sort(directories->begin(),directories->end(),case_less());
 }

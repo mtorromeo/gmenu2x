@@ -36,12 +36,12 @@ MenuSettingRGBA::MenuSettingRGBA(GMenu2X *gmenu2x, string name, string descripti
 
 void MenuSettingRGBA::draw(int y) {
 	MenuSetting::draw(y);
-	gmenu2x->s->rectangle( 155, y+2, 12, 12, 0,0,0,255 );
-	gmenu2x->s->box( 156, y+3, 10, 10, value() );
-	gmenu2x->s->write( gmenu2x->font, "R: "+strR, 173, y+9, SFontHAlignLeft, SFontVAlignMiddle );
-	gmenu2x->s->write( gmenu2x->font, "G: "+strG, 208, y+9, SFontHAlignLeft, SFontVAlignMiddle );
-	gmenu2x->s->write( gmenu2x->font, "B: "+strB, 243, y+9, SFontHAlignLeft, SFontVAlignMiddle );
-	gmenu2x->s->write( gmenu2x->font, "A: "+strA, 278, y+9, SFontHAlignLeft, SFontVAlignMiddle );
+	gmenu2x->s->rectangle( 153, y+1, 11, 11, 0,0,0,255 );
+	gmenu2x->s->box( 154, y+2, 9, 9, value() );
+	gmenu2x->s->write( gmenu2x->font, "R: "+strR, 169, y+6, SFontHAlignLeft, SFontVAlignMiddle );
+	gmenu2x->s->write( gmenu2x->font, "G: "+strG, 205, y+6, SFontHAlignLeft, SFontVAlignMiddle );
+	gmenu2x->s->write( gmenu2x->font, "B: "+strB, 241, y+6, SFontHAlignLeft, SFontVAlignMiddle );
+	gmenu2x->s->write( gmenu2x->font, "A: "+strA, 277, y+6, SFontHAlignLeft, SFontVAlignMiddle );
 }
 
 #ifdef TARGET_GP2X
@@ -121,11 +121,11 @@ void MenuSettingRGBA::adjustInput() {
 }
 
 void MenuSettingRGBA::drawSelected(int y) {
-	int x = 170+selPart*35;
-	gmenu2x->s->box( x, y, 34, 16, gmenu2x->selectionColor );
+	int x = 166+selPart*36;
+	gmenu2x->s->box( x, y, 36, 14, gmenu2x->selectionColor );
 
-	gmenu2x->drawButton(gmenu2x->s, "y", gmenu2x->tr["Increase"],
 	gmenu2x->drawButton(gmenu2x->s, "x", gmenu2x->tr["Decrease"],
+	gmenu2x->drawButton(gmenu2x->s, "y", gmenu2x->tr["Increase"],
 	gmenu2x->drawButton(gmenu2x->s, "right", gmenu2x->tr["Change color component"],
 	gmenu2x->drawButton(gmenu2x->s, "left", "", 5)-10)));
 }

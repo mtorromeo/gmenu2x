@@ -32,7 +32,7 @@ MenuSettingDir::MenuSettingDir(GMenu2X *gmenu2x, string name, string description
 
 void MenuSettingDir::draw(int y) {
 	MenuSetting::draw(y);
-	gmenu2x->s->write( gmenu2x->font, value(), 155, y+9, SFontHAlignLeft, SFontVAlignMiddle );
+	gmenu2x->s->write( gmenu2x->font, value(), 155, y+6, SFontHAlignLeft, SFontVAlignMiddle );
 }
 
 #ifdef TARGET_GP2X

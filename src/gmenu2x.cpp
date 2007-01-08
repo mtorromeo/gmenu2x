@@ -142,9 +142,12 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	readConfig();
 	readCommonIni();
 
+	if (skin.empty() || !fileExists("skins/"+skin)) skin = "Default";
+	sc.setSkin(skin);
+
 	path = getExePath();
 
-#ifdef TARGET_GP2X
+#ifdef __TARGET_GP2X
 	gp2x_init();
 	if (gp2x_memregs[0x2800>>1]&0x100) {
 		gp2x_memregs[0x2906>>1]=512;
@@ -159,11 +162,15 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	}
 	s = new Surface();
 	SDL_JoystickOpen(0);
-	s->raw = SDL_SetVideoMode(320, 240, 16, SDL_HWSURFACE|SDL_DOUBLEBUF);
+	//s->raw = SDL_SetVideoMode(320, 240, 16, SDL_HWSURFACE|SDL_DOUBLEBUF);
+	s->raw = SDL_SetVideoMode(320, 240, 16, SDL_SWSURFACE);
 	//SDL_SetAlpha(s->raw, SDL_SRCALPHA|SDL_RLEACCEL, 255);
 	SDL_ShowCursor(0);
 
-	font = new ASFont("imgs/font.png");
+	if (fileExists("skins/"+skin+"/imgs/font.png"))
+		font = new ASFont("skins/"+skin+"/imgs/font.png");
+	else
+		font = new ASFont("skins/Default/imgs/font.png");
 
 	initMenu();
 	initBG();
@@ -184,7 +191,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 
 	//recover last session
 	readTmp();
-	if (lastSelectorElement>-1 && menu->selLinkApp()!=NULL && (menu->selLinkApp()->getSelectorDir()!="" || lastSelectorDir!=""))
+	if (lastSelectorElement>-1 && menu->selLinkApp()!=NULL && (!menu->selLinkApp()->getSelectorDir().empty() || !lastSelectorDir.empty()))
 		menu->selLinkApp()->selector(lastSelectorElement,lastSelectorDir);
 
 	main();
@@ -201,41 +208,45 @@ GMenu2X::~GMenu2X() {
 }
 
 void GMenu2X::initBG() {
+	sc.del("bgmain");
 	sc.del("imgs/bg.png");
-	sc.add("imgs/bg.png",false);
+	sc.addSkinRes("imgs/bg.png",false);
 
 	drawTopBar(sc["imgs/bg.png"]);
 	drawBottomBar(sc["imgs/bg.png"]);
 
-	Surface sd("imgs/sd.png");
-	Surface cpu("imgs/cpu.png");
-	Surface volume("imgs/volume.png");
+	Surface *bgmain = new Surface(sc["imgs/bg.png"]);
+	sc.add(bgmain,"bgmain");
+
+	Surface sd("imgs/sd.png", skin);
+	Surface cpu("imgs/cpu.png", skin);
+	Surface volume("imgs/volume.png", skin);
 	string df = getDiskFree();
 
-	sd.blit( sc["imgs/bg.png"], 3, 222 );
-	sc["imgs/bg.png"]->write( font, df, 22, 230, SFontHAlignLeft, SFontVAlignMiddle );
+	sd.blit( sc["bgmain"], 3, 222 );
+	sc["bgmain"]->write( font, df, 22, 230, SFontHAlignLeft, SFontVAlignMiddle );
 	volumeX = 27+font->getTextWidth(df);
-	volume.blit( sc["imgs/bg.png"], volumeX, 222 );
+	volume.blit( sc["bgmain"], volumeX, 222 );
 	volumeX += 19;
 	cpuX = volumeX+font->getTextWidth("100")+5;
-	cpu.blit( sc["imgs/bg.png"], cpuX, 222 );
+	cpu.blit( sc["bgmain"], cpuX, 222 );
 	cpuX += 19;
 
 	//301-3-16
 	int serviceX = 282;
 	if (web) {
-		Surface webserver("imgs/webserver.png");
-		webserver.blit( sc["imgs/bg.png"], serviceX, 222 );
+		Surface webserver("imgs/webserver.png", skin);
+		webserver.blit( sc["bgmain"], serviceX, 222 );
 		serviceX -= 19;
 	}
 	if (samba) {
-		Surface sambaS("imgs/samba.png");
-		sambaS.blit( sc["imgs/bg.png"], serviceX, 222 );
+		Surface sambaS("imgs/samba.png", skin);
+		sambaS.blit( sc["bgmain"], serviceX, 222 );
 		serviceX -= 19;
 	}
 	if (inet) {
-		Surface inetS("imgs/inet.png");
-		inetS.blit( sc["imgs/bg.png"], serviceX, 222 );
+		Surface inetS("imgs/inet.png", skin);
+		inetS.blit( sc["bgmain"], serviceX, 222 );
 		serviceX -= 19;
 	}
 }
@@ -269,9 +280,33 @@ void GMenu2X::about() {
 	vector<string> text;
 	split(text,"GMenu2X is developed by Massimiliano \"Ryo\" Torromeo, and is released under the GPL-v2 license.\n\
 Website: http://gmenu2x.sourceforge.net\n\
-E-Mail & PayPal account: massimiliano.torromeo@gmail.com\n\n\
+E-Mail & PayPal account: massimiliano.torromeo@gmail.com\n\
+\n\
+Thanks goes to...\n\
+\n\
 ----\n\
- Thanks to the following donors\n\
+ Contributors\n\
+----\n\
+NoidZ for his gp2x' buttons graphics\n\
+\n\
+----\n\
+ Beta testers\n\
+----\n\
+Goemon4, PokeParadox, PSyMastR and Tripmonkey_uk\n\
+\n\
+----\n\
+ Translators\n\
+----\n\
+English & Italian by me\n\
+French by Yodaz\n\
+Dutch by superfly\n\
+Spanish by pedator\n\
+Portuguese (Portugal) by NightShadow\n\
+Swedish by Esslan and Micket\n\
+German by fusion_power, johnnysnet and Waldteufel\n\
+\n\
+----\n\
+ Donors\n\
 ----\n\
 EvilDragon (www.gp2x.de)\n\
 Tecnologie creative (www.tecnologiecreative.it)\n\
@@ -283,7 +318,7 @@ halo9\n\
 sbock\n\
 and all the anonymous donors...\n\
 (If I missed to list you or if you want to be removed, contact me.)","\n");
-	TextDialog td(this, "GMenu2X", "Version 0.9 (Build date: "+string(__DATE__)+")", "icons/about.png", &text);
+	TextDialog td(this, "GMenu2X", tr.translate("Version $1 (Build date: $2)","0.9",__DATE__,NULL), "icons/about.png", &text);
 	td.exec();
 }
 
@@ -349,6 +384,7 @@ void GMenu2X::readConfig() {
 				else if (name=="numRows") numRows = constrain( atoi(value.c_str()), 2,4 );
 				else if (name=="numCols") numCols = constrain( atoi(value.c_str()), 1,6 );
 				else if (name=="lang") tr.setLang(value);
+				else if (name=="skin") skin = value;
 				//G else if (name=="gamma") gamma = constrain( atoi(value.c_str()), 1,100 );
 			}
 			inf.close();
@@ -367,6 +403,7 @@ void GMenu2X::writeConfig() {
 		}
 
 		if (!tr.lang().empty()) inf << "lang=" << tr.lang() << endl;
+		inf << "skin=" << skin << endl;
 		inf << "selectionColorR=" << selectionColor.r << endl;
 		inf << "selectionColorG=" << selectionColor.g << endl;
 		inf << "selectionColorB=" << selectionColor.b << endl;
@@ -504,7 +541,7 @@ int GMenu2X::main() {
 	uint linksPerPage = 0, linkH = 0, linkW = 0, linkWd2 = 0;
 	int iconXOffset = 0, iconTextOffset = 0;
 
-	bool quit = false, useSelectionPng = fileExists("imgs/selection.png");
+	bool quit = false, useSelectionPng = sc.addSkinRes("imgs/selection.png") != NULL;
 	int x,y,ix, offset = 0;
 	uint i;
 	long tickBattery = -60000, tickNow, tickIndicatorBlink=0;
@@ -532,7 +569,7 @@ int GMenu2X::main() {
 		}
 
 		//Background
-		sc["imgs/bg.png"]->blit(s,0,0);
+		sc["bgmain"]->blit(s,0,0);
 
 		//Sections
 		if (menu->firstDispSection()>0)
@@ -567,7 +604,7 @@ int GMenu2X::main() {
 
 				//Manual indicator
 				if (menu->selLinkApp()!=NULL && !menu->selLinkApp()->getManual().empty() && tickNow-tickIndicatorBlink>=300) {
-					sc["imgs/manual_indicator.png"]->blit(s,ix+33,y+1,8,8);
+					sc.skinRes("imgs/manual_indicator.png")->blit(s,ix+33,y+1,8,8);
 					if (tickNow-tickIndicatorBlink>=600)
 						tickIndicatorBlink = tickNow;
 				}
@@ -576,11 +613,12 @@ int GMenu2X::main() {
 			if (menu->sectionLinks()->at(i)->getIcon() != "")
 				sc[menu->sectionLinks()->at(i)->getIcon()]->blit(s,ix,y,32,32);
 			else
-				sc["icons/generic.png"]->blit(s,ix,y,32,32);
+				sc.skinRes("icons/generic.png")->blit(s,ix,y,32,32);
 
 			s->write( font, menu->sectionLinks()->at(i)->getTitle(), ix+16, y+42+iconTextOffset, SFontHAlignCenter, SFontVAlignBottom );
 		}
 		s->clearClipRect();
+
 		drawScrollBar(numRows,menu->sectionLinks()->size()/numCols + ((menu->sectionLinks()->size()%numCols==0) ? 0 : 1),menu->firstDispRow(),43,159);
 
 		if (menu->selLink()!=NULL) {
@@ -604,7 +642,7 @@ int GMenu2X::main() {
 				batteryIcon = "imgs/battery/"+batteryIcon+".png";
 			}
 		}
-		sc[batteryIcon]->blit( s, 301, 222 );
+		sc.skinRes(batteryIcon)->blit( s, 301, 222 );
 
 		//framerate
 		/*
@@ -621,26 +659,31 @@ int GMenu2X::main() {
 #ifdef TARGET_GP2X
 		joy.update();
 		if ( joy[GP2X_BUTTON_START] ) options();
+		if ( joy[GP2X_BUTTON_SELECT] ) contextMenu();
+		if ( joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK] && menu->selLink()!=NULL ) menu->selLink()->run();
 		// LINK NAVIGATION
 		if ( joy[GP2X_BUTTON_LEFT ] ) menu->linkLeft();
 		if ( joy[GP2X_BUTTON_RIGHT] ) menu->linkRight();
 		if ( joy[GP2X_BUTTON_UP   ] ) menu->linkUp();
 		if ( joy[GP2X_BUTTON_DOWN ] ) menu->linkDown();
-		if ( joy[GP2X_BUTTON_Y] && menu->selLinkApp()!=NULL ) menu->selLinkApp()->showManual();
-		if ( joy[GP2X_BUTTON_A    ] ) {
-			// VOLUME
-			if ( joy[GP2X_BUTTON_VOLDOWN] && !joy[GP2X_BUTTON_VOLUP] && menu->selLinkApp()!=NULL )
-				menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()-1,0,100) );
-			if ( joy[GP2X_BUTTON_VOLUP] && !joy[GP2X_BUTTON_VOLDOWN] && menu->selLinkApp()!=NULL )
-				menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()+1,0,100) );;
-			if ( joy[GP2X_BUTTON_VOLUP] && joy[GP2X_BUTTON_VOLDOWN] && menu->selLinkApp()!=NULL ) menu->selLinkApp()->setVolume(-1);
-		} else {
-			// CLOCK
-			if ( joy[GP2X_BUTTON_VOLDOWN] && !joy[GP2X_BUTTON_VOLUP] && menu->selLinkApp()!=NULL )
-				menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-1,50,maxClock) );
-			if ( joy[GP2X_BUTTON_VOLUP] && !joy[GP2X_BUTTON_VOLDOWN] && menu->selLinkApp()!=NULL )
-				menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+1,50,maxClock) );
-			if ( joy[GP2X_BUTTON_VOLUP] && joy[GP2X_BUTTON_VOLDOWN] && menu->selLinkApp()!=NULL ) menu->selLinkApp()->setClock(200);
+		// SELLINKAPP SELECTED
+		if (menu->selLinkApp()!=NULL) {
+			if ( joy[GP2X_BUTTON_Y] ) menu->selLinkApp()->showManual();
+			if ( joy[GP2X_BUTTON_A    ] ) {
+				// VOLUME
+				if ( joy[GP2X_BUTTON_VOLDOWN] && !joy[GP2X_BUTTON_VOLUP] )
+					menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()-1,0,100) );
+				if ( joy[GP2X_BUTTON_VOLUP] && !joy[GP2X_BUTTON_VOLDOWN] )
+					menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()+1,0,100) );;
+				if ( joy[GP2X_BUTTON_VOLUP] && joy[GP2X_BUTTON_VOLDOWN] ) menu->selLinkApp()->setVolume(-1);
+			} else {
+				// CLOCK
+				if ( joy[GP2X_BUTTON_VOLDOWN] && !joy[GP2X_BUTTON_VOLUP] )
+					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-1,50,maxClock) );
+				if ( joy[GP2X_BUTTON_VOLUP] && !joy[GP2X_BUTTON_VOLDOWN] )
+					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+1,50,maxClock) );
+				if ( joy[GP2X_BUTTON_VOLUP] && joy[GP2X_BUTTON_VOLDOWN] ) menu->selLinkApp()->setClock(200);
+			}
 		}
 		// SECTIONS
 		if ( joy[GP2X_BUTTON_L     ] ) {
@@ -651,8 +694,6 @@ int GMenu2X::main() {
 			menu->incSectionIndex();
 			offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
 		}
-		if ( joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK] && menu->selLink()!=NULL ) menu->selLink()->run();
-		if ( joy[GP2X_BUTTON_SELECT] ) contextMenu();
 #else
 		while (SDL_PollEvent(&event)) {
 			if ( event.type == SDL_QUIT ) quit = true;
@@ -663,12 +704,15 @@ int GMenu2X::main() {
 				if ( event.key.keysym.sym==SDLK_RIGHT  ) menu->linkRight();
 				if ( event.key.keysym.sym==SDLK_UP     ) menu->linkUp();
 				if ( event.key.keysym.sym==SDLK_DOWN   ) menu->linkDown();
-				if ( event.key.keysym.sym==SDLK_y && menu->selLinkApp()!=NULL ) menu->selLinkApp()->showManual();
-				// CLOCK
-				if ( event.key.keysym.sym==SDLK_z && menu->selLinkApp()!=NULL )
-					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-1,50,maxClock) );
-				if ( event.key.keysym.sym==SDLK_x && menu->selLinkApp()!=NULL )
-					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+1,50,maxClock) );
+				// SELLINKAPP SELECTED
+				if (menu->selLinkApp()!=NULL) {
+					if ( event.key.keysym.sym==SDLK_y ) menu->selLinkApp()->showManual();
+					// CLOCK
+					if ( event.key.keysym.sym==SDLK_z )
+						menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-1,50,maxClock) );
+					if ( event.key.keysym.sym==SDLK_x )
+						menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+1,50,maxClock) );
+				}
 				// SECTIONS
 				if ( event.key.keysym.sym==SDLK_q      ) {
 					menu->decSectionIndex();
@@ -678,9 +722,10 @@ int GMenu2X::main() {
 					menu->incSectionIndex();
 					offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
 				}
+				//ACTIONS
 				if ( event.key.keysym.sym==SDLK_s      ) options();
-				if ( event.key.keysym.sym==SDLK_RETURN && menu->selLink()!=NULL ) menu->selLink()->run();
 				if ( event.key.keysym.sym==SDLK_SPACE  ) contextMenu();
+				if ( event.key.keysym.sym==SDLK_RETURN && menu->selLink()!=NULL ) menu->selLink()->run();
 			}
 		}
 #endif
@@ -692,15 +737,20 @@ int GMenu2X::main() {
 void GMenu2X::options() {
 	int curMenuClock = menuClock;
 	int curGlobalVolume = globalVolume;
+	string curSkin = skin;
 	//G int prevgamma = gamma;
 
-	FileLister fl("translations");
-	fl.browse();
-	fl.files.insert(fl.files.begin(),"English");
+	FileLister fl_tr("translations");
+	fl_tr.browse();
+	fl_tr.files.insert(fl_tr.files.begin(),"English");
 	string lang = tr.lang();
 
+	FileLister fl_sk("skins",true,false);
+	fl_sk.browse();
+
 	SettingsDialog sd(this,tr["Settings"]);
-	sd.addSetting(new MenuSettingMultiString(this,tr["Language"],tr["Set the language used by GMenu2X"],&lang,&fl.files));
+	sd.addSetting(new MenuSettingMultiString(this,tr["Language"],tr["Set the language used by GMenu2X"],&lang,&fl_tr.files));
+	sd.addSetting(new MenuSettingMultiString(this,tr["Skin"],tr["Set the skin used by GMenu2X"],&skin,&fl_sk.directories));
 	sd.addSetting(new MenuSettingBool(this,tr["Save last selection"],tr["Save the last selected link and section on exit"],&saveSelection));
 	sd.addSetting(new MenuSettingInt(this,tr["Clock for GMenu2X"],tr["Set the cpu working frequency when running GMenu2X"],&menuClock,50,325));
 	sd.addSetting(new MenuSettingInt(this,tr["Maximum overclock"],tr["Set the maximum overclock for launching links"],&maxClock,50,325));
@@ -719,6 +769,15 @@ void GMenu2X::options() {
 		if (curGlobalVolume!=globalVolume) setVolume(globalVolume);
 		if (lang == "English") lang = "";
 		if (lang != tr.lang()) tr.setLang(lang);
+		if (curSkin != skin) {
+			sc.clear();
+			sc.setSkin(skin);
+			for (uint i=0; i<menu->sections.size(); i++) {
+				string sectionIcon = "sections/"+menu->sections[i]+".png";
+				if (fileExists(sectionIcon))
+					sc.add(sectionIcon);
+			}
+		}
 		writeConfig();
 		initBG();
 	}
@@ -764,22 +823,18 @@ void GMenu2X::activateRootUsb() {
 }
 
 void GMenu2X::contextMenu() {
-	Surface bg(s);
-	//Darken background
-	bg.box(0, 0, 320, 240, 0,0,0,150);
-
 	vector<MenuOption> voices;
 	{
-	MenuOption opt = {"Add link in "+menu->selSection(), MakeDelegate(this, &GMenu2X::addLink)};
+	MenuOption opt = {tr.translate("Add link in $1",menu->selSection().c_str(),NULL), MakeDelegate(this, &GMenu2X::addLink)};
 	voices.push_back(opt);
 	}
 
 	if (menu->selLinkApp()!=NULL) {
 		{
-		MenuOption opt = {"Edit "+menu->selLink()->getTitle(), MakeDelegate(this, &GMenu2X::editLink)};
+		MenuOption opt = {tr.translate("Edit $1",menu->selLink()->getTitle().c_str(),NULL), MakeDelegate(this, &GMenu2X::editLink)};
 		voices.push_back(opt);
 		}{
-		MenuOption opt = {"Delete "+menu->selLink()->getTitle()+" link", MakeDelegate(this, &GMenu2X::deleteLink)};
+		MenuOption opt = {tr.translate("Delete $1 link",menu->selLink()->getTitle().c_str(),NULL), MakeDelegate(this, &GMenu2X::deleteLink)};
 		voices.push_back(opt);
 		}
 	}
@@ -815,15 +870,21 @@ void GMenu2X::contextMenu() {
 
 	SDL_Rect selbox = {box.x+4, 0, box.w-8, h+2};
 
+	Surface bg(s);
+	//Darken background
+	bg.box(0, 0, 320, 240, 0,0,0,150);
+	bg.box( box.x, box.y, box.w, box.h, 255,255,255,255 );
+	bg.rectangle( box.x+2, box.y+2, box.w-4, box.h-4, 80,80,80,255 );
+	bg.blit(s,0,0);
 	while (!close) {
-		bg.blit(s,0,0);
-		SDL_FillRect( s->raw, &box, SDL_MapRGB(s->format(),255,255,255));
 		selbox.y = box.y+4+(h+2)*sel;
-		SDL_FillRect( s->raw, &selbox, SDL_MapRGB(s->format(),160,160,160) );
-		rectangleColor( s->raw, box.x+2, box.y+2, box.x+box.w-3, box.y+box.h-3, SDL_MapRGB(s->format(),80,80,80) );
-		for (i=0; i<voices.size(); i++) {
-			s->write( font, voices[i].text, box.x+12, box.y+10+(h+2)*i, SFontHAlignLeft, SFontVAlignMiddle );
-		}
+		//clean internal area
+		s->box( box.x+3, box.y+3, box.w-6, box.h-6, 255,255,255,255 );
+		//draw selection rect
+		s->box( selbox.x, selbox.y, selbox.w, selbox.h, 160,160,160,255 );
+		for (i=0; i<voices.size(); i++)
+			s->write( font, voices[i].text, box.x+12, box.y+11+(h+2)*i, SFontHAlignLeft, SFontVAlignMiddle );
+		s->flip();
 
 #ifdef TARGET_GP2X
 		joy.update();
@@ -842,8 +903,6 @@ void GMenu2X::contextMenu() {
 			}
 		}
 #endif
-
-		s->flip();
 	}
 }
 
@@ -866,9 +925,6 @@ void GMenu2X::editLink() {
 	if (pathV.size()>1)
 		oldSection = pathV[pathV.size()-2];
 	string newSection = oldSection;
-#ifdef DEBUG
-	cout << "Old Section: " << oldSection << endl;
-#endif
 
 	string linkTitle = menu->selLinkApp()->getTitle();
 	string linkDescription = menu->selLinkApp()->getDescription();
@@ -950,7 +1006,7 @@ void GMenu2X::editLink() {
 
 void GMenu2X::deleteLink() {
 	if (menu->selLinkApp()!=NULL) {
-		MessageBox mb(this, "Deleting "+menu->selLink()->getTitle()+"\n"+tr["Are you sure?"], menu->selLink()->getIcon());
+		MessageBox mb(this, tr.translate("Deleting $1",menu->selLink()->getTitle().c_str(),NULL)+"\n"+tr["Are you sure?"], menu->selLink()->getIcon());
 		mb.buttons[GP2X_BUTTON_B] = tr["Yes"];
 		mb.buttons[GP2X_BUTTON_X] = tr["No"];
 		if (mb.exec() == GP2X_BUTTON_B) {
@@ -1017,20 +1073,18 @@ void GMenu2X::deleteSection() {
 }
 
 void GMenu2X::scanner() {
-	Surface bg("imgs/bg.png");
-	drawTopBar(&bg,15);
-	drawBottomBar(&bg);
+	Surface bg(sc["imgs/bg.png"]);
 	drawButton(&bg, "x", tr["Exit"],
 	drawButton(&bg, "b", "", 5)-10);
 	bg.write(font,tr["Link Scanner"],160,7,SFontHAlignCenter,SFontVAlignMiddle);
-	bg.write(font,tr["Scanning SD filesystem..."],5,20);
+	bg.write(font,tr["Scanning SD filesystem..."],5,42);
 	bg.blit(s,0,0);
 	s->flip();
 
 	vector<string> files;
 	scanPath("/mnt/sd",&files);
 
-	bg.write(font,tr["Scanning NAND filesystem..."],5,35);
+	bg.write(font,tr["Scanning NAND filesystem..."],5,68);
 	bg.blit(s,0,0);
 	s->flip();
 	scanPath("/mnt/nand",&files);
@@ -1039,8 +1093,8 @@ void GMenu2X::scanner() {
 	ss << files.size();
 	string str = "";
 	ss >> str;
-	bg.write(font,str+" files found.",5,50);
-	bg.write(font,tr["Creating links..."],5,65);
+	bg.write(font,tr.translate("$1 files found.",str.c_str(),NULL),5,50);
+	bg.write(font,tr["Creating links..."],5,81);
 	bg.blit(s,0,0);
 	s->flip();
 
@@ -1062,7 +1116,7 @@ void GMenu2X::scanner() {
 	ss.clear();
 	ss << linkCount;
 	ss >> str;
-	bg.write(font,str+" links created.",5,80);
+	bg.write(font,tr.translate("$1 links created.",str.c_str(),NULL),5,97);
 	bg.blit(s,0,0);
 	s->flip();
 
@@ -1239,9 +1293,9 @@ int GMenu2X::drawButton(Surface *s, string btn, string text, int x, int y) {
 		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
 		x += sc["imgs/buttons/"+btn+".png"]->raw->w+3;
 		s->write(font, text, x, y, SFontHAlignLeft, SFontVAlignMiddle);
-		return x+8+font->getTextWidth(text);
+		return x+6+font->getTextWidth(text);
 	}
-	return x+8;
+	return x+6;
 }
 
 int GMenu2X::drawButtonRight(Surface *s, string btn, string text, int x, int y) {
@@ -1250,9 +1304,9 @@ int GMenu2X::drawButtonRight(Surface *s, string btn, string text, int x, int y) 
 		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
 		x -= 3;
 		s->write(font, text, x, y, SFontHAlignRight, SFontVAlignMiddle);
-		return x-8-font->getTextWidth(text);
+		return x-6-font->getTextWidth(text);
 	}
-	return x-8;
+	return x-6;
 }
 
 void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height) {
@@ -1272,12 +1326,49 @@ void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint to
 	s->box(314, by, 1, bs, selectionColor);
 }
 
-void GMenu2X::drawTopBar(Surface *s, uint height) {
+void GMenu2X::drawTitleIcon(string icon, bool skinRes, Surface *s) {
 	if (s==NULL) s = this->s;
-	s->box(0, 0, 320, height, topBarColor);
+
+	Surface *i = NULL;
+	if (!icon.empty()) {
+		if (skinRes)
+			i = sc.skinRes(icon);
+		else
+			i = sc[icon];
+	}
+
+	if (i==NULL)
+		i = sc.skinRes("icons/generic.png");
+
+	i->blit(s,4,4);
 }
 
-void GMenu2X::drawBottomBar(Surface *s, uint height) {
+void GMenu2X::writeTitle(string title, Surface *s) {
 	if (s==NULL) s = this->s;
-	s->box(0, 240-height, 320, height, bottomBarColor);
+	s->write(font,title,40,13, SFontHAlignLeft, SFontVAlignMiddle);
+}
+
+void GMenu2X::writeSubTitle(string subtitle, Surface *s) {
+	if (s==NULL) s = this->s;
+	s->write(font,subtitle,40,27, SFontHAlignLeft, SFontVAlignMiddle);
+}
+
+void GMenu2X::drawTopBar(Surface *s) {
+	if (s==NULL) s = this->s;
+
+	Surface *bar = sc.skinRes("imgs/topbar.png");
+	if (bar != NULL)
+		bar->blit(s, 0, 0);
+	else
+		s->box(0, 0, 320, 40, topBarColor);
+}
+
+void GMenu2X::drawBottomBar(Surface *s) {
+	if (s==NULL) s = this->s;
+
+	Surface *bar = sc.skinRes("imgs/bottombar.png");
+	if (bar != NULL)
+		bar->blit(s, 0, 240-bar->raw->h);
+	else
+		s->box(0, 220, 320, 20, bottomBarColor);
 }

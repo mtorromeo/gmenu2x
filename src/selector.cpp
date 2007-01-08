@@ -56,17 +56,10 @@ int Selector::exec(int startSelection) {
 	fl.setFilter(link->getSelectorFilter());
 	fl.browse();
 
-	Surface bg("imgs/bg.png",false);
-	gmenu2x->drawTopBar(&bg);
-	//link icon
-	if (link->getIcon() != "")
-		gmenu2x->sc[link->getIcon()]->blit(&bg,4,4);
-	else
-		gmenu2x->sc["icons/generic.png"]->blit(&bg,4,4);
-	//selector text
-	bg.write(gmenu2x->font,link->getTitle(),40,13, SFontHAlignLeft, SFontVAlignMiddle);
-	bg.write(gmenu2x->font,link->getDescription(),40,27, SFontHAlignLeft, SFontVAlignMiddle);
-	gmenu2x->drawBottomBar(&bg);
+	Surface bg(gmenu2x->sc["imgs/bg.png"]);
+	gmenu2x->drawTitleIcon(link->getIcon(),true,&bg);
+	gmenu2x->writeTitle(link->getTitle(),&bg);
+	gmenu2x->writeSubTitle(link->getDescription(),&bg);
 
 	if (link->getSelectorBrowser()) {
 		gmenu2x->drawButton(&bg, "start", gmenu2x->tr["Exit"],
@@ -86,8 +79,8 @@ int Selector::exec(int startSelection) {
 	uint selected = constrain(startSelection,0,fl.size()-1);
 
 	//Add the folder icon manually to be sure to load it with alpha support since we are going to disable it for screenshots
-	if (!gmenu2x->sc.exists("imgs/folder.png"))
-		gmenu2x->sc.add("imgs/folder.png");
+	if (gmenu2x->sc.skinRes("imgs/folder.png")==NULL)
+		gmenu2x->sc.addSkinRes("imgs/folder.png");
 	gmenu2x->sc.defaultAlpha = false;
 	while (!close) {
 		bg.blit(gmenu2x->s,0,0);

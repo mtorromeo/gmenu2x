@@ -44,7 +44,8 @@ private:
 
 public:
 	Surface();
-	Surface(string img, bool alpha=true);
+	Surface(string img, string skin="", bool alpha=true);
+	Surface(string img, bool alpha, string skin="");
 	Surface(SDL_Surface *s, SDL_PixelFormat *fmt = NULL, Uint32 flags = 0);
 	Surface(Surface *s);
 	Surface(int w, int h, Uint32 flags = SDL_HWSURFACE|SDL_SRCALPHA);
@@ -53,7 +54,7 @@ public:
 	SDL_Surface *raw;
 
 	void free();
-	void load(string img, bool alpha=true);
+	void load(string img, bool alpha=true, string skin="");
 	void lock();
 	void unlock();
 	void flip();
@@ -87,6 +88,7 @@ public:
 	int hline(Sint16, Sint16, Sint16, Uint8, Uint8, Uint8, Uint8);
 	int hline(Sint16, Sint16, Sint16, RGBAColor);
 
+	void operator = (SDL_Surface*);
 	void operator = (Surface*);
 };
 

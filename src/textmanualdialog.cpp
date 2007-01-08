@@ -40,7 +40,7 @@ TextManualDialog::TextManualDialog(GMenu2X *gmenu2x, string title, string icon, 
 		} else {
 			if (pages.size()==0) {
 				ManualPage mp;
-				mp.title = "Untitled";
+				mp.title = gmenu2x->tr["Untitled"];
 				pages.push_back(mp);
 			}
 			pages[pages.size()-1].text.push_back(text->at(i));
@@ -48,7 +48,7 @@ TextManualDialog::TextManualDialog(GMenu2X *gmenu2x, string title, string icon, 
 	}
 	if (pages.size()==0) {
 		ManualPage mp;
-		mp.title = "Untitled";
+		mp.title = gmenu2x->tr["Untitled"];
 		pages.push_back(mp);
 	}
 
@@ -98,7 +98,7 @@ void TextManualDialog::exec() {
 		ss.clear();
 		ss << page+1;
 		ss >> pageStatus;
-		pageStatus = "Page: "+pageStatus+"/"+spagecount;
+		pageStatus = gmenu2x->tr["Page"]+": "+pageStatus+"/"+spagecount;
 		gmenu2x->s->write(gmenu2x->font, pageStatus, 310, 230, SFontHAlignRight, SFontVAlignMiddle);
 
 		gmenu2x->s->flip();
@@ -116,10 +116,10 @@ void TextManualDialog::exec() {
 				firstRow = 0;
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_R   ] ) {
-			if (firstRow+rowsPerPage*2-1<text->size())
+			if (firstRow+rowsPerPage*2-1<pages[page].text.size())
 				firstRow+= rowsPerPage-1;
 			else
-				firstRow = max(0,text->size()-rowsPerPage);
+				firstRow = max(0,pages[page].text.size()-rowsPerPage);
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_START] || gmenu2x->joy[GP2X_BUTTON_X] ) close = true;
 #else

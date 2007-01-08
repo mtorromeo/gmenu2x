@@ -116,6 +116,7 @@ public:
 	RGBAColor selectionColor, topBarColor, bottomBarColor;
 	bool saveSelection, outputLogs;
 	int maxClock, menuClock, startSectionIndex, startLinkIndex, globalVolume;
+	string skin;
 	//G int gamma;
 
 	SurfaceCollection sc;
@@ -155,8 +156,12 @@ public:
 	int drawButton(Surface *s, string btn, string text, int x, int y=230);
 	int drawButtonRight(Surface *s, string btn, string text, int x, int y=230);
 	void drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height);
-	void drawTopBar(Surface *s=NULL, uint height=40);
-	void drawBottomBar(Surface *s=NULL, uint height=20);
+
+	void drawTitleIcon(string icon, bool skinRes=true, Surface *s=NULL);
+	void writeTitle(string title, Surface *s=NULL);
+	void writeSubTitle(string subtitle, Surface *s=NULL);
+	void drawTopBar(Surface *s=NULL);
+	void drawBottomBar(Surface *s=NULL);
 
 	Menu* menu;
 };

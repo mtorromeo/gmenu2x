@@ -213,7 +213,7 @@ void LinkApp::drawRun() {
 	//Darkened background
 	gmenu2x->s->box(0, 0, 320, 240, 0,0,0,150);
 
-	string text = "Launching "+getTitle();
+	string text = gmenu2x->tr.translate("Launching $1",getTitle().c_str(),NULL);
 	int textW = gmenu2x->font->getTextWidth(text);
 	int boxW = 62+textW;
 	int halfBoxW = boxW/2;

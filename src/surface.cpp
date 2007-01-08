@@ -30,25 +30,31 @@ Surface::Surface() {
 	raw = NULL;
 }
 
-Surface::Surface(string img, bool alpha) {
+Surface::Surface(string img, bool alpha, string skin) {
 	raw = NULL;
-	load(img, alpha);
+	load(img, alpha, skin);
+	halfW = raw->w/2;
+	halfH = raw->h/2;
+}
+
+Surface::Surface(string img, string skin, bool alpha) {
+	raw = NULL;
+	load(img, alpha, skin);
 	halfW = raw->w/2;
 	halfH = raw->h/2;
 }
 
 Surface::Surface(SDL_Surface *s, SDL_PixelFormat *fmt, Uint32 flags) {
-	if (fmt==NULL) fmt = s->format;
-	if (flags==0) flags = s->flags;
-	raw = SDL_ConvertSurface( s, fmt, flags );
-	halfW = raw->w/2;
-	halfH = raw->h/2;
+	this->operator =(s);
+	if (fmt!=NULL || flags!=0) {
+		if (fmt==NULL) fmt = s->format;
+		if (flags==0) flags = s->flags;
+		raw = SDL_ConvertSurface( s, fmt, flags );
+	}
 }
 
 Surface::Surface(Surface *s) {
-	raw = SDL_ConvertSurface( s->raw, s->raw->format, s->raw->flags );
-	halfW = raw->w/2;
-	halfH = raw->h/2;
+	this->operator =(s->raw);
 }
 
 Surface::Surface(int w, int h, Uint32 flags) {
@@ -84,8 +90,17 @@ SDL_PixelFormat *Surface::format() {
 		return raw->format;
 }
 
-void Surface::load(string img, bool alpha) {
+void Surface::load(string img, bool alpha, string skin) {
 	free();
+
+	string skinpath;
+	if (!skin.empty() && !img.empty() && img[0]!='/') {
+		skinpath = "skins/"+skin+"/"+img;
+		if (!fileExists(skinpath))
+			skinpath = "skins/Default/"+img;
+		img = skinpath;
+	}
+
 	SDL_Surface *buf = IMG_Load(img.c_str());
 	if (buf!=NULL) {
 		if (alpha)
@@ -93,6 +108,8 @@ void Surface::load(string img, bool alpha) {
 		else
 			raw = SDL_DisplayFormat(buf);
 		SDL_FreeSurface(buf);
+	} else {
+		cout << "Couldn't load surface " << img << endl;
 	}
 }
 
@@ -223,37 +240,44 @@ void Surface::write(ASFont *font, string text, int x, int y, const unsigned shor
 	font->write(this,text,x,y,halign,valign);
 }
 
+void Surface::operator = (SDL_Surface *s) {
+	raw = SDL_CreateRGBSurface( s->flags, s->w, s->h, s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask );
+	halfW = raw->w/2;
+	halfH = raw->h/2;
+	SDL_Rect dest = {0,0,0,0};
+	SDL_BlitSurface(s, NULL, raw, &dest);
+}
+
 void Surface::operator = (Surface *s) {
-	raw = s->raw;
-	raw->refcount++;
+	this->operator =(s->raw);
 }
 
 int Surface::box(Sint16 x, Sint16 y, Sint16 w, Sint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
-	return boxRGBA(raw,x,y,x+w,y+h,r,g,b,a);
+	return boxRGBA(raw,x,y,x+w-1,y+h-1,r,g,b,a);
 }
 int Surface::box(Sint16 x, Sint16 y, Sint16 w, Sint16 h, Uint8 r, Uint8 g, Uint8 b) {
 	SDL_Rect re = {x,y,w,h};
-	return SDL_FillRect(raw, &re, SDL_MapRGB(format(),r,g,b));
+	return SDL_FillRect(raw, &re, SDL_MapRGBA(format(),r,g,b,255));
 }
 int Surface::box(Sint16 x, Sint16 y, Sint16 w, Sint16 h, RGBAColor c) {
 	return box(x,y,w,h,c.r,c.g,c.b,c.a);
 }
 
 int Surface::rectangle(Sint16 x, Sint16 y, Sint16 w, Sint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
-	return rectangleRGBA(raw,x,y,x+w,y+h,r,g,b,a);
+	return rectangleRGBA(raw,x,y,x+w-1,y+h-1,r,g,b,a);
 }
 int Surface::rectangle(Sint16 x, Sint16 y, Sint16 w, Sint16 h, Uint8 r, Uint8 g, Uint8 b) {
-	return rectangleColor(raw, x,y,x+w,y+h, SDL_MapRGB(format(),r,g,b));
+	return rectangleColor(raw, x,y,x+w-1,y+h-1, SDL_MapRGBA(format(),r,g,b,255));
 }
 int Surface::rectangle(Sint16 x, Sint16 y, Sint16 w, Sint16 h, RGBAColor c) {
 	return rectangle(x,y,w,h,c.r,c.g,c.b,c.a);
 }
 
 int Surface::hline(Sint16 x, Sint16 y, Sint16 w, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
-	return hlineRGBA(raw,x,x+w,y,r,g,b,a);
+	return hlineRGBA(raw,x,x+w-1,y,r,g,b,a);
 }
 int Surface::hline(Sint16 x, Sint16 y, Sint16 w, RGBAColor c) {
-	return hline(x,y,w,c.r,c.g,c.b,c.a);
+	return hline(x,y,w-1,c.r,c.g,c.b,c.a);
 }
 
 void Surface::clearClipRect() {

@@ -33,12 +33,10 @@ private:
 	string text;
 	GMenu2X *gmenu2x;
 
-	void browsePath(string path, vector<string>* directories);
-	
 public:
 	string path;
 	DirDialog(GMenu2X *gmenu2x, string text);
-	
+
 	bool exec();
 };
 

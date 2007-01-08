@@ -19,6 +19,8 @@
  ***************************************************************************/
 
 #include <iostream>
+#include <sstream>
+#include <stdarg.h>
 #include "translator.h"
 
 using namespace std;
@@ -54,17 +56,34 @@ void Translator::setLang(string lang) {
 	}
 }
 
-string Translator::translate(string term) {
-	if (_lang.empty()) return term;
+string Translator::translate(string term,const char *replacestr,...) {
+	string result = term;
 
-	hash_map<string, string>::iterator i = translations.find(term);
-	if (i == translations.end()) {
-#ifdef DEBUG
-		cout << "Untranslated string: " << term << endl;
-#endif
-		return term;
-	} else
-		return i->second;
+	if (!_lang.empty()) {
+		hash_map<string, string>::iterator i = translations.find(term);
+		if (i != translations.end()) {
+			result = i->second;
+		}
+	#ifdef DEBUG
+		else cout << "Untranslated string: " << term << endl;
+	#endif
+	}
+
+	va_list arglist;
+	va_start(arglist, replacestr);
+	const char *param = replacestr;
+	int argnum = 1;
+	while (param!=NULL) {
+		string id = "";
+		stringstream ss; ss << argnum; ss >> id;
+		result = strreplace(result,"$"+id,param);
+
+		param = va_arg(arglist,const char*);
+		argnum++;
+	}
+	va_end(arglist);
+
+	return result;
 }
 
 string Translator::operator[](string term) {

@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#define SFONTPLUS_CHARSET "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~¡¿ÀÈÉÌÒÚÝÄËÏÖÜÂÊÎÔÛÅÆÇÑàèéìòùýäëïöüÿâêîôûåæçñðßÐÞþ"
+
 using std::vector;
 using std::string;
 
@@ -23,8 +25,8 @@ public:
 	SFontPlus(string font);
 	~SFontPlus();
 
-	void initFont(SDL_Surface *font, string characters = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÀÈÌÒÚÄËÏÖÜßàèéìòùäëïöü");
-	void initFont(string font, string characters = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÀÈÌÒÚÄËÏÖÜßàèéìòùäëïöü");
+	void initFont(SDL_Surface *font, string characters = SFONTPLUS_CHARSET);
+	void initFont(string font, string characters = SFONTPLUS_CHARSET);
 	void freeFont();
 
 	void write(SDL_Surface *s, string text, int x, int y);
