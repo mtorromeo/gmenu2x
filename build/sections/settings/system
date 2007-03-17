@@ -1,6 +1,6 @@
 title=System
 description=Configure options from the original frontend
-icon=sections/settings.png
+icon=skin:sections/settings.png
 exec=/usr/gp2x/gp2xmenu
 params=--disable-autorun --enable-terminate --view-system
 wrapper=true

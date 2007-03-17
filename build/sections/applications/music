@@ -1,6 +1,6 @@
 title=Music
 description=Start music player using the built in selector
-icon=icons/music.png
+icon=skin:icons/music.png
 exec=/usr/gp2x/MusicPlayer
 params=[selPath] [selFile][selExt]
 clock=75
