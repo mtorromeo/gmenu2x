@@ -50,13 +50,6 @@ class GMenu2X {
 private:
 	string path; //!< Contains the working directory of GMenu2X
 	/*!
-	Retrieves the parent directory of GMenu2X.
-	This functions is used to initialize the "path" variable.
-	@see path
-	@return String containing the parent directory
-	*/
-	string getExePath();
-	/*!
 	Retrieves the free disk space on the sd
 	@return String containing a human readable representation of the free disk space
 	*/
@@ -89,22 +82,37 @@ private:
 	void readTmp();
 	void readCommonIni();
 	void writeCommonIni();
-	void initServices();
 
+	void initServices();
+	void initFont();
 	void initMenu();
 
 	uint numRows, numCols;
 
+#ifdef TARGET_GP2X
 	bool gp2x_initialized;
 	unsigned long gp2x_mem;
 	unsigned short *gp2x_memregs;
 	volatile unsigned short *MEM_REG;
+	int cx25874;
+	bool pal;
+#endif
+	void gp2x_tvout_on(bool pal);
+	void gp2x_tvout_off();
 	void gp2x_init();
 	void gp2x_deinit();
 
 public:
 	GMenu2X(int argc, char *argv[]);
 	~GMenu2X();
+
+	/*!
+	Retrieves the parent directory of GMenu2X.
+	This functions is used to initialize the "path" variable.
+	@see path
+	@return String containing the parent directory
+	*/
+	string getExePath();
 
 #ifdef TARGET_GP2X
 	Joystick joy;
@@ -117,6 +125,7 @@ public:
 	bool saveSelection, outputLogs;
 	int maxClock, menuClock, startSectionIndex, startLinkIndex, globalVolume;
 	string skin;
+	void setSkin(string skin);
 	//G int gamma;
 
 	SurfaceCollection sc;
@@ -134,9 +143,13 @@ public:
 	void viewLog();
 	void contextMenu();
 
+	void applyRamTimings();
+	void applyDefaultTimings();
+
 	void setClock(unsigned mhz);
 	void setGamma(int gamma);
 	void setVolume(int vol);
+
 	void setInputSpeed();
 
 	void writeConfig();

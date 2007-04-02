@@ -3,11 +3,13 @@ Gamma configurable in options menu and on a per-link basis
 ----------
 New in 0.9
 ----------
+Added option to tweak ram timings
 Added skins support
 Reworked the interface a little
 Added support for translations (Italian, Dutch, Spanish, Germany, French, Portuguese and Swedish included)
 Use of a new font code which supports (some) utf8 characters
 Added graphics for gp2x buttons
+Moved screenshot in the selector under the text
 Fixed flickering in various locations
 Fixed bugs in the manuals navigation system
 

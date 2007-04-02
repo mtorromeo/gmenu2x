@@ -50,8 +50,8 @@ bool SettingsDialog::exec() {
 
 		gmenu2x->drawTopBar(gmenu2x->s);
 		//link icon
-		if (gmenu2x->sc["sections/settings.png"] != NULL)
-			gmenu2x->sc["sections/settings.png"]->blit(gmenu2x->s,4,4);
+		if (gmenu2x->sc["skin:sections/settings.png"] != NULL)
+			gmenu2x->sc["skin:sections/settings.png"]->blit(gmenu2x->s,4,4);
 		else
 			gmenu2x->sc["icons/generic.png"]->blit(gmenu2x->s,4,4);
 		gmenu2x->s->write(gmenu2x->font, text, 40,13, SFontHAlignLeft, SFontVAlignMiddle);

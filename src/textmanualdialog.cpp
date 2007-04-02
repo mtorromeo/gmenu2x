@@ -67,16 +67,14 @@ void TextManualDialog::exec() {
 	bool close = false;
 	uint page=0;
 
-	Surface bg("imgs/bg.png");
-	gmenu2x->drawTopBar(&bg);
-	gmenu2x->drawBottomBar(&bg);
+	Surface bg(gmenu2x->sc["imgs/bg.png"]);
 
 	//link icon
-	if (!fileExists(icon)) icon = "icons/ebook.png";
-	Surface sIcon(icon);
-	sIcon.blit(&bg,4,4);
-	//selector text
-	bg.write(gmenu2x->font,title+(description.empty() ? "" : ": "+description),40,13, SFontHAlignLeft, SFontVAlignMiddle);
+	if (!fileExists(icon))
+		gmenu2x->drawTitleIcon("icons/ebook.png",true,&bg);
+	else
+		gmenu2x->drawTitleIcon(icon,false,&bg);
+	gmenu2x->writeTitle(title+(description.empty() ? "" : ": "+description),&bg);
 
 	gmenu2x->drawButton(&bg, "x", gmenu2x->tr["Exit"],
 	gmenu2x->drawButton(&bg, "right", gmenu2x->tr["Change page"],
@@ -92,7 +90,7 @@ void TextManualDialog::exec() {
 	string pageStatus;
 	while (!close) {
 		bg.blit(gmenu2x->s,0,0);
-		gmenu2x->s->write(gmenu2x->font,pages[page].title,40,27, SFontHAlignLeft, SFontVAlignMiddle);
+		gmenu2x->writeSubTitle(pages[page].title);
 		drawText(&pages[page].text, firstRow, rowsPerPage);
 
 		ss.clear();

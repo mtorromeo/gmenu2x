@@ -36,7 +36,9 @@ private:
 public:
 	SurfaceCollection(bool defaultAlpha=true, string skin="default");
 	~SurfaceCollection();
+
 	void setSkin(string skin);
+	string getSkinFilePath(string file);
 
 	bool defaultAlpha;
 	void debug();

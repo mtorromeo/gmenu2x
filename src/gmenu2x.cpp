@@ -109,9 +109,22 @@ if (gp2x_initialized) {
 #endif
 }
 
-GMenu2X::GMenu2X(int argc, char *argv[]) {
-	gp2x_initialized = false;
+void GMenu2X::gp2x_tvout_on(bool pal) {
+#ifdef TARGET_GP2X
+	if (cx25874!=0) gp2x_tvout_off();
+	cx25874 = open("/dev/cx25874",O_RDWR);
+	ioctl(cx25874, _IOW('v', 0x02, unsigned char), pal ? 4 : 3);
+#endif
+}
 
+void GMenu2X::gp2x_tvout_off() {
+#ifdef TARGET_GP2X
+	close(cx25874);
+	cx25874 = 0;
+#endif
+}
+
+GMenu2X::GMenu2X(int argc, char *argv[]) {
 	//Initialize configuration settings to default
 	topBarColor.r = 255;
 	topBarColor.g = 255;
@@ -136,23 +149,20 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	startSectionIndex = 0;
 	startLinkIndex = 0;
 
-	samba = inet = web = false;
+	usbnet = samba = inet = web = false;
 
 	//load config data
 	readConfig();
 	readCommonIni();
 
-	if (skin.empty() || !fileExists("skins/"+skin)) skin = "Default";
-	sc.setSkin(skin);
 
-	path = getExePath();
+	path = "";
+	getExePath();
 
-#ifdef __TARGET_GP2X
-	gp2x_init();
-	if (gp2x_memregs[0x2800>>1]&0x100) {
-		gp2x_memregs[0x2906>>1]=512;
-	}
-	gp2x_deinit();
+#ifdef TARGET_GP2X
+	gp2x_initialized = false;
+	cx25874 = 0;
+	pal = true;
 #endif
 
 	//Screen
@@ -160,6 +170,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 		cout << "\033[0;34mGMENU2X:\033[0;31m Could not initialize SDL:\033[0m " << SDL_GetError() << endl;
 		SDL_Quit();
 	}
+
 	s = new Surface();
 	SDL_JoystickOpen(0);
 	//s->raw = SDL_SetVideoMode(320, 240, 16, SDL_HWSURFACE|SDL_DOUBLEBUF);
@@ -167,12 +178,10 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	//SDL_SetAlpha(s->raw, SDL_SRCALPHA|SDL_RLEACCEL, 255);
 	SDL_ShowCursor(0);
 
-	if (fileExists("skins/"+skin+"/imgs/font.png"))
-		font = new ASFont("skins/"+skin+"/imgs/font.png");
-	else
-		font = new ASFont("skins/Default/imgs/font.png");
-
+	font = NULL;
 	initMenu();
+	if (skin.empty() || !fileExists("skins/"+skin)) skin = "Default";
+	setSkin(skin);
 	initBG();
 
 	//Events
@@ -183,17 +192,21 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 
 	initServices();
 
-	//G gp2x_init();
+	gp2x_init();
 	//G if (gamma!=10) setGamma(gamma);
 	setClock(menuClock);
 	setVolume(globalVolume);
-	//G gp2x_deinit();
+	applyDefaultTimings();
+	gp2x_deinit();
 
 	//recover last session
 	readTmp();
 	if (lastSelectorElement>-1 && menu->selLinkApp()!=NULL && (!menu->selLinkApp()->getSelectorDir().empty() || !lastSelectorDir.empty()))
 		menu->selLinkApp()->selector(lastSelectorElement,lastSelectorDir);
 
+#ifdef DEBUG
+	cout << "Starting main()" << endl;
+#endif
 	main();
 	writeConfig();
 
@@ -251,24 +264,35 @@ void GMenu2X::initBG() {
 	}
 }
 
+void GMenu2X::initFont() {
+	if (font != NULL) {
+		free(font);
+		font = NULL;
+	}
+
+	string fontFile = sc.getSkinFilePath("imgs/font.png");
+	if (fontFile.empty()) {
+		cout << "Font png not found!" << endl;
+		SDL_Quit();
+		exit(-1);
+	}
+	font = new ASFont(fontFile);
+}
+
 void GMenu2X::initMenu() {
 	//Menu structure handler
 	menu = new Menu(this,path);
 	menu->numRows = numRows; numRows = 0;
 	menu->numCols = numCols; numCols = 0;
 	for (uint i=0; i<menu->sections.size(); i++) {
-		string sectionIcon = "sections/"+menu->sections[i]+".png";
-		if (fileExists(sectionIcon))
-			sc.add(sectionIcon);
-
 		if (menu->sections[i]=="settings") {
-			menu->addActionLink(i,"GMenu2X",MakeDelegate(this,&GMenu2X::options),tr["Configure GMenu2X's options"],sectionIcon);
-			menu->addActionLink(i,"USB Sd",MakeDelegate(this,&GMenu2X::activateSdUsb),tr["Activate Usb on SD"],"icons/usb.png");
-			menu->addActionLink(i,"USB Nand",MakeDelegate(this,&GMenu2X::activateNandUsb),tr["Activate Usb on Nand"],"icons/usb.png");
+			menu->addActionLink(i,"GMenu2X",MakeDelegate(this,&GMenu2X::options),tr["Configure GMenu2X's options"],"skin:sections/settings.png");
+			menu->addActionLink(i,"USB Sd",MakeDelegate(this,&GMenu2X::activateSdUsb),tr["Activate Usb on SD"],"skin:icons/usb.png");
+			menu->addActionLink(i,"USB Nand",MakeDelegate(this,&GMenu2X::activateNandUsb),tr["Activate Usb on Nand"],"skin:icons/usb.png");
 			if (fileExists(path+"log.txt"))
-				menu->addActionLink(i,tr["Log Viewer"],MakeDelegate(this,&GMenu2X::viewLog),tr["Displays last launched program's output"],"icons/ebook.png");
-			menu->addActionLink(i,tr["About"],MakeDelegate(this,&GMenu2X::about),tr["Info about GMenu2X"],"icons/about.png");
-			//menu->addActionLink(i,"USB Root",MakeDelegate(this,&GMenu2X::activateRootUsb),tr["Activate Usb on the root of the Gp2x Filesystem"],"icons/usb.png");
+				menu->addActionLink(i,tr["Log Viewer"],MakeDelegate(this,&GMenu2X::viewLog),tr["Displays last launched program's output"],"skin:icons/ebook.png");
+			menu->addActionLink(i,tr["About"],MakeDelegate(this,&GMenu2X::about),tr["Info about GMenu2X"],"skin:icons/about.png");
+			//menu->addActionLink(i,"USB Root",MakeDelegate(this,&GMenu2X::activateRootUsb),tr["Activate Usb on the root of the Gp2x Filesystem"],"skin:icons/usb.png");
 		}
 	}
 
@@ -284,17 +308,14 @@ E-Mail & PayPal account: massimiliano.torromeo@gmail.com\n\
 \n\
 Thanks goes to...\n\
 \n\
-----\n\
  Contributors\n\
 ----\n\
 NoidZ for his gp2x' buttons graphics\n\
 \n\
-----\n\
  Beta testers\n\
 ----\n\
 Goemon4, PokeParadox, PSyMastR and Tripmonkey_uk\n\
 \n\
-----\n\
  Translators\n\
 ----\n\
 English & Italian by me\n\
@@ -304,18 +325,20 @@ Spanish by pedator\n\
 Portuguese (Portugal) by NightShadow\n\
 Swedish by Esslan and Micket\n\
 German by fusion_power, johnnysnet and Waldteufel\n\
+Finnish by Jontte and Atte\n\
 \n\
-----\n\
  Donors\n\
 ----\n\
 EvilDragon (www.gp2x.de)\n\
-Tecnologie creative (www.tecnologiecreative.it)\n\
+Tecnologie Creative (www.tecnologiecreative.it)\n\
 TelcoLou\n\
 gaterooze\n\
 deepmenace\n\
 superfly\n\
 halo9\n\
 sbock\n\
+b._.o._.b\n\
+Jacopastorius\n\
 and all the anonymous donors...\n\
 (If I missed to list you or if you want to be removed, contact me.)","\n");
 	TextDialog td(this, "GMenu2X", tr.translate("Version $1 (Build date: $2)","0.9",__DATE__,NULL), "icons/about.png", &text);
@@ -573,18 +596,18 @@ int GMenu2X::main() {
 
 		//Sections
 		if (menu->firstDispSection()>0)
-			sc["imgs/left.png"]->blit(s,1,16);
+			sc.skinRes("imgs/left.png")->blit(s,1,16);
 		if (menu->firstDispSection()+5<menu->sections.size())
-			sc["imgs/right.png"]->blit(s,311,16);
+			sc.skinRes("imgs/right.png")->blit(s,311,16);
 		for (i=menu->firstDispSection(); i<menu->sections.size() && i<menu->firstDispSection()+5; i++) {
-			string sectionIcon = "sections/"+menu->sections[i]+".png";
+			string sectionIcon = "skin:sections/"+menu->sections[i]+".png";
 			x = (i-menu->firstDispSection())*60+24;
 			if (menu->selSectionIndex()==(int)i)
 				s->box(x-14, 0, 60, 40, selectionColor);
 			if (sc.exists(sectionIcon))
 				sc[sectionIcon]->blit(s,x,0,32,32);
 			else
-				sc["icons/section.png"]->blit(s,x,0);
+				sc.skinRes("icons/section.png")->blit(s,x,0);
 			s->write( font, menu->sections[i], x+16, 41, SFontHAlignCenter, SFontVAlignBottom );
 		}
 
@@ -658,18 +681,30 @@ int GMenu2X::main() {
 
 #ifdef TARGET_GP2X
 		joy.update();
-		if ( joy[GP2X_BUTTON_START] ) options();
-		if ( joy[GP2X_BUTTON_SELECT] ) contextMenu();
+		if ( joy[GP2X_BUTTON_A] ) {
+			if (pal && cx25874!=0) {
+				gp2x_tvout_off();
+			} else {
+				gp2x_tvout_on(pal);
+				pal = !pal;
+			}
+			sleep(1);
+		}
 		if ( joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK] && menu->selLink()!=NULL ) menu->selLink()->run();
+		else if ( joy[GP2X_BUTTON_START] ) {
+			options();
+			useSelectionPng = sc.addSkinRes("imgs/selection.png") != NULL;
+		}
+		else if ( joy[GP2X_BUTTON_SELECT] ) contextMenu();
 		// LINK NAVIGATION
-		if ( joy[GP2X_BUTTON_LEFT ] ) menu->linkLeft();
-		if ( joy[GP2X_BUTTON_RIGHT] ) menu->linkRight();
-		if ( joy[GP2X_BUTTON_UP   ] ) menu->linkUp();
-		if ( joy[GP2X_BUTTON_DOWN ] ) menu->linkDown();
+		else if ( joy[GP2X_BUTTON_LEFT ] ) menu->linkLeft();
+		else if ( joy[GP2X_BUTTON_RIGHT] ) menu->linkRight();
+		else if ( joy[GP2X_BUTTON_UP   ] ) menu->linkUp();
+		else if ( joy[GP2X_BUTTON_DOWN ] ) menu->linkDown();
 		// SELLINKAPP SELECTED
-		if (menu->selLinkApp()!=NULL) {
+		else if (menu->selLinkApp()!=NULL) {
 			if ( joy[GP2X_BUTTON_Y] ) menu->selLinkApp()->showManual();
-			if ( joy[GP2X_BUTTON_A    ] ) {
+			else if ( joy[GP2X_BUTTON_A    ] ) {
 				// VOLUME
 				if ( joy[GP2X_BUTTON_VOLDOWN] && !joy[GP2X_BUTTON_VOLUP] )
 					menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()-1,0,100) );
@@ -690,7 +725,7 @@ int GMenu2X::main() {
 			menu->decSectionIndex();
 			offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
 		}
-		if ( joy[GP2X_BUTTON_R     ] ) {
+		else if ( joy[GP2X_BUTTON_R     ] ) {
 			menu->incSectionIndex();
 			offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
 		}
@@ -723,9 +758,12 @@ int GMenu2X::main() {
 					offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
 				}
 				//ACTIONS
-				if ( event.key.keysym.sym==SDLK_s      ) options();
-				if ( event.key.keysym.sym==SDLK_SPACE  ) contextMenu();
 				if ( event.key.keysym.sym==SDLK_RETURN && menu->selLink()!=NULL ) menu->selLink()->run();
+				if ( event.key.keysym.sym==SDLK_s      ) {
+					options();
+					useSelectionPng = sc.addSkinRes("imgs/selection.png") != NULL;
+				}
+				if ( event.key.keysym.sym==SDLK_SPACE  ) contextMenu();
 			}
 		}
 #endif
@@ -769,18 +807,23 @@ void GMenu2X::options() {
 		if (curGlobalVolume!=globalVolume) setVolume(globalVolume);
 		if (lang == "English") lang = "";
 		if (lang != tr.lang()) tr.setLang(lang);
-		if (curSkin != skin) {
-			sc.clear();
-			sc.setSkin(skin);
-			for (uint i=0; i<menu->sections.size(); i++) {
-				string sectionIcon = "sections/"+menu->sections[i]+".png";
-				if (fileExists(sectionIcon))
-					sc.add(sectionIcon);
-			}
-		}
+		if (curSkin != skin)
+			setSkin(skin);
 		writeConfig();
 		initBG();
 	}
+}
+
+void GMenu2X::setSkin(string skin) {
+	this->skin = skin;
+	sc.clear();
+	sc.setSkin(skin);
+	for (uint i=0; i<menu->sections.size(); i++) {
+		string sectionIcon = "sections/"+menu->sections[i]+".png";
+		if (!sc.getSkinFilePath(sectionIcon).empty())
+			sc.add("skin:"+sectionIcon);
+	}
+	initFont();
 }
 
 void GMenu2X::activateSdUsb() {
@@ -934,6 +977,7 @@ void GMenu2X::editLink() {
 	string linkSelFilter = menu->selLinkApp()->getSelectorFilter();
 	string linkSelDir = menu->selLinkApp()->getSelectorDir();
 	bool linkSelBrowser = menu->selLinkApp()->getSelectorBrowser();
+	bool linkUseRamTimings = menu->selLinkApp()->getUseRamTimings();
 	string linkSelScreens = menu->selLinkApp()->getSelectorScreens();
 	string linkSelAliases = menu->selLinkApp()->getAliasFile();
 	int linkClock = menu->selLinkApp()->clock();
@@ -947,6 +991,7 @@ void GMenu2X::editLink() {
 	sd.addSetting(new MenuSettingFile(this,tr["Icon"],tr["Select an icon for the link"],&linkIcon,".png,.bmp,.jpg,.jpeg"));
 	sd.addSetting(new MenuSettingFile(this,tr["Manual"],tr["Select a graphic/textual manual or a readme"],&linkManual,".man.png,.txt"));
 	sd.addSetting(new MenuSettingInt(this,tr["Clock (default: 200)"],tr["Cpu clock frequency to set when launching this link"],&linkClock,50,maxClock));
+	sd.addSetting(new MenuSettingBool(this,tr["Tweak RAM Timings"],tr["This usually speeds up the application at the cost of stability"],&linkUseRamTimings));
 	sd.addSetting(new MenuSettingInt(this,tr["Volume (default: -1)"],tr["Volume to set for this link"],&linkVolume,-1,100));
 	sd.addSetting(new MenuSettingString(this,tr["Parameters"],tr["Parameters to pass to the application"],&linkParams));
 	sd.addSetting(new MenuSettingDir(this,tr["Selector Directory"],tr["Directory to scan for the selector"],&linkSelDir));
@@ -969,6 +1014,7 @@ void GMenu2X::editLink() {
 		menu->selLinkApp()->setSelectorFilter(linkSelFilter);
 		menu->selLinkApp()->setSelectorDir(linkSelDir);
 		menu->selLinkApp()->setSelectorBrowser(linkSelBrowser);
+		menu->selLinkApp()->setUseRamTimings(linkUseRamTimings);
 		menu->selLinkApp()->setSelectorScreens(linkSelScreens);
 		menu->selLinkApp()->setAliasFile(linkSelAliases);
 		menu->selLinkApp()->setClock(linkClock);
@@ -1212,6 +1258,34 @@ void GMenu2X::setInputSpeed() {
 #endif
 }
 
+void GMenu2X::applyRamTimings() {
+#ifdef TARGET_GP2X
+	bool alreadyInited = gp2x_initialized;
+	if (!alreadyInited) gp2x_init();
+
+	// 6 4 1 1 1 2 2
+	int tRC = 5, tRAS = 3, tWR = 0, tMRD = 0, tRFC = 0, tRP = 1, tRCD = 1;
+	gp2x_memregs[0x3802>>1] = ((tMRD & 0xF) << 12) | ((tRFC & 0xF) << 8) | ((tRP & 0xF) << 4) | (tRCD & 0xF);
+	gp2x_memregs[0x3804>>1] = ((tRC & 0xF) << 8) | ((tRAS & 0xF) << 4) | (tWR & 0xF);
+
+	if (!alreadyInited) gp2x_deinit();
+#endif
+}
+
+void GMenu2X::applyDefaultTimings() {
+#ifdef TARGET_GP2X
+	bool alreadyInited = gp2x_initialized;
+	if (!alreadyInited) gp2x_init();
+
+	// 8 16 3 8 8 8 8
+	int tRC = 7, tRAS = 15, tWR = 2, tMRD = 7, tRFC = 7, tRP = 7, tRCD = 7;
+	gp2x_memregs[0x3802>>1] = ((tMRD & 0xF) << 12) | ((tRFC & 0xF) << 8) | ((tRP & 0xF) << 4) | (tRCD & 0xF);
+	gp2x_memregs[0x3804>>1] = ((tRC & 0xF) << 8) | ((tRAS & 0xF) << 4) | (tWR & 0xF);
+
+	if (!alreadyInited) gp2x_deinit();
+#endif
+}
+
 void GMenu2X::setClock(unsigned mhz) {
 	mhz = constrain(mhz,50,maxClock);
 #ifdef TARGET_GP2X
@@ -1265,14 +1339,16 @@ void GMenu2X::setVolume(int vol) {
 }
 
 string GMenu2X::getExePath() {
-	char buf[255];
-	string p;
-	int l = readlink("/proc/self/exe",buf,255);
+	if (path.empty()) {
+		char buf[255];
+		int l = readlink("/proc/self/exe",buf,255);
 
-	p = buf;
-	p = p.substr(0,l);
-	l = p.rfind("/");
-	return p.substr(0,l+1);
+		path = buf;
+		path = path.substr(0,l);
+		l = path.rfind("/");
+		path = path.substr(0,l+1);
+	}
+	return path;
 }
 
 string GMenu2X::getDiskFree() {
@@ -1289,7 +1365,7 @@ string GMenu2X::getDiskFree() {
 }
 
 int GMenu2X::drawButton(Surface *s, string btn, string text, int x, int y) {
-	if (sc["imgs/buttons/"+btn+".png"] != NULL) {
+	if (sc.skinRes("imgs/buttons/"+btn+".png") != NULL) {
 		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
 		x += sc["imgs/buttons/"+btn+".png"]->raw->w+3;
 		s->write(font, text, x, y, SFontHAlignLeft, SFontVAlignMiddle);
@@ -1299,7 +1375,7 @@ int GMenu2X::drawButton(Surface *s, string btn, string text, int x, int y) {
 }
 
 int GMenu2X::drawButtonRight(Surface *s, string btn, string text, int x, int y) {
-	if (sc["imgs/buttons/"+btn+".png"] != NULL) {
+	if (sc.skinRes("imgs/buttons/"+btn+".png") != NULL) {
 		x -= 16;
 		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
 		x -= 3;

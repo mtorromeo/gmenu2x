@@ -142,6 +142,7 @@ bool Menu::addActionLink(uint section, string title, LinkRunAction action, strin
 	LinkAction *linkact = new LinkAction(gmenu2x,action);
 	linkact->setTitle(title);
 	linkact->setDescription(description);
+	if (gmenu2x->sc.exists(icon) || (icon.substr(0,5)=="skin:" && !gmenu2x->sc.getSkinFilePath(icon.substr(5,icon.length())).empty()) || fileExists(icon))
 	linkact->setIcon(icon);
 
 	sectionLinks(section)->push_back(linkact);

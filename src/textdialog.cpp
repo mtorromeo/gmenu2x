@@ -83,8 +83,8 @@ void TextDialog::drawText(vector<string> *text, uint firstRow, uint rowsPerPage)
 		int rowY;
 		if (text->at(i)=="----") { //draw a line
 			rowY = 42+(int)((i-firstRow+0.5)*gmenu2x->font->getHeight());
-			gmenu2x->s->hline(5,rowY,304,255,255,255,255);
-			gmenu2x->s->hline(5,rowY+1,304,0,0,0,255);
+			gmenu2x->s->hline(5,rowY,304,255,255,255,130);
+			gmenu2x->s->hline(5,rowY+1,304,0,0,0,130);
 		} else {
 			rowY = 42+(i-firstRow)*gmenu2x->font->getHeight();
 			gmenu2x->font->write(gmenu2x->s, text->at(i), 5, rowY);
@@ -98,17 +98,15 @@ void TextDialog::drawText(vector<string> *text, uint firstRow, uint rowsPerPage)
 void TextDialog::exec() {
 	bool close = false;
 
-	Surface bg("imgs/bg.png", gmenu2x->skin);
-	gmenu2x->drawTopBar(&bg);
-	gmenu2x->drawBottomBar(&bg);
+	Surface bg(gmenu2x->sc["imgs/bg.png"]);
 
 	//link icon
-	if (!fileExists(icon)) icon = "icons/ebook.png";
-	Surface sIcon(icon);
-	sIcon.blit(&bg,4,4);
-	//selector text
-	bg.write(gmenu2x->font,title,40,13, SFontHAlignLeft, SFontVAlignMiddle);
-	bg.write(gmenu2x->font,description,40,27, SFontHAlignLeft, SFontVAlignMiddle);
+	if (!fileExists(icon))
+		gmenu2x->drawTitleIcon("icons/ebook.png",true,&bg);
+	else
+		gmenu2x->drawTitleIcon(icon,false,&bg);
+	gmenu2x->writeTitle(title,&bg);
+	gmenu2x->writeSubTitle(description,&bg);
 
 	gmenu2x->drawButton(&bg, "x", gmenu2x->tr["Exit"],
 	gmenu2x->drawButton(&bg, "down", gmenu2x->tr["Scroll"],

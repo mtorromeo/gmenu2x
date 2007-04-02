@@ -33,6 +33,15 @@ void SurfaceCollection::setSkin(string skin) {
 	this->skin = skin;
 }
 
+string SurfaceCollection::getSkinFilePath(string file) {
+	if (fileExists("skins/"+skin+"/"+file))
+		return "skins/"+skin+"/"+file;
+	else if (fileExists("skins/Default/"+file))
+		return "skins/Default/"+file;
+	else
+		return "";
+}
+
 void SurfaceCollection::debug() {
 	hash_map<string, Surface*>::iterator end = surfaces.end();
 	for(hash_map<string, Surface*>::iterator curr = surfaces.begin(); curr != end; curr++){
@@ -55,22 +64,29 @@ Surface *SurfaceCollection::add(string path, bool alpha) {
 	cout << "Adding surface: " << path << endl;
 #endif
 	if (exists(path)) del(path);
-	if (!fileExists(path)) return NULL;
-	Surface *s = new Surface(path,alpha);
+	string filePath = path;
+
+	if (filePath.substr(0,5)=="skin:") {
+		filePath = getSkinFilePath(filePath.substr(5,filePath.length()));
+		if (filePath.empty())
+			return NULL;
+	} else if (!fileExists(filePath)) return NULL;
+
+	Surface *s = new Surface(filePath,alpha);
 	surfaces[path] = s;
 	return s;
 }
 
 Surface *SurfaceCollection::addSkinRes(string path, bool alpha) {
+#ifdef DEBUG
+	cout << "Adding skin surface: " << path << endl;
+#endif
+
 	if (path.empty()) return NULL;
 	if (exists(path)) del(path);
 
-	string skinpath;
-	if (fileExists("skins/"+skin+"/"+path))
-		skinpath = "skins/"+skin+"/"+path;
-	else if (fileExists("skins/Default/"+path))
-		skinpath = "skins/Default/"+path;
-	else
+	string skinpath = getSkinFilePath(path);
+	if (skinpath.empty())
 		return NULL;
 	Surface *s = new Surface(skinpath,alpha);
 	if (s != NULL)

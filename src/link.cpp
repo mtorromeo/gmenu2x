@@ -55,6 +55,12 @@ string Link::getIcon() {
 }
 
 void Link::setIcon(string icon) {
+	if (icon.substr(0,gmenu2x->getExePath().length()+7) == gmenu2x->getExePath()+"skins/") {
+		string tempIcon = icon.substr(gmenu2x->getExePath().length()+7, icon.length());
+		string::size_type pos = tempIcon.find("/");
+		if (pos != string::npos)
+			icon = "skin:"+tempIcon.substr(pos,icon.length());
+	}
 	this->icon = icon;
 	edited = true;
 }

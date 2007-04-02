@@ -48,6 +48,7 @@ LinkApp::LinkApp(GMenu2X *gmenu2x, string path, const char* linkfile)
 	selectordir = "";
 	selectorfilter = "";
 	selectorbrowser = false;
+	useRamTimings = false;
 
 	string line;
 	ifstream infile (linkfile, ios_base::in);
@@ -64,7 +65,8 @@ LinkApp::LinkApp(GMenu2X *gmenu2x, string path, const char* linkfile)
 		} else if (name == "description") {
 			description = value;
 		} else if (name == "icon") {
-			if (fileExists(value)) icon = value;
+			if (gmenu2x->sc.exists(icon) || (value.substr(0,5)=="skin:" && !gmenu2x->sc.getSkinFilePath(value.substr(5,value.length())).empty()) || fileExists(value))
+				icon = value;
 		} else if (name == "exec") {
 			exec = value;
 			if (icon=="") {
@@ -92,6 +94,8 @@ LinkApp::LinkApp(GMenu2X *gmenu2x, string path, const char* linkfile)
 			setSelectorDir( value );
 		} else if (name == "selectorbrowser") {
 			if (value=="true") selectorbrowser = true;
+		} else if (name == "useramtimings") {
+			if (value=="true") useRamTimings = true;
 		} else if (name == "selectorfilter") {
 			setSelectorFilter( value );
 		} else if (name == "selectorscreens") {
@@ -193,6 +197,7 @@ bool LinkApp::save() {
 		if (workdir!=""        ) f << "workdir="         << workdir         << endl;
 		if (manual!=""         ) f << "manual="          << manual          << endl;
 		if (iclock!=0          ) f << "clock="           << iclock          << endl;
+		if (useRamTimings      ) f << "useramtimings=true"                  << endl;
 		if (ivolume>0          ) f << "volume="          << ivolume         << endl;
 		//G if (igamma!=0          ) f << "gamma="           << igamma          << endl;
 		if (selectordir!=""    ) f << "selectordir="     << selectordir     << endl;
@@ -245,7 +250,6 @@ void LinkApp::showManual() {
 
 	// Png manuals
 	if (manual.substr(manual.size()-8,8)==".man.png") {
-		Surface bg("imgs/bg.png");
 		Surface pngman(manual);
 		stringstream ss;
 		string pageStatus;
@@ -259,7 +263,7 @@ void LinkApp::showManual() {
 
 		while (!close) {
 			if (repaint) {
-				bg.blit(gmenu2x->s, 0, 0);
+				gmenu2x->sc["imgs/bg.png"]->blit(gmenu2x->s, 0, 0);
 				pngman.blit(gmenu2x->s, -page*320, 0);
 
 				gmenu2x->drawBottomBar();
@@ -377,6 +381,8 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 
 	if (clock()!=gmenu2x->menuClock)
 		gmenu2x->setClock(clock());
+	if (useRamTimings)
+		gmenu2x->applyRamTimings();
 	if (volume()>=0)
 		gmenu2x->setVolume(volume());
 
@@ -475,6 +481,15 @@ bool LinkApp::getSelectorBrowser() {
 
 void LinkApp::setSelectorBrowser(bool value) {
 	selectorbrowser = value;
+	edited = true;
+}
+
+bool LinkApp::getUseRamTimings() {
+	return useRamTimings;
+}
+
+void LinkApp::setUseRamTimings(bool value) {
+	useRamTimings = value;
 	edited = true;
 }
 

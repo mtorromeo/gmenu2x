@@ -83,7 +83,7 @@ void SFontPlus::initFont(SDL_Surface *font, string characters) {
 			charpos.push_back(x);
 
 			//utf8 characters
-			if (c>0 && (unsigned char)characters[c-1]==0xc3) {
+			if (c>0 && ((unsigned char)characters[c-1]==0xc2 || (unsigned char)characters[c-1]==0xc3)) {
 				charpos.push_back(startx);
 				charpos.push_back(x);
 				c++;
@@ -116,7 +116,7 @@ void SFontPlus::write(SDL_Surface *s, string text, int x, int y) {
 
 	for(uint i=0; i<text.length() && x<surface->w; i++) {
 		//Utf8 characters
-		if ((unsigned char)text[i]==0xc3 && i+1<text.length()) {
+		if (((unsigned char)text[i]==0xc2 || (unsigned char)text[i]==0xc3) && i+1<text.length()) {
 			pos = characters.find(text.substr(i,2));
 			i++;
 		} else
@@ -144,7 +144,7 @@ uint SFontPlus::getTextWidth(string text) {
 
 	for(uint x=0; x<text.length(); x++) {
 		//Utf8 characters
-		if ((unsigned char)text[x]==0xc3 && x+1<text.length()) {
+		if (((unsigned char)text[x]==0xc2 || (unsigned char)text[x]==0xc3) && x+1<text.length()) {
 			pos = characters.find(text.substr(x,2));
 			x++;
 		} else

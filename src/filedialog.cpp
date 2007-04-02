@@ -34,16 +34,26 @@
 
 using namespace std;
 
-FileDialog::FileDialog(GMenu2X *gmenu2x, string text, string filter) {
+FileDialog::FileDialog(GMenu2X *gmenu2x, string text, string filter, string file) {
 	this->gmenu2x = gmenu2x;
 	this->text = text;
 	this->filter = filter;
+	this->file = "";
+	path = "/mnt";
+	if (!file.empty()) {
+		string::size_type pos = file.rfind("/");
+		if (pos != string::npos) {
+			path = file.substr(0, pos);
+			this->file = file.substr(pos+1,file.length());
+		}
+	}
 	selRow = 0;
 }
 
 bool FileDialog::exec() {
 	bool close = false, result = true;
-	path = "/mnt";
+	if (!fileExists(path))
+		path = "/mnt";
 
 	FileLister fl(path);
 	fl.setFilter(filter);
@@ -72,9 +82,9 @@ bool FileDialog::exec() {
 		for (i=firstElement; i<fl.size() && i<firstElement+10; i++) {
 			iY = i-firstElement;
 			if (fl.isDirectory(i))
-				gmenu2x->sc["imgs/folder.png"]->blit(gmenu2x->s, 5, 45+(iY*17));
+				gmenu2x->sc.skinRes("imgs/folder.png")->blit(gmenu2x->s, 5, 45+(iY*17));
 			else
-				gmenu2x->sc["imgs/file.png"]->blit(gmenu2x->s, 5, 45+(iY*17));
+				gmenu2x->sc.skinRes("imgs/file.png")->blit(gmenu2x->s, 5, 45+(iY*17));
 			gmenu2x->s->write(gmenu2x->font, fl[i], 24, 52+(iY*17), SFontHAlignLeft, SFontVAlignMiddle);
 		}
 		gmenu2x->s->clearClipRect();

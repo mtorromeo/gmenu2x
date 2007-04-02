@@ -41,7 +41,7 @@ void MenuSettingDir::draw(int y) {
 void MenuSettingDir::manageInput() {
 	if ( gmenu2x->joy[GP2X_BUTTON_X] ) setValue("");
 	if ( gmenu2x->joy[GP2X_BUTTON_B] ) {
-		DirDialog dd(gmenu2x,description);
+		DirDialog dd(gmenu2x, description, value());
 		if (dd.exec()) setValue( dd.path );
 	}
 }
@@ -49,7 +49,7 @@ void MenuSettingDir::manageInput() {
 void MenuSettingDir::manageInput() {
 	if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) setValue("");
 	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
-		DirDialog dd(gmenu2x,description);
+		DirDialog dd(gmenu2x, description, value());
 		if (dd.exec()) setValue( dd.path );
 	}
 }

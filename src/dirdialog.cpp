@@ -34,15 +34,20 @@
 
 using namespace std;
 
-DirDialog::DirDialog(GMenu2X *gmenu2x, string text) {
+DirDialog::DirDialog(GMenu2X *gmenu2x, string text, string dir) {
 	this->gmenu2x = gmenu2x;
 	this->text = text;
 	selRow = 0;
+	if (dir.empty())
+		path = "/mnt";
+	else
+		path = dir;
 }
 
 bool DirDialog::exec() {
 	bool close = false, result = true;
-	path = "/mnt";
+	if (!fileExists(path))
+		path = "/mnt";
 
 	FileLister fl(path,true,false);
 	fl.browse();
@@ -70,7 +75,7 @@ bool DirDialog::exec() {
 		gmenu2x->s->setClipRect(0,41,311,179);
 		for (i=firstElement; i<fl.size() && i<firstElement+10; i++) {
 			iY = i-firstElement;
-			gmenu2x->sc["imgs/folder.png"]->blit(gmenu2x->s, 5, 45+(iY*17));
+			gmenu2x->sc.skinRes("imgs/folder.png")->blit(gmenu2x->s, 5, 45+(iY*17));
 			gmenu2x->s->write(gmenu2x->font, fl[i], 24, 52+(iY*17), SFontHAlignLeft, SFontVAlignMiddle);
 		}
 		gmenu2x->s->clearClipRect();

@@ -63,7 +63,7 @@ int Selector::exec(int startSelection) {
 
 	if (link->getSelectorBrowser()) {
 		gmenu2x->drawButton(&bg, "start", gmenu2x->tr["Exit"],
-		gmenu2x->drawButton(&bg, "b", gmenu2x->tr["Select file"],
+		gmenu2x->drawButton(&bg, "b", gmenu2x->tr["Select a file"],
 		gmenu2x->drawButton(&bg, "x", gmenu2x->tr["Up one directory"], 5)));
 	} else {
 		gmenu2x->drawButton(&bg, "x", gmenu2x->tr["Exit"],
@@ -94,6 +94,13 @@ int Selector::exec(int startSelection) {
 		if (selected<fl.size())
 			gmenu2x->s->box(1, iY, 309, 14, gmenu2x->selectionColor);
 
+		//Screenshot
+		if (selected-fl.dirCount()<screens.size() && screens[selected-fl.dirCount()]!="") {
+			curTick = SDL_GetTicks();
+			if (curTick-selTick>200)
+				gmenu2x->sc[screens[selected-fl.dirCount()]]->blitRight(gmenu2x->s, 311, 42, 160, 160, min((curTick-selTick-200)/3,255));
+		}
+
 		//Files & Dirs
 		gmenu2x->s->setClipRect(0,41,311,179);
 		for (i=firstElement; i<fl.size() && i<firstElement+SELECTOR_ELEMENTS; i++) {
@@ -105,12 +112,6 @@ int Selector::exec(int startSelection) {
 				gmenu2x->s->write(gmenu2x->font, titles[i-fl.dirCount()], 4, 49+(iY*16), SFontHAlignLeft, SFontVAlignMiddle);
 		}
 		gmenu2x->s->clearClipRect();
-
-		if (selected-fl.dirCount()<screens.size() && screens[selected-fl.dirCount()]!="") {
-			curTick = SDL_GetTicks();
-			if (curTick-selTick>200)
-				gmenu2x->sc[screens[selected-fl.dirCount()]]->blitRight(gmenu2x->s, 311, 42, 160, 160, min((curTick-selTick-200)/3,255));
-		}
 
 		gmenu2x->drawScrollBar(SELECTOR_ELEMENTS,fl.size(),firstElement,42,175);
 		gmenu2x->s->flip();

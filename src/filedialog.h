@@ -36,7 +36,7 @@ private:
 
 public:
 	string path, file;
-	FileDialog(GMenu2X *gmenu2x, string text, string filter="");
+	FileDialog(GMenu2X *gmenu2x, string text, string filter="", string file="");
 
 	bool exec();
 };

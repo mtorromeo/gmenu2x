@@ -42,7 +42,7 @@ void MenuSettingFile::draw(int y) {
 void MenuSettingFile::manageInput() {
 	if ( gmenu2x->joy[GP2X_BUTTON_X] ) setValue("");
 	if ( gmenu2x->joy[GP2X_BUTTON_B] ) {
-		FileDialog fd(gmenu2x,description,filter);
+		FileDialog fd(gmenu2x, description, filter, value());
 		if (fd.exec()) setValue( fd.path+"/"+fd.file );
 	}
 }
@@ -50,7 +50,7 @@ void MenuSettingFile::manageInput() {
 void MenuSettingFile::manageInput() {
 	if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) setValue("");
 	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
-		FileDialog fd(gmenu2x,description,filter);
+		FileDialog fd(gmenu2x, description, filter, value());
 		if (fd.exec()) setValue( fd.path+"/"+fd.file );
 	}
 }
