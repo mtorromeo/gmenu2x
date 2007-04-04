@@ -54,12 +54,14 @@ TextManualDialog::TextManualDialog(GMenu2X *gmenu2x, string title, string icon, 
 
 	//delete first and last blank lines from each page
 	for (uint page=0; page<pages.size(); page++) {
-		//first lines
-		while (trim(pages[page].text[0])=="")
-			pages[page].text.erase(pages[page].text.begin());
-		//last lines
-		while (trim(pages[page].text[pages[page].text.size()-1])=="")
-			pages[page].text.erase(pages[page].text.end());
+		if (pages[page].text.size() > 0) {
+			//first lines
+			while (trim(pages[page].text[0])=="")
+				pages[page].text.erase(pages[page].text.begin());
+			//last lines
+			while (trim(pages[page].text[pages[page].text.size()-1])=="")
+				pages[page].text.erase(pages[page].text.end());
+		}
 	}
 }
 
