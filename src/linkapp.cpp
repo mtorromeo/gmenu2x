@@ -191,7 +191,7 @@ bool LinkApp::targetExists() {
 #endif
 
 	string target = exec;
-	if (exec!="" && exec[0]!='/' && workdir!="")
+	if (!exec.empty() && exec[0]!='/' && !workdir.empty())
 		target = workdir + "/" + exec;
 
 	return fileExists(target);
@@ -238,10 +238,9 @@ void LinkApp::drawRun() {
 	int halfBoxW = boxW/2;
 
 	//outer box
-	SDL_Rect r = {158-halfBoxW, 97, halfBoxW*2+5, 47};
-	SDL_FillRect(gmenu2x->s->raw, &r, SDL_MapRGB(gmenu2x->s->format(),255,255,255));
-	//draw inner rectangle
-	rectangleColor(gmenu2x->s->raw, 160-halfBoxW, 99, 160+halfBoxW, 141, SDL_MapRGB(gmenu2x->s->format(),80,80,80));
+	gmenu2x->s->box(158-halfBoxW, 97, halfBoxW*2+5, 47, gmenu2x->messageBoxColor);
+	//inner rectangle
+	gmenu2x->s->rectangle(160-halfBoxW, 99, boxW, 42, gmenu2x->messageBoxBorderColor);
 
 	int x = 170-halfBoxW;
 	if (getIcon()!="")

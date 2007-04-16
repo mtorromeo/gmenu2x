@@ -319,7 +319,7 @@ void Menu::linkUp() {
 void Menu::linkDown() {
 	uint l = iLink+numCols;
 	if (l >= sectionLinks()->size()) {
-		int rows = sectionLinks()->size()/numCols+1;
+		uint rows = sectionLinks()->size()/numCols+1;
 		if (rows > iLink/numCols+1)
 			l = sectionLinks()->size()-1;
 		else

@@ -4,6 +4,7 @@ New in 0.9
 Added gamma setting (global and per-link)
 Added option to tweak ram timings
 Added skins support
+Color of message dialogs changeable by skins
 Automatic icon association for links with icons found in the skin "icons" directory
 Adding a link to a file without gpu or gpe extension automatically enables the wrapper feature
 Added support for translations (Italian, Dutch, Spanish, Germany, French, Finnish, Portuguese and Swedish included)
@@ -12,6 +13,7 @@ Added graphics for gp2x buttons
 Moved screenshot in the selector under the text
 [selFullPath] is automatically added at the end of the params when using the selector and no [marker] is specified
 Easier access to the last row of links
+Moved manual indicator to the bottom bar
 Reworked the interface a little
 Fixed half tv-out screen
 Fixed flickering in various locations

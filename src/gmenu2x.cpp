@@ -144,6 +144,18 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	selectionColor.g = 255;
 	selectionColor.b = 255;
 	selectionColor.a = 130;
+	messageBoxColor.r = 255;
+	messageBoxColor.g = 255;
+	messageBoxColor.b = 255;
+	messageBoxColor.a = 255;
+	messageBoxBorderColor.r = 80;
+	messageBoxBorderColor.g = 80;
+	messageBoxBorderColor.b = 80;
+	messageBoxBorderColor.a = 255;
+	messageBoxSelectionColor.r = 160;
+	messageBoxSelectionColor.g = 160;
+	messageBoxSelectionColor.b = 160;
+	messageBoxSelectionColor.a = 255;
 	saveSelection = true;
 	outputLogs = false;
 	maxClock = 300;
@@ -879,6 +891,18 @@ void GMenu2X::setSkin(string skin) {
 				else if (name=="bottomBarColorG") bottomBarColor.g = constrain( atoi(value.c_str()), 0, 255 );
 				else if (name=="bottomBarColorB") bottomBarColor.b = constrain( atoi(value.c_str()), 0, 255 );
 				else if (name=="bottomBarColorA") bottomBarColor.a = constrain( atoi(value.c_str()), 0, 255 );
+				else if (name=="messageBoxColorR") messageBoxColor.r = constrain( atoi(value.c_str()), 0, 255 );
+				else if (name=="messageBoxColorG") messageBoxColor.g = constrain( atoi(value.c_str()), 0, 255 );
+				else if (name=="messageBoxColorB") messageBoxColor.b = constrain( atoi(value.c_str()), 0, 255 );
+				else if (name=="messageBoxColorA") messageBoxColor.a = constrain( atoi(value.c_str()), 0, 255 );
+				else if (name=="messageBoxBorderColorR") messageBoxBorderColor.r = constrain( atoi(value.c_str()), 0, 255 );
+				else if (name=="messageBoxBorderColorG") messageBoxBorderColor.g = constrain( atoi(value.c_str()), 0, 255 );
+				else if (name=="messageBoxBorderColorB") messageBoxBorderColor.b = constrain( atoi(value.c_str()), 0, 255 );
+				else if (name=="messageBoxBorderColorA") messageBoxBorderColor.a = constrain( atoi(value.c_str()), 0, 255 );
+				else if (name=="messageBoxSelectionColorR") messageBoxSelectionColor.r = constrain( atoi(value.c_str()), 0, 255 );
+				else if (name=="messageBoxSelectionColorG") messageBoxSelectionColor.g = constrain( atoi(value.c_str()), 0, 255 );
+				else if (name=="messageBoxSelectionColorB") messageBoxSelectionColor.b = constrain( atoi(value.c_str()), 0, 255 );
+				else if (name=="messageBoxSelectionColorA") messageBoxSelectionColor.a = constrain( atoi(value.c_str()), 0, 255 );
 			}
 			skinconf.close();
 		}
@@ -1001,15 +1025,13 @@ void GMenu2X::contextMenu() {
 	Surface bg(s);
 	//Darken background
 	bg.box(0, 0, 320, 240, 0,0,0,150);
-	bg.box( box.x, box.y, box.w, box.h, 255,255,255,255 );
-	bg.rectangle( box.x+2, box.y+2, box.w-4, box.h-4, 80,80,80,255 );
-	bg.blit(s,0,0);
+	bg.box( box.x, box.y, box.w, box.h, messageBoxColor );
+	bg.rectangle( box.x+2, box.y+2, box.w-4, box.h-4, messageBoxBorderColor );
 	while (!close) {
 		selbox.y = box.y+4+(h+2)*sel;
-		//clean internal area
-		s->box( box.x+3, box.y+3, box.w-6, box.h-6, 255,255,255,255 );
+		bg.blit(s,0,0);
 		//draw selection rect
-		s->box( selbox.x, selbox.y, selbox.w, selbox.h, 160,160,160,255 );
+		s->box( selbox.x, selbox.y, selbox.w, selbox.h, messageBoxSelectionColor );
 		for (i=0; i<voices.size(); i++)
 			s->write( font, voices[i].text, box.x+12, box.y+11+(h+2)*i, SFontHAlignLeft, SFontVAlignMiddle );
 		s->flip();

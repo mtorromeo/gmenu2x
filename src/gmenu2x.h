@@ -122,7 +122,7 @@ public:
 #endif
 
 	//Configuration settings
-	RGBAColor selectionColor, topBarColor, bottomBarColor;
+	RGBAColor selectionColor, topBarColor, bottomBarColor, messageBoxColor, messageBoxBorderColor, messageBoxSelectionColor;
 	bool saveSelection, outputLogs;
 	int maxClock, menuClock, startSectionIndex, startLinkIndex, globalVolume;
 	string skin;
