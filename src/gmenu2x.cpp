@@ -383,7 +383,7 @@ b._.o._.b\n\
 Jacopastorius\n\
 and all the anonymous donors...\n\
 (If I missed to list you or if you want to be removed, contact me.)","\n");
-	TextDialog td(this, "GMenu2X", tr.translate("Version $1 (Build date: $2)","0.9",__DATE__,NULL), "icons/about.png", &text);
+	TextDialog td(this, "GMenu2X", tr.translate("Version $1 (Build date: $2)","0.9-test2",__DATE__,NULL), "icons/about.png", &text);
 	td.exec();
 }
 
