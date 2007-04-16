@@ -867,6 +867,32 @@ void GMenu2X::setSkin(string skin) {
 	sc.clear();
 	sc.setSkin(skin);
 
+	//reset colors to the default values
+	topBarColor.r = 255;
+	topBarColor.g = 255;
+	topBarColor.b = 255;
+	topBarColor.a = 130;
+	bottomBarColor.r = 255;
+	bottomBarColor.g = 255;
+	bottomBarColor.b = 255;
+	bottomBarColor.a = 130;
+	selectionColor.r = 255;
+	selectionColor.g = 255;
+	selectionColor.b = 255;
+	selectionColor.a = 130;
+	messageBoxColor.r = 255;
+	messageBoxColor.g = 255;
+	messageBoxColor.b = 255;
+	messageBoxColor.a = 255;
+	messageBoxBorderColor.r = 80;
+	messageBoxBorderColor.g = 80;
+	messageBoxBorderColor.b = 80;
+	messageBoxBorderColor.a = 255;
+	messageBoxSelectionColor.r = 160;
+	messageBoxSelectionColor.g = 160;
+	messageBoxSelectionColor.b = 160;
+	messageBoxSelectionColor.a = 255;
+
 	//load skin settings
 	string skinconfname = "skins/"+skin+"/skin.conf";
 	if (fileExists(skinconfname)) {
