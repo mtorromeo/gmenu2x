@@ -36,10 +36,12 @@ Parses links files.
 */
 class LinkApp : public Link {
 private:
-	string path, sclock, svolume;
+	string sclock, svolume;
 	int iclock, ivolume;
-	//G string sgamma;
-	//G int igamma;
+	//G
+	string sgamma;
+	//G
+	int igamma;
 	string exec, params, workdir, manual, selectordir, selectorfilter, selectorscreens;
 	bool selectorbrowser, useRamTimings;
 	void drawRun();
@@ -47,7 +49,8 @@ private:
 	string aliasfile;
 
 public:
-	LinkApp(GMenu2X *gmenu2x, string path, const char* linkfile);
+	LinkApp(GMenu2X *gmenu2x, const char* linkfile);
+	void searchIcon();
 
 	string getExec();
 	void setExec(string exec);
@@ -80,11 +83,11 @@ public:
 	string volumeStr();
 	void setVolume(int vol);
 
-/*G
+//G
 	int gamma();
 	string gammaStr();
 	void setGamma(int gamma);
-*/
+// /G
 
 	bool wrapper;
 	bool dontleave;

@@ -1,5 +1,6 @@
 #include "sfontplus.h"
 
+#include <cassert>
 #include <SDL_image.h>
 #include <iostream>
 

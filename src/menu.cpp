@@ -32,9 +32,8 @@
 
 using namespace std;
 
-Menu::Menu(GMenu2X *gmenu2x, string path) {
+Menu::Menu(GMenu2X *gmenu2x) {
 	this->gmenu2x = gmenu2x;
-	this->path = path;
 	iFirstDispSection = 0;
 
 	numRows = 4;
@@ -159,10 +158,18 @@ bool Menu::addLink(string path, string file, string section) {
 	}
 	if (path[path.length()-1]!='/') path += "/";
 
+	//if the extension is not equal to gpu or gpe then enable the wrapepr by default
+	bool wrapper = true;
+
+	//strip the extension from the filename
 	string title = file;
 	string::size_type pos = title.rfind(".");
-	if (pos!=string::npos && pos>0)
+	if (pos!=string::npos && pos>0) {
+		string ext = title.substr(pos, title.length());
+		transform(ext.begin(), ext.end(), ext.begin(), (int(*)(int)) tolower);
+		if (ext == ".gpu" || ext == ".gpe") wrapper = false;
 		title = title.substr(0, pos);
+	}
 
 	string linkpath = "sections/"+section+"/"+title;
 	int x=2;
@@ -178,11 +185,13 @@ bool Menu::addLink(string path, string file, string section) {
 	cout << "\033[0;34mGMENU2X:\033[0m Adding link: " << linkpath << endl;
 #endif
 
+	//Reduce title lenght to fit the column width
 	int linkW = 312/numCols;
-	if (gmenu2x->font->getTextWidth(title)>linkW) {
-		while (gmenu2x->font->getTextWidth(title+"..")>linkW)
-			title = title.substr(0,title.length()-1);
-		title += "..";
+	string shorttitle = title;
+	if (gmenu2x->font->getTextWidth(shorttitle)>linkW) {
+		while (gmenu2x->font->getTextWidth(shorttitle+"..")>linkW)
+			shorttitle = shorttitle.substr(0,shorttitle.length()-1);
+		shorttitle += "..";
 	}
 
 	//search for a manual
@@ -201,7 +210,7 @@ bool Menu::addLink(string path, string file, string section) {
 		bool found = false;
 		for (uint x=0; x<fl.size() && !found; x++) {
 			string lcfilename = fl[x];
-			transform(lcfilename.begin(), lcfilename.end(), lcfilename.begin(), (int(*)(int)) tolower);
+
 			if (lcfilename.find("readme") != string::npos) {
 				found = true;
 				manual = path+fl.files[x];
@@ -214,11 +223,10 @@ bool Menu::addLink(string path, string file, string section) {
 
 	ofstream f(linkpath.c_str());
 	if (f.is_open()) {
-		f << "title=" << title << endl;
-		if (fileExists(path+title+".png"))
-			f << "icon=" << path << title << ".png" << endl;
+		f << "title=" << shorttitle << endl;
 		f << "exec=" << path << file << endl;
-		f << "manual=" << manual << endl;
+		if (!manual.empty()) f << "manual=" << manual << endl;
+		if (wrapper) f << "wrapper=true" << endl;
 		f.close();
 
 		int isection = find(sections.begin(),sections.end(),section) - sections.begin();
@@ -226,7 +234,7 @@ bool Menu::addLink(string path, string file, string section) {
 #ifdef DEBUG
 			cout << "\033[0;34mGMENU2X:\033[0m Section: " << sections[isection] << "(" << isection << ")" << endl;
 #endif
-			links[isection].push_back( new LinkApp(gmenu2x, path, linkpath.c_str()) );
+			links[isection].push_back( new LinkApp(gmenu2x, linkpath.c_str()) );
 		}
 	} else {
 #ifdef DEBUG
@@ -310,8 +318,13 @@ void Menu::linkUp() {
 
 void Menu::linkDown() {
 	uint l = iLink+numCols;
-	if (l >= sectionLinks()->size())
-		l %= numCols;
+	if (l >= sectionLinks()->size()) {
+		int rows = sectionLinks()->size()/numCols+1;
+		if (rows > iLink/numCols+1)
+			l = sectionLinks()->size()-1;
+		else
+			l %= numCols;
+	}
 	setLinkIndex(l);
 }
 
@@ -371,7 +384,7 @@ void Menu::readLinks() {
 
 		sort(linkfiles.begin(), linkfiles.end(),case_less());
 		for (uint x=0; x<linkfiles.size(); x++) {
-			LinkApp *link = new LinkApp(gmenu2x, path, linkfiles[x].c_str());
+			LinkApp *link = new LinkApp(gmenu2x, linkfiles[x].c_str());
 			if (link->targetExists())
 				links[i].push_back( link );
 			else

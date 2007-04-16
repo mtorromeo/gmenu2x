@@ -34,17 +34,17 @@
 
 using namespace std;
 
-LinkApp::LinkApp(GMenu2X *gmenu2x, string path, const char* linkfile)
+LinkApp::LinkApp(GMenu2X *gmenu2x, const char* linkfile)
 	: Link(gmenu2x) {
 	this->gmenu2x = gmenu2x;
-	this->path = path;
 	manual = "";
 	file = linkfile;
 	wrapper = false;
 	dontleave = false;
 	setClock(200);
 	setVolume(-1);
-	//G setGamma(0);
+	//G
+	setGamma(0);
 	selectordir = "";
 	selectorfilter = "";
 	selectorbrowser = false;
@@ -69,11 +69,6 @@ LinkApp::LinkApp(GMenu2X *gmenu2x, string path, const char* linkfile)
 				icon = value;
 		} else if (name == "exec") {
 			exec = value;
-			if (icon=="") {
-				string::size_type pos = exec.rfind(".");
-				string execicon = exec.substr(0,pos)+".png";
-				if (fileExists(execicon)) icon = execicon;
-			}
 		} else if (name == "params") {
 			params = value;
 		} else if (name == "workdir") {
@@ -86,8 +81,9 @@ LinkApp::LinkApp(GMenu2X *gmenu2x, string path, const char* linkfile)
 			if (value=="true") dontleave = true;
 		} else if (name == "clock") {
 			setClock( atoi(value.c_str()) );
-		//G } else if (name == "gamma") {
-		//G 	setGamma( atoi(value.c_str()) );
+		//G
+		} else if (name == "gamma") {
+			setGamma( atoi(value.c_str()) );
 		} else if (name == "volume") {
 			setVolume( atoi(value.c_str()) );
 		} else if (name == "selectordir") {
@@ -109,7 +105,24 @@ LinkApp::LinkApp(GMenu2X *gmenu2x, string path, const char* linkfile)
 	}
 	infile.close();
 
+	if (icon=="") searchIcon();
+
 	edited = false;
+}
+
+void LinkApp::searchIcon() {
+	cout << "Searching icon..." << endl;
+	string execicon = exec;
+	string::size_type pos = exec.rfind(".");
+	if (pos != string::npos) execicon = exec.substr(0,pos);
+	execicon += ".png";
+	string exectitle = execicon;
+	pos = execicon.rfind("/");
+	if (pos != string::npos)
+		string exectitle = execicon.substr(pos+1,execicon.length());
+	if (!gmenu2x->sc.getSkinFilePath("icons/"+exectitle).empty())
+		icon = "skin:icons/"+exectitle;
+	else if (fileExists(execicon)) icon = execicon;
 }
 
 int LinkApp::clock() {
@@ -125,7 +138,7 @@ void LinkApp::setClock(int mhz) {
 	iclock = constrain(mhz,50,325);
 	stringstream ss;
 	sclock = "";
-	ss << iclock << "MHZ";
+	ss << iclock << "Mhz";
 	ss >> sclock;
 
 	edited = true;
@@ -152,7 +165,7 @@ void LinkApp::setVolume(int vol) {
 	edited = true;
 }
 
-/*G
+//G
 int LinkApp::gamma() {
 	return igamma;
 }
@@ -170,7 +183,7 @@ void LinkApp::setGamma(int gamma) {
 
 	edited = true;
 }
-*/
+// /G
 
 bool LinkApp::targetExists() {
 #ifndef TARGET_GP2X
@@ -199,7 +212,8 @@ bool LinkApp::save() {
 		if (iclock!=0          ) f << "clock="           << iclock          << endl;
 		if (useRamTimings      ) f << "useramtimings=true"                  << endl;
 		if (ivolume>0          ) f << "volume="          << ivolume         << endl;
-		//G if (igamma!=0          ) f << "gamma="           << igamma          << endl;
+		//G
+		if (igamma!=0          ) f << "gamma="           << igamma          << endl;
 		if (selectordir!=""    ) f << "selectordir="     << selectordir     << endl;
 		if (selectorbrowser    ) f << "selectorbrowser=true"                << endl;
 		if (selectorfilter!="" ) f << "selectorfilter="  << selectorfilter  << endl;
@@ -246,11 +260,12 @@ void LinkApp::run() {
 }
 
 void LinkApp::showManual() {
-	if (manual=="") return;
+	if (manual=="" || !fileExists(manual)) return;
 
 	// Png manuals
 	if (manual.substr(manual.size()-8,8)==".man.png") {
 		Surface pngman(manual);
+		Surface bg("imgs/bg.png",gmenu2x->skin);
 		stringstream ss;
 		string pageStatus;
 
@@ -263,7 +278,7 @@ void LinkApp::showManual() {
 
 		while (!close) {
 			if (repaint) {
-				gmenu2x->sc["imgs/bg.png"]->blit(gmenu2x->s, 0, 0);
+				bg.blit(gmenu2x->s, 0, 0);
 				pngman.blit(gmenu2x->s, -page*320, 0);
 
 				gmenu2x->drawBottomBar();
@@ -353,8 +368,8 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 		if (pos!=string::npos)
 			wd = exec.substr(0,pos);
 	}
-	if (wd!="") {
-		if (wd[0]!='/') wd = path + wd;
+	if (!wd.empty()) {
+		if (wd[0]!='/') wd = gmenu2x->getExePath() + wd;
 		chdir(wd.c_str());
 	}
 
@@ -372,10 +387,12 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 		if (params=="") {
 			params = cmdclean(selectedDir+selectedFile+selectedFileExtension);
 		} else {
+			string origParams = params;
 			params = strreplace(params,"[selFullPath]",cmdclean(selectedDir+selectedFile+selectedFileExtension));
 			params = strreplace(params,"[selPath]",cmdclean(selectedDir));
 			params = strreplace(params,"[selFile]",cmdclean(selectedFile));
 			params = strreplace(params,"[selExt]",cmdclean(selectedFileExtension));
+			if (params == origParams) params += " " + cmdclean(selectedDir+selectedFile+selectedFileExtension);
 		}
 	}
 
@@ -406,8 +423,8 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 	} // else, well.. we are no worse off :)
 
 	if (params!="") command += " " + params;
-	if (gmenu2x->outputLogs) command += " &> " + cmdclean(path) + "/log.txt";
-	if (wrapper) command += "; sync & cd "+cmdclean(path)+"; exec ./gmenu2x";
+	if (gmenu2x->outputLogs) command += " &> " + cmdclean(gmenu2x->getExePath()) + "/log.txt";
+	if (wrapper) command += "; sync & cd "+cmdclean(gmenu2x->getExePath())+"; exec ./gmenu2x";
 	if (dontleave) {
 		system(command.c_str());
 	} else {
@@ -415,18 +432,20 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 			gmenu2x->writeConfig();
 		if (selectedFile=="")
 			gmenu2x->writeTmp();
-		SDL_Quit();
-		//G if (gamma()!=0 && gamma()!=gmenu2x->gamma)
-		//G 	gmenu2x->setGamma(gamma());
+		gmenu2x->quit();
+		//G
+		if (gamma()!=0 && gamma()!=gmenu2x->gamma)
+		//G
+			gmenu2x->setGamma(gamma());
 		execlp("/bin/sh","/bin/sh","-c",command.c_str(),NULL);
 		//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue
 		//try relaunching gmenu2x
-		chdir(path.c_str());
+		chdir(gmenu2x->getExePath().c_str());
 		execlp("./gmenu2x", "./gmenu2x", NULL);
 	}
 
 
-	chdir(path.c_str());
+	chdir(gmenu2x->getExePath().c_str());
 }
 
 string LinkApp::getExec() {

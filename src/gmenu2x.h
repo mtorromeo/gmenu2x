@@ -56,6 +56,7 @@ private:
 	string getDiskFree();
 	unsigned short cpuX; //!< Offset for displaying cpu clock information
 	unsigned short volumeX; //!< Offset for displaying volume level
+	unsigned short manualX; //!< Offset for displaying the manual indicator in the taskbar
 	/*!
 	Reads the current battery state and returns a number representing it's level of charge
 	@return A number representing battery charge. 0 means fully discharged. 5 means fully charged. 6 represents a gp2x using AC power.
@@ -90,7 +91,6 @@ private:
 	uint numRows, numCols;
 
 #ifdef TARGET_GP2X
-	bool gp2x_initialized;
 	unsigned long gp2x_mem;
 	unsigned short *gp2x_memregs;
 	volatile unsigned short *MEM_REG;
@@ -105,6 +105,7 @@ private:
 public:
 	GMenu2X(int argc, char *argv[]);
 	~GMenu2X();
+	void quit();
 
 	/*!
 	Retrieves the parent directory of GMenu2X.
@@ -126,7 +127,8 @@ public:
 	int maxClock, menuClock, startSectionIndex, startLinkIndex, globalVolume;
 	string skin;
 	void setSkin(string skin);
-	//G int gamma;
+	//G
+	int gamma;
 
 	SurfaceCollection sc;
 	Translator tr;

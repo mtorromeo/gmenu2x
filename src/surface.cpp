@@ -241,11 +241,9 @@ void Surface::write(ASFont *font, string text, int x, int y, const unsigned shor
 }
 
 void Surface::operator = (SDL_Surface *s) {
-	raw = SDL_CreateRGBSurface( s->flags, s->w, s->h, s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask );
+	raw = SDL_DisplayFormat(s);
 	halfW = raw->w/2;
 	halfH = raw->h/2;
-	SDL_Rect dest = {0,0,0,0};
-	SDL_BlitSurface(s, NULL, raw, &dest);
 }
 
 void Surface::operator = (Surface *s) {

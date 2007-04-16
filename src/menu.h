@@ -40,14 +40,13 @@ Handles the menu structure
 class Menu {
 private:
 	GMenu2X *gmenu2x;
-	string path;
 	int iSection, iLink;
 	uint iFirstDispSection, iFirstDispRow;
 	void readLinks();
 	void freeLinks();
 
 public:
-	Menu(GMenu2X *gmenu2x, string path);
+	Menu(GMenu2X *gmenu2x);
 	~Menu();
 
 	uint numRows, numCols;
