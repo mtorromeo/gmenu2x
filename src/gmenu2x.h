@@ -95,12 +95,13 @@ private:
 	unsigned short *gp2x_memregs;
 	volatile unsigned short *MEM_REG;
 	int cx25874;
-	bool pal;
 #endif
+	string tvoutEncoding;
 	void gp2x_tvout_on(bool pal);
 	void gp2x_tvout_off();
 	void gp2x_init();
 	void gp2x_deinit();
+	void toggleTvOut();
 
 public:
 	GMenu2X(int argc, char *argv[]);

@@ -4,6 +4,7 @@ New in 0.9
 Added gamma setting (global and per-link)
 Added option to tweak ram timings
 Added skins support
+Added link to activate tv-out
 Color of message dialogs changeable by skins
 Automatic icon association for links with icons found in the skin "icons" directory
 Adding a link to a file without gpu or gpe extension automatically enables the wrapper feature

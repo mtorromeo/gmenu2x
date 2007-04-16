@@ -163,6 +163,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	globalVolume = 100;
 	numRows = 4;
 	numCols = 5;
+	tvoutEncoding = "NTSC";
 	//G
 	gamma = 10;
 	startSectionIndex = 0;
@@ -180,7 +181,6 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 #ifdef TARGET_GP2X
 	gp2x_mem = 0;
 	cx25874 = 0;
-	pal = true;
 
 	gp2x_init();
 
@@ -328,6 +328,7 @@ void GMenu2X::initMenu() {
 	for (uint i=0; i<menu->sections.size(); i++) {
 		if (menu->sections[i]=="settings") {
 			menu->addActionLink(i,"GMenu2X",MakeDelegate(this,&GMenu2X::options),tr["Configure GMenu2X's options"],"skin:sections/settings.png");
+			menu->addActionLink(i,"TV",MakeDelegate(this,&GMenu2X::toggleTvOut),tr["Activate/deactivate tv-out"],"skin:icons/tv.png");
 			menu->addActionLink(i,"USB Sd",MakeDelegate(this,&GMenu2X::activateSdUsb),tr["Activate Usb on SD"],"skin:icons/usb.png");
 			menu->addActionLink(i,"USB Nand",MakeDelegate(this,&GMenu2X::activateNandUsb),tr["Activate Usb on Nand"],"skin:icons/usb.png");
 			if (fileExists(path+"log.txt"))
@@ -449,6 +450,7 @@ void GMenu2X::readConfig() {
 				else if (name=="numCols") numCols = constrain( atoi(value.c_str()), 1,6 );
 				else if (name=="lang") tr.setLang(value);
 				else if (name=="skin") skin = value;
+				else if (name=="tvoutEncoding" && (value=="PAL" || value=="NTSC")) tvoutEncoding = value;
 				//G
 				else if (name=="gamma") gamma = constrain( atoi(value.c_str()), 1,100 );
 			}
@@ -490,6 +492,7 @@ void GMenu2X::writeConfig() {
 		inf << "globalVolume=" << globalVolume << endl;
 		inf << "numRows=" << menu->numRows << endl;
 		inf << "numCols=" << menu->numCols << endl;
+		inf << "tvoutEncoding=" << tvoutEncoding << endl;
 		//G
 		inf << "gamma=" << gamma << endl;
 		inf.close();
@@ -716,24 +719,6 @@ int GMenu2X::main() {
 
 #ifdef TARGET_GP2X
 		joy.update();
-		//Testing...
-		/*
-		if (joy[GP2X_BUTTON_VOLDOWN])
-			gp2x_memregs[0x28EE>>1]=gp2x_memregs[0x28EE>>1]-1;
-		if (joy[GP2X_BUTTON_VOLUP])
-			gp2x_memregs[0x28EE>>1]=gp2x_memregs[0x28EE>>1]+1;
-		//this optional call adjusts 1 pixel the screen position (position: 0 left, 1 right, 2 up, 3 down)
-		ioctl(handle, _IOW('v', 0x0A, unsigned char), position);
-		*/
-		if ( joy[GP2X_BUTTON_A] ) {
-			if (pal && cx25874!=0) {
-				gp2x_tvout_off();
-			} else {
-				gp2x_tvout_on(pal);
-				pal = !pal;
-			}
-			sleep(1);
-		}
 		if ( joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK] && menu->selLink()!=NULL ) menu->selLink()->run();
 		else if ( joy[GP2X_BUTTON_START] ) {
 			options();
@@ -831,6 +816,10 @@ void GMenu2X::options() {
 	FileLister fl_sk("skins",true,false);
 	fl_sk.browse();
 
+	vector<string> encodings;
+	encodings.push_back("NTSC");
+	encodings.push_back("PAL");
+
 	SettingsDialog sd(this,tr["Settings"]);
 	sd.addSetting(new MenuSettingMultiString(this,tr["Language"],tr["Set the language used by GMenu2X"],&lang,&fl_tr.files));
 	sd.addSetting(new MenuSettingMultiString(this,tr["Skin"],tr["Set the skin used by GMenu2X"],&skin,&fl_sk.directories));
@@ -843,6 +832,7 @@ void GMenu2X::options() {
 	sd.addSetting(new MenuSettingInt(this,tr["Number of rows"],tr["Set the number of rows of links to display on a page"],(int*)&menu->numRows,2,4));
 	//G
 	sd.addSetting(new MenuSettingInt(this,tr["Gamma"],tr["Set gp2x gamma value (default=10)"],&gamma,1,100));
+	sd.addSetting(new MenuSettingMultiString(this,tr["Tv-Out encoding"],tr["Encoding of the tv-out signal"],&tvoutEncoding,&encodings));
 	sd.addSetting(new MenuSettingRGBA(this,tr["Top Bar Color"],tr["Color of the top bar"],&topBarColor));
 	sd.addSetting(new MenuSettingRGBA(this,tr["Bottom Bar Color"],tr["Color of the bottom bar"],&bottomBarColor));
 	sd.addSetting(new MenuSettingRGBA(this,tr["Selection Color"],tr["Color of the selection and other interface details"],&selectionColor));
@@ -859,6 +849,13 @@ void GMenu2X::options() {
 		writeConfig();
 		initBG();
 	}
+}
+
+void GMenu2X::toggleTvOut() {
+	if (cx25874!=0)
+		gp2x_tvout_off();
+	else
+		gp2x_tvout_on(tvoutEncoding == "PAL");
 }
 
 void GMenu2X::setSkin(string skin) {
