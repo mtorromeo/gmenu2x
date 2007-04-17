@@ -27,18 +27,21 @@
 using std::string;
 using std::vector;
 
+typedef vector<string> stringlist;
+
 class InputDialog {
 private:
 	int selRow, selCol;
 	string text;
 	GMenu2X *gmenu2x;
-	vector<string> keyboard;
+	short curKeyboard;
+	vector<stringlist> keyboard;
 
 	void drawVirtualKeyboard();
-	
+
 public:
 	InputDialog(GMenu2X *gmenu2x, string text, string startvalue="");
-	
+
 	string input;
 	bool exec();
 };

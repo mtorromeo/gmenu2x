@@ -286,22 +286,23 @@ void GMenu2X::initBG() {
 	cpuX += 19;
 	manualX = cpuX+font->getTextWidth("300Mhz")+5;
 
-	//301-3-16
 	int serviceX = 282;
-	if (web) {
-		Surface webserver("imgs/webserver.png", skin);
-		webserver.blit( sc["bgmain"], serviceX, 222 );
-		serviceX -= 19;
-	}
-	if (samba) {
-		Surface sambaS("imgs/samba.png", skin);
-		sambaS.blit( sc["bgmain"], serviceX, 222 );
-		serviceX -= 19;
-	}
-	if (inet) {
-		Surface inetS("imgs/inet.png", skin);
-		inetS.blit( sc["bgmain"], serviceX, 222 );
-		serviceX -= 19;
+	if (usbnet) {
+		if (web) {
+			Surface webserver("imgs/webserver.png", skin);
+			webserver.blit( sc["bgmain"], serviceX, 222 );
+			serviceX -= 19;
+		}
+		if (samba) {
+			Surface sambaS("imgs/samba.png", skin);
+			sambaS.blit( sc["bgmain"], serviceX, 222 );
+			serviceX -= 19;
+		}
+		if (inet) {
+			Surface inetS("imgs/inet.png", skin);
+			inetS.blit( sc["bgmain"], serviceX, 222 );
+			serviceX -= 19;
+		}
 	}
 }
 
@@ -852,10 +853,12 @@ void GMenu2X::options() {
 }
 
 void GMenu2X::toggleTvOut() {
+#ifdef TARGET_GP2X
 	if (cx25874!=0)
 		gp2x_tvout_off();
 	else
 		gp2x_tvout_on(tvoutEncoding == "PAL");
+#endif
 }
 
 void GMenu2X::setSkin(string skin) {
@@ -967,7 +970,7 @@ void GMenu2X::activateSdUsb() {
 		MessageBox mb(this,tr["USB Enabled (SD)"],"icons/usb.png");
 		mb.buttons[GP2X_BUTTON_B] = tr["Turn off"];
 		mb.exec();
-		system("scripts/usboff.sh");
+		system("scripts/usboff.sh sd");
 	}
 }
 
@@ -980,7 +983,7 @@ void GMenu2X::activateNandUsb() {
 		MessageBox mb(this,tr["USB Enabled (Nand)"],"icons/usb.png");
 		mb.buttons[GP2X_BUTTON_B] = tr["Turn off"];
 		mb.exec();
-		system("scripts/usboff.sh");
+		system("scripts/usboff.sh nand");
 	}
 }
 
@@ -993,7 +996,7 @@ void GMenu2X::activateRootUsb() {
 		MessageBox mb(this,tr["USB Enabled (Root)"],"icons/usb.png");
 		mb.buttons[GP2X_BUTTON_B] = tr["Turn off"];
 		mb.exec();
-		system("scripts/usboff.sh");
+		system("scripts/usboff.sh root");
 	}
 }
 
@@ -1256,26 +1259,41 @@ void GMenu2X::scanner() {
 	drawButton(&bg, "x", tr["Exit"],
 	drawButton(&bg, "b", "", 5)-10);
 	bg.write(font,tr["Link Scanner"],160,7,SFontHAlignCenter,SFontVAlignMiddle);
-	bg.write(font,tr["Scanning SD filesystem..."],5,42);
+
+	uint lineY = 42;
+
+	if (menuClock<200) {
+		setClock(200);
+		bg.write(font,tr["Raising cpu clock to 200Mhz"],5,lineY);
+		bg.blit(s,0,0);
+		s->flip();
+		lineY += 26;
+	}
+
+	bg.write(font,tr["Scanning SD filesystem..."],5,lineY);
 	bg.blit(s,0,0);
 	s->flip();
+	lineY += 26;
 
 	vector<string> files;
 	scanPath("/mnt/sd",&files);
 
-	bg.write(font,tr["Scanning NAND filesystem..."],5,68);
+	bg.write(font,tr["Scanning NAND filesystem..."],5,lineY);
 	bg.blit(s,0,0);
 	s->flip();
+	lineY += 26;
 	scanPath("/mnt/nand",&files);
 
 	stringstream ss;
 	ss << files.size();
 	string str = "";
 	ss >> str;
-	bg.write(font,tr.translate("$1 files found.",str.c_str(),NULL),5,50);
-	bg.write(font,tr["Creating links..."],5,81);
+	bg.write(font,tr.translate("$1 files found.",str.c_str(),NULL),5,lineY);
+	lineY += 26;
+	bg.write(font,tr["Creating links..."],5,lineY);
 	bg.blit(s,0,0);
 	s->flip();
+	lineY += 26;
 
 	string path, file;
 	string::size_type pos;
@@ -1295,9 +1313,18 @@ void GMenu2X::scanner() {
 	ss.clear();
 	ss << linkCount;
 	ss >> str;
-	bg.write(font,tr.translate("$1 links created.",str.c_str(),NULL),5,97);
+	bg.write(font,tr.translate("$1 links created.",str.c_str(),NULL),5,lineY);
 	bg.blit(s,0,0);
 	s->flip();
+	lineY += 26;
+
+	if (menuClock<200) {
+		setClock(menuClock);
+		bg.write(font,tr["Decreasing cpu clock"],5,lineY);
+		bg.blit(s,0,0);
+		s->flip();
+		lineY += 26;
+	}
 
 	bool close = false;
 	while (!close) {
