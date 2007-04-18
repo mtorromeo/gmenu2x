@@ -98,7 +98,7 @@ void TextDialog::drawText(vector<string> *text, uint firstRow, uint rowsPerPage)
 void TextDialog::exec() {
 	bool close = false;
 
-	Surface bg(gmenu2x->sc["imgs/bg.png"]);
+	Surface bg(gmenu2x->bg);
 
 	//link icon
 	if (!fileExists(icon))

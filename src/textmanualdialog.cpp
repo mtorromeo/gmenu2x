@@ -69,7 +69,7 @@ void TextManualDialog::exec() {
 	bool close = false;
 	uint page=0;
 
-	Surface bg(gmenu2x->sc["imgs/bg.png"]);
+	Surface bg(gmenu2x->bg);
 
 	//link icon
 	if (!fileExists(icon))

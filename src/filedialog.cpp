@@ -61,7 +61,7 @@ bool FileDialog::exec() {
 
 	uint i, selected = 0, firstElement = 0, iY;
 	while (!close) {
-		gmenu2x->sc["imgs/bg.png"]->blit(gmenu2x->s,0,0);
+		gmenu2x->bg->blit(gmenu2x->s,0,0);
 		gmenu2x->drawTitleIcon("icons/explorer.png",true);
 		gmenu2x->writeTitle("File Browser");
 		gmenu2x->writeSubTitle(text);

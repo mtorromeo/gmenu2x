@@ -56,7 +56,7 @@ int Selector::exec(int startSelection) {
 	fl.setFilter(link->getSelectorFilter());
 	fl.browse();
 
-	Surface bg(gmenu2x->sc["imgs/bg.png"]);
+	Surface bg(gmenu2x->bg);
 	gmenu2x->drawTitleIcon(link->getIcon(),true,&bg);
 	gmenu2x->writeTitle(link->getTitle(),&bg);
 	gmenu2x->writeSubTitle(link->getDescription(),&bg);

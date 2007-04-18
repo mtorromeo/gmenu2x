@@ -126,14 +126,14 @@ public:
 	RGBAColor selectionColor, topBarColor, bottomBarColor, messageBoxColor, messageBoxBorderColor, messageBoxSelectionColor;
 	bool saveSelection, outputLogs;
 	int maxClock, menuClock, startSectionIndex, startLinkIndex, globalVolume;
-	string skin;
+	string skin, wallpaper;
 	void setSkin(string skin);
 	//G
 	int gamma;
 
 	SurfaceCollection sc;
 	Translator tr;
-	Surface *s;
+	Surface *s, *bg;
 	ASFont *font;
 
 	//Status functions
@@ -145,6 +145,7 @@ public:
 	void about();
 	void viewLog();
 	void contextMenu();
+	void changeWallpaper();
 
 	void applyRamTimings();
 	void applyDefaultTimings();

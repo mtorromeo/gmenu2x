@@ -264,7 +264,7 @@ void LinkApp::showManual() {
 	// Png manuals
 	if (manual.substr(manual.size()-8,8)==".man.png") {
 		Surface pngman(manual);
-		Surface bg("imgs/bg.png",gmenu2x->skin);
+		Surface bg(gmenu2x->wallpaper,false);
 		stringstream ss;
 		string pageStatus;
 

@@ -61,6 +61,7 @@
 #include "messagebox.h"
 #include "inputdialog.h"
 #include "settingsdialog.h"
+#include "wallpaperdialog.h"
 #include "textdialog.h"
 #include "menusettingint.h"
 #include "menusettingbool.h"
@@ -164,6 +165,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	numRows = 4;
 	numCols = 5;
 	tvoutEncoding = "NTSC";
+	wallpaper = "";
 	//G
 	gamma = 10;
 	startSectionIndex = 0;
@@ -205,10 +207,28 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	s->raw = SDL_SetVideoMode(320, 240, 16, SDL_SWSURFACE);
 	SDL_ShowCursor(0);
 
+	bg = NULL;
 	font = NULL;
 	initMenu();
 	if (skin.empty() || !fileExists("skins/"+skin)) skin = "Default";
 	setSkin(skin);
+
+	if (wallpaper.empty() || !fileExists(wallpaper)) {
+#ifdef DEBUG
+	cout << "Searching wallpaper" << endl;
+#endif
+		FileLister fl("skins/"+skin+"/wallpapers",false,true);
+		fl.setFilter(".png,.jpg,.jpeg,.bmp");
+		fl.browse();
+		if (fl.files.size()<=0 && skin != "Default")
+			fl.setPath("skins/Default/wallpapers",true);
+		if (fl.files.size()>0)
+			wallpaper = fl.getPath()+fl.files[0];
+#ifdef DEBUG
+	cout << "wallpaper=" << wallpaper << endl;
+#endif
+	}
+
 	initBG();
 
 	//Events
@@ -262,13 +282,20 @@ void GMenu2X::quit() {
 
 void GMenu2X::initBG() {
 	sc.del("bgmain");
-	sc.del("imgs/bg.png");
-	sc.addSkinRes("imgs/bg.png",false);
 
-	drawTopBar(sc["imgs/bg.png"]);
-	drawBottomBar(sc["imgs/bg.png"]);
+	if (bg != NULL) free(bg);
 
-	Surface *bgmain = new Surface(sc["imgs/bg.png"]);
+	if (wallpaper.empty() || !fileExists(wallpaper)) {
+		bg = new Surface(s);
+		bg->box(0,0,320,240,0,0,0);
+	} else {
+		bg = new Surface(wallpaper,false);
+	}
+
+	drawTopBar(bg);
+	drawBottomBar(bg);
+
+	Surface *bgmain = new Surface(bg);
 	sc.add(bgmain,"bgmain");
 
 	Surface sd("imgs/sd.png", skin);
@@ -329,6 +356,7 @@ void GMenu2X::initMenu() {
 	for (uint i=0; i<menu->sections.size(); i++) {
 		if (menu->sections[i]=="settings") {
 			menu->addActionLink(i,"GMenu2X",MakeDelegate(this,&GMenu2X::options),tr["Configure GMenu2X's options"],"skin:sections/settings.png");
+			menu->addActionLink(i,"Wallpaper",MakeDelegate(this,&GMenu2X::changeWallpaper),tr["Change GMenu2X wallpaper"],"skin:icons/wallpaper.png");
 			menu->addActionLink(i,"TV",MakeDelegate(this,&GMenu2X::toggleTvOut),tr["Activate/deactivate tv-out"],"skin:icons/tv.png");
 			menu->addActionLink(i,"USB Sd",MakeDelegate(this,&GMenu2X::activateSdUsb),tr["Activate Usb on SD"],"skin:icons/usb.png");
 			menu->addActionLink(i,"USB Nand",MakeDelegate(this,&GMenu2X::activateNandUsb),tr["Activate Usb on Nand"],"skin:icons/usb.png");
@@ -451,6 +479,7 @@ void GMenu2X::readConfig() {
 				else if (name=="numCols") numCols = constrain( atoi(value.c_str()), 1,6 );
 				else if (name=="lang") tr.setLang(value);
 				else if (name=="skin") skin = value;
+				else if (name=="wallpaper" && fileExists(value)) wallpaper = value;
 				else if (name=="tvoutEncoding" && (value=="PAL" || value=="NTSC")) tvoutEncoding = value;
 				//G
 				else if (name=="gamma") gamma = constrain( atoi(value.c_str()), 1,100 );
@@ -472,6 +501,7 @@ void GMenu2X::writeConfig() {
 
 		if (!tr.lang().empty()) inf << "lang=" << tr.lang() << endl;
 		inf << "skin=" << skin << endl;
+		if (!wallpaper.empty() && fileExists(wallpaper)) inf << "wallpaper=" << wallpaper << endl;
 		inf << "selectionColorR=" << selectionColor.r << endl;
 		inf << "selectionColorG=" << selectionColor.g << endl;
 		inf << "selectionColorB=" << selectionColor.b << endl;
@@ -929,6 +959,7 @@ void GMenu2X::setSkin(string skin) {
 				else if (name=="messageBoxSelectionColorG") messageBoxSelectionColor.g = constrain( atoi(value.c_str()), 0, 255 );
 				else if (name=="messageBoxSelectionColorB") messageBoxSelectionColor.b = constrain( atoi(value.c_str()), 0, 255 );
 				else if (name=="messageBoxSelectionColorA") messageBoxSelectionColor.a = constrain( atoi(value.c_str()), 0, 255 );
+				else if (name=="wallpaper" && fileExists("skins/"+skin+"/wallpapers/"+value)) wallpaper = "skins/"+skin+"/wallpapers/"+value;
 			}
 			skinconf.close();
 		}
@@ -1079,6 +1110,14 @@ void GMenu2X::contextMenu() {
 			}
 		}
 #endif
+	}
+}
+
+void GMenu2X::changeWallpaper() {
+	WallpaperDialog wp(this);
+	if (wp.exec()) {
+		wallpaper = wp.wallpaper;
+		initBG();
 	}
 }
 
@@ -1255,31 +1294,31 @@ void GMenu2X::deleteSection() {
 }
 
 void GMenu2X::scanner() {
-	Surface bg(sc["imgs/bg.png"]);
-	drawButton(&bg, "x", tr["Exit"],
-	drawButton(&bg, "b", "", 5)-10);
-	bg.write(font,tr["Link Scanner"],160,7,SFontHAlignCenter,SFontVAlignMiddle);
+	Surface scanbg(bg);
+	drawButton(&scanbg, "x", tr["Exit"],
+	drawButton(&scanbg, "b", "", 5)-10);
+	scanbg.write(font,tr["Link Scanner"],160,7,SFontHAlignCenter,SFontVAlignMiddle);
 
 	uint lineY = 42;
 
 	if (menuClock<200) {
 		setClock(200);
-		bg.write(font,tr["Raising cpu clock to 200Mhz"],5,lineY);
-		bg.blit(s,0,0);
+		scanbg.write(font,tr["Raising cpu clock to 200Mhz"],5,lineY);
+		scanbg.blit(s,0,0);
 		s->flip();
 		lineY += 26;
 	}
 
-	bg.write(font,tr["Scanning SD filesystem..."],5,lineY);
-	bg.blit(s,0,0);
+	scanbg.write(font,tr["Scanning SD filesystem..."],5,lineY);
+	scanbg.blit(s,0,0);
 	s->flip();
 	lineY += 26;
 
 	vector<string> files;
 	scanPath("/mnt/sd",&files);
 
-	bg.write(font,tr["Scanning NAND filesystem..."],5,lineY);
-	bg.blit(s,0,0);
+	scanbg.write(font,tr["Scanning NAND filesystem..."],5,lineY);
+	scanbg.blit(s,0,0);
 	s->flip();
 	lineY += 26;
 	scanPath("/mnt/nand",&files);
@@ -1288,10 +1327,10 @@ void GMenu2X::scanner() {
 	ss << files.size();
 	string str = "";
 	ss >> str;
-	bg.write(font,tr.translate("$1 files found.",str.c_str(),NULL),5,lineY);
+	scanbg.write(font,tr.translate("$1 files found.",str.c_str(),NULL),5,lineY);
 	lineY += 26;
-	bg.write(font,tr["Creating links..."],5,lineY);
-	bg.blit(s,0,0);
+	scanbg.write(font,tr["Creating links..."],5,lineY);
+	scanbg.blit(s,0,0);
 	s->flip();
 	lineY += 26;
 
@@ -1313,15 +1352,15 @@ void GMenu2X::scanner() {
 	ss.clear();
 	ss << linkCount;
 	ss >> str;
-	bg.write(font,tr.translate("$1 links created.",str.c_str(),NULL),5,lineY);
-	bg.blit(s,0,0);
+	scanbg.write(font,tr.translate("$1 links created.",str.c_str(),NULL),5,lineY);
+	scanbg.blit(s,0,0);
 	s->flip();
 	lineY += 26;
 
 	if (menuClock<200) {
 		setClock(menuClock);
-		bg.write(font,tr["Decreasing cpu clock"],5,lineY);
-		bg.blit(s,0,0);
+		scanbg.write(font,tr["Decreasing cpu clock"],5,lineY);
+		scanbg.blit(s,0,0);
 		s->flip();
 		lineY += 26;
 	}

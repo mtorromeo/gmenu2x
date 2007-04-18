@@ -39,7 +39,7 @@ SettingsDialog::~SettingsDialog() {
 }
 
 bool SettingsDialog::exec() {
-	Surface bg ("imgs/bg.png",gmenu2x->skin);
+	Surface bg (gmenu2x->wallpaper,false);
 
 	bool close = false;
 	uint i, sel = 0, iY, firstElement = 0;

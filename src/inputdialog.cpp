@@ -66,7 +66,7 @@ bool InputDialog::exec() {
 
 	bool close = false, ok = true;
 	while (!close) {
-		gmenu2x->sc["imgs/bg.png"]->blit(gmenu2x->s,0,0);
+		gmenu2x->bg->blit(gmenu2x->s,0,0);
 		gmenu2x->writeTitle(text);
 
 		gmenu2x->drawButton(gmenu2x->s, "y", gmenu2x->tr["Shift"],
