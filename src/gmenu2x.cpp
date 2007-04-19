@@ -224,9 +224,6 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 			fl.setPath("skins/Default/wallpapers",true);
 		if (fl.files.size()>0)
 			wallpaper = fl.getPath()+fl.files[0];
-#ifdef DEBUG
-	cout << "wallpaper=" << wallpaper << endl;
-#endif
 	}
 
 	initBG();
@@ -862,7 +859,7 @@ void GMenu2X::options() {
 	sd.addSetting(new MenuSettingInt(this,tr["Number of columns"],tr["Set the number of columns of links to display on a page"],(int*)&menu->numCols,1,6));
 	sd.addSetting(new MenuSettingInt(this,tr["Number of rows"],tr["Set the number of rows of links to display on a page"],(int*)&menu->numRows,2,4));
 	//G
-	sd.addSetting(new MenuSettingInt(this,tr["Gamma"],tr["Set gp2x gamma value (default=10)"],&gamma,1,100));
+	sd.addSetting(new MenuSettingInt(this,tr["Gamma"],tr["Set gp2x gamma value (default: 10)"],&gamma,1,100));
 	sd.addSetting(new MenuSettingMultiString(this,tr["Tv-Out encoding"],tr["Encoding of the tv-out signal"],&tvoutEncoding,&encodings));
 	sd.addSetting(new MenuSettingRGBA(this,tr["Top Bar Color"],tr["Color of the top bar"],&topBarColor));
 	sd.addSetting(new MenuSettingRGBA(this,tr["Bottom Bar Color"],tr["Color of the bottom bar"],&bottomBarColor));
@@ -1115,9 +1112,10 @@ void GMenu2X::contextMenu() {
 
 void GMenu2X::changeWallpaper() {
 	WallpaperDialog wp(this);
-	if (wp.exec()) {
+	if (wp.exec() && wallpaper != wp.wallpaper) {
 		wallpaper = wp.wallpaper;
 		initBG();
+		writeConfig();
 	}
 }
 
@@ -1173,7 +1171,7 @@ void GMenu2X::editLink() {
 	sd.addSetting(new MenuSettingDir(this,tr["Selector Screenshots"],tr["Directory of the screenshots for the selector"],&linkSelScreens));
 	sd.addSetting(new MenuSettingFile(this,tr["Selector Aliases"],tr["File containing a list of aliases for the selector"],&linkSelAliases));
 	//G
-	sd.addSetting(new MenuSettingInt(this,tr["Gamma (0=default)"],tr["Gamma value to set when launching this link"],&linkGamma,0,100));
+	sd.addSetting(new MenuSettingInt(this,tr["Gamma (default: 0)"],tr["Gamma value to set when launching this link"],&linkGamma,0,100));
 	sd.addSetting(new MenuSettingBool(this,tr["Wrapper"],tr["Explicitly relaunch GMenu2X after this link's execution ends"],&menu->selLinkApp()->wrapper));
 	sd.addSetting(new MenuSettingBool(this,tr["Don't Leave"],tr["Don't quit GMenu2X when launching this link"],&menu->selLinkApp()->dontleave));
 
