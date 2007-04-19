@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#define SFONTPLUS_CHARSET "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~¡¿ÀÁÈÉÌÍÒÓÙÚÝÄËÏÖÜÂÊÎÔÛÅÃÕÑÆÇàáèéìíòóùúýäëïöüÿâêîôûåãõñæçðßÐÞþ"
+#define SFONTPLUS_CHARSET "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~¡¿ÀÁÈÉÌÍÒÓÙÚÝÄËÏÖÜÂÊÎÔÛÅÃÕÑÆÇàáèéìíòóùúýäëïöüÿâêîôûåãõñæçðßÐÞþАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзиклмнопрстуфхцчшщъыьэюя"
 
 using std::vector;
 using std::string;

@@ -777,14 +777,18 @@ int GMenu2X::main() {
 				if ( joy[GP2X_BUTTON_VOLUP] && joy[GP2X_BUTTON_VOLDOWN] ) menu->selLinkApp()->setClock(200);
 			}
 		}
-		// SECTIONS
-		if ( joy[GP2X_BUTTON_L     ] ) {
-			menu->decSectionIndex();
-			offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
-		}
-		else if ( joy[GP2X_BUTTON_R     ] ) {
-			menu->incSectionIndex();
-			offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
+		if ( joy[GP2X_BUTTON_A] ) {
+			if (joy[GP2X_BUTTON_L] && joy[GP2X_BUTTON_R])
+				saveScreenshot();
+		} else {
+			// SECTIONS
+			if ( joy[GP2X_BUTTON_L     ] ) {
+				menu->decSectionIndex();
+				offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
+			} else if ( joy[GP2X_BUTTON_R     ] ) {
+				menu->incSectionIndex();
+				offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
+			}
 		}
 #else
 		while (SDL_PollEvent(&event)) {
@@ -814,6 +818,8 @@ int GMenu2X::main() {
 					menu->incSectionIndex();
 					offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
 				}
+				if ( event.key.keysym.sym==SDLK_p      )
+					saveScreenshot();
 				//ACTIONS
 				if ( event.key.keysym.sym==SDLK_RETURN && menu->selLink()!=NULL ) menu->selLink()->run();
 				if ( event.key.keysym.sym==SDLK_s      ) {
@@ -1117,6 +1123,24 @@ void GMenu2X::changeWallpaper() {
 		initBG();
 		writeConfig();
 	}
+}
+
+void GMenu2X::saveScreenshot() {
+	ledOn();
+	uint x = 0;
+	stringstream ss;
+	string fname;
+	do {
+		x++;
+		fname = "";
+		ss.clear();
+		ss << x;
+		ss >> fname;
+		fname = "screen"+fname+".bmp";
+	} while (fileExists(fname));
+	SDL_SaveBMP(s->raw,fname.c_str());
+	sync();
+	ledOff();
 }
 
 void GMenu2X::addLink() {
