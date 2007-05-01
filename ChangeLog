@@ -9,17 +9,19 @@ Added support for multiple wallpapers
 Color of message dialogs changeable by skins
 Automatic icon association for links with icons found in the skin "icons" directory
 Adding a link to a file without gpu or gpe extension automatically enables the wrapper feature
-Added support for translations (Italian, Dutch, Spanish, Germany, French, Finnish, Portuguese and Swedish included)
+Added support for translations (Italian, Dutch, Spanish, Germany, French, Finnish, Portuguese, Swedish, Norwegian and Russian included)
 Use of a new font code which supports (some) utf8 characters
 Added graphics for gp2x buttons
 Moved screenshot in the selector under the text
 [selFullPath] is automatically added at the end of the params when using the selector and no [marker] is specified
 Easier access to the last row of links
 Moved manual indicator to the bottom bar
-Reworked the interface a little
+Save screenshot with A+L+R (only on the main screen)
+SD corruption when using USB on certain setups should be fixed
 Fixed half tv-out screen
 Fixed flickering in various locations
 Fixed bugs in the manuals navigation system
+Other small changes
 
 ------------
 New in 0.8.1

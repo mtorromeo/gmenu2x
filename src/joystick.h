@@ -50,6 +50,7 @@ public:
 	int count();
 	void setInterval(int ms, int button = -1);
 	bool operator [](int button);
+	bool isDown(int button);
 };
 
 #endif

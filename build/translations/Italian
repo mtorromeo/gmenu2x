@@ -17,7 +17,7 @@ Link description=Descrizione collegamento
 Section=Sezione
 The section this link belongs to=La sezione alla quale appartiene questo collegamento
 Icon=Icona
-Select an icon for the link=Seleziona un'icona per il collegamento
+Select an icon for the link: $1=Seleziona un'icona per il collegamento: $1
 Manual=Manuale
 Select a graphic/textual manual or a readme=Seleziona un manuale grafico/testuale o un readme
 Cpu clock frequency to set when launching this link=Clock della cpu da impostare quando si lancia questo collegamento
@@ -116,8 +116,6 @@ Change page=Cambia pagina
 Page=Pagina
 Scroll=Scorri
 Untitled=Senza titolo
-
-
 Change GMenu2X wallpaper=Cambia lo sfondo di GMenu2X
 Activate/deactivate tv-out=Attiva/disattiva tv-out
 Select wallpaper=Seleziona sfondo
@@ -126,6 +124,15 @@ Set gp2x gamma value (default: 10)=Imposta il valore gamma della gp2x (predefini
 Tv-Out encoding=Codifica uscita tv
 Encoding of the tv-out signal=Codifica del segnale dell'uscita tv
 Tweak RAM Timings=Modifica i timings della RAM
-This usually speeds up the application at the cost of stability=Comporta solitamente un miglioramento delle performance al costo di stabilità
+This usually speeds up the application at the cost of stability=Comporta solitamente un miglioramento delle performance al costo di stabilitï¿½
 Gamma (default: 0)=Gamma (predefinito: 0)
 Gamma value to set when launching this link=Valore di gamma da impostare quando si lancia questo collegamento
+
+Wallpaper=Sfondo
+Configure skin=Configura skin
+Message Box Color=Colore Finestra Messaggi
+Message Box Border Color=Colore Bordo Finestra Messaggi
+Message Box Selection Color=Color Selezione Finestra Messaggi
+Background color of the message box=Colore di sfondo della finestra dei messaggi
+Border color of the message box=Colore del bordo della finestra dei messaggi
+Color of the selection of the message box=Colore della selezione della finestra dei messaggi

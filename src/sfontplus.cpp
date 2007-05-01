@@ -55,6 +55,10 @@ SFontPlus::~SFontPlus() {
 	freeFont();
 }
 
+bool SFontPlus::utf8Code(unsigned char c) {
+	return c==194 || c==195 || c==208 || c==209;
+}
+
 void SFontPlus::initFont(string font, string characters) {
 	SDL_Surface *buf = IMG_Load(font.c_str());
 	if (buf!=NULL) {
@@ -71,6 +75,14 @@ void SFontPlus::initFont(SDL_Surface *font, string characters) {
 	surface = font;
 	Uint32 pink = SDL_MapRGB(surface->format, 255,0,255);
 
+#ifndef _DEBUG
+	bool utf8 = false;
+	for (uint x=0; x<characters.length(); x++) {
+		if (!utf8) utf8 = (unsigned char)characters[x]>128;
+		if (utf8) printf("%d\n", (unsigned char)characters[x]);
+	}
+#endif
+
 	uint c = 0;
 
 	SDL_LockSurface(surface);
@@ -84,8 +96,7 @@ void SFontPlus::initFont(SDL_Surface *font, string characters) {
 			charpos.push_back(x);
 
 			//utf8 characters
-			//if (c>0 && ((unsigned char)characters[c-1]==0xc2 || (unsigned char)characters[c-1]==0xc3)) {
-			if (c>0 && characters[c-1]<0) {
+			if (c>0 && utf8Code(characters[c-1])) {
 				charpos.push_back(startx);
 				charpos.push_back(x);
 				c++;
@@ -117,10 +128,8 @@ void SFontPlus::write(SDL_Surface *s, string text, int x, int y) {
 	srcrect.h = dstrect.h = surface->h-1;
 
 	for(uint i=0; i<text.length() && x<surface->w; i++) {
-		//printf("%c = %d\n", text[i], text[i]);
 		//Utf8 characters
-		//if (((unsigned char)text[i]==0xc2 || (unsigned char)text[i]==0xc3) && i+1<text.length()) {
-		if (text[i]<0 && i+1<text.length()) {
+		if (utf8Code(text[i]) && i+1<text.length()) {
 			pos = characters.find(text.substr(i,2));
 			i++;
 		} else
@@ -148,8 +157,7 @@ uint SFontPlus::getTextWidth(string text) {
 
 	for(uint x=0; x<text.length(); x++) {
 		//Utf8 characters
-		//if (((unsigned char)text[x]==0xc2 || (unsigned char)text[x]==0xc3) && x+1<text.length()) {
-		if (text[x]<0 && x+1<text.length()) {
+		if (utf8Code(text[x]) && x+1<text.length()) {
 			pos = characters.find(text.substr(x,2));
 			x++;
 		} else

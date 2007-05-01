@@ -126,7 +126,7 @@ public:
 	RGBAColor selectionColor, topBarColor, bottomBarColor, messageBoxColor, messageBoxBorderColor, messageBoxSelectionColor;
 	bool saveSelection, outputLogs;
 	int maxClock, menuClock, startSectionIndex, startLinkIndex, globalVolume;
-	string skin, wallpaper;
+	string skin, skinWallpaper, wallpaper;
 	void setSkin(string skin);
 	//G
 	int gamma;
@@ -139,6 +139,7 @@ public:
 	//Status functions
 	int main();
 	void options();
+	void skinMenu();
 	void activateSdUsb();
 	void activateNandUsb();
 	void activateRootUsb();
@@ -158,6 +159,7 @@ public:
 	void setInputSpeed();
 
 	void writeConfig();
+	void writeSkinConfig();
 	void writeTmp(int selelem=-1, string selectordir="");
 
 	void ledOn();

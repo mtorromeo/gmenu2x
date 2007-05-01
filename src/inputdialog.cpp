@@ -45,17 +45,17 @@ InputDialog::InputDialog(GMenu2X *gmenu2x, string text, string startvalue) {
 	keyboard[0].push_back("_&<=>|()[]{}@#$%^~");
 	keyboard[0].push_back("àáèéìíòóùúýäëïöüÿâ");
 	keyboard[0].push_back("êîôûåãõñæçабвгдеёж");
-	keyboard[0].push_back("зи клмнопрстуфхцчш");
-	keyboard[0].push_back("щъыьэюя ðßÐÞþ    ");
+	keyboard[0].push_back("зийклмнопрстуфхцчш");
+	keyboard[0].push_back("щъыьэюяøðßÐÞþ    ");
 
 	keyboard[1].push_back("ABCDEFGHIJKLMNOPQR");
 	keyboard[1].push_back("STUVWXYZ0123456789");
 	keyboard[1].push_back(" \"'`.,:;!¡?¿*+-/\\ ");
 	keyboard[1].push_back("_&<=>|()[]{}@#$%^~");
-	keyboard[1].push_back("ÀÁÈÉÌÍÒÓÙÚÝÄËÏÖÜ Â");
+	keyboard[1].push_back("ÀÁÈÉÌÍÒÓÙÚÝÄËÏÖÜŸÂ");
 	keyboard[1].push_back("ÊÎÔÛÅÃÕÑÆÇАБВГДЕЁЖ");
 	keyboard[1].push_back("ЗИЙКЛМНОПРСТУФХЦЧШ");
-	keyboard[1].push_back("ЩЪЫЬЭЮЯ ðßÐÞþ     ");
+	keyboard[1].push_back("ЩЪЫЬЭЮЯØðßÐÞþ     ");
 }
 
 bool InputDialog::exec() {
@@ -106,8 +106,7 @@ bool InputDialog::exec() {
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_X] || gmenu2x->joy[GP2X_BUTTON_L] ) {
 			//                                      check for utf8 characters
-			//input = input.substr(0,input.length()-( (unsigned char)input[input.length()-2]==0xc2 || (unsigned char)input[input.length()-2]==0xc3 ? 2 : 1 ));
-			input = input.substr(0,input.length()-( input[input.length()-2]<0 ? 2 : 1
+			input = input.substr(0,input.length()-( gmenu2x->font->utf8Code(input[input.length()-2]) ? 2 : 1));
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_R    ] ) input += " ";
 		if ( gmenu2x->joy[GP2X_BUTTON_Y    ] ) {
@@ -124,8 +123,7 @@ bool InputDialog::exec() {
 			} else {
 				bool utf8;
 				for (uint x=0, xc=0; x<keyboard[curKeyboard][selRow].length(); x++) {
-					//utf8 = (unsigned char)keyboard[curKeyboard][selRow][x]==0xc2 || (unsigned char)keyboard[curKeyboard][selRow][x]==0xc3;
-					utf8 = keyboard[curKeyboard][selRow][x]<0;
+					utf8 = gmenu2x->font->utf8Code(keyboard[curKeyboard][selRow][x]);
 					if (xc==selCol) input += keyboard[curKeyboard][selRow].substr(x, utf8 ? 2 : 1);
 					if (utf8) x++;
 					xc++;
@@ -147,8 +145,7 @@ bool InputDialog::exec() {
 				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) {
 					//                                      check for utf8 characters
-					//input = input.substr(0,input.length()-( (unsigned char)input[input.length()-2]==0xc2 || (unsigned char)input[input.length()-2]==0xc3 ? 2 : 1 ));
-					input = input.substr(0,input.length()-( input[input.length()-2]<0 ? 2 : 1 ));
+					input = input.substr(0,input.length()-( gmenu2x->font->utf8Code(input[input.length()-2]) ? 2 : 1 ));
 				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_LSHIFT    ) {
 					if (curKeyboard==0)
@@ -165,8 +162,7 @@ bool InputDialog::exec() {
 						bool utf8;
 						int xc=0;
 						for (uint x=0; x<keyboard[curKeyboard][selRow].length(); x++) {
-							//utf8 = (unsigned char)keyboard[curKeyboard][selRow][x]==0xc2 || (unsigned char)keyboard[curKeyboard][selRow][x]==0xc3;
-							utf8 = keyboard[curKeyboard][selRow][x]<0;
+							utf8 = gmenu2x->font->utf8Code(keyboard[curKeyboard][selRow][x]);
 							if (xc==selCol) input += keyboard[curKeyboard][selRow].substr(x, utf8 ? 2 : 1);
 							if (utf8) x++;
 							xc++;
@@ -206,8 +202,7 @@ void InputDialog::drawVirtualKeyboard() {
 		for (uint x=0, xc=0; x<line.length(); x++) {
 			string charX;
 			//utf8 characters
-			//if ((unsigned char)line[x]==0xc2 || (unsigned char)line[x]==0xc3) {
-			if (line[x]<0) {
+			if (gmenu2x->font->utf8Code(line[x])) {
 				charX = line.substr(x,2);
 				x++;
 			} else

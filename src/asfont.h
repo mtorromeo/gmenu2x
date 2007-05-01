@@ -27,6 +27,8 @@ public:
 	ASFont(string font);
 	~ASFont();
 
+	bool utf8Code(unsigned char c);
+
 	int getHeight();
 	int getHalfHeight();
 	int getTextWidth(const char* text);

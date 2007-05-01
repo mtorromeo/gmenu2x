@@ -166,6 +166,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	numCols = 5;
 	tvoutEncoding = "NTSC";
 	wallpaper = "";
+	skinWallpaper = "";
 	//G
 	gamma = 10;
 	startSectionIndex = 0;
@@ -352,8 +353,9 @@ void GMenu2X::initMenu() {
 	menu->numCols = numCols; numCols = 0;
 	for (uint i=0; i<menu->sections.size(); i++) {
 		if (menu->sections[i]=="settings") {
-			menu->addActionLink(i,"GMenu2X",MakeDelegate(this,&GMenu2X::options),tr["Configure GMenu2X's options"],"skin:sections/settings.png");
-			menu->addActionLink(i,"Wallpaper",MakeDelegate(this,&GMenu2X::changeWallpaper),tr["Change GMenu2X wallpaper"],"skin:icons/wallpaper.png");
+			menu->addActionLink(i,"GMenu2X",MakeDelegate(this,&GMenu2X::options),tr["Configure GMenu2X's options"],"skin:icons/configure.png");
+			menu->addActionLink(i,tr["Skin"],MakeDelegate(this,&GMenu2X::skinMenu),tr["Configure skin"],"skin:icons/skin.png");
+			menu->addActionLink(i,tr["Wallpaper"],MakeDelegate(this,&GMenu2X::changeWallpaper),tr["Change GMenu2X wallpaper"],"skin:icons/wallpaper.png");
 			menu->addActionLink(i,"TV",MakeDelegate(this,&GMenu2X::toggleTvOut),tr["Activate/deactivate tv-out"],"skin:icons/tv.png");
 			menu->addActionLink(i,"USB Sd",MakeDelegate(this,&GMenu2X::activateSdUsb),tr["Activate Usb on SD"],"skin:icons/usb.png");
 			menu->addActionLink(i,"USB Nand",MakeDelegate(this,&GMenu2X::activateNandUsb),tr["Activate Usb on Nand"],"skin:icons/usb.png");
@@ -394,6 +396,8 @@ Portuguese (Portugal) by NightShadow\n\
 Swedish by Esslan and Micket\n\
 German by fusion_power, johnnysnet and Waldteufel\n\
 Finnish by Jontte and Atte\n\
+Norwegian by cowai\n\
+Russian by XaMMaX90\n\
 \n\
  Donors\n\
 ----\n\
@@ -409,7 +413,7 @@ b._.o._.b\n\
 Jacopastorius\n\
 and all the anonymous donors...\n\
 (If I missed to list you or if you want to be removed, contact me.)","\n");
-	TextDialog td(this, "GMenu2X", tr.translate("Version $1 (Build date: $2)","0.9-test2",__DATE__,NULL), "icons/about.png", &text);
+	TextDialog td(this, "GMenu2X", tr.translate("Version $1 (Build date: $2)","0.9-test3",__DATE__,NULL), "icons/about.png", &text);
 	td.exec();
 }
 
@@ -453,19 +457,7 @@ void GMenu2X::readConfig() {
 				string name = trim(line.substr(0,pos));
 				string value = trim(line.substr(pos+1,line.length()));
 
-				if (name=="selectionColorR") selectionColor.r = constrain( atoi(value.c_str()), 0, 255 );
-				else if (name=="selectionColorG") selectionColor.g = constrain( atoi(value.c_str()), 0, 255 );
-				else if (name=="selectionColorB") selectionColor.b = constrain( atoi(value.c_str()), 0, 255 );
-				else if (name=="selectionColorA") selectionColor.a = constrain( atoi(value.c_str()), 0, 255 );
-				else if (name=="topBarColorR") topBarColor.r = constrain( atoi(value.c_str()), 0, 255 );
-				else if (name=="topBarColorG") topBarColor.g = constrain( atoi(value.c_str()), 0, 255 );
-				else if (name=="topBarColorB") topBarColor.b = constrain( atoi(value.c_str()), 0, 255 );
-				else if (name=="topBarColorA") topBarColor.a = constrain( atoi(value.c_str()), 0, 255 );
-				else if (name=="bottomBarColorR") bottomBarColor.r = constrain( atoi(value.c_str()), 0, 255 );
-				else if (name=="bottomBarColorG") bottomBarColor.g = constrain( atoi(value.c_str()), 0, 255 );
-				else if (name=="bottomBarColorB") bottomBarColor.b = constrain( atoi(value.c_str()), 0, 255 );
-				else if (name=="bottomBarColorA") bottomBarColor.a = constrain( atoi(value.c_str()), 0, 255 );
-				else if (name=="saveSelection") saveSelection = value == "on" ? true : false;
+				if (name=="saveSelection") saveSelection = value == "on" ? true : false;
 				else if (name=="outputLogs") outputLogs = value == "on" ? true : false;
 				else if (name=="section") startSectionIndex = atoi(value.c_str());
 				else if (name=="link") startLinkIndex = atoi(value.c_str());
@@ -498,19 +490,7 @@ void GMenu2X::writeConfig() {
 
 		if (!tr.lang().empty()) inf << "lang=" << tr.lang() << endl;
 		inf << "skin=" << skin << endl;
-		if (!wallpaper.empty() && fileExists(wallpaper)) inf << "wallpaper=" << wallpaper << endl;
-		inf << "selectionColorR=" << selectionColor.r << endl;
-		inf << "selectionColorG=" << selectionColor.g << endl;
-		inf << "selectionColorB=" << selectionColor.b << endl;
-		inf << "selectionColorA=" << selectionColor.a << endl;
-		inf << "topBarColorR=" << topBarColor.r << endl;
-		inf << "topBarColorG=" << topBarColor.g << endl;
-		inf << "topBarColorB=" << topBarColor.b << endl;
-		inf << "topBarColorA=" << topBarColor.a << endl;
-		inf << "bottomBarColorR=" << bottomBarColor.r << endl;
-		inf << "bottomBarColorG=" << bottomBarColor.g << endl;
-		inf << "bottomBarColorB=" << bottomBarColor.b << endl;
-		inf << "bottomBarColorA=" << bottomBarColor.a << endl;
+		if (!wallpaper.empty()) inf << "wallpaper=" << wallpaper << endl;
 		inf << "saveSelection=" << ( saveSelection ? "on" : "off" ) << endl;
 		inf << "outputLogs=" << ( outputLogs ? "on" : "off" ) << endl;
 		inf << "section=" << startSectionIndex << endl;
@@ -523,6 +503,42 @@ void GMenu2X::writeConfig() {
 		inf << "tvoutEncoding=" << tvoutEncoding << endl;
 		//G
 		inf << "gamma=" << gamma << endl;
+		inf.close();
+		sync();
+	}
+	ledOff();
+}
+
+void GMenu2X::writeSkinConfig() {
+	ledOn();
+	string conffile = path+"skins/"+skin+"/skin.conf";
+	ofstream inf(conffile.c_str());
+	if (inf.is_open()) {
+		inf << "selectionColorR=" << selectionColor.r << endl;
+		inf << "selectionColorG=" << selectionColor.g << endl;
+		inf << "selectionColorB=" << selectionColor.b << endl;
+		inf << "selectionColorA=" << selectionColor.a << endl;
+		inf << "topBarColorR=" << topBarColor.r << endl;
+		inf << "topBarColorG=" << topBarColor.g << endl;
+		inf << "topBarColorB=" << topBarColor.b << endl;
+		inf << "topBarColorA=" << topBarColor.a << endl;
+		inf << "bottomBarColorR=" << bottomBarColor.r << endl;
+		inf << "bottomBarColorG=" << bottomBarColor.g << endl;
+		inf << "bottomBarColorB=" << bottomBarColor.b << endl;
+		inf << "bottomBarColorA=" << bottomBarColor.a << endl;
+		inf << "messageBoxColorR=" << messageBoxColor.r << endl;
+		inf << "messageBoxColorG=" << messageBoxColor.g << endl;
+		inf << "messageBoxColorB=" << messageBoxColor.b << endl;
+		inf << "messageBoxColorA=" << messageBoxColor.a << endl;
+		inf << "messageBoxBorderColorR=" << messageBoxBorderColor.r << endl;
+		inf << "messageBoxBorderColorG=" << messageBoxBorderColor.g << endl;
+		inf << "messageBoxBorderColorB=" << messageBoxBorderColor.b << endl;
+		inf << "messageBoxBorderColorA=" << messageBoxBorderColor.a << endl;
+		inf << "messageBoxSelectionColorR=" << messageBoxSelectionColor.r << endl;
+		inf << "messageBoxSelectionColorG=" << messageBoxSelectionColor.g << endl;
+		inf << "messageBoxSelectionColorB=" << messageBoxSelectionColor.b << endl;
+		inf << "messageBoxSelectionColorA=" << messageBoxSelectionColor.a << endl;
+		if (!skinWallpaper.empty()) inf << "wallpaper=" << skinWallpaper << endl;
 		inf.close();
 		sync();
 	}
@@ -761,24 +777,24 @@ int GMenu2X::main() {
 		// SELLINKAPP SELECTED
 		else if (menu->selLinkApp()!=NULL) {
 			if ( joy[GP2X_BUTTON_Y] ) menu->selLinkApp()->showManual();
-			else if ( joy[GP2X_BUTTON_A    ] ) {
+			else if ( joy.isDown(GP2X_BUTTON_A) ) {
 				// VOLUME
-				if ( joy[GP2X_BUTTON_VOLDOWN] && !joy[GP2X_BUTTON_VOLUP] )
+				if ( joy[GP2X_BUTTON_VOLDOWN] && !joy.isDown(GP2X_BUTTON_VOLUP) )
 					menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()-1,0,100) );
-				if ( joy[GP2X_BUTTON_VOLUP] && !joy[GP2X_BUTTON_VOLDOWN] )
+				if ( joy[GP2X_BUTTON_VOLUP] && !joy.isDown(GP2X_BUTTON_VOLDOWN) )
 					menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()+1,0,100) );;
-				if ( joy[GP2X_BUTTON_VOLUP] && joy[GP2X_BUTTON_VOLDOWN] ) menu->selLinkApp()->setVolume(-1);
+				if ( joy.isDown(GP2X_BUTTON_VOLUP) && joy.isDown(GP2X_BUTTON_VOLDOWN) ) menu->selLinkApp()->setVolume(-1);
 			} else {
 				// CLOCK
-				if ( joy[GP2X_BUTTON_VOLDOWN] && !joy[GP2X_BUTTON_VOLUP] )
+				if ( joy[GP2X_BUTTON_VOLDOWN] && !joy.isDown(GP2X_BUTTON_VOLUP) )
 					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-1,50,maxClock) );
-				if ( joy[GP2X_BUTTON_VOLUP] && !joy[GP2X_BUTTON_VOLDOWN] )
+				if ( joy[GP2X_BUTTON_VOLUP] && !joy.isDown(GP2X_BUTTON_VOLDOWN) )
 					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+1,50,maxClock) );
-				if ( joy[GP2X_BUTTON_VOLUP] && joy[GP2X_BUTTON_VOLDOWN] ) menu->selLinkApp()->setClock(200);
+				if ( joy.isDown(GP2X_BUTTON_VOLUP) && joy.isDown(GP2X_BUTTON_VOLDOWN) ) menu->selLinkApp()->setClock(200);
 			}
 		}
-		if ( joy[GP2X_BUTTON_A] ) {
-			if (joy[GP2X_BUTTON_L] && joy[GP2X_BUTTON_R])
+		if ( joy.isDown(GP2X_BUTTON_A) ) {
+			if (joy.isDown(GP2X_BUTTON_L) && joy.isDown(GP2X_BUTTON_R))
 				saveScreenshot();
 		} else {
 			// SECTIONS
@@ -838,7 +854,6 @@ int GMenu2X::main() {
 void GMenu2X::options() {
 	int curMenuClock = menuClock;
 	int curGlobalVolume = globalVolume;
-	string curSkin = skin;
 	//G
 	int prevgamma = gamma;
 
@@ -847,16 +862,12 @@ void GMenu2X::options() {
 	fl_tr.files.insert(fl_tr.files.begin(),"English");
 	string lang = tr.lang();
 
-	FileLister fl_sk("skins",true,false);
-	fl_sk.browse();
-
 	vector<string> encodings;
 	encodings.push_back("NTSC");
 	encodings.push_back("PAL");
 
 	SettingsDialog sd(this,tr["Settings"]);
 	sd.addSetting(new MenuSettingMultiString(this,tr["Language"],tr["Set the language used by GMenu2X"],&lang,&fl_tr.files));
-	sd.addSetting(new MenuSettingMultiString(this,tr["Skin"],tr["Set the skin used by GMenu2X"],&skin,&fl_sk.directories));
 	sd.addSetting(new MenuSettingBool(this,tr["Save last selection"],tr["Save the last selected link and section on exit"],&saveSelection));
 	sd.addSetting(new MenuSettingInt(this,tr["Clock for GMenu2X"],tr["Set the cpu working frequency when running GMenu2X"],&menuClock,50,325));
 	sd.addSetting(new MenuSettingInt(this,tr["Maximum overclock"],tr["Set the maximum overclock for launching links"],&maxClock,50,325));
@@ -867,9 +878,6 @@ void GMenu2X::options() {
 	//G
 	sd.addSetting(new MenuSettingInt(this,tr["Gamma"],tr["Set gp2x gamma value (default: 10)"],&gamma,1,100));
 	sd.addSetting(new MenuSettingMultiString(this,tr["Tv-Out encoding"],tr["Encoding of the tv-out signal"],&tvoutEncoding,&encodings));
-	sd.addSetting(new MenuSettingRGBA(this,tr["Top Bar Color"],tr["Color of the top bar"],&topBarColor));
-	sd.addSetting(new MenuSettingRGBA(this,tr["Bottom Bar Color"],tr["Color of the bottom bar"],&bottomBarColor));
-	sd.addSetting(new MenuSettingRGBA(this,tr["Selection Color"],tr["Color of the selection and other interface details"],&selectionColor));
 
 	if (sd.exec() && sd.edited()) {
 		//G
@@ -878,9 +886,30 @@ void GMenu2X::options() {
 		if (curGlobalVolume!=globalVolume) setVolume(globalVolume);
 		if (lang == "English") lang = "";
 		if (lang != tr.lang()) tr.setLang(lang);
-		if (curSkin != skin)
-			setSkin(skin);
 		writeConfig();
+	}
+}
+
+void GMenu2X::skinMenu() {
+	FileLister fl_sk("skins",true,false);
+	fl_sk.browse();
+	string curSkin = skin;
+
+	SettingsDialog sd(this,tr["Skin"]);
+	sd.addSetting(new MenuSettingMultiString(this,tr["Skin"],tr["Set the skin used by GMenu2X"],&skin,&fl_sk.directories));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Top Bar Color"],tr["Color of the top bar"],&topBarColor));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Bottom Bar Color"],tr["Color of the bottom bar"],&bottomBarColor));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Selection Color"],tr["Color of the selection and other interface details"],&selectionColor));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Message Box Color"],tr["Background color of the message box"],&messageBoxColor));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Message Box Border Color"],tr["Border color of the message box"],&messageBoxBorderColor));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Message Box Selection Color"],tr["Color of the selection of the message box"],&messageBoxSelectionColor));
+
+	if (sd.exec() && sd.edited()) {
+		if (curSkin != skin) {
+			setSkin(skin);
+			writeConfig();
+		}
+		writeSkinConfig();
 		initBG();
 	}
 }
@@ -926,6 +955,8 @@ void GMenu2X::setSkin(string skin) {
 	messageBoxSelectionColor.b = 160;
 	messageBoxSelectionColor.a = 255;
 
+	skinWallpaper = "";
+
 	//load skin settings
 	string skinconfname = "skins/"+skin+"/skin.conf";
 	if (fileExists(skinconfname)) {
@@ -962,7 +993,10 @@ void GMenu2X::setSkin(string skin) {
 				else if (name=="messageBoxSelectionColorG") messageBoxSelectionColor.g = constrain( atoi(value.c_str()), 0, 255 );
 				else if (name=="messageBoxSelectionColorB") messageBoxSelectionColor.b = constrain( atoi(value.c_str()), 0, 255 );
 				else if (name=="messageBoxSelectionColorA") messageBoxSelectionColor.a = constrain( atoi(value.c_str()), 0, 255 );
-				else if (name=="wallpaper" && fileExists("skins/"+skin+"/wallpapers/"+value)) wallpaper = "skins/"+skin+"/wallpapers/"+value;
+				else if (name=="wallpaper" && fileExists("skins/"+skin+"/wallpapers/"+value)) {
+					wallpaper = "skins/"+skin+"/wallpapers/"+value;
+					skinWallpaper = value;
+				}
 			}
 			skinconf.close();
 		}
@@ -1183,7 +1217,7 @@ void GMenu2X::editLink() {
 	sd.addSetting(new MenuSettingString(this,tr["Title"],tr["Link title"],&linkTitle));
 	sd.addSetting(new MenuSettingString(this,tr["Description"],tr["Link description"],&linkDescription));
 	sd.addSetting(new MenuSettingMultiString(this,tr["Section"],tr["The section this link belongs to"],&newSection,&menu->sections));
-	sd.addSetting(new MenuSettingFile(this,tr["Icon"],tr["Select an icon for the link"],&linkIcon,".png,.bmp,.jpg,.jpeg"));
+	sd.addSetting(new MenuSettingFile(this,tr["Icon"],tr.translate("Select an icon for the link: $1",linkTitle.c_str(),NULL),&linkIcon,".png,.bmp,.jpg,.jpeg"));
 	sd.addSetting(new MenuSettingFile(this,tr["Manual"],tr["Select a graphic/textual manual or a readme"],&linkManual,".man.png,.txt"));
 	sd.addSetting(new MenuSettingInt(this,tr["Clock (default: 200)"],tr["Cpu clock frequency to set when launching this link"],&linkClock,50,maxClock));
 	sd.addSetting(new MenuSettingBool(this,tr["Tweak RAM Timings"],tr["This usually speeds up the application at the cost of stability"],&linkUseRamTimings));

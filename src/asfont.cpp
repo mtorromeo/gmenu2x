@@ -25,6 +25,10 @@ ASFont::~ASFont() {
 	font.freeFont();
 }
 
+bool ASFont::utf8Code(unsigned char c) {
+	return font.utf8Code(c);
+}
+
 void ASFont::write(SDL_Surface* surface, const char* text, int x, int y) {
 	font.write(surface, text, x, y);
 }

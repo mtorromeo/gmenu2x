@@ -76,3 +76,7 @@ bool Joystick::operator [](int button) {
 	if (button<0 || button>=numButtons) return false;
 	return buttons[button];
 }
+
+bool Joystick::isDown(int button) {
+	return SDL_JoystickGetButton(joystick,button);
+}

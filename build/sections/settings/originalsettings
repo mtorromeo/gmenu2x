@@ -1,6 +1,6 @@
 title=GP2X
 description=Configure options from the original frontend
-icon=skin:sections/settings.png
+icon=skin:icons/configure.png
 exec=/usr/gp2x/gp2xmenu
 params=--disable-autorun --enable-terminate --view-setting
 wrapper=true
