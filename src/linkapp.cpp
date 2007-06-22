@@ -47,6 +47,7 @@ LinkApp::LinkApp(GMenu2X *gmenu2x, const char* linkfile)
 	setGamma(0);
 	selectordir = "";
 	selectorfilter = "";
+	icon = iconPath = "";
 	selectorbrowser = false;
 	useRamTimings = false;
 

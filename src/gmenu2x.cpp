@@ -712,12 +712,7 @@ int GMenu2X::main() {
 				else
 					s->box(x, y, linkW, 41+iconTextOffset, selectionColor);
 			}
-			cout << "Check!" << endl;
 
-			/*if (!menu->sectionLinks()->at(i)->getIcon().empty() && sc[menu->sectionLinks()->at(i)->getIcon()] != NULL)
-				sc[menu->sectionLinks()->at(i)->getIcon()]->blit(s,ix,y,32,32);
-			else
-				sc.skinRes("icons/generic.png")->blit(s,ix,y,32,32);*/
 			sc[menu->sectionLinks()->at(i)->getIconPath()]->blit(s,ix,y,32,32);
 
 			s->write( font, menu->sectionLinks()->at(i)->getTitle(), ix+16, y+42+iconTextOffset, SFontHAlignCenter, SFontVAlignBottom );
