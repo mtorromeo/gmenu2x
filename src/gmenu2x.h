@@ -77,6 +77,7 @@ private:
 		usbnet,
 		samba,
 		web;
+	bool useSelectionPng;
 	string ip, defaultgw, lastSelectorDir;
 	int lastSelectorElement;
 	void readConfig();

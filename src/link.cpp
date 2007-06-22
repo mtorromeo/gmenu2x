@@ -28,6 +28,7 @@ using namespace std;
 Link::Link(GMenu2X *gmenu2x) {
 	this->gmenu2x = gmenu2x;
 	edited = false;
+	iconPath = gmenu2x->sc.getSkinFilePath("icons/generic.png");
 }
 
 void Link::run() {}
@@ -55,13 +56,28 @@ string Link::getIcon() {
 }
 
 void Link::setIcon(string icon) {
-	string skinpath = "skins/"+gmenu2x->skin;
-	if (icon.substr(0,gmenu2x->getExePath().length()+skinpath.length()) == gmenu2x->getExePath()+skinpath) {
-		string tempIcon = icon.substr(gmenu2x->getExePath().length()+skinpath.length(), icon.length());
+	string skinpath = gmenu2x->getExePath()+"skins/"+gmenu2x->skin;
+	if (icon.substr(0,skinpath.length()) == skinpath) {
+		string tempIcon = icon.substr(skinpath.length(), icon.length());
 		string::size_type pos = tempIcon.find("/");
 		if (pos != string::npos)
 			icon = "skin:"+tempIcon.substr(pos+1,icon.length());
 	}
+
+	iconPath = strreplace(icon,"skin:",skinpath);
+	if (!fileExists(iconPath)) iconPath = gmenu2x->sc.getSkinFilePath("icons/generic.png");
+	cout << "iconPath: " << iconPath << endl;
 	this->icon = icon;
 	edited = true;
+}
+
+string Link::getIconPath() {
+	return iconPath;
+}
+
+void Link::setIconPath(string icon) {
+	if (fileExists(icon))
+		iconPath = icon;
+	else
+		iconPath = gmenu2x->sc.getSkinFilePath("icons/generic.png");
 }

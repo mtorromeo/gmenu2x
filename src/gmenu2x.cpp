@@ -173,6 +173,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	startLinkIndex = 0;
 
 	usbnet = samba = inet = web = false;
+	useSelectionPng = false;
 
 	//load config data
 	readConfig();
@@ -650,18 +651,18 @@ int GMenu2X::main() {
 	uint linksPerPage = 0, linkH = 0, linkW = 0, linkWd2 = 0;
 	int iconXOffset = 0, iconTextOffset = 0;
 
-	bool quit = false, useSelectionPng = sc.addSkinRes("imgs/selection.png") != NULL;
+	bool quit = false;
 	int x,y,ix, offset = 0;
 	uint i;
 	long tickBattery = -60000, tickNow;
 	string batteryIcon = "imgs/battery/0.png";
 	stringstream ss;
 
+#ifdef DEBUG
 	//framerate
-	/*
 	long tickFPS = SDL_GetTicks();
 	string fps;
-	*/
+#endif
 
 	while (!quit) {
 		tickNow = SDL_GetTicks();
@@ -711,11 +712,13 @@ int GMenu2X::main() {
 				else
 					s->box(x, y, linkW, 41+iconTextOffset, selectionColor);
 			}
+			cout << "Check!" << endl;
 
-			if (!menu->sectionLinks()->at(i)->getIcon().empty() && sc[menu->sectionLinks()->at(i)->getIcon()] != NULL)
+			/*if (!menu->sectionLinks()->at(i)->getIcon().empty() && sc[menu->sectionLinks()->at(i)->getIcon()] != NULL)
 				sc[menu->sectionLinks()->at(i)->getIcon()]->blit(s,ix,y,32,32);
 			else
-				sc.skinRes("icons/generic.png")->blit(s,ix,y,32,32);
+				sc.skinRes("icons/generic.png")->blit(s,ix,y,32,32);*/
+			sc[menu->sectionLinks()->at(i)->getIconPath()]->blit(s,ix,y,32,32);
 
 			s->write( font, menu->sectionLinks()->at(i)->getTitle(), ix+16, y+42+iconTextOffset, SFontHAlignCenter, SFontVAlignBottom );
 		}
@@ -749,31 +752,28 @@ int GMenu2X::main() {
 		}
 		sc.skinRes(batteryIcon)->blit( s, 301, 222 );
 
+#ifdef DEBUG
 		//framerate
-		/*
 		ss.clear();
-		ss << 1000/(tickNow-tickFPS);
+		ss << 1000/(tickNow-tickFPS+1);
 		ss >> fps;
 		fps += " FPS";
 		tickFPS = tickNow;
 		s->write( font, fps, 319,1 ,SFontHAlignRight );
-		*/
+#endif
 
 		s->flip();
 
 #ifdef TARGET_GP2X
 		joy.update();
 		if ( joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK] && menu->selLink()!=NULL ) menu->selLink()->run();
-		else if ( joy[GP2X_BUTTON_START] ) {
-			options();
-			useSelectionPng = sc.addSkinRes("imgs/selection.png") != NULL;
-		}
+		else if ( joy[GP2X_BUTTON_START]  ) options();
 		else if ( joy[GP2X_BUTTON_SELECT] ) contextMenu();
 		// LINK NAVIGATION
-		else if ( joy[GP2X_BUTTON_LEFT ] ) menu->linkLeft();
-		else if ( joy[GP2X_BUTTON_RIGHT] ) menu->linkRight();
-		else if ( joy[GP2X_BUTTON_UP   ] ) menu->linkUp();
-		else if ( joy[GP2X_BUTTON_DOWN ] ) menu->linkDown();
+		else if ( joy[GP2X_BUTTON_LEFT ]  ) menu->linkLeft();
+		else if ( joy[GP2X_BUTTON_RIGHT]  ) menu->linkRight();
+		else if ( joy[GP2X_BUTTON_UP   ]  ) menu->linkUp();
+		else if ( joy[GP2X_BUTTON_DOWN ]  ) menu->linkDown();
 		// SELLINKAPP SELECTED
 		else if (menu->selLinkApp()!=NULL) {
 			if ( joy[GP2X_BUTTON_Y] ) menu->selLinkApp()->showManual();
@@ -838,10 +838,7 @@ int GMenu2X::main() {
 					saveScreenshot();
 				//ACTIONS
 				if ( event.key.keysym.sym==SDLK_RETURN && menu->selLink()!=NULL ) menu->selLink()->run();
-				if ( event.key.keysym.sym==SDLK_s      ) {
-					options();
-					useSelectionPng = sc.addSkinRes("imgs/selection.png") != NULL;
-				}
+				if ( event.key.keysym.sym==SDLK_s      ) options();
 				if ( event.key.keysym.sym==SDLK_SPACE  ) contextMenu();
 			}
 		}
@@ -965,6 +962,7 @@ void GMenu2X::setSkin(string skin) {
 			string line;
 			while (getline(skinconf, line, '\n')) {
 				line = trim(line);
+				cout << "skinconf: " << line << endl;
 				string::size_type pos = line.find("=");
 				string name = trim(line.substr(0,pos));
 				string value = trim(line.substr(pos+1,line.length()));
@@ -1013,17 +1011,22 @@ void GMenu2X::setSkin(string skin) {
 		for (uint x=0; x<menu->sectionLinks(i)->size(); x++) {
 			linkIcon = menu->sectionLinks(i)->at(x)->getIcon();
 			LinkApp *linkapp = dynamic_cast<LinkApp*>(menu->sectionLinks(i)->at(x));
-			if (linkIcon.empty()) {
-				if (linkapp != NULL) linkapp->searchIcon();
-			} else if (linkIcon.substr(0,5)=="skin:") {
+
+			if (linkIcon.substr(0,5)=="skin:") {
 				linkIcon = sc.getSkinFilePath(linkIcon.substr(5,linkIcon.length()));
-				if (linkIcon.empty())
-					if (linkapp != NULL) linkapp->searchIcon();
+				if (linkapp != NULL && !fileExists(linkIcon))
+					linkapp->searchIcon();
 				else
-					menu->sectionLinks(i)->at(x)->setIcon("");
+					menu->sectionLinks(i)->at(x)->setIconPath(linkIcon);
+
+			} else if (linkIcon.empty() || !fileExists(linkIcon)) {
+				if (linkapp != NULL) linkapp->searchIcon();
 			}
 		}
 	}
+
+	//Selection png
+	useSelectionPng = sc.addSkinRes("imgs/selection.png") != NULL;
 
 	//font
 	initFont();
@@ -1283,7 +1286,7 @@ void GMenu2X::editLink() {
 
 void GMenu2X::deleteLink() {
 	if (menu->selLinkApp()!=NULL) {
-		MessageBox mb(this, tr.translate("Deleting $1",menu->selLink()->getTitle().c_str(),NULL)+"\n"+tr["Are you sure?"], menu->selLink()->getIcon());
+		MessageBox mb(this, tr.translate("Deleting $1",menu->selLink()->getTitle().c_str(),NULL)+"\n"+tr["Are you sure?"], menu->selLink()->getIconPath());
 		mb.buttons[GP2X_BUTTON_B] = tr["Yes"];
 		mb.buttons[GP2X_BUTTON_X] = tr["No"];
 		if (mb.exec() == GP2X_BUTTON_B) {

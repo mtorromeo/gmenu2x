@@ -65,8 +65,7 @@ LinkApp::LinkApp(GMenu2X *gmenu2x, const char* linkfile)
 		} else if (name == "description") {
 			description = value;
 		} else if (name == "icon") {
-			if (gmenu2x->sc.exists(icon) || (value.substr(0,5)=="skin:" && !gmenu2x->sc.getSkinFilePath(value.substr(5,value.length())).empty()) || fileExists(value))
-				icon = value;
+			setIcon(value);
 		} else if (name == "exec") {
 			exec = value;
 		} else if (name == "params") {
@@ -105,13 +104,13 @@ LinkApp::LinkApp(GMenu2X *gmenu2x, const char* linkfile)
 	}
 	infile.close();
 
-	if (icon=="") searchIcon();
+	if (iconPath == "" || !fileExists(iconPath))
+		searchIcon();
 
 	edited = false;
 }
 
-void LinkApp::searchIcon() {
-	cout << "Searching icon..." << endl;
+string LinkApp::searchIcon() {
 	string execicon = exec;
 	string::size_type pos = exec.rfind(".");
 	if (pos != string::npos) execicon = exec.substr(0,pos);
@@ -120,9 +119,15 @@ void LinkApp::searchIcon() {
 	pos = execicon.rfind("/");
 	if (pos != string::npos)
 		string exectitle = execicon.substr(pos+1,execicon.length());
+
 	if (!gmenu2x->sc.getSkinFilePath("icons/"+exectitle).empty())
-		icon = "skin:icons/"+exectitle;
-	else if (fileExists(execicon)) icon = execicon;
+		iconPath = gmenu2x->sc.getSkinFilePath("icons/"+exectitle);
+	else if (fileExists(execicon))
+		iconPath = execicon;
+	else
+		iconPath = gmenu2x->sc.getSkinFilePath("icons/generic.png");
+
+	return iconPath;
 }
 
 int LinkApp::clock() {
@@ -243,10 +248,11 @@ void LinkApp::drawRun() {
 	gmenu2x->s->rectangle(160-halfBoxW, 99, boxW, 42, gmenu2x->messageBoxBorderColor);
 
 	int x = 170-halfBoxW;
-	if (getIcon()!="")
+	/*if (getIcon()!="")
 		gmenu2x->sc[getIcon()]->blit(gmenu2x->s,x,104);
 	else
-		gmenu2x->sc["icons/generic.png"]->blit(gmenu2x->s,x,104);
+		gmenu2x->sc["icons/generic.png"]->blit(gmenu2x->s,x,104);*/
+	gmenu2x->sc[getIconPath()]->blit(gmenu2x->s,x,104);
 	gmenu2x->s->write( gmenu2x->font, text, x+42, 121, SFontHAlignLeft, SFontVAlignMiddle );
 	gmenu2x->s->flip();
 }
@@ -321,7 +327,7 @@ void LinkApp::showManual() {
 			while (getline(infile, line, '\n')) txtman.push_back(line);
 			infile.close();
 
-			TextManualDialog tmd(gmenu2x, getTitle(), getIcon(), &txtman);
+			TextManualDialog tmd(gmenu2x, getTitle(), getIconPath(), &txtman);
 			tmd.exec();
 		}
 
@@ -337,7 +343,7 @@ void LinkApp::showManual() {
 		while (getline(infile, line, '\n')) readme.push_back(line);
 		infile.close();
 
-		TextDialog td(gmenu2x, getTitle(), "ReadMe", getIcon(), &readme);
+		TextDialog td(gmenu2x, getTitle(), "ReadMe", getIconPath(), &readme);
 		td.exec();
 	}
 }

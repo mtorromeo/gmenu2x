@@ -50,7 +50,7 @@ private:
 
 public:
 	LinkApp(GMenu2X *gmenu2x, const char* linkfile);
-	void searchIcon();
+	string searchIcon();
 
 	string getExec();
 	void setExec(string exec);

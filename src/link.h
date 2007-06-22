@@ -36,7 +36,7 @@ class Link {
 protected:
 	GMenu2X *gmenu2x;
 	bool edited;
-	string title, description, icon;
+	string title, description, icon, iconPath;
 
 public:
 	Link(GMenu2X *gmenu2x);
@@ -48,6 +48,8 @@ public:
 	void setDescription(string description);
 	string getIcon();
 	void setIcon(string icon);
+	string getIconPath();
+	void setIconPath(string icon);
 
 	virtual void run();
 };

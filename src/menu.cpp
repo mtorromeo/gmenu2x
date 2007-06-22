@@ -263,7 +263,7 @@ void Menu::deleteSelectedLink() {
 #endif
 	if (selLinkApp()!=NULL)
 		unlink(selLinkApp()->file.c_str());
-	gmenu2x->sc.del(selLink()->getIcon());
+	gmenu2x->sc.del(selLink()->getIconPath());
 	sectionLinks()->erase( sectionLinks()->begin() + selLinkIndex() );
 	setLinkIndex(selLinkIndex());
 }
