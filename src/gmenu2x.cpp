@@ -391,9 +391,11 @@ Goemon4, PokeParadox, PSyMastR and Tripmonkey_uk\n\
 ----\n\
 English & Italian by me\n\
 French by Yodaz\n\
+Danish by claus\n\
 Dutch by superfly\n\
 Spanish by pedator\n\
 Portuguese (Portugal) by NightShadow\n\
+Slovak by Jozef\n\
 Swedish by Esslan and Micket\n\
 German by fusion_power, johnnysnet and Waldteufel\n\
 Finnish by Jontte and Atte\n\
@@ -414,7 +416,7 @@ b._.o._.b\n\
 Jacopastorius\n\
 and all the anonymous donors...\n\
 (If I missed to list you or if you want to be removed, contact me.)","\n");
-	TextDialog td(this, "GMenu2X", tr.translate("Version $1 (Build date: $2)","0.9-test3",__DATE__,NULL), "icons/about.png", &text);
+	TextDialog td(this, "GMenu2X", tr.translate("Version $1 (Build date: $2)","0.9",__DATE__,NULL), "icons/about.png", &text);
 	td.exec();
 }
 

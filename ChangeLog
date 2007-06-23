@@ -9,7 +9,7 @@ Added support for multiple wallpapers
 Color of message dialogs changeable by skins
 Automatic icon association for links with icons found in the skin "icons" directory
 Adding a link to a file without gpu or gpe extension automatically enables the wrapper feature
-Added support for translations (Italian, Dutch, Spanish, Germany, French, Finnish, Portuguese, Swedish, Norwegian and Russian included)
+Added support for translations (Italian, Danish, Dutch, Spanish, German, French, Finnish, Portuguese, Swedish, Slovak, Norwegian and Russian included)
 Use of a new font code which supports (some) utf8 characters
 Added graphics for gp2x buttons
 Moved screenshot in the selector under the text

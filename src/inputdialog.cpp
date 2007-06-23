@@ -35,27 +35,23 @@ InputDialog::InputDialog(GMenu2X *gmenu2x, string text, string startvalue) {
 	selCol = 0;
 	selRow = 0;
 	curKeyboard = 0;
-
-	// !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÀÈÉÌÒÚÄËÏÖÜßàèéìòùäëïöüАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзиклмнопрстуфхцчшщъыьэюя
 	keyboard.resize(2);
 
-	keyboard[0].push_back("abcdefghijklmnopqr");
-	keyboard[0].push_back("stuvwxyz0123456789");
-	keyboard[0].push_back(" \"'`.,:;!¡?¿*+-/\\ ");
-	keyboard[0].push_back("_&<=>|()[]{}@#$%^~");
-	keyboard[0].push_back("àáèéìíòóùúýäëïöüÿâ");
-	keyboard[0].push_back("êîôûåãõñæçабвгдеёж");
-	keyboard[0].push_back("зийклмнопрстуфхцчш");
-	keyboard[0].push_back("щъыьэюяøðßÐÞþ    ");
+	keyboard[0].push_back("abcdefghijklm _\"'`.,:;!?");
+	keyboard[0].push_back("nopqrstuvwxyz 0123456789");
+	keyboard[0].push_back("¡¿*+-/\\&<=>|()[]{}@#$%^~");
+	keyboard[0].push_back("àáèéìíòóùúýäëïöüÿâêîôûåã");
+	keyboard[0].push_back("õñæçабвгдеёжзийклмнопрст");
+	keyboard[0].push_back("уфхцчшщъыьэюяøðßÐÞþ");
+	keyboard[0].push_back("čďěľĺňôřŕšťůž");
 
-	keyboard[1].push_back("ABCDEFGHIJKLMNOPQR");
-	keyboard[1].push_back("STUVWXYZ0123456789");
-	keyboard[1].push_back(" \"'`.,:;!¡?¿*+-/\\ ");
-	keyboard[1].push_back("_&<=>|()[]{}@#$%^~");
-	keyboard[1].push_back("ÀÁÈÉÌÍÒÓÙÚÝÄËÏÖÜŸÂ");
-	keyboard[1].push_back("ÊÎÔÛÅÃÕÑÆÇАБВГДЕЁЖ");
-	keyboard[1].push_back("ЗИЙКЛМНОПРСТУФХЦЧШ");
-	keyboard[1].push_back("ЩЪЫЬЭЮЯØðßÐÞþ     ");
+	keyboard[1].push_back("ABCDEFGHIJKLM _\"'`.,:;!?");
+	keyboard[1].push_back("NOPQRSTUVWXYZ 0123456789");
+	keyboard[1].push_back("¡¿*+-/\\&<=>|()[]{}@#$%^~");
+	keyboard[1].push_back("ÀÁÈÉÌÍÒÓÙÚÝÄËÏÖÜŸÂÊÎÔÛÅÃ");
+	keyboard[1].push_back("ÕÑÆÇАБВГДЕЁЖЗИЙКЛМНОПРСТ");
+	keyboard[1].push_back("УФХЦЧШЩЪЫЬЭЮЯØðßÐÞþ");
+	keyboard[1].push_back("ČĎĚĽĹŇÔŘŔŠŤŮŽ");
 }
 
 bool InputDialog::exec() {
