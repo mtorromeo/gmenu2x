@@ -705,8 +705,8 @@ int GMenu2X::main() {
 		}
 
 		//Navigation helpers
-		sc.skinRes("imgs/buttons/l.png")->blit(s,1,1);
-		sc.skinRes("imgs/buttons/r.png")->blitRight(s,319,1);
+		sc.skinRes("imgs/buttons/sectionl.png")->blit(s,1,1);
+		sc.skinRes("imgs/buttons/sectionr.png")->blitRight(s,319,1);
 
 		//Links
 		s->setClipRect(offset,42,311,166);
