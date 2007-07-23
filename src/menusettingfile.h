@@ -26,7 +26,7 @@
 using std::string;
 
 class MenuSettingFile : public MenuSetting {
-private:
+protected:
 	string originalValue;
 	string *_value;
 	string filter;
@@ -42,7 +42,7 @@ public:
 	virtual void drawSelected(int y);
 	virtual bool edited();
 
-	void setValue(string value);
+	virtual void setValue(string value);
 	string value();
 };
 

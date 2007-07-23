@@ -43,7 +43,7 @@ public:
 	virtual bool edited();
 
 	int min, max;
-	void setValue(int value);
+	virtual void setValue(int value);
 	int value();
 };
 

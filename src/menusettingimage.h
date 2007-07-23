@@ -17,33 +17,21 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef MENUSETTINGIMAGE_H
+#define MENUSETTINGIMAGE_H
 
-#ifndef FILEDIALOG_H_
-#define FILEDIALOG_H_
-
-#include <string>
-#include "filelister.h"
 #include "gmenu2x.h"
+#include "menusettingfile.h"
 
 using std::string;
-using std::vector;
 
-class FileDialog {
-protected:
-	int selRow;
-	string text, title;
-	GMenu2X *gmenu2x;
-	string filter;
-	FileLister fl;
-	uint selected;
-
+class MenuSettingImage : public MenuSettingFile {
 public:
-	string path, file;
-	FileDialog(GMenu2X *gmenu2x, string text, string filter="", string file="");
-	virtual ~FileDialog() {};
+	MenuSettingImage(GMenu2X *gmenu2x, string name, string description, string *value, string filter="");
+	virtual ~MenuSettingImage() {};
 
-	virtual void beforeFileList();
-	bool exec();
+	virtual void manageInput();
+	virtual void setValue(string value);
 };
 
-#endif /*INPUTDIALOG_H_*/
+#endif

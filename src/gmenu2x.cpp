@@ -69,6 +69,7 @@
 #include "menusettingstring.h"
 #include "menusettingmultistring.h"
 #include "menusettingfile.h"
+#include "menusettingimage.h"
 #include "menusettingdir.h"
 
 #include <sys/mman.h>
@@ -659,6 +660,7 @@ int GMenu2X::main() {
 	long tickBattery = -60000, tickNow;
 	string batteryIcon = "imgs/battery/0.png";
 	stringstream ss;
+	uint sectionsCoordX = 24;
 
 #ifdef DEBUG
 	//framerate
@@ -690,7 +692,9 @@ int GMenu2X::main() {
 			sc.skinRes("imgs/right.png")->blit(s,311,16);
 		for (i=menu->firstDispSection(); i<menu->sections.size() && i<menu->firstDispSection()+5; i++) {
 			string sectionIcon = "skin:sections/"+menu->sections[i]+".png";
-			x = (i-menu->firstDispSection())*60+24;
+			//x = (i-menu->firstDispSection())*60+24;
+			sectionsCoordX = 24 + min( 5-menu->sections.size(), 5 ) * 30;
+			x = (i-menu->firstDispSection())*60+sectionsCoordX;
 			if (menu->selSectionIndex()==(int)i)
 				s->box(x-14, 0, 60, 40, selectionColor);
 			if (sc.exists(sectionIcon))
@@ -699,6 +703,10 @@ int GMenu2X::main() {
 				sc.skinRes("icons/section.png")->blit(s,x,0);
 			s->write( font, menu->sections[i], x+16, 41, SFontHAlignCenter, SFontVAlignBottom );
 		}
+
+		//Navigation helpers
+		sc.skinRes("imgs/buttons/l.png")->blit(s,1,1);
+		sc.skinRes("imgs/buttons/r.png")->blitRight(s,319,1);
 
 		//Links
 		s->setClipRect(offset,42,311,166);
@@ -763,7 +771,7 @@ int GMenu2X::main() {
 
 #ifdef TARGET_GP2X
 		joy.update();
-		if ( joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK] && menu->selLink()!=NULL ) menu->selLink()->run();
+		if ( (joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK]) && menu->selLink()!=NULL ) menu->selLink()->run();
 		else if ( joy[GP2X_BUTTON_START]  ) options();
 		else if ( joy[GP2X_BUTTON_SELECT] ) contextMenu();
 		// LINK NAVIGATION
@@ -1217,7 +1225,7 @@ void GMenu2X::editLink() {
 	sd.addSetting(new MenuSettingString(this,tr["Title"],tr["Link title"],&linkTitle));
 	sd.addSetting(new MenuSettingString(this,tr["Description"],tr["Link description"],&linkDescription));
 	sd.addSetting(new MenuSettingMultiString(this,tr["Section"],tr["The section this link belongs to"],&newSection,&menu->sections));
-	sd.addSetting(new MenuSettingFile(this,tr["Icon"],tr.translate("Select an icon for the link: $1",linkTitle.c_str(),NULL),&linkIcon,".png,.bmp,.jpg,.jpeg"));
+	sd.addSetting(new MenuSettingImage(this,tr["Icon"],tr.translate("Select an icon for the link: $1",linkTitle.c_str(),NULL),&linkIcon,".png,.bmp,.jpg,.jpeg"));
 	sd.addSetting(new MenuSettingFile(this,tr["Manual"],tr["Select a graphic/textual manual or a readme"],&linkManual,".man.png,.txt"));
 	sd.addSetting(new MenuSettingInt(this,tr["Clock (default: 200)"],tr["Cpu clock frequency to set when launching this link"],&linkClock,50,maxClock));
 	sd.addSetting(new MenuSettingBool(this,tr["Tweak RAM Timings"],tr["This usually speeds up the application at the cost of stability"],&linkUseRamTimings));
@@ -1574,6 +1582,7 @@ void GMenu2X::setVolume(int vol) {
 }
 
 string GMenu2X::getExePath() {
+#ifdef TARGET_GP2X
 	if (path.empty()) {
 		char buf[255];
 		int l = readlink("/proc/self/exe",buf,255);
@@ -1584,6 +1593,9 @@ string GMenu2X::getExePath() {
 		path = path.substr(0,l+1);
 	}
 	return path;
+#else
+	return "/mnt/sd/gmenu2x/";
+#endif
 }
 
 string GMenu2X::getDiskFree() {

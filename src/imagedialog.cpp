@@ -18,32 +18,42 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef FILEDIALOG_H_
-#define FILEDIALOG_H_
+#include <SDL.h>
+#include <SDL_gfxPrimitives.h>
 
-#include <string>
+//for browsing the filesystem
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <dirent.h>
+
+#ifdef TARGET_GP2X
+#include "gp2x.h"
+#endif
+#include "imagedialog.h"
 #include "filelister.h"
-#include "gmenu2x.h"
 
-using std::string;
-using std::vector;
+using namespace std;
 
-class FileDialog {
-protected:
-	int selRow;
-	string text, title;
-	GMenu2X *gmenu2x;
-	string filter;
-	FileLister fl;
-	uint selected;
+ImageDialog::ImageDialog(GMenu2X *gmenu2x, string text, string filter, string file) : FileDialog(gmenu2x, text, filter, file) {
+	this->gmenu2x = gmenu2x;
+	this->text = text;
+	this->filter = filter;
+	this->file = "";
+	path = "/mnt";
+	title = "Image Browser";
+	if (!file.empty()) {
+		file = strreplace(file,"skin:",gmenu2x->getExePath()+"skins/"+gmenu2x->skin+"/");
+		string::size_type pos = file.rfind("/");
+		if (pos != string::npos) {
+			path = file.substr(0, pos);
+			cout << "ib: " << path << endl;
+			this->file = file.substr(pos+1,file.length());
+		}
+	}
+	selRow = 0;
+}
 
-public:
-	string path, file;
-	FileDialog(GMenu2X *gmenu2x, string text, string filter="", string file="");
-	virtual ~FileDialog() {};
-
-	virtual void beforeFileList();
-	bool exec();
-};
-
-#endif /*INPUTDIALOG_H_*/
+void ImageDialog::beforeFileList() {
+	if (fl.isFile(selected) && fileExists(path+"/"+fl[selected]))
+		gmenu2x->sc[path+"/"+fl[selected]]->blitRight(gmenu2x->s, 310, 43);
+}

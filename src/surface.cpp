@@ -160,9 +160,11 @@ bool Surface::blitCenter(Surface *destination, int x, int y, int w, int h, int a
 }
 
 bool Surface::blitRight(SDL_Surface *destination, int x, int y, int w, int h, int a) {
+	if (!w) w = raw->w;
 	return blit(destination,x-min(raw->w,w),y,w,h,a);
 }
 bool Surface::blitRight(Surface *destination, int x, int y, int w, int h, int a) {
+	if (!w) w = raw->w;
 	return blitRight(destination->raw,x,y,w,h,a);
 }
 

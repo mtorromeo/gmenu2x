@@ -7,7 +7,7 @@ CXXFLAGS = $(CFLAGS)
 LDFLAGS = -L"/usr/lib" `sdl-config --libs` -lfreetype -lSDL_image -lSDL_gfx -ljpeg -lpng12 -lz #-lSDL_gfx
 
 TARGET = gmenu
-OBJS = ../objs/linux/gmenu2x.o ../objs/linux/surface.o ../objs/linux/link.o ../objs/linux/linkapp.o ../objs/linux/linkaction.o ../objs/linux/asfont.o ../objs/linux/sfontplus.o ../objs/linux/menu.o ../objs/linux/surfacecollection.o ../objs/linux/utilities.o ../objs/linux/filedialog.o ../objs/linux/dirdialog.o ../objs/linux/inputdialog.o ../objs/linux/settingsdialog.o ../objs/linux/textdialog.o ../objs/linux/textmanualdialog.o ../objs/linux/wallpaperdialog.o ../objs/linux/menusetting.o ../objs/linux/menusettingint.o ../objs/linux/menusettingbool.o ../objs/linux/menusettingrgba.o ../objs/linux/menusettingstring.o ../objs/linux/menusettingmultistring.o ../objs/linux/menusettingfile.o ../objs/linux/menusettingdir.o ../objs/linux/selector.o ../objs/linux/filelister.o ../objs/linux/messagebox.o ../objs/linux/translator.o
+OBJS = ../objs/linux/gmenu2x.o ../objs/linux/surface.o ../objs/linux/link.o ../objs/linux/linkapp.o ../objs/linux/linkaction.o ../objs/linux/asfont.o ../objs/linux/sfontplus.o ../objs/linux/menu.o ../objs/linux/surfacecollection.o ../objs/linux/utilities.o ../objs/linux/filedialog.o ../objs/linux/imagedialog.o ../objs/linux/dirdialog.o ../objs/linux/inputdialog.o ../objs/linux/settingsdialog.o ../objs/linux/textdialog.o ../objs/linux/textmanualdialog.o ../objs/linux/wallpaperdialog.o ../objs/linux/menusetting.o ../objs/linux/menusettingint.o ../objs/linux/menusettingbool.o ../objs/linux/menusettingrgba.o ../objs/linux/menusettingstring.o ../objs/linux/menusettingmultistring.o ../objs/linux/menusettingfile.o ../objs/linux/menusettingimage.o ../objs/linux/menusettingdir.o ../objs/linux/selector.o ../objs/linux/filelister.o ../objs/linux/messagebox.o ../objs/linux/translator.o
 
 ../objs/linux/%.o: ../src/%.cpp
 		$(CXX) $(CFLAGS) -o $@ -c $<
@@ -15,7 +15,10 @@ OBJS = ../objs/linux/gmenu2x.o ../objs/linux/surface.o ../objs/linux/link.o ../o
 ../objs/linux/%.o: ../src/%.c
 		$(CC) $(CFLAGS) -o $@ -c $<
 
-all: $(TARGET)
+all: dir $(TARGET)
+
+dir:
+	@if [ ! -d ../objs/linux ]; then mkdir -p ../objs/linux; fi
 
 $(TARGET): $(OBJS)
 		@echo "Linking $(TARGET)..."

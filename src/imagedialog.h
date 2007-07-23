@@ -18,32 +18,20 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef FILEDIALOG_H_
-#define FILEDIALOG_H_
+#ifndef IMAGEDIALOG_H_
+#define IMAGEDIALOG_H_
 
 #include <string>
-#include "filelister.h"
-#include "gmenu2x.h"
+#include "filedialog.h"
 
 using std::string;
 using std::vector;
 
-class FileDialog {
-protected:
-	int selRow;
-	string text, title;
-	GMenu2X *gmenu2x;
-	string filter;
-	FileLister fl;
-	uint selected;
-
+class ImageDialog : public FileDialog {
 public:
-	string path, file;
-	FileDialog(GMenu2X *gmenu2x, string text, string filter="", string file="");
-	virtual ~FileDialog() {};
-
+	ImageDialog(GMenu2X *gmenu2x, string text, string filter="", string file="");
+	virtual ~ImageDialog() {};
 	virtual void beforeFileList();
-	bool exec();
 };
 
-#endif /*INPUTDIALOG_H_*/
+#endif /*IMAGEDIALOG_H_*/

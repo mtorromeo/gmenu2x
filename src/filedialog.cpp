@@ -30,7 +30,6 @@
 #include "gp2x.h"
 #endif
 #include "filedialog.h"
-#include "filelister.h"
 
 using namespace std;
 
@@ -40,6 +39,7 @@ FileDialog::FileDialog(GMenu2X *gmenu2x, string text, string filter, string file
 	this->filter = filter;
 	this->file = "";
 	path = "/mnt";
+	title = "File Browser";
 	if (!file.empty()) {
 		string::size_type pos = file.rfind("/");
 		if (pos != string::npos) {
@@ -55,15 +55,16 @@ bool FileDialog::exec() {
 	if (!fileExists(path))
 		path = "/mnt";
 
-	FileLister fl(path);
+	fl.setPath(path);
 	fl.setFilter(filter);
 	fl.browse();
 
-	uint i, selected = 0, firstElement = 0, iY;
+	uint i, firstElement = 0, iY;
+	selected = 0;
 	while (!close) {
 		gmenu2x->bg->blit(gmenu2x->s,0,0);
 		gmenu2x->drawTitleIcon("icons/explorer.png",true);
-		gmenu2x->writeTitle("File Browser");
+		gmenu2x->writeTitle(title);
 		gmenu2x->writeSubTitle(text);
 
 		gmenu2x->drawButton(gmenu2x->s, "x", gmenu2x->tr["Up one folder"],
@@ -76,6 +77,8 @@ bool FileDialog::exec() {
 		iY = selected-firstElement;
 		iY = 44+(iY*17);
 		gmenu2x->s->box(2, iY, 308, 16, gmenu2x->selectionColor);
+
+		beforeFileList();
 
 		//Files & Directories
 		gmenu2x->s->setClipRect(0,41,311,179);
@@ -188,3 +191,5 @@ bool FileDialog::exec() {
 
 	return result;
 }
+
+void FileDialog::beforeFileList() {}

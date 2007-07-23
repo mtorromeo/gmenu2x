@@ -1,3 +1,4 @@
 title=Barrage
+icon=/mnt/sd/gmenu2x/skins/Default/icons/photo.png
 exec=/mnt/sd/barrage/Barrage.gpe
 clock=200

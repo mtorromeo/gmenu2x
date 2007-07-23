@@ -17,69 +17,52 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <fstream>
-#include <sstream>
-#include "link.h"
-#include "menu.h"
-#include "selector.h"
+#include "menusettingimage.h"
+#include "imagedialog.h"
+#include "utilities.h"
 
 using namespace std;
 
-Link::Link(GMenu2X *gmenu2x) {
+MenuSettingImage::MenuSettingImage(GMenu2X *gmenu2x, string name, string description, string *value, string filter)
+	: MenuSettingFile(gmenu2x,name,description,value,filter) {
 	this->gmenu2x = gmenu2x;
-	edited = false;
-	iconPath = gmenu2x->sc.getSkinFilePath("icons/generic.png");
+	this->filter = filter;
+	_value = value;
+	originalValue = *value;
 }
 
-void Link::run() {}
+#ifdef TARGET_GP2X
+#include "gp2x.h"
 
-string Link::getTitle() {
-	return title;
+void MenuSettingImage::manageInput() {
+	if ( gmenu2x->joy[GP2X_BUTTON_X] ) setValue("");
+	if ( gmenu2x->joy[GP2X_BUTTON_B] ) {
+		ImageDialog id(gmenu2x, description, filter, value());
+		if (id.exec()) setValue( id.path+"/"+id.file );
+	}
 }
-
-void Link::setTitle(string title) {
-	this->title = title;
-	edited = true;
+#else
+void MenuSettingImage::manageInput() {
+	if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) setValue("");
+	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
+		ImageDialog id(gmenu2x, description, filter, value());
+		if (id.exec()) setValue( id.path+"/"+id.file );
+	}
 }
+#endif
 
-string Link::getDescription() {
-	return description;
-}
-
-void Link::setDescription(string description) {
-	this->description = description;
-	edited = true;
-}
-
-string Link::getIcon() {
-	return icon;
-}
-
-void Link::setIcon(string icon) {
+void MenuSettingImage::setValue(string value) {
 	string skinpath = gmenu2x->getExePath()+"skins/"+gmenu2x->skin;
-	if (icon.substr(0,skinpath.length()) == skinpath) {
-		string tempIcon = icon.substr(skinpath.length(), icon.length());
+	bool inSkinDir = value.substr(0,skinpath.length()) == skinpath;
+	if (!inSkinDir && gmenu2x->skin != "Default") {
+		skinpath = gmenu2x->getExePath()+"skins/Default";
+		inSkinDir = value.substr(0,skinpath.length()) == skinpath;
+	}
+	if (inSkinDir) {
+		string tempIcon = value.substr(skinpath.length(), value.length());
 		string::size_type pos = tempIcon.find("/");
 		if (pos != string::npos)
-			icon = "skin:"+tempIcon.substr(pos+1,icon.length());
+			value = "skin:"+tempIcon.substr(pos+1,value.length());
 	}
-
-	iconPath = strreplace(icon,"skin:",skinpath+"/");
-	if (!fileExists(iconPath)) {
-		iconPath = strreplace(icon,"skin:",gmenu2x->getExePath()+"skins/Default/");
-		if (!fileExists(iconPath)) iconPath = gmenu2x->sc.getSkinFilePath("icons/generic.png");
-	}
-	this->icon = icon;
-	edited = true;
-}
-
-string Link::getIconPath() {
-	return iconPath;
-}
-
-void Link::setIconPath(string icon) {
-	if (fileExists(icon))
-		iconPath = icon;
-	else
-		iconPath = gmenu2x->sc.getSkinFilePath("icons/generic.png");
+	*_value = value;
 }
