@@ -38,7 +38,7 @@ void MenuSettingImage::manageInput() {
 	if ( gmenu2x->joy[GP2X_BUTTON_X] ) setValue("");
 	if ( gmenu2x->joy[GP2X_BUTTON_B] ) {
 		ImageDialog id(gmenu2x, description, filter, value());
-		if (id.exec()) setValue( id.path+"/"+id.file );
+		if (id.exec()) setValue( id.path()+"/"+id.file );
 	}
 }
 #else
@@ -46,7 +46,7 @@ void MenuSettingImage::manageInput() {
 	if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) setValue("");
 	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
 		ImageDialog id(gmenu2x, description, filter, value());
-		if (id.exec()) setValue( id.path+"/"+id.file );
+		if (id.exec()) setValue( id.path()+"/"+id.file );
 	}
 }
 #endif

@@ -36,13 +36,18 @@ protected:
 	string filter;
 	FileLister fl;
 	uint selected;
+	string path_v;
 
 public:
-	string path, file;
+	string file;
 	FileDialog(GMenu2X *gmenu2x, string text, string filter="", string file="");
 	virtual ~FileDialog() {};
 
+	virtual string path() { return path_v; };
+	virtual void setPath(string path);
+
 	virtual void beforeFileList();
+	virtual void onChangeDir();
 	bool exec();
 };
 

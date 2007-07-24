@@ -38,12 +38,12 @@ FileDialog::FileDialog(GMenu2X *gmenu2x, string text, string filter, string file
 	this->text = text;
 	this->filter = filter;
 	this->file = "";
-	path = "/mnt";
+	setPath("/mnt");
 	title = "File Browser";
 	if (!file.empty()) {
 		string::size_type pos = file.rfind("/");
 		if (pos != string::npos) {
-			path = file.substr(0, pos);
+			setPath( file.substr(0, pos) );
 			this->file = file.substr(pos+1,file.length());
 		}
 	}
@@ -52,10 +52,9 @@ FileDialog::FileDialog(GMenu2X *gmenu2x, string text, string filter, string file
 
 bool FileDialog::exec() {
 	bool close = false, result = true;
-	if (!fileExists(path))
-		path = "/mnt";
+	if (!fileExists(path()))
+		setPath("/mnt");
 
-	fl.setPath(path);
 	fl.setFilter(filter);
 	fl.browse();
 
@@ -126,19 +125,15 @@ bool FileDialog::exec() {
 			}
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_X] || gmenu2x->joy[GP2X_BUTTON_LEFT] ) {
-			string::size_type p = path.rfind("/");
-			if (p==string::npos || path.substr(0,4)!="/mnt" || p<4)
+			string::size_type p = path().rfind("/");
+			if (p==string::npos || path().substr(0,4)!="/mnt" || p<4)
 				return false;
 			else
-				path = path.substr(0,p);
-			selected = 0;
-			fl.setPath(path);
+				setPath( path().substr(0,p) );
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK] ) {
 			if (fl.isDirectory(selected)) {
-				path += "/"+fl[selected];
-				selected = 0;
-				fl.setPath(path);
+				setPath( path()+"/"+fl[selected] );
 			} else {
 				if (fl.isFile(selected)) {
 					file = fl[selected];
@@ -164,19 +159,15 @@ bool FileDialog::exec() {
 						selected += 1;
 				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) {
-					string::size_type p = path.rfind("/");
-					if (p==string::npos || path.substr(0,4)!="/mnt" || p<4)
+					string::size_type p = path().rfind("/");
+					if (p==string::npos || path().substr(0,4)!="/mnt" || p<4)
 						return false;
 					else
-						path = path.substr(0,p);
-					selected = 0;
-					fl.setPath(path);
+						setPath( path().substr(0,p) );
 				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
 					if (fl.isDirectory(selected)) {
-						path += "/"+fl[selected];
-						selected = 0;
-						fl.setPath(path);
+						setPath( path()+"/"+fl[selected] );
 					} else {
 						if (fl.isFile(selected)) {
 							file = fl[selected];
@@ -192,4 +183,12 @@ bool FileDialog::exec() {
 	return result;
 }
 
+void FileDialog::setPath(string path) {
+	path_v = path;
+	fl.setPath(path);
+	selected = 0;
+	onChangeDir();
+}
+
 void FileDialog::beforeFileList() {}
+void FileDialog::onChangeDir() {}

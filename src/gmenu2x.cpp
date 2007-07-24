@@ -1189,7 +1189,7 @@ void GMenu2X::addLink() {
 	FileDialog fd(this,tr["Select an application"]);
 	if (fd.exec()) {
 		ledOn();
-		menu->addLink(fd.path, fd.file);
+		menu->addLink(fd.path(), fd.file);
 		sync();
 		ledOff();
 	}

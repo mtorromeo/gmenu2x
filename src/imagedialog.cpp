@@ -39,21 +39,29 @@ ImageDialog::ImageDialog(GMenu2X *gmenu2x, string text, string filter, string fi
 	this->text = text;
 	this->filter = filter;
 	this->file = "";
-	path = "/mnt";
+	setPath("/mnt");
 	title = "Image Browser";
 	if (!file.empty()) {
 		file = strreplace(file,"skin:",gmenu2x->getExePath()+"skins/"+gmenu2x->skin+"/");
 		string::size_type pos = file.rfind("/");
 		if (pos != string::npos) {
-			path = file.substr(0, pos);
-			cout << "ib: " << path << endl;
+			setPath( file.substr(0, pos) );
+			cout << "ib: " << path() << endl;
 			this->file = file.substr(pos+1,file.length());
 		}
 	}
 	selRow = 0;
 }
 
+ImageDialog::~ImageDialog() {
+	previews.clear();
+}
+
 void ImageDialog::beforeFileList() {
-	if (fl.isFile(selected) && fileExists(path+"/"+fl[selected]))
-		gmenu2x->sc[path+"/"+fl[selected]]->blitRight(gmenu2x->s, 310, 43);
+	if (fl.isFile(selected) && fileExists(path()+"/"+fl[selected]))
+		previews[path()+"/"+fl[selected]]->blitRight(gmenu2x->s, 310, 43);
+}
+
+void ImageDialog::onChangeDir() {
+	previews.clear();
 }
