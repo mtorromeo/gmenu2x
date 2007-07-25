@@ -1,3 +1,10 @@
+-----------
+New in 0.10
+-----------
+Cpu clock raised when loading manuals
+Added support for bmp and jpg/jpeg files for manuals
+Added preview of images when selecting icons
+
 ----------
 New in 0.9
 ----------
