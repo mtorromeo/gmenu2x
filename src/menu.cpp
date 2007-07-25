@@ -280,9 +280,8 @@ void Menu::deleteSelectedSection() {
 
 bool Menu::linkChangeSection(uint linkIndex, uint oldSectionIndex, uint newSectionIndex) {
 	if (oldSectionIndex<sections.size() && newSectionIndex<sections.size() && linkIndex<sectionLinks(oldSectionIndex)->size()) {
-		Link *l = sectionLinks(oldSectionIndex)->at(linkIndex);
-		sectionLinks(oldSectionIndex)->erase(sectionLinks(oldSectionIndex)->begin()+linkIndex);
-		sectionLinks(newSectionIndex)->push_back(l);
+		sectionLinks(newSectionIndex)->push_back( sectionLinks(oldSectionIndex)->at(linkIndex) );
+		sectionLinks(oldSectionIndex)->erase( sectionLinks(oldSectionIndex)->begin()+linkIndex );
 		//Select the same link in the new position
 		setSectionIndex(newSectionIndex);
 		setLinkIndex(sectionLinks(newSectionIndex)->size()-1);

@@ -48,6 +48,7 @@ public:
 	void setDescription(string description);
 	string getIcon();
 	void setIcon(string icon);
+	virtual string searchIcon();
 	string getIconPath();
 	void setIconPath(string icon);
 
