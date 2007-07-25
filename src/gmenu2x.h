@@ -128,7 +128,7 @@ public:
 	bool saveSelection, outputLogs;
 	int maxClock, menuClock, startSectionIndex, startLinkIndex, globalVolume;
 	string skin, skinWallpaper, wallpaper;
-	void setSkin(string skin);
+	void setSkin(string skin, bool setWallpaper = true);
 	//G
 	int gamma;
 

@@ -1,9 +1,11 @@
 -----------
 New in 0.10
 -----------
+Added button indicators for selecting sections
 Cpu clock raised when loading manuals
 Added support for bmp and jpg/jpeg files for manuals
 Added preview of images when selecting icons
+Fixed bug that prevented the use of the custom selected wallpaper on restart
 
 ----------
 New in 0.9

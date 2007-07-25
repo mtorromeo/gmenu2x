@@ -214,7 +214,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	font = NULL;
 	initMenu();
 	if (skin.empty() || !fileExists("skins/"+skin)) skin = "Default";
-	setSkin(skin);
+	setSkin(skin, false);
 
 	if (wallpaper.empty() || !fileExists(wallpaper)) {
 #ifdef DEBUG
@@ -925,7 +925,7 @@ void GMenu2X::toggleTvOut() {
 #endif
 }
 
-void GMenu2X::setSkin(string skin) {
+void GMenu2X::setSkin(string skin, bool setWallpaper) {
 	this->skin = skin;
 	//clear collection and change the skin path
 	sc.clear();
@@ -996,7 +996,7 @@ void GMenu2X::setSkin(string skin) {
 				else if (name=="messageBoxSelectionColorG") messageBoxSelectionColor.g = constrain( atoi(value.c_str()), 0, 255 );
 				else if (name=="messageBoxSelectionColorB") messageBoxSelectionColor.b = constrain( atoi(value.c_str()), 0, 255 );
 				else if (name=="messageBoxSelectionColorA") messageBoxSelectionColor.a = constrain( atoi(value.c_str()), 0, 255 );
-				else if (name=="wallpaper" && fileExists("skins/"+skin+"/wallpapers/"+value)) {
+				else if (setWallpaper && name=="wallpaper" && fileExists("skins/"+skin+"/wallpapers/"+value)) {
 					wallpaper = "skins/"+skin+"/wallpapers/"+value;
 					skinWallpaper = value;
 				}
