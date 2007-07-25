@@ -46,8 +46,8 @@ public:
 	virtual string path() { return path_v; };
 	virtual void setPath(string path);
 
-	virtual void beforeFileList();
-	virtual void onChangeDir();
+	inline virtual void beforeFileList();
+	inline virtual void onChangeDir();
 	bool exec();
 };
 

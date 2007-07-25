@@ -33,8 +33,8 @@ protected:
 public:
 	ImageDialog(GMenu2X *gmenu2x, string text, string filter="", string file="");
 	virtual ~ImageDialog();
-	virtual void beforeFileList();
-	virtual void onChangeDir();
+	inline virtual void beforeFileList();
+	inline virtual void onChangeDir();
 };
 
 #endif /*IMAGEDIALOG_H_*/
