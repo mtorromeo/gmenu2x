@@ -114,6 +114,7 @@ void GMenu2X::gp2x_tvout_on(bool pal) {
 	gp2x_memregs[0x28E4>>1]=gp2x_memregs[0x290C>>1];
 	gp2x_memregs[0x28E8>>1]=239;
 
+#ifdef DEBUG
 	for (uint window=0; window<4; window++) {
 		int x1=gp2x_memregs[(0x28e2+window*8)>>1];
 		int x2=gp2x_memregs[(0x28e4+window*8)>>1];
@@ -121,6 +122,7 @@ void GMenu2X::gp2x_tvout_on(bool pal) {
 		int y2=gp2x_memregs[(0x28e8+window*8)>>1];
 		printf ("Window %i: %i,%i,%i,%i\n",window,x1,x2,y1,y2);
 	}
+#endif
 #endif
 }
 
@@ -133,6 +135,15 @@ void GMenu2X::gp2x_tvout_off() {
 }
 
 GMenu2X::GMenu2X(int argc, char *argv[]) {
+	//Detect firmware version and type
+	if (fileExists("/etc/open2x")) {
+		fwType = "open2x";
+		fwVersion = "";
+	} else {
+		fwType = "gph";
+		fwVersion = "";
+	}
+
 	//Initialize configuration settings to default
 	topBarColor.r = 255;
 	topBarColor.g = 255;
@@ -216,7 +227,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	if (skin.empty() || !fileExists("skins/"+skin)) skin = "Default";
 	setSkin(skin, false);
 
-	if (wallpaper.empty() || !fileExists(wallpaper)) {
+	if (!fileExists(wallpaper)) {
 #ifdef DEBUG
 	cout << "Searching wallpaper" << endl;
 #endif
@@ -285,7 +296,7 @@ void GMenu2X::initBG() {
 
 	if (bg != NULL) free(bg);
 
-	if (wallpaper.empty() || !fileExists(wallpaper)) {
+	if (!fileExists(wallpaper)) {
 		bg = new Surface(s);
 		bg->box(0,0,320,240,0,0,0);
 	} else {
@@ -354,13 +365,21 @@ void GMenu2X::initMenu() {
 	menu->numRows = numRows; numRows = 0;
 	menu->numCols = numCols; numCols = 0;
 	for (uint i=0; i<menu->sections.size(); i++) {
-		if (menu->sections[i]=="settings") {
+		//Add virtual links in the applications section
+		if (menu->sections[i]=="applications") {
+			menu->addActionLink(i,"Explorer",MakeDelegate(this,&GMenu2X::explorer),tr["Launch an application"],"skin:icons/explorer.png");
+		}
+
+		//Add virtual links in the setting section
+		else if (menu->sections[i]=="settings") {
 			menu->addActionLink(i,"GMenu2X",MakeDelegate(this,&GMenu2X::options),tr["Configure GMenu2X's options"],"skin:icons/configure.png");
 			menu->addActionLink(i,tr["Skin"],MakeDelegate(this,&GMenu2X::skinMenu),tr["Configure skin"],"skin:icons/skin.png");
 			menu->addActionLink(i,tr["Wallpaper"],MakeDelegate(this,&GMenu2X::changeWallpaper),tr["Change GMenu2X wallpaper"],"skin:icons/wallpaper.png");
 			menu->addActionLink(i,"TV",MakeDelegate(this,&GMenu2X::toggleTvOut),tr["Activate/deactivate tv-out"],"skin:icons/tv.png");
 			menu->addActionLink(i,"USB Sd",MakeDelegate(this,&GMenu2X::activateSdUsb),tr["Activate Usb on SD"],"skin:icons/usb.png");
-			menu->addActionLink(i,"USB Nand",MakeDelegate(this,&GMenu2X::activateNandUsb),tr["Activate Usb on Nand"],"skin:icons/usb.png");
+			if (fwType=="gph") {
+				menu->addActionLink(i,"USB Nand",MakeDelegate(this,&GMenu2X::activateNandUsb),tr["Activate Usb on Nand"],"skin:icons/usb.png");
+			}
 			if (fileExists(path+"log.txt"))
 				menu->addActionLink(i,tr["Log Viewer"],MakeDelegate(this,&GMenu2X::viewLog),tr["Displays last launched program's output"],"skin:icons/ebook.png");
 			menu->addActionLink(i,tr["About"],MakeDelegate(this,&GMenu2X::about),tr["Info about GMenu2X"],"skin:icons/about.png");
@@ -853,11 +872,23 @@ int GMenu2X::main() {
 	return -1;
 }
 
+void GMenu2X::explorer() {
+	FileDialog fd(this,tr["Select an application"],".gpu,.gpe,.sh");
+	if (fd.exec()) {
+		setClock(200);
+		quit();
+		string command = cmdclean(fd.path()+"/"+fd.file);
+		chdir(fd.path().c_str());
+		execl(command.c_str(), command.c_str(), NULL);
+	}
+}
+
 void GMenu2X::options() {
 	int curMenuClock = menuClock;
 	int curGlobalVolume = globalVolume;
 	//G
 	int prevgamma = gamma;
+	bool showRootFolder = fileExists("/mnt/root");
 
 	FileLister fl_tr("translations");
 	fl_tr.browse();
@@ -880,6 +911,7 @@ void GMenu2X::options() {
 	//G
 	sd.addSetting(new MenuSettingInt(this,tr["Gamma"],tr["Set gp2x gamma value (default: 10)"],&gamma,1,100));
 	sd.addSetting(new MenuSettingMultiString(this,tr["Tv-Out encoding"],tr["Encoding of the tv-out signal"],&tvoutEncoding,&encodings));
+	sd.addSetting(new MenuSettingBool(this,tr["Show root"],tr["Show root folder in the file selection dialogs"],&showRootFolder));
 
 	if (sd.exec() && sd.edited()) {
 		//G
@@ -888,6 +920,10 @@ void GMenu2X::options() {
 		if (curGlobalVolume!=globalVolume) setVolume(globalVolume);
 		if (lang == "English") lang = "";
 		if (lang != tr.lang()) tr.setLang(lang);
+		if (fileExists("/mnt/root") && !showRootFolder)
+			unlink("/mnt/root");
+		else if (!fileExists("/mnt/root") && showRootFolder)
+			symlink("/","/mnt/root");
 		writeConfig();
 	}
 }
@@ -1024,7 +1060,7 @@ void GMenu2X::setSkin(string skin, bool setWallpaper) {
 				else
 					menu->sectionLinks(i)->at(x)->setIconPath(linkIcon);
 
-			} else if (linkIcon.empty() || !fileExists(linkIcon)) {
+			} else if (!fileExists(linkIcon)) {
 				if (linkapp != NULL) linkapp->searchIcon();
 			}
 		}
@@ -1381,11 +1417,14 @@ void GMenu2X::scanner() {
 	vector<string> files;
 	scanPath("/mnt/sd",&files);
 
-	scanbg.write(font,tr["Scanning NAND filesystem..."],5,lineY);
-	scanbg.blit(s,0,0);
-	s->flip();
-	lineY += 26;
-	scanPath("/mnt/nand",&files);
+	//Onyl gph firmware has nand
+	if (fwType=="gph") {
+		scanbg.write(font,tr["Scanning NAND filesystem..."],5,lineY);
+		scanbg.blit(s,0,0);
+		s->flip();
+		lineY += 26;
+		scanPath("/mnt/nand",&files);
+	}
 
 	stringstream ss;
 	ss << files.size();

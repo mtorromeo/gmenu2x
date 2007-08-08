@@ -127,7 +127,6 @@ Tweak RAM Timings=Modifica i timings della RAM
 This usually speeds up the application at the cost of stability=Comporta solitamente un miglioramento delle performance al costo di stabilit�
 Gamma (default: 0)=Gamma (predefinito: 0)
 Gamma value to set when launching this link=Valore di gamma da impostare quando si lancia questo collegamento
-
 Wallpaper=Sfondo
 Configure skin=Configura skin
 Message Box Color=Colore Finestra Messaggi
@@ -136,3 +135,6 @@ Message Box Selection Color=Color Selezione Finestra Messaggi
 Background color of the message box=Colore di sfondo della finestra dei messaggi
 Border color of the message box=Colore del bordo della finestra dei messaggi
 Color of the selection of the message box=Colore della selezione della finestra dei messaggi
+
+Show root=Mostra radice
+Show root folder in the file selection dialogs=Mostra la cartella radice nelle finestre di selezione di file

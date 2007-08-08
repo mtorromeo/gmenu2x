@@ -65,9 +65,9 @@ void Link::setIcon(string icon) {
 	}
 
 	iconPath = strreplace(icon,"skin:",skinpath+"/");
-	if (iconPath.empty() || !fileExists(iconPath)) {
+	if (!fileExists(iconPath)) {
 		iconPath = strreplace(icon,"skin:",gmenu2x->getExePath()+"skins/Default/");
-		if (iconPath.empty() || !fileExists(iconPath)) searchIcon();
+		if (!fileExists(iconPath)) searchIcon();
 	}
 
 	this->icon = icon;

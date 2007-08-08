@@ -73,6 +73,11 @@ private:
 	*/
 	void scanPath(string path, vector<string> *files);
 
+	/*!
+	Displays a selector and launches the specified executable file
+	*/
+	void explorer();
+
 	bool inet, //!< Represents the configuration of the basic network services. @see readCommonIni @see usbnet @see samba @see web
 		usbnet,
 		samba,
@@ -131,6 +136,8 @@ public:
 	void setSkin(string skin, bool setWallpaper = true);
 	//G
 	int gamma;
+	//firmware type and version
+	string fwType, fwVersion;
 
 	SurfaceCollection sc;
 	Translator tr;

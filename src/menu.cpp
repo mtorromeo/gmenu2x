@@ -200,6 +200,12 @@ bool Menu::addLink(string path, string file, string section) {
 	string manual = "";
 	if (fileExists(exename+".man.png")) {
 		manual = exename+".man.png";
+	} else if (fileExists(exename+".man.jpg")) {
+		manual = exename+".man.jpg";
+	} else if (fileExists(exename+".man.jpeg")) {
+		manual = exename+".man.jpeg";
+	} else if (fileExists(exename+".man.bmp")) {
+		manual = exename+".man.bmp";
 	} else if (fileExists(exename+".man.txt")) {
 		manual = exename+".man.txt";
 	} else {
