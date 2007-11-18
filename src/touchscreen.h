@@ -18,31 +18,46 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef MESSAGEBOX_H_
-#define MESSAGEBOX_H_
+#ifndef TOUCHSCREEN_H
+#define TOUCHSCREEN_H
 
-#define MB_BTN_B 0
-#define MB_BTN_X 1
-#define MB_BTN_START 2
-#define MB_BTN_SELECT 3
+#include <SDL.h>
 
-#include <string>
-#include "gmenu2x.h"
+#include <fcntl.h>
+#include <stdint.h>
 
-using std::string;
-using std::vector;
+typedef struct {
+	uint16_t pressure;
+	uint16_t x;
+	uint16_t y;
+	uint16_t pad;
+	struct timeval stamp;
+} TS_EVENT;
 
-class MessageBox {
+class Touchscreen {
 private:
-	string text, icon;
-	GMenu2X *gmenu2x;
+	int wm97xx;
+	bool calibrated;
+	TS_EVENT event;
+	int calibX, calibY;
+
+	void calibrate(/*TS_EVENT event*/);
 
 public:
-	MessageBox(GMenu2X *gmenu2x, string text, string icon="");
-	vector<string> buttons;
-	vector<string> buttonLabels;
-	vector<SDL_Rect> buttonPositions;
-	int exec();
+	int x,y;
+	bool wasPressed;
+
+	Touchscreen();
+	~Touchscreen();
+
+	bool init();
+	void deinit();
+
+	bool poll();
+	bool pressed();
+
+	bool inRect(SDL_Rect r);
+	bool inRect(int x, int y, int w, int h);
 };
 
-#endif /*MESSAGEBOX_H_*/
+#endif

@@ -18,31 +18,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef MESSAGEBOX_H_
-#define MESSAGEBOX_H_
-
-#define MB_BTN_B 0
-#define MB_BTN_X 1
-#define MB_BTN_START 2
-#define MB_BTN_SELECT 3
+#ifndef BUTTON_H_
+#define BUTTON_H_
 
 #include <string>
 #include "gmenu2x.h"
+#include "FastDelegate.h"
 
 using std::string;
-using std::vector;
+using fastdelegate::FastDelegate0;
 
-class MessageBox {
-private:
-	string text, icon;
+typedef FastDelegate0<> ButtonAction;
+
+class Button {
+protected:
 	GMenu2X *gmenu2x;
+	ButtonAction action;
+	SDL_Rect rect;
 
 public:
-	MessageBox(GMenu2X *gmenu2x, string text, string icon="");
-	vector<string> buttons;
-	vector<string> buttonLabels;
-	vector<SDL_Rect> buttonPositions;
-	int exec();
+	string path;
+	Button(GMenu2X *gmenu2x);
+	virtual ~Button() {};
+
+	void setSize(int w, int h);
+	void setPosition(int x, int y);
+
+	virtual void paint();
+	virtual bool paintHover();
+
+	bool handleTS();
+	void exec();
+	void voidAction() {};
+	void setAction(ButtonAction action);
 };
 
-#endif /*MESSAGEBOX_H_*/
+#endif /*BUTTON_H_*/

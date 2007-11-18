@@ -27,6 +27,7 @@
 #include "translator.h"
 #include "FastDelegate.h"
 #include "utilities.h"
+#include "touchscreen.h"
 
 #ifdef TARGET_GP2X
 #include "joystick.h"
@@ -82,7 +83,6 @@ private:
 		usbnet,
 		samba,
 		web;
-	bool useSelectionPng;
 	string ip, defaultgw, lastSelectorDir;
 	int lastSelectorElement;
 	void readConfig();
@@ -100,7 +100,7 @@ private:
 	unsigned long gp2x_mem;
 	unsigned short *gp2x_memregs;
 	volatile unsigned short *MEM_REG;
-	int cx25874;
+	int cx25874; //tv-out
 #endif
 	string tvoutEncoding;
 	void gp2x_tvout_on(bool pal);
@@ -127,10 +127,12 @@ public:
 #else
 	SDL_Event event;
 #endif
+	Touchscreen ts;
 
 	//Configuration settings
 	RGBAColor selectionColor, topBarColor, bottomBarColor, messageBoxColor, messageBoxBorderColor, messageBoxSelectionColor;
 	bool saveSelection, outputLogs;
+	bool useSelectionPng;
 	int maxClock, menuClock, startSectionIndex, startLinkIndex, globalVolume;
 	string skin, skinWallpaper, wallpaper;
 	void setSkin(string skin, bool setWallpaper = true);
@@ -138,6 +140,8 @@ public:
 	int gamma;
 	//firmware type and version
 	string fwType, fwVersion;
+	//gp2x type
+	bool f200;
 
 	SurfaceCollection sc;
 	Translator tr;

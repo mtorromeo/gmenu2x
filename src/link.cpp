@@ -24,14 +24,30 @@
 #include "selector.h"
 
 using namespace std;
+using namespace fastdelegate;
 
-Link::Link(GMenu2X *gmenu2x) {
+Link::Link(GMenu2X *gmenu2x) : Button(gmenu2x) {
 	this->gmenu2x = gmenu2x;
+	action = MakeDelegate(this, &Link::run);
 	edited = false;
 	iconPath = gmenu2x->sc.getSkinFilePath("icons/generic.png");
 }
 
 void Link::run() {}
+
+void Link::paint() {
+	int ix = rect.x+((rect.w-32)/2);
+	gmenu2x->sc[getIconPath()]->blit(gmenu2x->s,ix,rect.y,32,32);
+	gmenu2x->s->write( gmenu2x->font, getTitle(), ix+16, rect.y+42, SFontHAlignCenter, SFontVAlignBottom );
+}
+
+bool Link::paintHover() {
+	if (gmenu2x->useSelectionPng)
+		gmenu2x->sc["imgs/selection.png"]->blit(gmenu2x->s,rect,SFontHAlignCenter,SFontVAlignMiddle);
+	else
+		gmenu2x->s->box(rect.x, rect.y, rect.w, rect.h, gmenu2x->selectionColor);
+	return true;
+}
 
 string Link::getTitle() {
 	return title;

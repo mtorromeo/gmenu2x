@@ -23,6 +23,8 @@
 #include <string>
 #include <iostream>
 
+#include "button.h"
+
 using std::string;
 
 class GMenu2X;
@@ -32,15 +34,17 @@ Base class that represents a link on screen.
 
 	@author Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
 */
-class Link {
+class Link : public Button {
 protected:
-	GMenu2X *gmenu2x;
 	bool edited;
 	string title, description, icon, iconPath;
 
 public:
 	Link(GMenu2X *gmenu2x);
 	virtual ~Link() {};
+
+	virtual void paint();
+	virtual bool paintHover();
 
 	string getTitle();
 	void setTitle(string title);

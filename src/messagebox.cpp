@@ -33,9 +33,14 @@ MessageBox::MessageBox(GMenu2X *gmenu2x, string text, string icon) {
 
 	buttons.resize(19);
 	buttonLabels.resize(19);
+	buttonPositions.resize(19);
 	for (uint x=0; x<buttons.size(); x++) {
 		buttons[x] = "";
 		buttonLabels[x] = "";
+		buttonPositions[x].x = 0;
+		buttonPositions[x].y = 140;
+		buttonPositions[x].w = 0;
+		buttonPositions[x].h = 16;
 	}
 
 	//Default enabled button
@@ -86,14 +91,29 @@ int MessageBox::exec() {
 
 	int btnX = 158+halfBoxW;
 	for (uint i=0; i<buttons.size(); i++) {
-		if (buttons[i]!="")
+		if (buttons[i] != "") {
+			buttonPositions[i].w = btnX;
 			btnX = gmenu2x->drawButtonRight(&bg, buttonLabels[i], buttons[i], btnX, 140);
+			buttonPositions[i].x = btnX;
+			buttonPositions[i].w = buttonPositions[i].w-btnX-6;
+		}
 	}
 
 	bg.blit(gmenu2x->s,0,0);
 	gmenu2x->s->flip();
 
 	while (result<0) {
+		//touchscreen
+		if (gmenu2x->f200) {
+			if (gmenu2x->ts.poll()) {
+				for (uint i=0; i<buttons.size(); i++)
+					if (buttons[i]!="" && gmenu2x->ts.inRect(buttonPositions[i])) {
+						result = i;
+						i = buttons.size();
+					}
+			}
+		}
+
 #ifdef TARGET_GP2X
 		gmenu2x->joy.update();
 		for (uint i=0; i<buttons.size(); i++)

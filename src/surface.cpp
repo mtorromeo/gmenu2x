@@ -288,3 +288,25 @@ void Surface::setClipRect(int x, int y, int w, int h) {
 	SDL_Rect rect = {x,y,w,h};
 	SDL_SetClipRect(raw,&rect);
 }
+
+bool Surface::blit(Surface *destination, SDL_Rect container, const unsigned short halign, const unsigned short valign) {
+	switch (halign) {
+	case SFontHAlignCenter:
+		container.x += container.w/2-halfW;
+		break;
+	case SFontHAlignRight:
+		container.x += container.w-raw->w;
+		break;
+	}
+
+	switch (valign) {
+	case SFontVAlignMiddle:
+		container.y += container.h/2-halfH;
+		break;
+	case SFontVAlignBottom:
+		container.y += container.h-raw->h;
+		break;
+	}
+
+	return blit(destination,container.x,container.y);
+}

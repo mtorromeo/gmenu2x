@@ -18,31 +18,81 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef MESSAGEBOX_H_
-#define MESSAGEBOX_H_
+#include <unistd.h>
+#include <iostream>
 
-#define MB_BTN_B 0
-#define MB_BTN_X 1
-#define MB_BTN_START 2
-#define MB_BTN_SELECT 3
+#include "touchscreen.h"
 
-#include <string>
-#include "gmenu2x.h"
+using namespace std;
 
-using std::string;
-using std::vector;
+Touchscreen::Touchscreen() {
+	wm97xx = 0;
+	calibrated = false;
+	wasPressed = false;
+	x = 0;
+	y = 0;
+}
 
-class MessageBox {
-private:
-	string text, icon;
-	GMenu2X *gmenu2x;
+Touchscreen::~Touchscreen() {
+	if (wm97xx) deinit();
+}
 
-public:
-	MessageBox(GMenu2X *gmenu2x, string text, string icon="");
-	vector<string> buttons;
-	vector<string> buttonLabels;
-	vector<SDL_Rect> buttonPositions;
-	int exec();
-};
+bool Touchscreen::init() {
+#ifdef TARGET_GP2X
+	wm97xx = open("/dev/touchscreen/wm97xx", O_RDONLY|O_NOCTTY);
+	return wm97xx>0;
+#else
+	return true;
+#endif
+}
 
-#endif /*MESSAGEBOX_H_*/
+void Touchscreen::deinit() {
+#ifdef TARGET_GP2X
+	close(wm97xx);
+#endif
+}
+
+void Touchscreen::calibrate() {
+	if (event.pressure==0) {
+		calibX = ((event.x-200)*320/3750)/4;
+		calibY = (((event.y-200)*240/3750))/4;
+		calibrated = true;
+	}
+}
+
+bool Touchscreen::poll() {
+	wasPressed = pressed();
+#ifdef TARGET_GP2X
+	read(wm97xx, &event, sizeof(TS_EVENT));
+	if (!calibrated) calibrate();
+
+	if (event.pressure>0) {
+		x = ((event.x-200)*320/3750)-calibX;
+		y = (240 - ((event.y-200)*240/3750))-calibY;
+	}
+#else
+	SDL_PumpEvents();
+	int mx, my;
+	if (SDL_GetMouseState(&mx,&my) && SDL_BUTTON(1)) {
+		x = mx;
+		y = my;
+		event.pressure = 1;
+	} else {
+		event.pressure = 0;
+	}
+#endif
+	return pressed();
+}
+
+bool Touchscreen::pressed() {
+	return event.pressure>0;
+}
+
+bool Touchscreen::inRect(SDL_Rect r) {
+	return (y>=r.y) && (y<=r.y+r.h) && (x>=r.x) && (x<=r.x+r.w);
+}
+
+bool Touchscreen::inRect(int x, int y, int w, int h) {
+	SDL_Rect rect = {x,y,w,h};
+	return inRect(rect);
+}

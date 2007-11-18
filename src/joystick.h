@@ -27,7 +27,7 @@
 using std::vector;
 
 /**
-Manages the sdl surface.
+Manages the joystick
 
 	@author Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
 */

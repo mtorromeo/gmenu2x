@@ -92,6 +92,10 @@ void GMenu2X::gp2x_init() {
 	gp2x_mem = open("/dev/mem", O_RDWR);
 	gp2x_memregs=(unsigned short *)mmap(0, 0x10000, PROT_READ|PROT_WRITE, MAP_SHARED, gp2x_mem, 0xc0000000);
 	MEM_REG=&gp2x_memregs[0];
+
+	if (f200)
+		//if wm97xx fails to open, set f200 to false to prevent any further access to the touchscreen
+		f200 = ts.init();
 #endif
 }
 
@@ -100,6 +104,7 @@ void GMenu2X::gp2x_deinit() {
 	gp2x_memregs[0x28DA>>1]=0x4AB;
 	gp2x_memregs[0x290C>>1]=640;
 	close(gp2x_mem);
+	if (f200) ts.deinit();
 #endif
 }
 
@@ -143,6 +148,11 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 		fwType = "gph";
 		fwVersion = "";
 	}
+#ifdef TARGET_GP2X
+	f200 = fileExists("/dev/touchscreen/wm97xx");
+#else
+	f200 = true;
+#endif
 
 	//Initialize configuration settings to default
 	topBarColor.r = 255;
@@ -219,7 +229,9 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	SDL_JoystickOpen(0);
 	//s->raw = SDL_SetVideoMode(320, 240, 16, SDL_HWSURFACE|SDL_DOUBLEBUF);
 	s->raw = SDL_SetVideoMode(320, 240, 16, SDL_SWSURFACE);
+#ifdef TARGET_GP2X
 	SDL_ShowCursor(0);
+#endif
 
 	bg = NULL;
 	font = NULL;
@@ -434,6 +446,7 @@ halo9\n\
 sbock\n\
 b._.o._.b\n\
 Jacopastorius\n\
+lorystorm90\n\
 and all the anonymous donors...\n\
 (If I missed to list you or if you want to be removed, contact me.)","\n");
 	TextDialog td(this, "GMenu2X", tr.translate("Version $1 (Build date: $2)","0.9",__DATE__,NULL), "icons/about.png", &text);
@@ -657,24 +670,23 @@ void GMenu2X::initServices() {
 
 void GMenu2X::ledOn() {
 #ifdef TARGET_GP2X
-	gp2x_memregs[0x106E >> 1] ^= 16;
+	if (!f200) gp2x_memregs[0x106E >> 1] ^= 16;
 	//SDL_SYS_JoystickGp2xSys(joy.joystick, BATT_LED_ON);
 #endif
 }
 
 void GMenu2X::ledOff() {
 #ifdef TARGET_GP2X
-	gp2x_memregs[0x106E >> 1] ^= 16;
+	if (!f200) gp2x_memregs[0x106E >> 1] ^= 16;
 	//SDL_SYS_JoystickGp2xSys(joy.joystick, BATT_LED_OFF);
 #endif
 }
 
 int GMenu2X::main() {
-	uint linksPerPage = 0, linkH = 0, linkW = 0, linkWd2 = 0;
-	int iconXOffset = 0, iconTextOffset = 0;
+	uint linksPerPage = 0, linkH = 0, linkW = 0;
 
 	bool quit = false;
-	int x,y,ix, offset = 0;
+	int x,y, offset = 0;
 	uint i;
 	long tickBattery = -60000, tickNow;
 	string batteryIcon = "imgs/battery/0.png";
@@ -689,16 +701,20 @@ int GMenu2X::main() {
 
 	while (!quit) {
 		tickNow = SDL_GetTicks();
+
 		if (menu->numRows!=numRows || menu->numCols!=numCols) {
 			numRows = menu->numRows;
 			numCols = menu->numCols;
 			linksPerPage = numRows*numCols;
 			linkH = 165/numRows;
 			linkW = 312/numCols;
-			linkWd2 = linkW/2;
-			iconXOffset = (linkW-32)/2; //10
-			iconTextOffset = numRows < 4 ? 2 : 0;
+			//iconTextOffset = numRows < 4 ? 2 : 0;
 			offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
+
+			for (uint section_i=0; section_i<menu->sections.size(); section_i++)
+				for (uint link_i=0; link_i<menu->sectionLinks(section_i)->size(); link_i++) {
+					menu->sectionLinks(section_i)->at(link_i)->setSize(linkW, 41);
+				}
 		}
 
 		//Background
@@ -733,18 +749,12 @@ int GMenu2X::main() {
 			int ir = i-menu->firstDispRow()*numCols;
 			x = (ir%numCols)*linkW+offset;
 			y = ir/numCols*linkH+42;
-			ix = x+iconXOffset;
 
-			if (i==(uint)menu->selLinkIndex()) {
-				if (useSelectionPng)
-					sc["imgs/selection.png"]->blitCenter(s,x+linkWd2,y+20);
-				else
-					s->box(x, y, linkW, 41+iconTextOffset, selectionColor);
-			}
+			if (i==(uint)menu->selLinkIndex())
+				menu->sectionLinks()->at(i)->paintHover();
 
-			sc[menu->sectionLinks()->at(i)->getIconPath()]->blit(s,ix,y,32,32);
-
-			s->write( font, menu->sectionLinks()->at(i)->getTitle(), ix+16, y+42+iconTextOffset, SFontHAlignCenter, SFontVAlignBottom );
+			menu->sectionLinks()->at(i)->setPosition(x,y);
+			menu->sectionLinks()->at(i)->paint();
 		}
 		s->clearClipRect();
 
@@ -787,6 +797,23 @@ int GMenu2X::main() {
 #endif
 
 		s->flip();
+
+		//touchscreen
+		if (f200) {
+			if (ts.poll()) {
+				if (ts.y<=32)
+					for (i=menu->firstDispSection(); i<menu->sections.size() && i<menu->firstDispSection()+5; i++) {
+						sectionsCoordX = 24 + min( 5-menu->sections.size(), 5 ) * 30;
+						x = (i-menu->firstDispSection())*60+sectionsCoordX;
+
+						if (ts.x>=x && ts.x<x+32)
+							menu->setSectionIndex(i);
+					}
+
+				for (i=menu->firstDispRow()*numCols; i<(menu->firstDispRow()*numCols)+linksPerPage && i<menu->sectionLinks()->size(); i++)
+					menu->sectionLinks()->at(i)->handleTS();
+			}
+		}
 
 #ifdef TARGET_GP2X
 		joy.update();
@@ -1163,7 +1190,7 @@ void GMenu2X::contextMenu() {
 	Surface bg(s);
 	//Darken background
 	bg.box(0, 0, 320, 240, 0,0,0,150);
-	bg.box( box.x, box.y, box.w, box.h, messageBoxColor );
+	bg.box(box.x, box.y, box.w, box.h, messageBoxColor);
 	bg.rectangle( box.x+2, box.y+2, box.w-4, box.h-4, messageBoxBorderColor );
 	while (!close) {
 		selbox.y = box.y+4+(h+2)*sel;
@@ -1174,12 +1201,30 @@ void GMenu2X::contextMenu() {
 			s->write( font, voices[i].text, box.x+12, box.y+11+(h+2)*i, SFontHAlignLeft, SFontVAlignMiddle );
 		s->flip();
 
+		//touchscreen
+		if (f200) {
+			ts.poll();
+			if (ts.pressed()) {
+				if (!ts.inRect(box))
+					close = true;
+				else if (ts.x>=selbox.x && ts.x<=selbox.x+selbox.w)
+					for (i=0; i<voices.size(); i++) {
+						selbox.y = box.y+4+(h+2)*i;
+						if (ts.y>=selbox.y && ts.y<=selbox.y+selbox.h) {
+							voices[i].action();
+							close = true;
+							i = voices.size();
+						}
+					}
+			}
+		}
+
 #ifdef TARGET_GP2X
 		joy.update();
 		if ( joy[GP2X_BUTTON_SELECT] ) close = true;
 		if ( joy[GP2X_BUTTON_UP    ] ) sel = max(0, sel-1);
 		if ( joy[GP2X_BUTTON_DOWN  ] ) sel = min(voices.size()-1, sel+1);
-		if ( joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK] ) { voices[sel].action(); return; }
+		if ( joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK] ) { voices[sel].action(); close = true; }
 #else
 		while (SDL_PollEvent(&event)) {
 			if ( event.type == SDL_QUIT ) return;
@@ -1187,7 +1232,7 @@ void GMenu2X::contextMenu() {
 				if ( event.key.keysym.sym==SDLK_ESCAPE ) close = true;
 				if ( event.key.keysym.sym==SDLK_UP ) sel = max(0, sel-1);
 				if ( event.key.keysym.sym==SDLK_DOWN ) sel = min((int)voices.size()-1, sel+1);
-				if ( event.key.keysym.sym==SDLK_RETURN ) { voices[sel].action(); return; }
+				if ( event.key.keysym.sym==SDLK_RETURN ) { voices[sel].action(); close = true; }
 			}
 		}
 #endif
@@ -1674,7 +1719,7 @@ int GMenu2X::drawButtonRight(Surface *s, string btn, string text, int x, int y) 
 void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height) {
 	if (totalsize<=pagesize) return;
 
-	s->rectangle(312, top, 5, height, selectionColor);
+	s->rectangle(312, top, 7, height, selectionColor);
 
 	//internal bar total height = height-2
 	//bar size
@@ -1685,7 +1730,7 @@ void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint to
 	if (by+bs>top+height-2) by = top+height-2-bs;
 
 
-	s->box(314, by, 1, bs, selectionColor);
+	s->box(314, by, 3, bs, selectionColor);
 }
 
 void GMenu2X::drawTitleIcon(string icon, bool skinRes, Surface *s) {
