@@ -35,6 +35,7 @@ protected:
 	GMenu2X *gmenu2x;
 	ButtonAction action;
 	SDL_Rect rect;
+	bool pressed;
 
 public:
 	string path;

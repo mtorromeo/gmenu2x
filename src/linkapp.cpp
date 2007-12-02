@@ -105,6 +105,8 @@ LinkApp::LinkApp(GMenu2X *gmenu2x, const char* linkfile)
 	}
 	infile.close();
 
+	if (iconPath.empty()) searchIcon();
+
 	edited = false;
 }
 

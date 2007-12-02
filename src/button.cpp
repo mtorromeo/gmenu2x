@@ -8,6 +8,7 @@ Button::Button(GMenu2X * gmenu2x) {
 	action = MakeDelegate(this, &Button::voidAction);
 	setPosition(0,0);
 	setSize(0,0);
+	pressed = false;
 }
 
 void Button::paint() {
@@ -20,10 +21,18 @@ bool Button::paintHover() {
 }
 
 bool Button::handleTS() {
-	if (gmenu2x->ts.inRect(rect)) {
-		exec();
-		return true;
+	if (!gmenu2x->ts.pressed()) {
+		if (pressed) {
+			exec();
+			return true;
+		}
+		pressed = false;
+		return false;
+	} else if (gmenu2x->ts.inRect(rect)) {
+		pressed = true;
+		return false;
 	} else {
+		pressed = false;
 		return false;
 	}
 }

@@ -286,6 +286,10 @@ void Surface::clearClipRect() {
 
 void Surface::setClipRect(int x, int y, int w, int h) {
 	SDL_Rect rect = {x,y,w,h};
+	setClipRect(rect);
+}
+
+void Surface::setClipRect(SDL_Rect rect) {
 	SDL_SetClipRect(raw,&rect);
 }
 

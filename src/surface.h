@@ -69,6 +69,7 @@ public:
 
 	void clearClipRect();
 	void setClipRect(int x, int y, int w, int h);
+	void setClipRect(SDL_Rect rect);
 
 	bool blit(Surface *destination, int x, int y, int w=0, int h=0, int a=-1);
 	bool blit(Surface *destination, SDL_Rect container, const unsigned short halign=0, const unsigned short valign=0);

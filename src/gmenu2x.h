@@ -83,6 +83,7 @@ private:
 		usbnet,
 		samba,
 		web;
+	bool recalcLinkGrid;
 	string ip, defaultgw, lastSelectorDir;
 	int lastSelectorElement;
 	void readConfig();

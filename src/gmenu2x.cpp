@@ -58,6 +58,7 @@
 #include "gmenu2x.h"
 #include "filelister.h"
 
+#include "iconbutton.h"
 #include "messagebox.h"
 #include "inputdialog.h"
 #include "settingsdialog.h"
@@ -276,6 +277,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 #ifdef DEBUG
 	cout << "Starting main()" << endl;
 #endif
+	recalcLinkGrid = true;
 	main();
 	writeConfig();
 
@@ -699,10 +701,16 @@ int GMenu2X::main() {
 	string fps;
 #endif
 
+	IconButton btnContextMenu(this,"skin:imgs/menu.png");
+	btnContextMenu.setPosition(301, 222);
+	btnContextMenu.setSize(16, 16);
+	btnContextMenu.setAction(MakeDelegate(this, &GMenu2X::contextMenu));
+
 	while (!quit) {
 		tickNow = SDL_GetTicks();
 
-		if (menu->numRows!=numRows || menu->numCols!=numCols) {
+		if (recalcLinkGrid || menu->numRows!=numRows || menu->numCols!=numCols) {
+			recalcLinkGrid = false;
 			numRows = menu->numRows;
 			numCols = menu->numCols;
 			linksPerPage = numRows*numCols;
@@ -712,9 +720,8 @@ int GMenu2X::main() {
 			offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
 
 			for (uint section_i=0; section_i<menu->sections.size(); section_i++)
-				for (uint link_i=0; link_i<menu->sectionLinks(section_i)->size(); link_i++) {
+				for (uint link_i=0; link_i<menu->sectionLinks(section_i)->size(); link_i++)
 					menu->sectionLinks(section_i)->at(link_i)->setSize(linkW, 41);
-				}
 		}
 
 		//Background
@@ -722,13 +729,17 @@ int GMenu2X::main() {
 
 		//Sections
 		if (menu->firstDispSection()>0)
-			sc.skinRes("imgs/left.png")->blit(s,1,16);
+			sc.skinRes("imgs/l_enabled.png")->blit(s,0,0);
+		else
+			sc.skinRes("imgs/l_disabled.png")->blit(s,0,0);
 		if (menu->firstDispSection()+5<menu->sections.size())
-			sc.skinRes("imgs/right.png")->blit(s,311,16);
+			sc.skinRes("imgs/r_enabled.png")->blit(s,310,0);
+		else
+			sc.skinRes("imgs/r_disabled.png")->blit(s,310,0);
 		for (i=menu->firstDispSection(); i<menu->sections.size() && i<menu->firstDispSection()+5; i++) {
 			string sectionIcon = "skin:sections/"+menu->sections[i]+".png";
 			//x = (i-menu->firstDispSection())*60+24;
-			sectionsCoordX = 24 + min( 5-menu->sections.size(), 5 ) * 30;
+			sectionsCoordX = 24 + max(0, min( 5-menu->sections.size(), 5 )) * 30;
 			x = (i-menu->firstDispSection())*60+sectionsCoordX;
 			if (menu->selSectionIndex()==(int)i)
 				s->box(x-14, 0, 60, 40, selectionColor);
@@ -738,10 +749,6 @@ int GMenu2X::main() {
 				sc.skinRes("icons/section.png")->blit(s,x,0);
 			s->write( font, menu->sections[i], x+16, 41, SFontHAlignCenter, SFontVAlignBottom );
 		}
-
-		//Navigation helpers
-		sc.skinRes("imgs/buttons/sectionl.png")->blit(s,1,1);
-		sc.skinRes("imgs/buttons/sectionr.png")->blitRight(s,319,1);
 
 		//Links
 		s->setClipRect(offset,42,311,166);
@@ -771,20 +778,43 @@ int GMenu2X::main() {
 			}
 		}
 
-		//check battery status every 60 seconds
-		if (tickNow-tickBattery >= 60000) {
-			tickBattery = tickNow;
-			unsigned short battlevel = getBatteryLevel();
-			if (battlevel>5) {
-				batteryIcon = "imgs/battery/ac.png";
-			} else {
-				ss.clear();
-				ss << battlevel;
-				ss >> batteryIcon;
-				batteryIcon = "imgs/battery/"+batteryIcon+".png";
+		if (f200) {
+			btnContextMenu.paint();
+		} else {
+			//check battery status every 60 seconds
+			if (tickNow-tickBattery >= 60000) {
+				tickBattery = tickNow;
+				unsigned short battlevel = getBatteryLevel();
+				if (battlevel>5) {
+					batteryIcon = "imgs/battery/ac.png";
+				} else {
+					ss.clear();
+					ss << battlevel;
+					ss >> batteryIcon;
+					batteryIcon = "imgs/battery/"+batteryIcon+".png";
+				}
 			}
+			sc.skinRes(batteryIcon)->blit( s, 301, 222 );
 		}
-		sc.skinRes(batteryIcon)->blit( s, 301, 222 );
+
+		//On Screen Help
+#ifdef TARGET_GP2X
+		if (joy[GP2X_BUTTON_A])
+#else
+		if (event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_h)
+#endif
+		{
+			s->box(10,50,300,143, messageBoxColor);
+			s->rectangle( 12,52,296,139, messageBoxBorderColor );
+			s->write( font, tr["CONTROLS"], 20, 60 );
+			s->write( font, tr["B, Stick press: Launch link / Confirm action"], 20, 80 );
+			s->write( font, tr["L, R: Change section"], 20, 95 );
+			s->write( font, tr["Y: Show manual/readme"], 20, 110 );
+			s->write( font, tr["VOLUP, VOLDOWN: Change cpu clock"], 20, 125 );
+			s->write( font, tr["A+VOLUP, A+VOLDOWN: Change volume"], 20, 140 );
+			s->write( font, tr["SELECT: Show contextual menu"], 20, 155 );
+			s->write( font, tr["START: Show options menu"], 20, 170 );
+		}
 
 #ifdef DEBUG
 		//framerate
@@ -800,8 +830,9 @@ int GMenu2X::main() {
 
 		//touchscreen
 		if (f200) {
-			if (ts.poll()) {
-				if (ts.y<=32)
+			ts.poll();
+			if (!btnContextMenu.handleTS()) {
+				if (ts.pressed() && ts.y<=32)
 					for (i=menu->firstDispSection(); i<menu->sections.size() && i<menu->firstDispSection()+5; i++) {
 						sectionsCoordX = 24 + min( 5-menu->sections.size(), 5 ) * 30;
 						x = (i-menu->firstDispSection())*60+sectionsCoordX;
@@ -1273,6 +1304,7 @@ void GMenu2X::addLink() {
 		menu->addLink(fd.path(), fd.file);
 		sync();
 		ledOff();
+		recalcLinkGrid = true;
 	}
 }
 
@@ -1666,7 +1698,6 @@ void GMenu2X::setVolume(int vol) {
 }
 
 string GMenu2X::getExePath() {
-#ifdef TARGET_GP2X
 	if (path.empty()) {
 		char buf[255];
 		int l = readlink("/proc/self/exe",buf,255);
@@ -1677,9 +1708,6 @@ string GMenu2X::getExePath() {
 		path = path.substr(0,l+1);
 	}
 	return path;
-#else
-	return "/mnt/sd/gmenu2x/";
-#endif
 }
 
 string GMenu2X::getDiskFree() {

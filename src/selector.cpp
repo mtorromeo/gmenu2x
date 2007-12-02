@@ -72,8 +72,6 @@ int Selector::exec(int startSelection) {
 
 	Uint32 selTick = SDL_GetTicks(), curTick;
 	uint i, firstElement = 0, iY;
-	screens.resize(fl.files.size());
-	titles.resize(fl.files.size());
 
 	prepare(&fl,&screens,&titles);
 	uint selected = constrain(startSelection,0,fl.size()-1);
