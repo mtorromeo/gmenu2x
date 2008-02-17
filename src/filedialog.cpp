@@ -51,7 +51,7 @@ FileDialog::FileDialog(GMenu2X *gmenu2x, string text, string filter, string file
 }
 
 bool FileDialog::exec() {
-	bool close = false, result = true;
+	bool close = false, result = true, ts_pressed = false, clicked = false;
 	if (!fileExists(path()))
 		setPath("/mnt");
 
@@ -61,6 +61,8 @@ bool FileDialog::exec() {
 	uint i, firstElement = 0, iY;
 	selected = 0;
 	while (!close) {
+		if (gmenu2x->f200) gmenu2x->ts.poll();
+
 		gmenu2x->bg->blit(gmenu2x->s,0,0);
 		gmenu2x->drawTitleIcon("icons/explorer.png",true);
 		gmenu2x->writeTitle(title);
@@ -81,6 +83,8 @@ bool FileDialog::exec() {
 
 		//Files & Directories
 		gmenu2x->s->setClipRect(0,41,311,179);
+		if (ts_pressed && !gmenu2x->ts.pressed()) clicked = true;
+		if (gmenu2x->f200 && gmenu2x->ts.pressed() && !gmenu2x->ts.inRect(2,44,308,179)) ts_pressed = false;
 		for (i=firstElement; i<fl.size() && i<firstElement+10; i++) {
 			iY = i-firstElement;
 			if (fl.isDirectory(i))
@@ -88,6 +92,10 @@ bool FileDialog::exec() {
 			else
 				gmenu2x->sc.skinRes("imgs/file.png")->blit(gmenu2x->s, 5, 45+(iY*17));
 			gmenu2x->s->write(gmenu2x->font, fl[i], 24, 52+(iY*17), SFontHAlignLeft, SFontVAlignMiddle);
+			if (gmenu2x->f200 && gmenu2x->ts.pressed() && gmenu2x->ts.inRect(2, 44+(iY*17), 308, 16)) {
+				ts_pressed = true;
+				selected = i;
+			}
 		}
 		gmenu2x->s->clearClipRect();
 
@@ -131,7 +139,8 @@ bool FileDialog::exec() {
 			else
 				setPath( path().substr(0,p) );
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK] ) {
+		if ( clicked || gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK] ) {
+			clicked = false;
 			if (fl.isDirectory(selected)) {
 				setPath( path()+"/"+fl[selected] );
 			} else {
@@ -165,7 +174,8 @@ bool FileDialog::exec() {
 					else
 						setPath( path().substr(0,p) );
 				}
-				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
+				if ( clicked || gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
+					clicked = false;
 					if (fl.isDirectory(selected)) {
 						setPath( path()+"/"+fl[selected] );
 					} else {

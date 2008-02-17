@@ -106,6 +106,7 @@ void GMenu2X::gp2x_deinit() {
 	gp2x_memregs[0x290C>>1]=640;
 	close(gp2x_mem);
 	if (f200) ts.deinit();
+//	ts.
 #endif
 }
 
@@ -831,19 +832,19 @@ int GMenu2X::main() {
 		//touchscreen
 		if (f200) {
 			ts.poll();
-			if (!btnContextMenu.handleTS()) {
-				if (ts.pressed() && ts.y<=32)
-					for (i=menu->firstDispSection(); i<menu->sections.size() && i<menu->firstDispSection()+5; i++) {
-						sectionsCoordX = 24 + min( 5-menu->sections.size(), 5 ) * 30;
-						x = (i-menu->firstDispSection())*60+sectionsCoordX;
+			btnContextMenu.handleTS();
+			if (ts.pressed() && ts.y<=32)
+				for (i=menu->firstDispSection(); i<menu->sections.size() && i<menu->firstDispSection()+5; i++) {
+					sectionsCoordX = 10 + max(0, min( 5-menu->sections.size(), 5 )) * 30;
+					x = (i-menu->firstDispSection())*60+sectionsCoordX;
 
-						if (ts.x>=x && ts.x<x+32)
-							menu->setSectionIndex(i);
-					}
+					if (ts.x>=x && ts.x<x+60)
+						menu->setSectionIndex(i);
+				}
 
-				for (i=menu->firstDispRow()*numCols; i<(menu->firstDispRow()*numCols)+linksPerPage && i<menu->sectionLinks()->size(); i++)
-					menu->sectionLinks()->at(i)->handleTS();
-			}
+			i=menu->firstDispRow()*numCols;
+			while ( i<(menu->firstDispRow()*numCols)+linksPerPage && i<menu->sectionLinks()->size() && !menu->sectionLinks()->at(i)->handleTS())
+				i++;
 		}
 
 #ifdef TARGET_GP2X
@@ -1442,11 +1443,17 @@ void GMenu2X::renameSection() {
 			string sectiondir = "sections/"+menu->selSection();
 			ledOn();
 			if (rename(sectiondir.c_str(), "tmpsection")==0 && rename("tmpsection", newsectiondir.c_str())==0) {
-				string oldicon = sectiondir+".png", newicon = newsectiondir+".png";
-				if (fileExists(oldicon) && !fileExists(newicon)) {
-					rename(oldicon.c_str(), "tmpsectionicon");
-					rename("tmpsectionicon", newicon.c_str());
-					sc.move(oldicon, newicon);
+				string oldpng = sectiondir+".png", newpng = newsectiondir+".png";
+				string oldicon = sc.getSkinFilePath(oldpng), newicon = sc.getSkinFilePath(newpng);
+				if (!oldicon.empty() && newicon.empty()) {
+					newicon = oldicon;
+          				newicon.replace(newicon.find(oldpng), oldpng.length(), newpng);
+
+					if (!fileExists(newicon)) {
+						rename(oldicon.c_str(), "tmpsectionicon");
+						rename("tmpsectionicon", newicon.c_str());
+						sc.move("skin:"+oldpng, "skin:"+newpng);
+					}
 				}
 				menu->sections[menu->selSectionIndex()] = id.input;
 				sync();
@@ -1558,6 +1565,7 @@ void GMenu2X::scanner() {
 
 	sync();
 	ledOff();
+	recalcGrid = true;
 }
 
 void GMenu2X::scanPath(string path, vector<string> *files) {

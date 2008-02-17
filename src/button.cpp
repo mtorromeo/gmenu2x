@@ -21,13 +21,10 @@ bool Button::paintHover() {
 }
 
 bool Button::handleTS() {
-	if (!gmenu2x->ts.pressed()) {
-		if (pressed) {
-			exec();
-			return true;
-		}
+	if (pressed && !gmenu2x->ts.pressed()) {
 		pressed = false;
-		return false;
+		exec();
+		return true;
 	} else if (gmenu2x->ts.inRect(rect)) {
 		pressed = true;
 		return false;
