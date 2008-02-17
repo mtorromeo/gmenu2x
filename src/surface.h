@@ -41,6 +41,7 @@ class Surface {
 private:
 	bool locked;
 	int halfW, halfH;
+	SDL_Surface *dblbuffer;
 
 public:
 	Surface();
@@ -50,6 +51,8 @@ public:
 	Surface(Surface *s);
 	Surface(int w, int h, Uint32 flags = SDL_HWSURFACE|SDL_SRCALPHA);
 	~Surface();
+	
+	void enableVirtualDoubleBuffer(SDL_Surface *surface);
 
 	SDL_Surface *raw;
 

@@ -229,10 +229,11 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 
 	s = new Surface();
 	SDL_JoystickOpen(0);
-	//s->raw = SDL_SetVideoMode(320, 240, 16, SDL_HWSURFACE|SDL_DOUBLEBUF);
-	s->raw = SDL_SetVideoMode(320, 240, 16, SDL_SWSURFACE);
 #ifdef TARGET_GP2X
+	s->enableVirtualDoubleBuffer(SDL_SetVideoMode(320, 240, 16, SDL_HWSURFACE));
 	SDL_ShowCursor(0);
+#else
+	s->raw = SDL_SetVideoMode(320, 240, 16, SDL_HWSURFACE|SDL_DOUBLEBUF);
 #endif
 
 	bg = NULL;
@@ -1565,7 +1566,7 @@ void GMenu2X::scanner() {
 
 	sync();
 	ledOff();
-	recalcGrid = true;
+	recalcLinkGrid = true;
 }
 
 void GMenu2X::scanPath(string path, vector<string> *files) {

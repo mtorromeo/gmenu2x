@@ -28,10 +28,12 @@ using namespace std;
 
 Surface::Surface() {
 	raw = NULL;
+	dblbuffer = NULL;
 }
 
 Surface::Surface(string img, bool alpha, string skin) {
 	raw = NULL;
+	dblbuffer = NULL;
 	load(img, alpha, skin);
 	halfW = raw->w/2;
 	halfH = raw->h/2;
@@ -39,12 +41,14 @@ Surface::Surface(string img, bool alpha, string skin) {
 
 Surface::Surface(string img, string skin, bool alpha) {
 	raw = NULL;
+	dblbuffer = NULL;
 	load(img, alpha, skin);
 	halfW = raw->w/2;
 	halfH = raw->h/2;
 }
 
 Surface::Surface(SDL_Surface *s, SDL_PixelFormat *fmt, Uint32 flags) {
+	dblbuffer = NULL;
 	this->operator =(s);
 	if (fmt!=NULL || flags!=0) {
 		if (fmt==NULL) fmt = s->format;
@@ -54,10 +58,12 @@ Surface::Surface(SDL_Surface *s, SDL_PixelFormat *fmt, Uint32 flags) {
 }
 
 Surface::Surface(Surface *s) {
+	dblbuffer = NULL;
 	this->operator =(s->raw);
 }
 
 Surface::Surface(int w, int h, Uint32 flags) {
+	dblbuffer = NULL;
 	Uint32 rmask, gmask, bmask, amask;
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 	rmask = 0xff000000;
@@ -79,8 +85,14 @@ Surface::~Surface() {
 	free();
 }
 
+void Surface::enableVirtualDoubleBuffer(SDL_Surface *surface) {
+	dblbuffer = surface;
+	raw = SDL_DisplayFormat(dblbuffer);
+}
+
 void Surface::free() {
 	if (raw!=NULL) SDL_FreeSurface( raw );
+	if (dblbuffer!=NULL) SDL_FreeSurface( dblbuffer );
 }
 
 SDL_PixelFormat *Surface::format() {
@@ -131,7 +143,12 @@ void Surface::unlock() {
 }
 
 void Surface::flip() {
-	SDL_Flip(raw);
+	if (dblbuffer!=NULL) {
+		this->blit(dblbuffer,0,0);
+		SDL_Flip(dblbuffer);
+	} else {
+		SDL_Flip(raw);
+	}
 }
 
 bool Surface::blit(SDL_Surface *destination, int x, int y, int w, int h, int a) {
