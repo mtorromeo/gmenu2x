@@ -17,48 +17,32 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef LISTVIEWITEM_H_
+#define LISTVIEWITEM_H_
 
-#ifndef TOUCHSCREEN_H
-#define TOUCHSCREEN_H
+#include <string>
 
-#include <SDL.h>
+using std::string;
 
-#include <fcntl.h>
-#include <stdint.h>
+class ListView;
 
-typedef struct {
-	uint16_t pressure;
-	uint16_t x;
-	uint16_t y;
-	uint16_t pad;
-	struct timeval stamp;
-} TS_EVENT;
-
-class Touchscreen {
-private:
-	int wm97xx;
-	bool calibrated, handled;
-	TS_EVENT event;
-	int calibX, calibY;
-
-	void calibrate(/*TS_EVENT event*/);
+class ListViewItem {
+protected:
+	ListView *parent;
+	SDL_Rect rect;
 
 public:
-	int x,y;
-	bool wasPressed;
+	ListViewItem(ListView *parent, string text);
+	virtual ~ListViewItem();
 
-	Touchscreen();
-	~Touchscreen();
+	string text;
 
-	bool init();
-	void deinit();
+	void setPosition(int x, int y);
+	int getHeight();
 
-	bool poll();
-	bool pressed();
-	void setHandled();
-
-	bool inRect(SDL_Rect r);
-	bool inRect(int x, int y, int w, int h);
+	virtual void paint();
+	virtual void handleTS();
+	virtual void onClick();
 };
 
 #endif

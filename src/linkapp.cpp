@@ -412,8 +412,6 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 		}
 	}
 
-	if (clock()!=gmenu2x->menuClock)
-		gmenu2x->setClock(clock());
 	if (useRamTimings)
 		gmenu2x->applyRamTimings();
 	if (volume()>=0)
@@ -449,9 +447,9 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 		if (selectedFile=="")
 			gmenu2x->writeTmp();
 		gmenu2x->quit();
-		//G
+		if (clock()!=gmenu2x->menuClock)
+			gmenu2x->setClock(clock());
 		if (gamma()!=0 && gamma()!=gmenu2x->gamma)
-		//G
 			gmenu2x->setGamma(gamma());
 		execlp("/bin/sh","/bin/sh","-c",command.c_str(),NULL);
 		//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue

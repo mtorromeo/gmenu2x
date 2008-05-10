@@ -51,16 +51,17 @@ FileDialog::FileDialog(GMenu2X *gmenu2x, string text, string filter, string file
 }
 
 bool FileDialog::exec() {
-	bool close = false, result = true, ts_pressed = false, clicked = false;
+	bool close = false, result = true, ts_pressed = false;
 	if (!fileExists(path()))
 		setPath("/mnt");
 
 	fl.setFilter(filter);
 	fl.browse();
 
-	uint i, firstElement = 0, iY;
+	uint i, firstElement = 0, iY, action;
 	selected = 0;
 	while (!close) {
+		action = FD_NO_ACTION;
 		if (gmenu2x->f200) gmenu2x->ts.poll();
 
 		gmenu2x->bg->blit(gmenu2x->s,0,0);
@@ -83,7 +84,10 @@ bool FileDialog::exec() {
 
 		//Files & Directories
 		gmenu2x->s->setClipRect(0,41,311,179);
-		if (ts_pressed && !gmenu2x->ts.pressed()) clicked = true;
+		if (ts_pressed && !gmenu2x->ts.pressed()) {
+			action = FD_ACTION_SELECT;
+			ts_pressed = false;
+		}
 		if (gmenu2x->f200 && gmenu2x->ts.pressed() && !gmenu2x->ts.inRect(2,44,308,179)) ts_pressed = false;
 		for (i=firstElement; i<fl.size() && i<firstElement+10; i++) {
 			iY = i-firstElement;
@@ -102,92 +106,77 @@ bool FileDialog::exec() {
 		gmenu2x->drawScrollBar(10,fl.size(),firstElement,44,170);
 		gmenu2x->s->flip();
 
-
 #ifdef TARGET_GP2X
 		gmenu2x->joy.update();
-		if ( gmenu2x->joy[GP2X_BUTTON_SELECT] ) { close = true; result = false; }
-		if ( gmenu2x->joy[GP2X_BUTTON_UP    ] ) {
-			if (selected==0)
-				selected = fl.size()-1;
-			else
-				selected -= 1;
-		}
-		if ( gmenu2x->joy[GP2X_BUTTON_L     ] ) {
-			if ((int)(selected-9)<0) {
-				selected = 0;
-			} else {
-				selected -= 9;
-			}
-		}
-		if ( gmenu2x->joy[GP2X_BUTTON_DOWN  ] ) {
-			if (selected+1>=fl.size())
-				selected = 0;
-			else
-				selected += 1;
-		}
-		if ( gmenu2x->joy[GP2X_BUTTON_R     ] ) {
-			if (selected+9>=fl.size()) {
-				selected = fl.size()-1;
-			} else {
-				selected += 9;
-			}
-		}
-		if ( gmenu2x->joy[GP2X_BUTTON_X] || gmenu2x->joy[GP2X_BUTTON_LEFT] ) {
-			string::size_type p = path().rfind("/");
-			if (p==string::npos || path().substr(0,4)!="/mnt" || p<4)
-				return false;
-			else
-				setPath( path().substr(0,p) );
-		}
-		if ( clicked || gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK] ) {
-			clicked = false;
-			if (fl.isDirectory(selected)) {
-				setPath( path()+"/"+fl[selected] );
-			} else {
-				if (fl.isFile(selected)) {
-					file = fl[selected];
-					close = true;
-				}
-			}
-		}
+		if ( gmenu2x->joy[GP2X_BUTTON_SELECT] ) action = FD_ACTION_CLOSE;
+		if ( gmenu2x->joy[GP2X_BUTTON_UP    ] ) action = FD_ACTION_UP;
+		if ( gmenu2x->joy[GP2X_BUTTON_L     ] ) action = FD_ACTION_SCROLLUP;
+		if ( gmenu2x->joy[GP2X_BUTTON_DOWN  ] ) action = FD_ACTION_DOWN;
+		if ( gmenu2x->joy[GP2X_BUTTON_R     ] ) action = FD_ACTION_SCROLLDOWN;
+		if ( gmenu2x->joy[GP2X_BUTTON_X] || gmenu2x->joy[GP2X_BUTTON_LEFT] ) action = FD_ACTION_GOUP;
+		if ( gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK] ) action = FD_ACTION_SELECT;
 #else
 		while (SDL_PollEvent(&gmenu2x->event)) {
-			if ( gmenu2x->event.type == SDL_QUIT ) { close = true; result = false; }
+			if ( gmenu2x->event.type == SDL_QUIT ) action = FD_ACTION_CLOSE;
 			if ( gmenu2x->event.type==SDL_KEYDOWN ) {
-				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) { close = true; result = false; }
-				if ( gmenu2x->event.key.keysym.sym==SDLK_UP ) {
-					if (selected==0) {
-						selected = fl.size()-1;
-					} else
-						selected -= 1;
-				}
-				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN ) {
-					if (selected+1>=fl.size())
-						selected = 0;
-					else
-						selected += 1;
-				}
-				if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) {
-					string::size_type p = path().rfind("/");
-					if (p==string::npos || path().substr(0,4)!="/mnt" || p<4)
-						return false;
-					else
-						setPath( path().substr(0,p) );
-				}
-				if ( clicked || gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
-					clicked = false;
-					if (fl.isDirectory(selected)) {
-						setPath( path()+"/"+fl[selected] );
-					} else {
-						if (fl.isFile(selected)) {
-							file = fl[selected];
-							close = true;
-						}
-					}
-				}
+				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) action = FD_ACTION_CLOSE;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_UP ) action = FD_ACTION_UP;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN ) action = FD_ACTION_DOWN;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) action = FD_ACTION_GOUP;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) action = FD_ACTION_SELECT;
 			}
 		}
 #endif
+		if (action == FD_ACTION_SELECT && fl[selected]=="..") action = FD_ACTION_GOUP;
+		switch (action) {
+			case FD_ACTION_CLOSE: {
+				close = true;
+				result = false;
+			} break;
+			case FD_ACTION_UP: {
+				if (selected==0)
+					selected = fl.size()-1;
+				else
+					selected -= 1;
+			} break;
+			case FD_ACTION_SCROLLUP: {
+				if ((int)(selected-9)<0) {
+					selected = 0;
+				} else {
+					selected -= 9;
+				}
+			} break;
+			case FD_ACTION_DOWN: {
+				if (selected+1>=fl.size())
+					selected = 0;
+				else
+					selected += 1;
+			} break;
+			case FD_ACTION_SCROLLDOWN: {
+				if (selected+9>=fl.size()) {
+					selected = fl.size()-1;
+				} else {
+					selected += 9;
+				}
+			} break;
+			case FD_ACTION_GOUP: {
+				string::size_type p = path().rfind("/");
+				if (p==string::npos || path().substr(0,4)!="/mnt" || p<4)
+					return false;
+				else
+					setPath( path().substr(0,p) );
+			} break;
+			case FD_ACTION_SELECT: {
+				if (fl.isDirectory(selected)) {
+					setPath( path()+"/"+fl[selected] );
+				} else {
+					if (fl.isFile(selected)) {
+						file = fl[selected];
+						close = true;
+					}
+				}
+			} break;
+		}
 	}
 
 	return result;

@@ -73,7 +73,7 @@ void FileLister::browse() {
 
 		while ((dptr = readdir(dirp))) {
 			file = dptr->d_name;
-			if (file[0]=='.') continue;
+			if (file[0]=='.' && file!="..") continue;
 			filepath = path+file;
 			int statRet = stat(filepath.c_str(), &st);
 			if (statRet == -1) {

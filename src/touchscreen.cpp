@@ -29,6 +29,7 @@ Touchscreen::Touchscreen() {
 	wm97xx = 0;
 	calibrated = false;
 	wasPressed = false;
+	handled = false;
 	x = 0;
 	y = 0;
 }
@@ -81,15 +82,21 @@ bool Touchscreen::poll() {
 		event.pressure = 0;
 	}
 #endif
+	handled = false;
 	return pressed();
 }
 
+void Touchscreen::setHandled() {
+	wasPressed = false;
+	handled = true;
+}
+
 bool Touchscreen::pressed() {
-	return event.pressure>0;
+	return !handled && event.pressure>0;
 }
 
 bool Touchscreen::inRect(SDL_Rect r) {
-	return (y>=r.y) && (y<=r.y+r.h) && (x>=r.x) && (x<=r.x+r.w);
+	return !handled && (y>=r.y) && (y<=r.y+r.h) && (x>=r.x) && (x<=r.x+r.w);
 }
 
 bool Touchscreen::inRect(int x, int y, int w, int h) {

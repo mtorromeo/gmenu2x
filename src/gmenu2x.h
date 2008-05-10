@@ -40,6 +40,11 @@ using fastdelegate::FastDelegate0;
 
 typedef FastDelegate0<> MenuAction;
 
+typedef struct {
+	unsigned short batt;
+	unsigned short remocon;
+} MMSP2ADC;
+
 struct MenuOption {
 	string text;
 	MenuAction action;

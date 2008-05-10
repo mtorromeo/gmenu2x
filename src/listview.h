@@ -17,48 +17,43 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef LISTVIEW_H_
+#define LISTVIEW_H_
 
-#ifndef TOUCHSCREEN_H
-#define TOUCHSCREEN_H
+#include "gmenu2x.h"
+#include "listviewitem.h"
 
-#include <SDL.h>
+using std::vector;
 
-#include <fcntl.h>
-#include <stdint.h>
-
-typedef struct {
-	uint16_t pressure;
-	uint16_t x;
-	uint16_t y;
-	uint16_t pad;
-	struct timeval stamp;
-} TS_EVENT;
-
-class Touchscreen {
+class ListView {
 private:
-	int wm97xx;
-	bool calibrated, handled;
-	TS_EVENT event;
-	int calibX, calibY;
+	int firstDisplayItem, selectedItem;
+	int itemsPerPage;
 
-	void calibrate(/*TS_EVENT event*/);
+protected:
+	vector<ListViewItem*> items;
+	SDL_Rect rect;
 
 public:
-	int x,y;
-	bool wasPressed;
+	ListView(GMenu2X *gmenu2x);
+	virtual ~ListView();
 
-	Touchscreen();
-	~Touchscreen();
+	GMenu2X *gmenu2x;
 
-	bool init();
-	void deinit();
+	ListViewItem *add(ListViewItem *item);
+	ListViewItem *add(string text);
+	void     del(ListViewItem *item);
+	void     del(int itemIndex);
+	void     clear();
 
-	bool poll();
-	bool pressed();
-	void setHandled();
+	void setPosition(int x, int y);
+	void setSize(int w, int h);
+	int getWidth();
 
-	bool inRect(SDL_Rect r);
-	bool inRect(int x, int y, int w, int h);
+	virtual void paint();
+	virtual void handleInput();
+
+	ListViewItem *operator[](int);
 };
 
 #endif

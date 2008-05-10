@@ -25,6 +25,17 @@
 #include "filelister.h"
 #include "gmenu2x.h"
 
+#define FD_NO_ACTION 0
+#define FD_ACTION_CLOSE 1
+#define FD_ACTION_UP 2
+#define FD_ACTION_DOWN 3
+#define FD_ACTION_LEFT 4
+#define FD_ACTION_RIGHT 5
+#define FD_ACTION_SCROLLDOWN 6
+#define FD_ACTION_SCROLLUP 7
+#define FD_ACTION_GOUP 8
+#define FD_ACTION_SELECT 9
+
 using std::string;
 using std::vector;
 

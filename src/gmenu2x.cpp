@@ -102,9 +102,11 @@ void GMenu2X::gp2x_init() {
 
 void GMenu2X::gp2x_deinit() {
 #ifdef TARGET_GP2X
-	gp2x_memregs[0x28DA>>1]=0x4AB;
-	gp2x_memregs[0x290C>>1]=640;
-	close(gp2x_mem);
+	if (gp2x_mem!=0) {
+		gp2x_memregs[0x28DA>>1]=0x4AB;
+		gp2x_memregs[0x290C>>1]=640;
+		close(gp2x_mem);
+	}
 	if (f200) ts.deinit();
 //	ts.
 #endif
@@ -112,32 +114,36 @@ void GMenu2X::gp2x_deinit() {
 
 void GMenu2X::gp2x_tvout_on(bool pal) {
 #ifdef TARGET_GP2X
-	if (cx25874!=0) gp2x_tvout_off();
-	//if tv-out is enabled without cx25874 open, stop
-	//if (gp2x_memregs[0x2800>>1]&0x100) return;
-	cx25874 = open("/dev/cx25874",O_RDWR);
-	ioctl(cx25874, _IOW('v', 0x02, unsigned char), pal ? 4 : 3);
-	gp2x_memregs[0x2906>>1]=512;
-	gp2x_memregs[0x28E4>>1]=gp2x_memregs[0x290C>>1];
-	gp2x_memregs[0x28E8>>1]=239;
+	if (gp2x_mem!=0) {
+		if (cx25874!=0) gp2x_tvout_off();
+		//if tv-out is enabled without cx25874 open, stop
+		//if (gp2x_memregs[0x2800>>1]&0x100) return;
+		cx25874 = open("/dev/cx25874",O_RDWR);
+		ioctl(cx25874, _IOW('v', 0x02, unsigned char), pal ? 4 : 3);
+		gp2x_memregs[0x2906>>1]=512;
+		gp2x_memregs[0x28E4>>1]=gp2x_memregs[0x290C>>1];
+		gp2x_memregs[0x28E8>>1]=239;
 
 #ifdef DEBUG
-	for (uint window=0; window<4; window++) {
-		int x1=gp2x_memregs[(0x28e2+window*8)>>1];
-		int x2=gp2x_memregs[(0x28e4+window*8)>>1];
-		int y1=gp2x_memregs[(0x28e6+window*8)>>1];
-		int y2=gp2x_memregs[(0x28e8+window*8)>>1];
-		printf ("Window %i: %i,%i,%i,%i\n",window,x1,x2,y1,y2);
-	}
+		for (uint window=0; window<4; window++) {
+			int x1=gp2x_memregs[(0x28e2+window*8)>>1];
+			int x2=gp2x_memregs[(0x28e4+window*8)>>1];
+			int y1=gp2x_memregs[(0x28e6+window*8)>>1];
+			int y2=gp2x_memregs[(0x28e8+window*8)>>1];
+			printf ("Window %i: %i,%i,%i,%i\n",window,x1,x2,y1,y2);
+		}
 #endif
+	}
 #endif
 }
 
 void GMenu2X::gp2x_tvout_off() {
 #ifdef TARGET_GP2X
-	close(cx25874);
-	cx25874 = 0;
-	gp2x_memregs[0x2906>>1]=1024;
+	if (gp2x_mem!=0) {
+		close(cx25874);
+		cx25874 = 0;
+		gp2x_memregs[0x2906>>1]=1024;
+	}
 #endif
 }
 
@@ -213,12 +219,14 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	gp2x_init();
 
 	//Fix tv-out
-	if (gp2x_memregs[0x2800>>1]&0x100) {
-		gp2x_memregs[0x2906>>1]=512;
-		//gp2x_memregs[0x290C>>1]=640;
-		gp2x_memregs[0x28E4>>1]=gp2x_memregs[0x290C>>1];
+	if (gp2x_mem!=0) {
+		if (gp2x_memregs[0x2800>>1]&0x100) {
+			gp2x_memregs[0x2906>>1]=512;
+			//gp2x_memregs[0x290C>>1]=640;
+			gp2x_memregs[0x28E4>>1]=gp2x_memregs[0x290C>>1];
+		}
+		gp2x_memregs[0x28E8>>1]=239;
 	}
-	gp2x_memregs[0x28E8>>1]=239;
 #endif
 
 	//Screen
@@ -294,6 +302,8 @@ GMenu2X::~GMenu2X() {
 }
 
 void GMenu2X::quit() {
+	sc.clear();
+	s->free();
 	SDL_Quit();
 #ifdef TARGET_GP2X
 	if (gp2x_mem!=0) {
@@ -674,14 +684,14 @@ void GMenu2X::initServices() {
 
 void GMenu2X::ledOn() {
 #ifdef TARGET_GP2X
-	if (!f200) gp2x_memregs[0x106E >> 1] ^= 16;
+	if (gp2x_mem!=0 && !f200) gp2x_memregs[0x106E >> 1] ^= 16;
 	//SDL_SYS_JoystickGp2xSys(joy.joystick, BATT_LED_ON);
 #endif
 }
 
 void GMenu2X::ledOff() {
 #ifdef TARGET_GP2X
-	if (!f200) gp2x_memregs[0x106E >> 1] ^= 16;
+	if (gp2x_mem!=0 && !f200) gp2x_memregs[0x106E >> 1] ^= 16;
 	//SDL_SYS_JoystickGp2xSys(joy.joystick, BATT_LED_OFF);
 #endif
 }
@@ -704,7 +714,7 @@ int GMenu2X::main() {
 #endif
 
 	IconButton btnContextMenu(this,"skin:imgs/menu.png");
-	btnContextMenu.setPosition(301, 222);
+	btnContextMenu.setPosition(282, 222);
 	btnContextMenu.setSize(16, 16);
 	btnContextMenu.setAction(MakeDelegate(this, &GMenu2X::contextMenu));
 
@@ -782,22 +792,21 @@ int GMenu2X::main() {
 
 		if (f200) {
 			btnContextMenu.paint();
-		} else {
-			//check battery status every 60 seconds
-			if (tickNow-tickBattery >= 60000) {
-				tickBattery = tickNow;
-				unsigned short battlevel = getBatteryLevel();
-				if (battlevel>5) {
-					batteryIcon = "imgs/battery/ac.png";
-				} else {
-					ss.clear();
-					ss << battlevel;
-					ss >> batteryIcon;
-					batteryIcon = "imgs/battery/"+batteryIcon+".png";
-				}
-			}
-			sc.skinRes(batteryIcon)->blit( s, 301, 222 );
 		}
+		//check battery status every 60 seconds
+		if (tickNow-tickBattery >= 60000) {
+			tickBattery = tickNow;
+			unsigned short battlevel = getBatteryLevel();
+			if (battlevel>5) {
+				batteryIcon = "imgs/battery/ac.png";
+			} else {
+				ss.clear();
+				ss << battlevel;
+				ss >> batteryIcon;
+				batteryIcon = "imgs/battery/"+batteryIcon+".png";
+			}
+		}
+		sc.skinRes(batteryIcon)->blit( s, 301, 222 );
 
 		//On Screen Help
 #ifdef TARGET_GP2X
@@ -935,10 +944,10 @@ int GMenu2X::main() {
 void GMenu2X::explorer() {
 	FileDialog fd(this,tr["Select an application"],".gpu,.gpe,.sh");
 	if (fd.exec()) {
-		setClock(200);
 		quit();
 		string command = cmdclean(fd.path()+"/"+fd.file);
 		chdir(fd.path().c_str());
+		setClock(200);
 		execl(command.c_str(), command.c_str(), NULL);
 	}
 }
@@ -1597,31 +1606,42 @@ void GMenu2X::scanPath(string path, vector<string> *files) {
 
 unsigned short GMenu2X::getBatteryLevel() {
 #ifdef TARGET_GP2X
-	int devbatt = open ("/dev/batt", O_RDONLY);
-	if (devbatt<0) return 0;
-
-	int battval = 0;
-	unsigned short cbv, min=900, max=0;
-	int v;
-
-	for (int i = 0; i < BATTERY_READS; i ++) {
-		if (read (devbatt, &cbv, 2) == 2) {
-			battval += cbv;
-			if (cbv>max) max = cbv;
-			if (cbv<min) min = cbv;
+	int dev = open(f200 ? "/dev/mmsp2adc" : "/dev/batt", O_RDONLY);
+	if (dev<0) return 0;
+	
+	if (f200) {
+		MMSP2ADC val;
+		int rv = read(dev, &val, sizeof(MMSP2ADC));
+		close(dev);
+		
+		if (val.batt==0) return 5;
+		if (val.batt==1) return 3;
+		if (val.batt==2) return 1;
+		if (val.batt==3) return 0;
+	} else {
+		int battval = 0;
+		unsigned short cbv, min=900, max=0;
+		int v;
+	
+		for (int i = 0; i < BATTERY_READS; i ++) {
+			if ( read(dev, &cbv, 2) == 2) {
+				battval += cbv;
+				if (cbv>max) max = cbv;
+				if (cbv<min) min = cbv;
+			}
 		}
+		close(dev);
+	
+		battval -= min+max;
+		battval /= BATTERY_READS-2;
+	
+		if (battval>=850) return 6;
+		if (battval>780) return 5;
+		if (battval>740) return 4;
+		if (battval>700) return 3;
+		if (battval>690) return 2;
+		if (battval>680) return 1;
 	}
-	close(devbatt);
-
-	battval -= min+max;
-	battval /= BATTERY_READS-2;
-
-	if (battval>=850) return 6;
-	if (battval>780) return 5;
-	if (battval>740) return 4;
-	if (battval>700) return 3;
-	if (battval>690) return 2;
-	if (battval>680) return 1;
 	return 0;
 #else
 	return 6; //AC Power
@@ -1649,33 +1669,39 @@ void GMenu2X::setInputSpeed() {
 void GMenu2X::applyRamTimings() {
 #ifdef TARGET_GP2X
 	// 6 4 1 1 1 2 2
-	int tRC = 5, tRAS = 3, tWR = 0, tMRD = 0, tRFC = 0, tRP = 1, tRCD = 1;
-	gp2x_memregs[0x3802>>1] = ((tMRD & 0xF) << 12) | ((tRFC & 0xF) << 8) | ((tRP & 0xF) << 4) | (tRCD & 0xF);
-	gp2x_memregs[0x3804>>1] = ((tRC & 0xF) << 8) | ((tRAS & 0xF) << 4) | (tWR & 0xF);
+	if (gp2x_mem!=0) {
+		int tRC = 5, tRAS = 3, tWR = 0, tMRD = 0, tRFC = 0, tRP = 1, tRCD = 1;
+		gp2x_memregs[0x3802>>1] = ((tMRD & 0xF) << 12) | ((tRFC & 0xF) << 8) | ((tRP & 0xF) << 4) | (tRCD & 0xF);
+		gp2x_memregs[0x3804>>1] = ((tRC & 0xF) << 8) | ((tRAS & 0xF) << 4) | (tWR & 0xF);
+	}
 #endif
 }
 
 void GMenu2X::applyDefaultTimings() {
 #ifdef TARGET_GP2X
 	// 8 16 3 8 8 8 8
-	int tRC = 7, tRAS = 15, tWR = 2, tMRD = 7, tRFC = 7, tRP = 7, tRCD = 7;
-	gp2x_memregs[0x3802>>1] = ((tMRD & 0xF) << 12) | ((tRFC & 0xF) << 8) | ((tRP & 0xF) << 4) | (tRCD & 0xF);
-	gp2x_memregs[0x3804>>1] = ((tRC & 0xF) << 8) | ((tRAS & 0xF) << 4) | (tWR & 0xF);
+	if (gp2x_mem!=0) {
+		int tRC = 7, tRAS = 15, tWR = 2, tMRD = 7, tRFC = 7, tRP = 7, tRCD = 7;
+		gp2x_memregs[0x3802>>1] = ((tMRD & 0xF) << 12) | ((tRFC & 0xF) << 8) | ((tRP & 0xF) << 4) | (tRCD & 0xF);
+		gp2x_memregs[0x3804>>1] = ((tRC & 0xF) << 8) | ((tRAS & 0xF) << 4) | (tWR & 0xF);
+	}
 #endif
 }
 
 void GMenu2X::setClock(unsigned mhz) {
 	mhz = constrain(mhz,50,maxClock);
 #ifdef TARGET_GP2X
-	unsigned v;
-	unsigned mdiv,pdiv=3,scale=0;
-	mhz*=1000000;
-	mdiv=(mhz*pdiv)/GP2X_CLK_FREQ;
-	mdiv=((mdiv-8)<<8) & 0xff00;
-	pdiv=((pdiv-2)<<2) & 0xfc;
-	scale&=3;
-	v=mdiv | pdiv | scale;
-	MEM_REG[0x910>>1]=v;
+	if (gp2x_mem!=0) {
+		unsigned v;
+		unsigned mdiv,pdiv=3,scale=0;
+		mhz*=1000000;
+		mdiv=(mhz*pdiv)/GP2X_CLK_FREQ;
+		mdiv=((mdiv-8)<<8) & 0xff00;
+		pdiv=((pdiv-2)<<2) & 0xfc;
+		scale&=3;
+		v=mdiv | pdiv | scale;
+		MEM_REG[0x910>>1]=v;
+	}
 #endif
 }
 
