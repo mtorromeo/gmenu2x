@@ -1,14 +1,18 @@
 -----------
 New in 0.10
 -----------
+New translations: Basque, Catalan, Turkish
 Added support for the touchscreen
+Added support for f200 battery
 Added internal explorer that can launch .gpu .gpe and .sh files
 Added graphic indicators for switching sections
+Added on screen help (keep pressed A, only on the main screen at the moment)
 Cpu clock raised when loading manuals
 Added support for bmp and jpg/jpeg files for manuals
 Added preview of images when selecting icons
 Added option to show the root folder in the selection dialogs
 Fixed bug that prevented the use of the custom selected wallpaper on restart
+Lots of fixes
 
 ----------
 New in 0.9
