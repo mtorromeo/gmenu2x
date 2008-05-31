@@ -252,7 +252,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 
 	if (!fileExists(wallpaper)) {
 #ifdef DEBUG
-	cout << "Searching wallpaper" << endl;
+		cout << "Searching wallpaper" << endl;
 #endif
 		FileLister fl("skins/"+skin+"/wallpapers",false,true);
 		fl.setFilter(".png,.jpg,.jpeg,.bmp");
@@ -853,8 +853,13 @@ int GMenu2X::main() {
 				}
 
 			i=menu->firstDispRow()*numCols;
-			while ( i<(menu->firstDispRow()*numCols)+linksPerPage && i<menu->sectionLinks()->size() && !menu->sectionLinks()->at(i)->handleTS())
+			while ( i<(menu->firstDispRow()*numCols)+linksPerPage && i<menu->sectionLinks()->size()) {
+				if (menu->sectionLinks()->at(i)->isPressed())
+					menu->setLinkIndex(i);
+				if (menu->sectionLinks()->at(i)->handleTS())
+					i = menu->sectionLinks()->size();
 				i++;
+			}
 		}
 
 #ifdef TARGET_GP2X
@@ -944,11 +949,13 @@ int GMenu2X::main() {
 void GMenu2X::explorer() {
 	FileDialog fd(this,tr["Select an application"],".gpu,.gpe,.sh");
 	if (fd.exec()) {
-		quit();
-		string command = cmdclean(fd.path()+"/"+fd.file);
+		if (saveSelection && (startSectionIndex!=menu->selSectionIndex() || startLinkIndex!=menu->selLinkIndex()))
+			writeConfig();
+		string command = cmdclean(fd.path()+"/"+fd.file) + "; sync & cd "+cmdclean(getExePath())+"; exec ./gmenu2x";
 		chdir(fd.path().c_str());
+		quit();
 		setClock(200);
-		execl(command.c_str(), command.c_str(), NULL);
+		execlp("/bin/sh","/bin/sh","-c",command.c_str(),NULL);
 	}
 }
 
@@ -1608,12 +1615,12 @@ unsigned short GMenu2X::getBatteryLevel() {
 #ifdef TARGET_GP2X
 	int dev = open(f200 ? "/dev/mmsp2adc" : "/dev/batt", O_RDONLY);
 	if (dev<0) return 0;
-	
+
 	if (f200) {
 		MMSP2ADC val;
 		int rv = read(dev, &val, sizeof(MMSP2ADC));
 		close(dev);
-		
+
 		if (val.batt==0) return 5;
 		if (val.batt==1) return 3;
 		if (val.batt==2) return 1;
@@ -1622,7 +1629,7 @@ unsigned short GMenu2X::getBatteryLevel() {
 		int battval = 0;
 		unsigned short cbv, min=900, max=0;
 		int v;
-	
+
 		for (int i = 0; i < BATTERY_READS; i ++) {
 			if ( read(dev, &cbv, 2) == 2) {
 				battval += cbv;
@@ -1631,10 +1638,10 @@ unsigned short GMenu2X::getBatteryLevel() {
 			}
 		}
 		close(dev);
-	
+
 		battval -= min+max;
 		battval /= BATTERY_READS-2;
-	
+
 		if (battval>=850) return 6;
 		if (battval>780) return 5;
 		if (battval>740) return 4;
@@ -1756,6 +1763,14 @@ string GMenu2X::getDiskFree() {
 		ss >> df;
 	} else cout << "\033[0;34mGMENU2X:\033[0;31m statfs failed with error '" << strerror(errno) << "'\033[0m" << endl;
 	return df;
+}
+
+int GMenu2X::drawButton(IconButton *btn, string text, int x, int y) {
+	btn->setPosition(x, y-7);
+	btn->paint();
+	x += sc[btn->getIcon()]->raw->w+3;
+	s->write(font, text, x, y, SFontHAlignLeft, SFontVAlignMiddle);
+	return x+6+font->getTextWidth(text);
 }
 
 int GMenu2X::drawButton(Surface *s, string btn, string text, int x, int y) {

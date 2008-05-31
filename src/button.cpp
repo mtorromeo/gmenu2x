@@ -1,4 +1,5 @@
 #include "button.h"
+#include "gmenu2x.h"
 
 using namespace std;
 using namespace fastdelegate;
@@ -20,13 +21,17 @@ bool Button::paintHover() {
 	return false;
 }
 
+bool Button::isPressed() {
+	return gmenu2x->ts.pressed() && gmenu2x->ts.inRect(rect);
+}
+
 bool Button::handleTS() {
 	if (pressed && !gmenu2x->ts.pressed()) {
 		exec();
 		pressed = false;
 		gmenu2x->ts.setHandled();
 		return true;
-	} else if (gmenu2x->ts.pressed() && gmenu2x->ts.inRect(rect)) {
+	} else if (isPressed()) {
 		pressed = true;
 		return false;
 	} else {

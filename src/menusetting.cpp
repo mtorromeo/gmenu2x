@@ -29,6 +29,7 @@ void MenuSetting::draw(int y) {
 	gmenu2x->s->write( gmenu2x->font, name, 5, y+6, SFontHAlignLeft, SFontVAlignMiddle );
 }
 
+void MenuSetting::handleTS() {}
 void MenuSetting::manageInput() {}
 void MenuSetting::adjustInput() {}
 void MenuSetting::drawSelected(int) {}

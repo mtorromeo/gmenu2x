@@ -1,4 +1,5 @@
 #include "iconbutton.h"
+#include "gmenu2x.h"
 
 using namespace std;
 using namespace fastdelegate;

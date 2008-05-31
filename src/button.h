@@ -22,13 +22,14 @@
 #define BUTTON_H_
 
 #include <string>
-#include "gmenu2x.h"
+#include <SDL.h>
 #include "FastDelegate.h"
 
 using std::string;
 using fastdelegate::FastDelegate0;
 
 typedef FastDelegate0<> ButtonAction;
+class GMenu2X;
 
 class Button {
 protected:
@@ -48,6 +49,7 @@ public:
 	virtual void paint();
 	virtual bool paintHover();
 
+	bool isPressed();
 	bool handleTS();
 	void exec();
 	void voidAction() {};

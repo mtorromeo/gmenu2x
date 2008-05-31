@@ -22,6 +22,7 @@
 #include <sstream>
 
 using namespace std;
+using namespace fastdelegate;
 
 MenuSettingInt::MenuSettingInt(GMenu2X *gmenu2x, string name, string description, int *value, int min, int max)
 	: MenuSetting(gmenu2x,name,description) {
@@ -30,7 +31,23 @@ MenuSettingInt::MenuSettingInt(GMenu2X *gmenu2x, string name, string description
 	originalValue = *value;
 	this->min = min;
 	this->max = max;
-	this->setValue(this->value());
+	setValue(this->value());
+	
+	btnInc = new IconButton(gmenu2x, "skin:imgs/buttons/y.png");
+	btnInc->setSize(16, 16);
+	btnInc->setAction(MakeDelegate(this, &MenuSettingInt::inc));
+	
+	btnDec = new IconButton(gmenu2x, "skin:imgs/buttons/x.png");
+	btnDec->setSize(16, 16);
+	btnDec->setAction(MakeDelegate(this, &MenuSettingInt::dec));
+	
+	btnInc2 = new IconButton(gmenu2x, "skin:imgs/buttons/right.png");
+	btnInc2->setSize(16, 16);
+	btnInc2->setAction(MakeDelegate(this, &MenuSettingInt::inc));
+	
+	btnDec2 = new IconButton(gmenu2x, "skin:imgs/buttons/left.png");
+	btnDec2->setSize(16, 16);
+	btnDec2->setAction(MakeDelegate(this, &MenuSettingInt::dec));
 }
 
 void MenuSettingInt::draw(int y) {
@@ -38,19 +55,31 @@ void MenuSettingInt::draw(int y) {
 	gmenu2x->s->write( gmenu2x->font, strvalue, 155, y+6, SFontHAlignLeft, SFontVAlignMiddle );
 }
 
-#ifdef TARGET_GP2X
-#include "gp2x.h"
+void MenuSettingInt::handleTS() {
+	btnInc->handleTS();
+	btnDec->handleTS();
+	btnInc2->handleTS();
+	btnDec2->handleTS();
+}
 
 void MenuSettingInt::manageInput() {
-	if ( gmenu2x->joy[GP2X_BUTTON_LEFT ] || gmenu2x->joy[GP2X_BUTTON_X] ) setValue(value()-1);
-	if ( gmenu2x->joy[GP2X_BUTTON_RIGHT] || gmenu2x->joy[GP2X_BUTTON_Y] ) setValue(value()+1);
-}
+#ifdef TARGET_GP2X
+#include "gp2x.h"
+	if ( gmenu2x->joy[GP2X_BUTTON_LEFT ] || gmenu2x->joy[GP2X_BUTTON_X] ) dec();
+	if ( gmenu2x->joy[GP2X_BUTTON_RIGHT] || gmenu2x->joy[GP2X_BUTTON_Y] ) inc();
 #else
-void MenuSettingInt::manageInput() {
-	if ( gmenu2x->event.key.keysym.sym==SDLK_LEFT ) setValue(value()-1);
-	if ( gmenu2x->event.key.keysym.sym==SDLK_RIGHT ) setValue(value()+1);
-}
+	if ( gmenu2x->event.key.keysym.sym==SDLK_LEFT ) dec();
+	if ( gmenu2x->event.key.keysym.sym==SDLK_RIGHT ) inc();
 #endif
+}
+
+void MenuSettingInt::inc() {
+	setValue(value()+1);
+}
+
+void MenuSettingInt::dec() {
+	setValue(value()-1);
+}
 
 void MenuSettingInt::setValue(int value) {
 	*_value = constrain(value,min,max);
@@ -72,10 +101,10 @@ void MenuSettingInt::adjustInput() {
 }
 
 void MenuSettingInt::drawSelected(int) {
-	gmenu2x->drawButton(gmenu2x->s, "y", gmenu2x->tr["Increase value"],
-	gmenu2x->drawButton(gmenu2x->s, "right", "",
-	gmenu2x->drawButton(gmenu2x->s, "x", gmenu2x->tr["Decrease value"],
-	gmenu2x->drawButton(gmenu2x->s, "left", "", 5)-10))-10);
+	gmenu2x->drawButton(btnInc, gmenu2x->tr["Increase value"],
+	gmenu2x->drawButton(btnInc2, "",
+	gmenu2x->drawButton(btnDec, gmenu2x->tr["Decrease value"],
+	gmenu2x->drawButton(btnDec2, "", 5)-10))-10);
 }
 
 bool MenuSettingInt::edited() {

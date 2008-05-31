@@ -36,8 +36,11 @@ bool WallpaperDialog::exec() {
 
 	FileLister fl("skins/"+gmenu2x->skin+"/wallpapers");
 	fl.setFilter(".png,.jpg,.jpeg,.bmp");
-	fl.browse();
-	vector<string> wallpapers = fl.files;
+	vector<string> wallpapers;
+	if (fileExists("skins/"+gmenu2x->skin+"/wallpapers")) {
+		fl.browse();
+		wallpapers = fl.files;
+	}
 	if (gmenu2x->skin != "Default") {
 		fl.setPath("skins/Default/wallpapers",true);
 		for (uint i=0; i<fl.files.size(); i++)
@@ -53,7 +56,7 @@ bool WallpaperDialog::exec() {
 		if (selected<firstElement) firstElement=selected;
 
 		//Wallpaper
-		if (selected<wallpapers.size()-fl.size())
+		if (selected<wallpapers.size()-fl.files.size())
 			gmenu2x->sc["skins/"+gmenu2x->skin+"/wallpapers/"+wallpapers[selected]]->blit(gmenu2x->s,0,0);
 		else
 			gmenu2x->sc["skins/Default/wallpapers/"+wallpapers[selected]]->blit(gmenu2x->s,0,0);
@@ -120,7 +123,7 @@ bool WallpaperDialog::exec() {
 		if ( gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK] ) {
 			close = true;
 			if (wallpapers.size()>0) {
-				if (selected<wallpapers.size()-fl.size())
+				if (selected<wallpapers.size()-fl.files.size())
 					wallpaper = "skins/"+gmenu2x->skin+"/wallpapers/"+wallpapers[selected];
 				else
 					wallpaper = "skins/Default/wallpapers/"+wallpapers[selected];
@@ -150,7 +153,7 @@ bool WallpaperDialog::exec() {
 				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
 					close = true;
 					if (wallpapers.size()>0) {
-						if (selected<wallpapers.size()-fl.size())
+						if (selected<wallpapers.size()-fl.files.size())
 							wallpaper = "skins/"+gmenu2x->skin+"/wallpapers/"+wallpapers[selected];
 						else
 							wallpaper = "skins/Default/wallpapers/"+wallpapers[selected];
@@ -162,7 +165,7 @@ bool WallpaperDialog::exec() {
 	}
 
 	for (uint i=0; i<wallpapers.size(); i++)
-		if (i<wallpapers.size()-fl.size())
+		if (i<wallpapers.size()-fl.files.size())
 			gmenu2x->sc.del("skins/"+gmenu2x->skin+"/wallpapers/"+wallpapers[i]);
 		else
 			gmenu2x->sc.del("skins/Default/wallpapers/"+wallpapers[i]);

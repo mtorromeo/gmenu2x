@@ -21,6 +21,11 @@
 #ifndef SETTINGSDIALOG_H_
 #define SETTINGSDIALOG_H_
 
+#define SD_NO_ACTION 0
+#define SD_ACTION_CLOSE 1
+#define SD_ACTION_UP 2
+#define SD_ACTION_DOWN 3
+
 #include <string>
 #include "gmenu2x.h"
 #include "menusetting.h"

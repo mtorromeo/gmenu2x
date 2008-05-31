@@ -20,16 +20,20 @@
 #ifndef MENUSETTINGBOOL_H
 #define MENUSETTINGBOOL_H
 
-#include "gmenu2x.h"
+#include "iconbutton.h"
 #include "menusetting.h"
+#include "FastDelegate.h"
 
 using std::string;
+using fastdelegate::FastDelegate0;
+class GMenu2X;
 
 class MenuSettingBool : public MenuSetting {
 private:
 	bool originalValue;
 	bool *_value;
 	string strvalue;
+	IconButton *btnToggle;
 	GMenu2X *gmenu2x;
 
 public:
@@ -37,12 +41,14 @@ public:
 	virtual ~MenuSettingBool() {};
 
 	virtual void draw(int y);
+	virtual void handleTS();
 	virtual void manageInput();
 	virtual void adjustInput();
 	virtual void drawSelected(int y);
 	virtual bool edited();
 
 	void setValue(bool value);
+	void toggle();
 	bool value();
 };
 

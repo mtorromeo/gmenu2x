@@ -22,13 +22,18 @@
 #include <sstream>
 
 using namespace std;
+using namespace fastdelegate;
 
 MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, string name, string description, bool *value)
 	: MenuSetting(gmenu2x,name,description) {
 	this->gmenu2x = gmenu2x;
 	_value = value;
 	originalValue = *value;
-	this->setValue(this->value());
+	setValue(this->value());
+	
+	btnToggle = new IconButton(gmenu2x, "skin:imgs/buttons/b.png");
+	btnToggle->setSize(16, 16);
+	btnToggle->setAction(MakeDelegate(this, &MenuSettingBool::toggle));
 }
 
 void MenuSettingBool::draw(int y) {
@@ -36,17 +41,22 @@ void MenuSettingBool::draw(int y) {
 	gmenu2x->s->write( gmenu2x->font, strvalue, 155, y+6, SFontHAlignLeft, SFontVAlignMiddle );
 }
 
-#ifdef TARGET_GP2X
-#include "gp2x.h"
+void MenuSettingBool::handleTS() {
+	btnToggle->handleTS();
+}
 
 void MenuSettingBool::manageInput() {
-	if ( gmenu2x->joy[GP2X_BUTTON_B] ) setValue(!value());
-}
+#ifdef TARGET_GP2X
+#include "gp2x.h"
+	if ( gmenu2x->joy[GP2X_BUTTON_B] ) toggle();
 #else
-void MenuSettingBool::manageInput() {
-	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) setValue(!value());
-}
+	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) toggle();
 #endif
+}
+
+void MenuSettingBool::toggle() {
+	setValue(!value());
+}
 
 void MenuSettingBool::setValue(bool value) {
 	*_value = value;
@@ -60,7 +70,7 @@ bool MenuSettingBool::value() {
 void MenuSettingBool::adjustInput() {}
 
 void MenuSettingBool::drawSelected(int) {
-	gmenu2x->drawButton(gmenu2x->s, "b", gmenu2x->tr["Switch"], 5);
+	gmenu2x->drawButton(btnToggle, gmenu2x->tr["Switch"], 5);
 }
 
 bool MenuSettingBool::edited() {

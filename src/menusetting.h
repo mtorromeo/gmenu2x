@@ -42,6 +42,7 @@ public:
 	virtual ~MenuSetting() {};
 
 	virtual void draw(int y);
+	virtual void handleTS();
 	virtual void manageInput();
 	virtual void adjustInput();
 	virtual void drawSelected(int y);

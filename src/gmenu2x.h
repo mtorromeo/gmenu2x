@@ -24,6 +24,7 @@
 #include <string>
 #include <iostream>
 #include "surfacecollection.h"
+#include "iconbutton.h"
 #include "translator.h"
 #include "FastDelegate.h"
 #include "utilities.h"
@@ -191,6 +192,7 @@ public:
 	void deleteSection();
 
 	void initBG();
+	int drawButton(IconButton *btn, string text, int x, int y=230);
 	int drawButton(Surface *s, string btn, string text, int x, int y=230);
 	int drawButtonRight(Surface *s, string btn, string text, int x, int y=230);
 	void drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height);
