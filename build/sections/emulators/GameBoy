@@ -1,6 +1,0 @@
-title=GameBoy
-description=Gnuboy2x
-icon=/mnt/sd/Icons/Videogames/gb-silver.png
-exec=/mnt/sd/gnuboy2x/Gnuboy2x.gpe
-manual=/mnt/sd/gnuboy2x/readme.txt
-clock=180

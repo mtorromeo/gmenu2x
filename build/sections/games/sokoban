@@ -1,5 +1,0 @@
-title=sokoban
-icon=/mnt/sd/sokoban/sokoban.png
-exec=/mnt/sd/sokoban/sokoban.gpe
-clock=200
-wrapper=true

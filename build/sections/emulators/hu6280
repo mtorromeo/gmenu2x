@@ -1,5 +1,0 @@
-title=HU6280
-description=PcEngine emulator
-icon=/mnt/sd/Icons/Videogames/tg16.png
-exec=/mnt/sd/pcengine/hu6280.gpe
-clock=200

@@ -1,9 +1,0 @@
-title=Genesis
-description=PicoDrive
-icon=/mnt/sd/Icons/Videogames/genesis.png
-exec=/mnt/sd/PicoDrive/PicoDrive.gpe
-params=-menu " " [selFullPath]
-clock=160
-selectordir=/mnt/sd/roms/genesis/
-selectorscreens=/mnt/sd/screens/genesis
-wrapper=true

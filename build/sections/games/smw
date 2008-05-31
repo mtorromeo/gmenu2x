@@ -1,6 +1,0 @@
-title=SMW
-description=Super Mario War
-icon=/mnt/sd/Icons/Characters/Mario.png
-exec=/mnt/sd/smw/smw.gpe
-clock=200
-gamma=76
