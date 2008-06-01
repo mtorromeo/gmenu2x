@@ -1,4 +1,5 @@
 #!/bin/bash
+export PATH=$PATH:/sbin
 rmmod g_file_storage
 rmmod net2272
 if [ $1 = "nand" ]; then

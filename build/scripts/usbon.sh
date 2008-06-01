@@ -1,6 +1,7 @@
 #!/bin/bash
 # $1 = sd|nand|root
 # defaults to sd (compatible with previous versions)
+export PATH=$PATH:/sbin
 modprobe net2272
 if [ $1 = "nand" ]; then
 	umount /mnt/nand || mount -o remount,loop,ro /mnt/nand
