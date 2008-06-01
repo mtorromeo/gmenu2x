@@ -1,10 +1,5 @@
 title=Music
-description=Start music player using the built in selector
 icon=skin:icons/music.png
 exec=/usr/gp2x/gp2xmenu
-params=--disable-autorun --enable-terminate --view-music [selPath] [selFile][selExt]
+params=--disable-autorun --enable-terminate --view-music
 clock=75
-selectordir=/mnt/sd/Music/
-selectorbrowser=true
-selectorfilter=.mp3,.ogg
-wrapper=true
