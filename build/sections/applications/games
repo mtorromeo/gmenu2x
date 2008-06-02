@@ -1,6 +1,0 @@
-title=Games
-icon=skin:sections/games.png
-exec=/usr/gp2x/gp2xmenu
-params=--disable-autorun --enable-terminate --view-game
-clock=75
-wrapper=true
