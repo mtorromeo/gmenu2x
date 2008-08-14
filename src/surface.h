@@ -33,8 +33,7 @@ struct RGBAColor {
 };
 
 /**
-Wrapper around SDL_Surface
-
+	Wrapper around SDL_Surface
 	@author Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
 */
 class Surface {
@@ -51,7 +50,7 @@ public:
 	Surface(Surface *s);
 	Surface(int w, int h, Uint32 flags = SDL_HWSURFACE|SDL_SRCALPHA);
 	~Surface();
-	
+
 	void enableVirtualDoubleBuffer(SDL_Surface *surface);
 
 	SDL_Surface *raw;
@@ -87,9 +86,15 @@ public:
 	int box(Sint16, Sint16, Sint16, Sint16, Uint8, Uint8, Uint8, Uint8);
 	int box(Sint16, Sint16, Sint16, Sint16, Uint8, Uint8, Uint8);
 	int box(Sint16, Sint16, Sint16, Sint16, RGBAColor);
+	int box(SDL_Rect, Uint8, Uint8, Uint8, Uint8);
+	int box(SDL_Rect, Uint8, Uint8, Uint8);
+	int box(SDL_Rect, RGBAColor);
 	int rectangle(Sint16, Sint16, Sint16, Sint16, Uint8, Uint8, Uint8, Uint8);
 	int rectangle(Sint16, Sint16, Sint16, Sint16, Uint8, Uint8, Uint8);
 	int rectangle(Sint16, Sint16, Sint16, Sint16, RGBAColor);
+	int rectangle(SDL_Rect, Uint8, Uint8, Uint8, Uint8);
+	int rectangle(SDL_Rect, Uint8, Uint8, Uint8);
+	int rectangle(SDL_Rect, RGBAColor);
 	int hline(Sint16, Sint16, Sint16, Uint8, Uint8, Uint8, Uint8);
 	int hline(Sint16, Sint16, Sint16, RGBAColor);
 

@@ -38,7 +38,7 @@ InputDialog::InputDialog(GMenu2X *gmenu2x, string text, string startvalue) {
 
 	keyboard[0].push_back("abcdefghijklm");
 	keyboard[0].push_back("nopqrstuvwxyz");
-	keyboard[0].push_back("0123456789");
+	keyboard[0].push_back("0123456789   ");
 
 	keyboard[1].push_back("ABCDEFGHIJKLM");
 	keyboard[1].push_back("NOPQRSTUVWXYZ");
@@ -46,8 +46,8 @@ InputDialog::InputDialog(GMenu2X *gmenu2x, string text, string startvalue) {
 
 
 	keyboard[2].push_back("¡¿*+-/\\&<=>|");
-	keyboard[2].push_back("()[]{}@#$%^~ ");
-	keyboard[2].push_back("_\"'`.,:;!?");
+	keyboard[2].push_back("()[]{}@#$%^~");
+	keyboard[2].push_back("_\"'`.,:;!?  ");
 
 
 	keyboard[3].push_back("àáèéìíòóùúýäõ");
@@ -67,24 +67,6 @@ InputDialog::InputDialog(GMenu2X *gmenu2x, string text, string startvalue) {
 	keyboard[6].push_back("КЛМНОПРСТУФХЦЧ");
 	keyboard[6].push_back("ШЩЪЫЬЭЮЯØðßÐÞþ");
 
-// 	keyboard.resize(2);
-//
-// 	keyboard[0].push_back("abcdefghijklm _\"'`.,:;!?");
-// 	keyboard[0].push_back("nopqrstuvwxyz 0123456789");
-// 	keyboard[0].push_back("¡¿*+-/\\&<=>|()[]{}@#$%^~");
-// 	keyboard[0].push_back("àáèéìíòóùúýäëïöüÿâêîôûåã");
-// 	keyboard[0].push_back("õñæçабвгдеёжзийклмнопрст");
-// 	keyboard[0].push_back("уфхцчшщъыьэюяøðßÐÞþ");
-// 	keyboard[0].push_back("čďěľĺňôřŕšťůž");
-//
-// 	keyboard[1].push_back("ABCDEFGHIJKLM _\"'`.,:;!?");
-// 	keyboard[1].push_back("NOPQRSTUVWXYZ 0123456789");
-// 	keyboard[1].push_back("¡¿*+-/\\&<=>|()[]{}@#$%^~");
-// 	keyboard[1].push_back("ÀÁÈÉÌÍÒÓÙÚÝÄËÏÖÜŸÂÊÎÔÛÅÃ");
-// 	keyboard[1].push_back("ÕÑÆÇАБВГДЕЁЖЗИЙКЛМНОПРСТ");
-// 	keyboard[1].push_back("УФХЦЧШЩЪЫЬЭЮЯØðßÐÞþ");
-// 	keyboard[1].push_back("ČĎĚĽĹŇÔŘŔŠŤŮŽ");
-
 	setKeyboard(0);
 }
 
@@ -98,6 +80,15 @@ void InputDialog::setKeyboard(int kb) {
 			kbLength--;
 			x++;
 		}
+
+	kbLeft = 160 - kbLength*KEY_WIDTH/2;
+	kbWidth = kbLength*KEY_WIDTH+3;
+	kbHeight = (this->kb->size()+1)*KEY_HEIGHT+3;
+
+	kbRect.x = kbLeft-3;
+	kbRect.y = KB_TOP-2;
+	kbRect.w = kbWidth;
+	kbRect.h = kbHeight;
 }
 
 bool InputDialog::exec() {
@@ -106,6 +97,7 @@ bool InputDialog::exec() {
 	Uint32 caretTick = 0, curTick;
 	bool caretOn = true;
 
+	uint action;
 	bool close = false, ok = true;
 	while (!close) {
 		gmenu2x->bg->blit(gmenu2x->s,0,0);
@@ -132,97 +124,95 @@ bool InputDialog::exec() {
 
 		if (caretOn) gmenu2x->s->box(box.x+box.w-12, box.y+3, 8, box.h-6, gmenu2x->selectionColor);
 
-		drawVirtualKeyboard();
-
+		if (gmenu2x->f200) gmenu2x->ts.poll();
+		action = drawVirtualKeyboard();
 		gmenu2x->s->flip();
 
 #ifdef TARGET_GP2X
 		gmenu2x->joy.update();
-		// LINK NAVIGATION
-		if ( gmenu2x->joy[GP2X_BUTTON_LEFT ] ) selCol--;
-		if ( gmenu2x->joy[GP2X_BUTTON_RIGHT] ) selCol++;
-		if ( gmenu2x->joy[GP2X_BUTTON_UP   ] ) selRow--;
-		if ( gmenu2x->joy[GP2X_BUTTON_DOWN ] ) {
-			selRow++;
-			if (selRow==(int)kb->size()) selCol = selCol<8 ? 0 : 1;
-		}
-		if ( gmenu2x->joy[GP2X_BUTTON_X] || gmenu2x->joy[GP2X_BUTTON_L] ) {
-			//                                      check for utf8 characters
-			input = input.substr(0,input.length()-( gmenu2x->font->utf8Code(input[input.length()-2]) ? 2 : 1));
-		}
-		if ( gmenu2x->joy[GP2X_BUTTON_R    ] ) input += " ";
-		if ( gmenu2x->joy[GP2X_BUTTON_Y    ] ) {
-			if (curKeyboard==6)
-				setKeyboard(0);
-			else
-				setKeyboard(curKeyboard+1);
-		}
-		if ( gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK] ) {
-			if (selRow==kb->size()) {
-				if (selCol==0)
-					ok = false;
-				close = true;
-			} else {
-				bool utf8;
-				for (uint x=0, xc=0; x<kb->at(selRow).length(); x++) {
-					utf8 = gmenu2x->font->utf8Code(kb->at(selRow)[x]);
-					if (xc==selCol) input += kb->at(selRow).substr(x, utf8 ? 2 : 1);
-					if (utf8) x++;
-					xc++;
-				}
-			}
-		}
-		if ( gmenu2x->joy[GP2X_BUTTON_START] ) close = true;
+		if ( gmenu2x->joy[GP2X_BUTTON_START] ) action = ID_ACTION_CLOSE;
+		if ( gmenu2x->joy[GP2X_BUTTON_UP   ] ) action = ID_ACTION_UP;
+		if ( gmenu2x->joy[GP2X_BUTTON_DOWN ] ) action = ID_ACTION_DOWN;
+		if ( gmenu2x->joy[GP2X_BUTTON_LEFT ] ) action = ID_ACTION_LEFT;
+		if ( gmenu2x->joy[GP2X_BUTTON_RIGHT] ) action = ID_ACTION_RIGHT;
+		if ( gmenu2x->joy[GP2X_BUTTON_B]     ) action = ID_ACTION_SELECT;
+		if ( gmenu2x->joy[GP2X_BUTTON_Y]     ) action = ID_ACTION_KB_CHANGE;
+		if ( gmenu2x->joy[GP2X_BUTTON_X] || gmenu2x->joy[GP2X_BUTTON_L] ) action = ID_ACTION_BACKSPACE;
+		if ( gmenu2x->joy[GP2X_BUTTON_R    ] ) action = ID_ACTION_SPACE;
 #else
 		while (SDL_PollEvent(&gmenu2x->event)) {
+			if ( gmenu2x->event.type == SDL_QUIT ) action = ID_ACTION_CLOSE;
 			if ( gmenu2x->event.type==SDL_KEYDOWN ) {
-				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) { ok = false; close = true; }
-				// LINK NAVIGATION
-				if ( gmenu2x->event.key.keysym.sym==SDLK_LEFT      ) selCol--;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_RIGHT     ) selCol++;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_UP        ) selRow--;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN      )  {
-					selRow++;
-					if (selRow==(int)kb->size()) selCol = selCol<8 ? 0 : 1;
-				}
-				if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) {
-					//                                      check for utf8 characters
-					input = input.substr(0,input.length()-( gmenu2x->font->utf8Code(input[input.length()-2]) ? 2 : 1 ));
-				}
-				if ( gmenu2x->event.key.keysym.sym==SDLK_LSHIFT    ) {
-					if (curKeyboard==6)
-						setKeyboard(0);
-					else
-						setKeyboard(curKeyboard+1);
-				}
-				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN    ) {
-					if (selRow==(int)kb->size()) {
-						if (selCol==0)
-							ok = false;
-						close = true;
-					} else {
-						bool utf8;
-						int xc=0;
-						for (uint x=0; x<kb->at(selRow).length(); x++) {
-							utf8 = gmenu2x->font->utf8Code(kb->at(selRow)[x]);
-							if (xc==selCol) input += kb->at(selRow).substr(x, utf8 ? 2 : 1);
-							if (utf8) x++;
-							xc++;
-						}
-					}
-				}
+				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) action = ID_ACTION_CLOSE;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_UP ) action = ID_ACTION_UP;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN ) action = ID_ACTION_DOWN;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_LEFT ) action = ID_ACTION_LEFT;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_RIGHT ) action = ID_ACTION_RIGHT;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) action = ID_ACTION_BACKSPACE;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_SPACE ) action = ID_ACTION_SPACE;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_LSHIFT ) action = ID_ACTION_KB_CHANGE;
+				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) action = ID_ACTION_SELECT;
 			}
 		}
 #endif
+		switch (action) {
+			case ID_ACTION_CLOSE: {
+				ok = false;
+				close = true;
+			} break;
+			case ID_ACTION_UP: {
+				selRow--;
+			} break;
+			case ID_ACTION_DOWN: {
+				selRow++;
+				if (selRow==(int)kb->size()) selCol = selCol<8 ? 0 : 1;
+			} break;
+			case ID_ACTION_LEFT: {
+				selCol--;
+			} break;
+			case ID_ACTION_RIGHT: {
+				selCol++;
+			} break;
+			case ID_ACTION_BACKSPACE: {
+				//                                      check for utf8 characters
+				input = input.substr(0,input.length()-( gmenu2x->font->utf8Code(input[input.length()-2]) ? 2 : 1 ));
+			} break;
+			case ID_ACTION_SPACE: {
+				input += " ";
+			} break;
+			case ID_ACTION_KB_CHANGE: {
+				if (curKeyboard==6)
+					setKeyboard(0);
+				else
+					setKeyboard(curKeyboard+1);
+			} break;
+			case ID_ACTION_SELECT: {
+				if (selRow==(int)kb->size()) {
+					if (selCol==0)
+						ok = false;
+					close = true;
+				} else {
+					bool utf8;
+					int xc=0;
+					for (uint x=0; x<kb->at(selRow).length(); x++) {
+						utf8 = gmenu2x->font->utf8Code(kb->at(selRow)[x]);
+						if (xc==selCol) input += kb->at(selRow).substr(x, utf8 ? 2 : 1);
+						if (utf8) x++;
+						xc++;
+					}
+				}
+			} break;
+		}
 	}
 
 	return ok;
 }
 
-void InputDialog::drawVirtualKeyboard() {
+int InputDialog::drawVirtualKeyboard() {
+	int action = ID_NO_ACTION;
+
 	//keyboard border
-	gmenu2x->s->rectangle(157-kbLength*5, 73, kbLength*10+4, kb->size()*15+18, gmenu2x->selectionColor);
-	uint left = 160-kbLength*5;
+	gmenu2x->s->rectangle(kbRect, gmenu2x->selectionColor);
 
 	if (selCol<0) selCol = selRow==(int)kb->size() ? 1 : kbLength-1;
 	if (selCol>=(int)kbLength) selCol = 0;
@@ -231,11 +221,11 @@ void InputDialog::drawVirtualKeyboard() {
 
 	//selection
 	if (selRow<(int)kb->size())
-		gmenu2x->s->box(left+selCol*10-1, 75+selRow*15, 10, 13, gmenu2x->selectionColor);
+		gmenu2x->s->box(kbLeft+selCol*KEY_WIDTH-1, KB_TOP+selRow*KEY_HEIGHT, KEY_WIDTH-1, KEY_HEIGHT-2, gmenu2x->selectionColor);
 	else {
 		if (selCol>1) selCol = 0;
 		if (selCol<0) selCol = 1;
-		gmenu2x->s->box(left+selCol*kbLength*5-1, 75+kb->size()*15, kbLength*5, 14, gmenu2x->selectionColor);
+		gmenu2x->s->box(kbLeft+selCol*kbLength*KEY_WIDTH/2-1, KB_TOP+kb->size()*KEY_HEIGHT, kbLength*KEY_WIDTH/2-1, KEY_HEIGHT-1, gmenu2x->selectionColor);
 	}
 
 	//keys
@@ -249,12 +239,41 @@ void InputDialog::drawVirtualKeyboard() {
 				x++;
 			} else
 				charX = line[x];
-			gmenu2x->s->write(gmenu2x->font, charX, left+4+xc*10, 81+l*15, SFontHAlignCenter, SFontVAlignMiddle);
+
+			SDL_Rect re = {kbLeft+xc*KEY_WIDTH-1, KB_TOP+l*KEY_HEIGHT, KEY_WIDTH-1, KEY_HEIGHT-2};
+
+			//if ts on rect, change selection
+			if (gmenu2x->f200 && gmenu2x->ts.pressed() && gmenu2x->ts.inRect(re)) {
+				selCol = xc;
+				selRow = l;
+			}
+
+			gmenu2x->s->rectangle(re, gmenu2x->selectionColor);
+			gmenu2x->s->write(gmenu2x->font, charX, kbLeft+xc*KEY_WIDTH+KEY_WIDTH/2-1, KB_TOP+l*KEY_HEIGHT+KEY_HEIGHT/2-2, SFontHAlignCenter, SFontVAlignMiddle);
 			xc++;
 		}
 	}
 
 	//Ok/Cancel
-	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["Cancel"], (int)(160-kbLength*2.5), 81+kb->size()*15, SFontHAlignCenter, SFontVAlignMiddle);
-	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["OK"], (int)(160+kbLength*2.5), 81+kb->size()*15, SFontHAlignCenter, SFontVAlignMiddle);
+	SDL_Rect re = {kbLeft-1, KB_TOP+kb->size()*KEY_HEIGHT, kbLength*KEY_WIDTH/2-1, KEY_HEIGHT-1};
+	gmenu2x->s->rectangle(re, gmenu2x->selectionColor);
+	if (gmenu2x->f200 && gmenu2x->ts.pressed() && gmenu2x->ts.inRect(re)) {
+		selCol = 0;
+		selRow = kb->size();
+	}
+	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["Cancel"], (int)(160-kbLength*KEY_WIDTH/4), KB_TOP+kb->size()*KEY_HEIGHT+KEY_HEIGHT/2-2, SFontHAlignCenter, SFontVAlignMiddle);
+
+	re.x = kbLeft+kbLength*KEY_WIDTH/2-1;
+	gmenu2x->s->rectangle(re, gmenu2x->selectionColor);
+	if (gmenu2x->f200 && gmenu2x->ts.pressed() && gmenu2x->ts.inRect(re)) {
+		selCol = 1;
+		selRow = kb->size();
+	}
+	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["OK"], (int)(160+kbLength*KEY_WIDTH/4), KB_TOP+kb->size()*KEY_HEIGHT+KEY_HEIGHT/2-2, SFontHAlignCenter, SFontVAlignMiddle);
+
+	//if ts released
+	if (gmenu2x->f200 && gmenu2x->ts.wasPressed && !gmenu2x->ts.pressed() && gmenu2x->ts.inRect(kbRect))
+		action = ID_ACTION_SELECT;
+
+	return action;
 }

@@ -12,11 +12,8 @@ SOURCES := $(wildcard ../src/*.cpp)
 OBJS := $(patsubst ../src/%.cpp, ../objs/linux/%.o, $(SOURCES))
 
 #File types rules
-../objs/linux/%.o: ../src/%.cpp
+../objs/linux/%.o: ../src/%.cpp ../src/%.h
 		$(CXX) $(CFLAGS) -o $@ -c $<
-
-../objs/linux/%.o: ../src/%.c
-		$(CC) $(CFLAGS) -o $@ -c $<
 
 all: dir $(TARGET)
 

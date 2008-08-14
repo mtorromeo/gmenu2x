@@ -17,11 +17,8 @@ OBJS := $(patsubst ../src/%.cpp, ../objs/gp2x/%.o, $(SOURCES))
 #DEPS := $(patsubst %.o,%.d,$(OBJS))
 
 #File types rules
-../objs/gp2x/%.o: ../src/%.cpp
+../objs/gp2x/%.o: ../src/%.cpp ../src/%.h
 	$(CXX) $(CFLAGS) -o $@ -c $<
-
-../objs/gp2x/%.o: ../src/%.c
-	$(CC) $(CFLAGS) -o $@ -c $<
 
 #../objs/gp2x/%.d: ../src/%.cpp
 #	$(CC) $(CFLAGS) -MM -MF $@ -E $<

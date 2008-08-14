@@ -272,22 +272,40 @@ void Surface::operator = (Surface *s) {
 int Surface::box(Sint16 x, Sint16 y, Sint16 w, Sint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
 	return boxRGBA(raw,x,y,x+w-1,y+h-1,r,g,b,a);
 }
+int Surface::box(SDL_Rect re, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+	return boxRGBA(raw,re.x,re.y,re.x+re.w-1,re.y+re.h-1,r,g,b,a);
+}
+int Surface::box(SDL_Rect re, Uint8 r, Uint8 g, Uint8 b) {
+	return SDL_FillRect(raw, &re, SDL_MapRGBA(format(),r,g,b,255));
+}
 int Surface::box(Sint16 x, Sint16 y, Sint16 w, Sint16 h, Uint8 r, Uint8 g, Uint8 b) {
 	SDL_Rect re = {x,y,w,h};
-	return SDL_FillRect(raw, &re, SDL_MapRGBA(format(),r,g,b,255));
+	return box(re,r,g,b);
 }
 int Surface::box(Sint16 x, Sint16 y, Sint16 w, Sint16 h, RGBAColor c) {
 	return box(x,y,w,h,c.r,c.g,c.b,c.a);
+}
+int Surface::box(SDL_Rect re, RGBAColor c) {
+	return box(re,c.r,c.g,c.b,c.a);
 }
 
 int Surface::rectangle(Sint16 x, Sint16 y, Sint16 w, Sint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
 	return rectangleRGBA(raw,x,y,x+w-1,y+h-1,r,g,b,a);
 }
+int Surface::rectangle(SDL_Rect re, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+	return rectangleRGBA(raw,re.x,re.y,re.x+re.w-1,re.y+re.h-1,r,g,b,a);
+}
 int Surface::rectangle(Sint16 x, Sint16 y, Sint16 w, Sint16 h, Uint8 r, Uint8 g, Uint8 b) {
 	return rectangleColor(raw, x,y,x+w-1,y+h-1, SDL_MapRGBA(format(),r,g,b,255));
 }
+int Surface::rectangle(SDL_Rect re, Uint8 r, Uint8 g, Uint8 b) {
+	return rectangleColor(raw, re.x,re.y,re.x+re.w-1,re.y+re.h-1, SDL_MapRGBA(format(),r,g,b,255));
+}
 int Surface::rectangle(Sint16 x, Sint16 y, Sint16 w, Sint16 h, RGBAColor c) {
 	return rectangle(x,y,w,h,c.r,c.g,c.b,c.a);
+}
+int Surface::rectangle(SDL_Rect re, RGBAColor c) {
+	return rectangle(re.x,re.y,re.w,re.h,c.r,c.g,c.b,c.a);
 }
 
 int Surface::hline(Sint16 x, Sint16 y, Sint16 w, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {

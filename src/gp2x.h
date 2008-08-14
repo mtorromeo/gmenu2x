@@ -51,9 +51,3 @@
 #endif
 
 #define FBMMSP2CTRL 0x4619
-
-typedef struct Ioctl_Dummy_t {
-    u_short message;
-    u_short msgleng;
-    u_char  msgdata[32];
-};
