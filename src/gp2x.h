@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <linux/types.h>
+
 #define GP2X_CLK_FREQ 7372800
 
 #define GP2X_BUTTON_UP              (0)
@@ -47,3 +49,11 @@
 	#define GP2X_BUTTON_L           (10)
 	#define GP2X_BUTTON_R           (11)
 #endif
+
+#define FBMMSP2CTRL 0x4619
+
+typedef struct Ioctl_Dummy_t {
+    u_short message;
+    u_short msgleng;
+    u_char  msgdata[32];
+};

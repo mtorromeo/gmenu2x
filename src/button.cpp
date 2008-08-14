@@ -4,8 +4,10 @@
 using namespace std;
 using namespace fastdelegate;
 
-Button::Button(GMenu2X * gmenu2x) {
+Button::Button(GMenu2X * gmenu2x, bool doubleClick) {
 	this->gmenu2x = gmenu2x;
+	this->doubleClick = doubleClick;
+	lastTick = 0;
 	action = MakeDelegate(this, &Button::voidAction);
 	setPosition(0,0);
 	setSize(0,0);
@@ -27,7 +29,14 @@ bool Button::isPressed() {
 
 bool Button::handleTS() {
 	if (pressed && !gmenu2x->ts.pressed()) {
-		exec();
+		if (doubleClick) {
+			int tickNow = SDL_GetTicks();
+			if (tickNow - lastTick < 400)
+				exec();
+			lastTick = tickNow;
+		} else {
+			exec();
+		}
 		pressed = false;
 		gmenu2x->ts.setHandled();
 		return true;

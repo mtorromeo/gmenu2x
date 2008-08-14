@@ -30,7 +30,7 @@ MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, string name, string descripti
 	_value = value;
 	originalValue = *value;
 	setValue(this->value());
-	
+
 	btnToggle = new IconButton(gmenu2x, "skin:imgs/buttons/b.png");
 	btnToggle->setSize(16, 16);
 	btnToggle->setAction(MakeDelegate(this, &MenuSettingBool::toggle));

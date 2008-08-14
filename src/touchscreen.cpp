@@ -41,6 +41,12 @@ Touchscreen::~Touchscreen() {
 bool Touchscreen::init() {
 #ifdef TARGET_GP2X
 	wm97xx = open("/dev/touchscreen/wm97xx", O_RDONLY|O_NOCTTY);
+#endif
+	return initialized();
+}
+
+bool Touchscreen::initialized() {
+#ifdef TARGET_GP2X
 	return wm97xx>0;
 #else
 	return true;
@@ -50,6 +56,7 @@ bool Touchscreen::init() {
 void Touchscreen::deinit() {
 #ifdef TARGET_GP2X
 	close(wm97xx);
+	wm97xx = 0;
 #endif
 }
 

@@ -36,8 +36,11 @@ private:
 	GMenu2X *gmenu2x;
 	short curKeyboard;
 	vector<stringlist> keyboard;
+	stringlist *kb;
+	int kbLength;
 
 	void drawVirtualKeyboard();
+	void setKeyboard(int);
 
 public:
 	InputDialog(GMenu2X *gmenu2x, string text, string startvalue="");

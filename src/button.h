@@ -36,11 +36,12 @@ protected:
 	GMenu2X *gmenu2x;
 	ButtonAction action;
 	SDL_Rect rect;
-	bool pressed;
+	bool pressed, doubleClick;
+	int lastTick;
 
 public:
 	string path;
-	Button(GMenu2X *gmenu2x);
+	Button(GMenu2X *gmenu2x, bool doubleClick = false);
 	virtual ~Button() {};
 
 	void setSize(int w, int h);

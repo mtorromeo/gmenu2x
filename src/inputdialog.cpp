@@ -34,24 +34,70 @@ InputDialog::InputDialog(GMenu2X *gmenu2x, string text, string startvalue) {
 	input = startvalue;
 	selCol = 0;
 	selRow = 0;
-	curKeyboard = 0;
-	keyboard.resize(2);
+	keyboard.resize(7);
 
-	keyboard[0].push_back("abcdefghijklm _\"'`.,:;!?");
-	keyboard[0].push_back("nopqrstuvwxyz 0123456789");
-	keyboard[0].push_back("¡¿*+-/\\&<=>|()[]{}@#$%^~");
-	keyboard[0].push_back("àáèéìíòóùúýäëïöüÿâêîôûåã");
-	keyboard[0].push_back("õñæçабвгдеёжзийклмнопрст");
-	keyboard[0].push_back("уфхцчшщъыьэюяøðßÐÞþ");
-	keyboard[0].push_back("čďěľĺňôřŕšťůž");
+	keyboard[0].push_back("abcdefghijklm");
+	keyboard[0].push_back("nopqrstuvwxyz");
+	keyboard[0].push_back("0123456789");
 
-	keyboard[1].push_back("ABCDEFGHIJKLM _\"'`.,:;!?");
-	keyboard[1].push_back("NOPQRSTUVWXYZ 0123456789");
-	keyboard[1].push_back("¡¿*+-/\\&<=>|()[]{}@#$%^~");
-	keyboard[1].push_back("ÀÁÈÉÌÍÒÓÙÚÝÄËÏÖÜŸÂÊÎÔÛÅÃ");
-	keyboard[1].push_back("ÕÑÆÇАБВГДЕЁЖЗИЙКЛМНОПРСТ");
-	keyboard[1].push_back("УФХЦЧШЩЪЫЬЭЮЯØðßÐÞþ");
-	keyboard[1].push_back("ČĎĚĽĹŇÔŘŔŠŤŮŽ");
+	keyboard[1].push_back("ABCDEFGHIJKLM");
+	keyboard[1].push_back("NOPQRSTUVWXYZ");
+	keyboard[1].push_back("_\"'`.,:;!?");
+
+
+	keyboard[2].push_back("¡¿*+-/\\&<=>|");
+	keyboard[2].push_back("()[]{}@#$%^~ ");
+	keyboard[2].push_back("_\"'`.,:;!?");
+
+
+	keyboard[3].push_back("àáèéìíòóùúýäõ");
+	keyboard[3].push_back("ëïöüÿâêîôûåãñ");
+	keyboard[3].push_back("čďěľĺňôřŕšťůž");
+
+	keyboard[4].push_back("ÀÁÈÉÌÍÒÓÙÚÝÄÕ");
+	keyboard[4].push_back("ËÏÖÜŸÂÊÎÔÛÅÃÑ");
+	keyboard[4].push_back("ČĎĚĽĹŇÔŘŔŠŤŮŽ");
+
+
+	keyboard[5].push_back("æçабвгдеёжзий ");
+	keyboard[5].push_back("клмнопрстуфхцч");
+	keyboard[5].push_back("шщъыьэюяøðßÐÞþ");
+
+	keyboard[6].push_back("ÆÇАБВГДЕЁЖЗИЙ ");
+	keyboard[6].push_back("КЛМНОПРСТУФХЦЧ");
+	keyboard[6].push_back("ШЩЪЫЬЭЮЯØðßÐÞþ");
+
+// 	keyboard.resize(2);
+//
+// 	keyboard[0].push_back("abcdefghijklm _\"'`.,:;!?");
+// 	keyboard[0].push_back("nopqrstuvwxyz 0123456789");
+// 	keyboard[0].push_back("¡¿*+-/\\&<=>|()[]{}@#$%^~");
+// 	keyboard[0].push_back("àáèéìíòóùúýäëïöüÿâêîôûåã");
+// 	keyboard[0].push_back("õñæçабвгдеёжзийклмнопрст");
+// 	keyboard[0].push_back("уфхцчшщъыьэюяøðßÐÞþ");
+// 	keyboard[0].push_back("čďěľĺňôřŕšťůž");
+//
+// 	keyboard[1].push_back("ABCDEFGHIJKLM _\"'`.,:;!?");
+// 	keyboard[1].push_back("NOPQRSTUVWXYZ 0123456789");
+// 	keyboard[1].push_back("¡¿*+-/\\&<=>|()[]{}@#$%^~");
+// 	keyboard[1].push_back("ÀÁÈÉÌÍÒÓÙÚÝÄËÏÖÜŸÂÊÎÔÛÅÃ");
+// 	keyboard[1].push_back("ÕÑÆÇАБВГДЕЁЖЗИЙКЛМНОПРСТ");
+// 	keyboard[1].push_back("УФХЦЧШЩЪЫЬЭЮЯØðßÐÞþ");
+// 	keyboard[1].push_back("ČĎĚĽĹŇÔŘŔŠŤŮŽ");
+
+	setKeyboard(0);
+}
+
+void InputDialog::setKeyboard(int kb) {
+	kb = constrain(kb,0,keyboard.size()-1);
+	curKeyboard = kb;
+	this->kb = &(keyboard[kb]);
+	kbLength = this->kb->at(0).length();
+	for (int x = 0, l = kbLength; x<l; x++)
+		if (gmenu2x->font->utf8Code(this->kb->at(0)[x])) {
+			kbLength--;
+			x++;
+		}
 }
 
 bool InputDialog::exec() {
@@ -65,7 +111,7 @@ bool InputDialog::exec() {
 		gmenu2x->bg->blit(gmenu2x->s,0,0);
 		gmenu2x->writeTitle(text);
 
-		gmenu2x->drawButton(gmenu2x->s, "y", gmenu2x->tr["Shift"],
+		gmenu2x->drawButton(gmenu2x->s, "y", gmenu2x->tr["Change keys"],
 		gmenu2x->drawButton(gmenu2x->s, "b", gmenu2x->tr["Confirm"],
 		gmenu2x->drawButton(gmenu2x->s, "r", gmenu2x->tr["Space"],
 		gmenu2x->drawButton(gmenu2x->s, "l", gmenu2x->tr["Backspace"],
@@ -98,7 +144,7 @@ bool InputDialog::exec() {
 		if ( gmenu2x->joy[GP2X_BUTTON_UP   ] ) selRow--;
 		if ( gmenu2x->joy[GP2X_BUTTON_DOWN ] ) {
 			selRow++;
-			if (selRow==(int)keyboard[curKeyboard].size()) selCol = selCol<8 ? 0 : 1;
+			if (selRow==(int)kb->size()) selCol = selCol<8 ? 0 : 1;
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_X] || gmenu2x->joy[GP2X_BUTTON_L] ) {
 			//                                      check for utf8 characters
@@ -106,21 +152,21 @@ bool InputDialog::exec() {
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_R    ] ) input += " ";
 		if ( gmenu2x->joy[GP2X_BUTTON_Y    ] ) {
-			if (curKeyboard==0)
-				curKeyboard = 1;
+			if (curKeyboard==6)
+				setKeyboard(0);
 			else
-				curKeyboard = 0;
+				setKeyboard(curKeyboard+1);
 		}
 		if ( gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK] ) {
-			if (selRow==keyboard[curKeyboard].size()) {
+			if (selRow==kb->size()) {
 				if (selCol==0)
 					ok = false;
 				close = true;
 			} else {
 				bool utf8;
-				for (uint x=0, xc=0; x<keyboard[curKeyboard][selRow].length(); x++) {
-					utf8 = gmenu2x->font->utf8Code(keyboard[curKeyboard][selRow][x]);
-					if (xc==selCol) input += keyboard[curKeyboard][selRow].substr(x, utf8 ? 2 : 1);
+				for (uint x=0, xc=0; x<kb->at(selRow).length(); x++) {
+					utf8 = gmenu2x->font->utf8Code(kb->at(selRow)[x]);
+					if (xc==selCol) input += kb->at(selRow).substr(x, utf8 ? 2 : 1);
 					if (utf8) x++;
 					xc++;
 				}
@@ -137,29 +183,29 @@ bool InputDialog::exec() {
 				if ( gmenu2x->event.key.keysym.sym==SDLK_UP        ) selRow--;
 				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN      )  {
 					selRow++;
-					if (selRow==(int)keyboard[curKeyboard].size()) selCol = selCol<8 ? 0 : 1;
+					if (selRow==(int)kb->size()) selCol = selCol<8 ? 0 : 1;
 				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) {
 					//                                      check for utf8 characters
 					input = input.substr(0,input.length()-( gmenu2x->font->utf8Code(input[input.length()-2]) ? 2 : 1 ));
 				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_LSHIFT    ) {
-					if (curKeyboard==0)
-						curKeyboard = 1;
+					if (curKeyboard==6)
+						setKeyboard(0);
 					else
-						curKeyboard = 0;
+						setKeyboard(curKeyboard+1);
 				}
 				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN    ) {
-					if (selRow==(int)keyboard[curKeyboard].size()) {
+					if (selRow==(int)kb->size()) {
 						if (selCol==0)
 							ok = false;
 						close = true;
 					} else {
 						bool utf8;
 						int xc=0;
-						for (uint x=0; x<keyboard[curKeyboard][selRow].length(); x++) {
-							utf8 = gmenu2x->font->utf8Code(keyboard[curKeyboard][selRow][x]);
-							if (xc==selCol) input += keyboard[curKeyboard][selRow].substr(x, utf8 ? 2 : 1);
+						for (uint x=0; x<kb->at(selRow).length(); x++) {
+							utf8 = gmenu2x->font->utf8Code(kb->at(selRow)[x]);
+							if (xc==selCol) input += kb->at(selRow).substr(x, utf8 ? 2 : 1);
 							if (utf8) x++;
 							xc++;
 						}
@@ -175,26 +221,26 @@ bool InputDialog::exec() {
 
 void InputDialog::drawVirtualKeyboard() {
 	//keyboard border
-	gmenu2x->s->rectangle(157-keyboard[curKeyboard][0].length()*5, 73, keyboard[curKeyboard][0].length()*10+4, keyboard[curKeyboard].size()*15+18, gmenu2x->selectionColor);
-	uint left = 160-keyboard[curKeyboard][0].length()*5;
+	gmenu2x->s->rectangle(157-kbLength*5, 73, kbLength*10+4, kb->size()*15+18, gmenu2x->selectionColor);
+	uint left = 160-kbLength*5;
 
-	if (selCol<0) selCol = selRow==(int)keyboard[curKeyboard].size() ? 1 : keyboard[curKeyboard][0].length()-1;
-	if (selCol>=(int)keyboard[curKeyboard][0].length()) selCol = 0;
-	if (selRow<0) selRow = keyboard[curKeyboard].size()-1;
-	if (selRow>(int)keyboard[curKeyboard].size()) selRow = 0;
+	if (selCol<0) selCol = selRow==(int)kb->size() ? 1 : kbLength-1;
+	if (selCol>=(int)kbLength) selCol = 0;
+	if (selRow<0) selRow = kb->size()-1;
+	if (selRow>(int)kb->size()) selRow = 0;
 
 	//selection
-	if (selRow<(int)keyboard[curKeyboard].size())
+	if (selRow<(int)kb->size())
 		gmenu2x->s->box(left+selCol*10-1, 75+selRow*15, 10, 13, gmenu2x->selectionColor);
 	else {
 		if (selCol>1) selCol = 0;
 		if (selCol<0) selCol = 1;
-		gmenu2x->s->box(left+selCol*keyboard[curKeyboard][0].length()*5-1, 75+keyboard[curKeyboard].size()*15, keyboard[curKeyboard][0].length()*5, 14, gmenu2x->selectionColor);
+		gmenu2x->s->box(left+selCol*kbLength*5-1, 75+kb->size()*15, kbLength*5, 14, gmenu2x->selectionColor);
 	}
 
 	//keys
-	for (uint l=0; l<keyboard[curKeyboard].size(); l++) {
-		string line = keyboard[curKeyboard][l];
+	for (uint l=0; l<kb->size(); l++) {
+		string line = kb->at(l);
 		for (uint x=0, xc=0; x<line.length(); x++) {
 			string charX;
 			//utf8 characters
@@ -209,6 +255,6 @@ void InputDialog::drawVirtualKeyboard() {
 	}
 
 	//Ok/Cancel
-	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["Cancel"], (int)(160-keyboard[curKeyboard][0].length()*2.5), 81+keyboard[curKeyboard].size()*15, SFontHAlignCenter, SFontVAlignMiddle);
-	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["OK"], (int)(160+keyboard[curKeyboard][0].length()*2.5), 81+keyboard[curKeyboard].size()*15, SFontHAlignCenter, SFontVAlignMiddle);
+	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["Cancel"], (int)(160-kbLength*2.5), 81+kb->size()*15, SFontHAlignCenter, SFontVAlignMiddle);
+	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["OK"], (int)(160+kbLength*2.5), 81+kb->size()*15, SFontHAlignCenter, SFontVAlignMiddle);
 }

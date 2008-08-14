@@ -94,9 +94,11 @@ void GMenu2X::gp2x_init() {
 	gp2x_memregs=(unsigned short *)mmap(0, 0x10000, PROT_READ|PROT_WRITE, MAP_SHARED, gp2x_mem, 0xc0000000);
 	MEM_REG=&gp2x_memregs[0];
 
-	if (f200)
+	if (f200) {
+		batteryHandle = open(f200 ? "/dev/mmsp2adc" : "/dev/batt", O_RDONLY);
 		//if wm97xx fails to open, set f200 to false to prevent any further access to the touchscreen
 		f200 = ts.init();
+	}
 #endif
 }
 
@@ -107,14 +109,16 @@ void GMenu2X::gp2x_deinit() {
 		gp2x_memregs[0x290C>>1]=640;
 		close(gp2x_mem);
 	}
+	if (batteryHandle!=0) close(batteryHandle);
 	if (f200) ts.deinit();
-//	ts.
 #endif
 }
 
 void GMenu2X::gp2x_tvout_on(bool pal) {
 #ifdef TARGET_GP2X
 	if (gp2x_mem!=0) {
+		/*Ioctl_Dummy_t *msg;
+		int TVHandle = ioctl(SDL_videofd, FBMMSP2CTRL, msg);*/
 		if (cx25874!=0) gp2x_tvout_off();
 		//if tv-out is enabled without cx25874 open, stop
 		//if (gp2x_memregs[0x2800>>1]&0x100) return;
@@ -123,16 +127,6 @@ void GMenu2X::gp2x_tvout_on(bool pal) {
 		gp2x_memregs[0x2906>>1]=512;
 		gp2x_memregs[0x28E4>>1]=gp2x_memregs[0x290C>>1];
 		gp2x_memregs[0x28E8>>1]=239;
-
-#ifdef DEBUG
-		for (uint window=0; window<4; window++) {
-			int x1=gp2x_memregs[(0x28e2+window*8)>>1];
-			int x2=gp2x_memregs[(0x28e4+window*8)>>1];
-			int y1=gp2x_memregs[(0x28e6+window*8)>>1];
-			int y2=gp2x_memregs[(0x28e8+window*8)>>1];
-			printf ("Window %i: %i,%i,%i,%i\n",window,x1,x2,y1,y2);
-		}
-#endif
 	}
 #endif
 }
@@ -215,6 +209,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 #ifdef TARGET_GP2X
 	gp2x_mem = 0;
 	cx25874 = 0;
+	batteryHandle = 0;
 
 	gp2x_init();
 
@@ -238,7 +233,8 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	s = new Surface();
 	SDL_JoystickOpen(0);
 #ifdef TARGET_GP2X
-	s->enableVirtualDoubleBuffer(SDL_SetVideoMode(320, 240, 16, SDL_HWSURFACE));
+	//I'm forced to use SW surfaces since with HW there are issuse with changing the clock frequency
+	s->enableVirtualDoubleBuffer(SDL_SetVideoMode(320, 240, 16, SDL_SWSURFACE));
 	SDL_ShowCursor(0);
 #else
 	s->raw = SDL_SetVideoMode(320, 240, 16, SDL_HWSURFACE|SDL_DOUBLEBUF);
@@ -403,7 +399,7 @@ void GMenu2X::initMenu() {
 			menu->addActionLink(i,tr["Wallpaper"],MakeDelegate(this,&GMenu2X::changeWallpaper),tr["Change GMenu2X wallpaper"],"skin:icons/wallpaper.png");
 			menu->addActionLink(i,"TV",MakeDelegate(this,&GMenu2X::toggleTvOut),tr["Activate/deactivate tv-out"],"skin:icons/tv.png");
 			menu->addActionLink(i,"USB Sd",MakeDelegate(this,&GMenu2X::activateSdUsb),tr["Activate Usb on SD"],"skin:icons/usb.png");
-			if (fwType=="gph") {
+			if (fwType=="gph" && !f200) {
 				menu->addActionLink(i,"USB Nand",MakeDelegate(this,&GMenu2X::activateNandUsb),tr["Activate Usb on Nand"],"skin:icons/usb.png");
 			}
 			if (fileExists(path+"log.txt"))
@@ -1519,7 +1515,7 @@ void GMenu2X::scanner() {
 	scanPath("/mnt/sd",&files);
 
 	//Onyl gph firmware has nand
-	if (fwType=="gph") {
+	if (fwType=="gph" && !f200) {
 		scanbg.write(font,tr["Scanning NAND filesystem..."],5,lineY);
 		scanbg.blit(s,0,0);
 		s->flip();
@@ -1613,13 +1609,11 @@ void GMenu2X::scanPath(string path, vector<string> *files) {
 
 unsigned short GMenu2X::getBatteryLevel() {
 #ifdef TARGET_GP2X
-	int dev = open(f200 ? "/dev/mmsp2adc" : "/dev/batt", O_RDONLY);
-	if (dev<0) return 0;
+	if (batteryHandle<0) return 0;
 
 	if (f200) {
 		MMSP2ADC val;
-		int rv = read(dev, &val, sizeof(MMSP2ADC));
-		close(dev);
+		int rv = read(batteryHandle, &val, sizeof(MMSP2ADC));
 
 		if (val.batt==0) return 5;
 		if (val.batt==1) return 3;
@@ -1631,13 +1625,12 @@ unsigned short GMenu2X::getBatteryLevel() {
 		int v;
 
 		for (int i = 0; i < BATTERY_READS; i ++) {
-			if ( read(dev, &cbv, 2) == 2) {
+			if ( read(batteryHandle, &cbv, 2) == 2) {
 				battval += cbv;
 				if (cbv>max) max = cbv;
 				if (cbv<min) min = cbv;
 			}
 		}
-		close(dev);
 
 		battval -= min+max;
 		battval /= BATTERY_READS-2;

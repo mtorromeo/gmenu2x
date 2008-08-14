@@ -48,7 +48,7 @@ bool SettingsDialog::exec() {
 	while (!close) {
 		action = SD_NO_ACTION;
 		if (gmenu2x->f200) gmenu2x->ts.poll();
-		
+
 		bg.blit(gmenu2x->s,0,0);
 
 		gmenu2x->drawTopBar(gmenu2x->s);

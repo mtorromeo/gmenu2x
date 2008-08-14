@@ -51,6 +51,7 @@ public:
 	~Touchscreen();
 
 	bool init();
+	bool initialized();
 	void deinit();
 
 	bool poll();
