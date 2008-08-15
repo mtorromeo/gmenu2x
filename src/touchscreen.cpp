@@ -102,6 +102,10 @@ bool Touchscreen::pressed() {
 	return !handled && event.pressure>0;
 }
 
+bool Touchscreen::released() {
+	return !pressed() && wasPressed;
+}
+
 bool Touchscreen::inRect(SDL_Rect r) {
 	return !handled && (y>=r.y) && (y<=r.y+r.h) && (x>=r.x) && (x<=r.x+r.w);
 }

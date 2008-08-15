@@ -28,8 +28,7 @@
 #include <SDL_gfxPrimitives.h>
 #include <signal.h>
 
-//for statfs
-#include <sys/vfs.h>
+#include <sys/statvfs.h>
 #include <errno.h>
 
 #include "gp2x.h"
@@ -1751,35 +1750,51 @@ string GMenu2X::getExePath() {
 string GMenu2X::getDiskFree() {
 	stringstream ss;
 	string df = "";
-	struct statfs b;
+	struct statvfs b;
 
-	int ret = statfs("/mnt/sd", &b);
+	int ret = statvfs("/mnt/sd", &b);
 	if (ret==0) {
-		ss << b.f_bfree*b.f_bsize/1048576 << "/" << b.f_blocks*b.f_bsize/1048576 << "MB";
+		unsigned long free = b.f_bfree*b.f_frsize/1048576;
+		unsigned long total = b.f_blocks*b.f_frsize/1048576;
+		ss << free << "/" << total << "MB";
 		ss >> df;
-	} else cout << "\033[0;34mGMENU2X:\033[0;31m statfs failed with error '" << strerror(errno) << "'\033[0m" << endl;
+	} else cout << "\033[0;34mGMENU2X:\033[0;31m statvfs failed with error '" << strerror(errno) << "'\033[0m" << endl;
 	return df;
 }
 
-int GMenu2X::drawButton(IconButton *btn, string text, int x, int y) {
+int GMenu2X::drawButton(IconButton *btn, string text, int x, int y, bool *clicked) {
 	btn->setPosition(x, y-7);
 	btn->paint();
 	x += sc[btn->getIcon()]->raw->w+3;
 	s->write(font, text, x, y, SFontHAlignLeft, SFontVAlignMiddle);
 	return x+6+font->getTextWidth(text);
 }
-
-int GMenu2X::drawButton(Surface *s, string btn, string text, int x, int y) {
-	if (sc.skinRes("imgs/buttons/"+btn+".png") != NULL) {
-		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
-		x += sc["imgs/buttons/"+btn+".png"]->raw->w+3;
-		s->write(font, text, x, y, SFontHAlignLeft, SFontVAlignMiddle);
-		return x+6+font->getTextWidth(text);
-	}
-	return x+6;
+int GMenu2X::drawButton(IconButton *btn, string text, int x, bool *clicked) {
+	return drawButton(btn,text,x,230,clicked);
 }
 
-int GMenu2X::drawButtonRight(Surface *s, string btn, string text, int x, int y) {
+int GMenu2X::drawButton(Surface *s, string btn, string text, int x, int y, bool *clicked) {
+	SDL_Rect re = {x, y-7, 0, 16};
+	if (sc.skinRes("imgs/buttons/"+btn+".png") != NULL) {
+		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
+		re.w = sc["imgs/buttons/"+btn+".png"]->raw->w+3;
+		s->write(font, text, x+re.w, y, SFontHAlignLeft, SFontVAlignMiddle);
+		re.w += font->getTextWidth(text);
+	}
+
+	*clicked = false;
+	if (ts.inRect(re)) {
+		if (ts.pressed()) s->rectangle(re, selectionColor);
+		if (ts.released()) *clicked = true;
+	}
+
+	return x+re.w+6;
+}
+int GMenu2X::drawButton(Surface *s, string btn, string text, int x, bool *clicked) {
+	return drawButton(s,btn,text,x,230,clicked);
+}
+
+int GMenu2X::drawButtonRight(Surface *s, string btn, string text, int x, int y, bool *clicked) {
 	if (sc.skinRes("imgs/buttons/"+btn+".png") != NULL) {
 		x -= 16;
 		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
@@ -1788,6 +1803,9 @@ int GMenu2X::drawButtonRight(Surface *s, string btn, string text, int x, int y) 
 		return x-6-font->getTextWidth(text);
 	}
 	return x-6;
+}
+int GMenu2X::drawButtonRight(Surface *s, string btn, string text, int x, bool *clicked) {
+	return drawButtonRight(s,btn,text,x,230,clicked);
 }
 
 void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height) {

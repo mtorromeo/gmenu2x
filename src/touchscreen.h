@@ -56,6 +56,7 @@ public:
 
 	bool poll();
 	bool pressed();
+	bool released();
 	void setHandled();
 
 	bool inRect(SDL_Rect r);

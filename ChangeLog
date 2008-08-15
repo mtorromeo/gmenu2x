@@ -1,6 +1,8 @@
 -----------
 New in 0.10
 -----------
+Support for additional utf8 characters
+Restructured the virtual keyboard dialog with touchscreen support
 New translations: Basque, Catalan, Turkish
 Added support for the touchscreen
 Added support for f200 battery
