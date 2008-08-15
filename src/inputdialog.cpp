@@ -42,7 +42,7 @@ InputDialog::InputDialog(GMenu2X *gmenu2x, string text, string startvalue) {
 
 	keyboard[1].push_back("ABCDEFGHIJKLM");
 	keyboard[1].push_back("NOPQRSTUVWXYZ");
-	keyboard[1].push_back("_\"'`.,:;!?");
+	keyboard[1].push_back("_\"'`.,:;!?   ");
 
 
 	keyboard[2].push_back("¡¿*+-/\\&<=>|");
@@ -53,10 +53,12 @@ InputDialog::InputDialog(GMenu2X *gmenu2x, string text, string startvalue) {
 	keyboard[3].push_back("àáèéìíòóùúýäõ");
 	keyboard[3].push_back("ëïöüÿâêîôûåãñ");
 	keyboard[3].push_back("čďěľĺňôřŕšťůž");
+	keyboard[3].push_back("ąćęłńśżź     ");
 
 	keyboard[4].push_back("ÀÁÈÉÌÍÒÓÙÚÝÄÕ");
 	keyboard[4].push_back("ËÏÖÜŸÂÊÎÔÛÅÃÑ");
 	keyboard[4].push_back("ČĎĚĽĹŇÔŘŔŠŤŮŽ");
+	keyboard[4].push_back("ĄĆĘŁŃŚŻŹ     ");
 
 
 	keyboard[5].push_back("æçабвгдеёжзий ");
@@ -92,7 +94,7 @@ void InputDialog::setKeyboard(int kb) {
 }
 
 bool InputDialog::exec() {
-	SDL_Rect box = {0, 50, 0, gmenu2x->font->getHeight()+4};
+	SDL_Rect box = {0, 60, 0, gmenu2x->font->getHeight()+4};
 
 	Uint32 caretTick = 0, curTick;
 	bool caretOn = true;
@@ -249,7 +251,7 @@ int InputDialog::drawVirtualKeyboard() {
 			}
 
 			gmenu2x->s->rectangle(re, gmenu2x->selectionColor);
-			gmenu2x->s->write(gmenu2x->font, charX, kbLeft+xc*KEY_WIDTH+KEY_WIDTH/2-1, KB_TOP+l*KEY_HEIGHT+KEY_HEIGHT/2-2, SFontHAlignCenter, SFontVAlignMiddle);
+			gmenu2x->s->write(gmenu2x->font, charX, kbLeft+xc*KEY_WIDTH+KEY_WIDTH/2-1, KB_TOP+l*KEY_HEIGHT+KEY_HEIGHT/2, SFontHAlignCenter, SFontVAlignMiddle);
 			xc++;
 		}
 	}

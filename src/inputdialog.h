@@ -22,8 +22,8 @@
 #define INPUTDIALOG_H_
 
 #define KEY_WIDTH 20
-#define KEY_HEIGHT 30
-#define KB_TOP 75
+#define KEY_HEIGHT 20
+#define KB_TOP 90
 
 #define ID_NO_ACTION 0
 #define ID_ACTION_CLOSE 1
