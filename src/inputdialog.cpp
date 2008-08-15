@@ -28,9 +28,19 @@
 
 using namespace std;
 
-InputDialog::InputDialog(GMenu2X *gmenu2x, string text, string startvalue) {
+InputDialog::InputDialog(GMenu2X *gmenu2x, string text, string startvalue, string title, string icon) {
 	this->gmenu2x = gmenu2x;
-	this->text = text;
+	if (title=="") {
+		this->title = text;
+		this->text = "";
+	} else {
+		this->title = title;
+		this->text = text;
+	}
+	this->icon = "";
+	if (icon!="" && gmenu2x->sc[icon] != NULL)
+		this->icon = icon;
+
 	input = startvalue;
 	selCol = 0;
 	selRow = 0;
@@ -103,7 +113,9 @@ bool InputDialog::exec() {
 	bool close = false, ok = true;
 	while (!close) {
 		gmenu2x->bg->blit(gmenu2x->s,0,0);
-		gmenu2x->writeTitle(text);
+		gmenu2x->writeTitle(title);
+		gmenu2x->writeSubTitle(text);
+		gmenu2x->drawTitleIcon(icon);
 
 		gmenu2x->drawButton(gmenu2x->s, "y", gmenu2x->tr["Change keys"],
 		gmenu2x->drawButton(gmenu2x->s, "b", gmenu2x->tr["Confirm"],
@@ -263,7 +275,7 @@ int InputDialog::drawVirtualKeyboard() {
 		selCol = 0;
 		selRow = kb->size();
 	}
-	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["Cancel"], (int)(160-kbLength*KEY_WIDTH/4), KB_TOP+kb->size()*KEY_HEIGHT+KEY_HEIGHT/2-2, SFontHAlignCenter, SFontVAlignMiddle);
+	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["Cancel"], (int)(160-kbLength*KEY_WIDTH/4), KB_TOP+kb->size()*KEY_HEIGHT+KEY_HEIGHT/2, SFontHAlignCenter, SFontVAlignMiddle);
 
 	re.x = kbLeft+kbLength*KEY_WIDTH/2-1;
 	gmenu2x->s->rectangle(re, gmenu2x->selectionColor);
@@ -271,7 +283,7 @@ int InputDialog::drawVirtualKeyboard() {
 		selCol = 1;
 		selRow = kb->size();
 	}
-	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["OK"], (int)(160+kbLength*KEY_WIDTH/4), KB_TOP+kb->size()*KEY_HEIGHT+KEY_HEIGHT/2-2, SFontHAlignCenter, SFontVAlignMiddle);
+	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["OK"], (int)(160+kbLength*KEY_WIDTH/4), KB_TOP+kb->size()*KEY_HEIGHT+KEY_HEIGHT/2, SFontHAlignCenter, SFontVAlignMiddle);
 
 	//if ts released
 	if (gmenu2x->f200 && gmenu2x->ts.wasPressed && !gmenu2x->ts.pressed() && gmenu2x->ts.inRect(kbRect))

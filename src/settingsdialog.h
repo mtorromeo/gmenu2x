@@ -36,13 +36,13 @@ using std::vector;
 class SettingsDialog {
 private:
 	vector<MenuSetting *> voices;
-	string text;
+	string text, icon;
 	GMenu2X *gmenu2x;
-	
+
 public:
-	SettingsDialog(GMenu2X *gmenu2x, string text);
+	SettingsDialog(GMenu2X *gmenu2x, string text, string icon="skin:sections/settings.png");
 	~SettingsDialog();
-	
+
 	bool edited();
 	bool exec();
 	void addSetting(MenuSetting* set);

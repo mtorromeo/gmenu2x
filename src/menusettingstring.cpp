@@ -23,11 +23,13 @@
 
 using namespace std;
 
-MenuSettingString::MenuSettingString(GMenu2X *gmenu2x, string name, string description, string *value)
+MenuSettingString::MenuSettingString(GMenu2X *gmenu2x, string name, string description, string *value, string diagTitle, string diagIcon)
 	: MenuSetting(gmenu2x,name,description) {
 	this->gmenu2x = gmenu2x;
 	_value = value;
 	originalValue = *value;
+	this->diagTitle = diagTitle;
+	this->diagIcon = diagIcon;
 }
 
 void MenuSettingString::draw(int y) {
@@ -41,7 +43,7 @@ void MenuSettingString::draw(int y) {
 void MenuSettingString::manageInput() {
 	if ( gmenu2x->joy[GP2X_BUTTON_X] ) setValue("");
 	if ( gmenu2x->joy[GP2X_BUTTON_B] ) {
-		InputDialog id(gmenu2x,description,value());
+		InputDialog id(gmenu2x,description,value(), diagTitle,diagIcon);
 		if (id.exec()) setValue(id.input);
 	}
 }
@@ -49,7 +51,7 @@ void MenuSettingString::manageInput() {
 void MenuSettingString::manageInput() {
 	if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) setValue("");
 	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
-		InputDialog id(gmenu2x,description,value());
+		InputDialog id(gmenu2x,description,value(), diagTitle,diagIcon);
 		if (id.exec()) setValue(id.input);
 	}
 }

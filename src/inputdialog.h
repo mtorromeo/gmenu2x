@@ -48,7 +48,7 @@ typedef vector<string> stringlist;
 class InputDialog {
 private:
 	int selRow, selCol;
-	string text;
+	string title, text, icon;
 	GMenu2X *gmenu2x;
 	short curKeyboard;
 	vector<stringlist> keyboard;
@@ -60,7 +60,7 @@ private:
 	void setKeyboard(int);
 
 public:
-	InputDialog(GMenu2X *gmenu2x, string text, string startvalue="");
+	InputDialog(GMenu2X *gmenu2x, string text, string startvalue="", string title="", string icon="");
 
 	string input;
 	bool exec();

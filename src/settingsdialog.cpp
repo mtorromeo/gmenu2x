@@ -28,9 +28,14 @@
 
 using namespace std;
 
-SettingsDialog::SettingsDialog(GMenu2X *gmenu2x, string text) {
+SettingsDialog::SettingsDialog(GMenu2X *gmenu2x, string text, string icon) {
 	this->gmenu2x = gmenu2x;
 	this->text = text;
+
+	if (icon!="" && gmenu2x->sc[icon] != NULL)
+		this->icon = icon;
+	else
+		this->icon = "icons/generic.png";
 }
 
 SettingsDialog::~SettingsDialog() {
@@ -53,11 +58,9 @@ bool SettingsDialog::exec() {
 
 		gmenu2x->drawTopBar(gmenu2x->s);
 		//link icon
-		if (gmenu2x->sc["skin:sections/settings.png"] != NULL)
-			gmenu2x->sc["skin:sections/settings.png"]->blit(gmenu2x->s,4,4);
-		else
-			gmenu2x->sc["icons/generic.png"]->blit(gmenu2x->s,4,4);
-		gmenu2x->s->write(gmenu2x->font, text, 40,13, SFontHAlignLeft, SFontVAlignMiddle);
+		gmenu2x->drawTitleIcon(icon);
+		gmenu2x->writeTitle(text);
+		//gmenu2x->s->write(gmenu2x->font, text, 40,13, SFontHAlignLeft, SFontVAlignMiddle);
 		gmenu2x->drawBottomBar(gmenu2x->s);
 
 		if (sel>firstElement+10) firstElement=sel-10;
