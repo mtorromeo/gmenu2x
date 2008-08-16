@@ -93,8 +93,8 @@ void GMenu2X::gp2x_init() {
 	gp2x_memregs=(unsigned short *)mmap(0, 0x10000, PROT_READ|PROT_WRITE, MAP_SHARED, gp2x_mem, 0xc0000000);
 	MEM_REG=&gp2x_memregs[0];
 
+	batteryHandle = open(f200 ? "/dev/mmsp2adc" : "/dev/batt", O_RDONLY);
 	if (f200) {
-		batteryHandle = open(f200 ? "/dev/mmsp2adc" : "/dev/batt", O_RDONLY);
 		//if wm97xx fails to open, set f200 to false to prevent any further access to the touchscreen
 		f200 = ts.init();
 	}
@@ -183,7 +183,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	saveSelection = true;
 	outputLogs = false;
 	maxClock = 300;
-	menuClock = 100;
+	menuClock = f200 ? 136 : 100;
 	globalVolume = 100;
 	numRows = 4;
 	numCols = 5;
@@ -232,9 +232,13 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	s = new Surface();
 	SDL_JoystickOpen(0);
 #ifdef TARGET_GP2X
-	//I'm forced to use SW surfaces since with HW there are issuse with changing the clock frequency
-	s->enableVirtualDoubleBuffer(SDL_SetVideoMode(320, 240, 16, SDL_SWSURFACE));
-	SDL_ShowCursor(0);
+	{
+		//I use a tmp variable to hide the cursor as soon as possible (and create the double buffer surface only after that)
+		//I'm forced to use SW surfaces since with HW there are issuse with changing the clock frequency
+		SDL_Surface *tmps = SDL_SetVideoMode(320, 240, 16, SDL_SWSURFACE);
+		SDL_ShowCursor(0);
+		s->enableVirtualDoubleBuffer(tmps);
+	}
 #else
 	s->raw = SDL_SetVideoMode(320, 240, 16, SDL_HWSURFACE|SDL_DOUBLEBUF);
 #endif
@@ -458,7 +462,7 @@ Jacopastorius\n\
 lorystorm90\n\
 and all the anonymous donors...\n\
 (If I missed to list you or if you want to be removed, contact me.)","\n");
-	TextDialog td(this, "GMenu2X", tr.translate("Version $1 (Build date: $2)","0.10-test2",__DATE__,NULL), "icons/about.png", &text);
+	TextDialog td(this, "GMenu2X", tr.translate("Version $1 (Build date: $2)","0.10-test3",__DATE__,NULL), "icons/about.png", &text);
 	td.exec();
 }
 
@@ -855,6 +859,8 @@ int GMenu2X::main() {
 					i = menu->sectionLinks()->size();
 				i++;
 			}
+
+			ts.setHandled();
 		}
 
 #ifdef TARGET_GP2X
@@ -1611,7 +1617,7 @@ void GMenu2X::scanPath(string path, vector<string> *files) {
 
 unsigned short GMenu2X::getBatteryLevel() {
 #ifdef TARGET_GP2X
-	if (batteryHandle<0) return 0;
+	if (batteryHandle<=0) return 0;
 
 	if (f200) {
 		MMSP2ADC val;
@@ -1774,21 +1780,21 @@ int GMenu2X::drawButton(IconButton *btn, string text, int x, bool *clicked) {
 }
 
 int GMenu2X::drawButton(Surface *s, string btn, string text, int x, int y, bool *clicked) {
-	SDL_Rect re = {x, y-7, 0, 16};
+	SDL_Rect re = {x, y-9, 0, 18};
 	if (sc.skinRes("imgs/buttons/"+btn+".png") != NULL) {
 		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
 		re.w = sc["imgs/buttons/"+btn+".png"]->raw->w+3;
 		s->write(font, text, x+re.w, y, SFontHAlignLeft, SFontVAlignMiddle);
-		re.w += font->getTextWidth(text);
+		re.w += font->getTextWidth(text)+2;
 	}
 
-	*clicked = false;
+	if (clicked != NULL) *clicked = false;
 	if (ts.inRect(re)) {
 		if (ts.pressed()) s->rectangle(re, selectionColor);
-		if (ts.released()) *clicked = true;
+		if (clicked != NULL && ts.released()) *clicked = true;
 	}
 
-	return x+re.w+6;
+	return x+re.w+4;
 }
 int GMenu2X::drawButton(Surface *s, string btn, string text, int x, bool *clicked) {
 	return drawButton(s,btn,text,x,230,clicked);

@@ -36,7 +36,7 @@ protected:
 	GMenu2X *gmenu2x;
 	ButtonAction action;
 	SDL_Rect rect;
-	bool pressed, doubleClick;
+	bool doubleClick;
 	int lastTick;
 
 public:
@@ -51,6 +51,7 @@ public:
 	virtual bool paintHover();
 
 	bool isPressed();
+	bool isReleased();
 	bool handleTS();
 	void exec();
 	void voidAction() {};

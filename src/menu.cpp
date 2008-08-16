@@ -314,7 +314,7 @@ void Menu::linkRight() {
 void Menu::linkUp() {
 	int l = iLink-numCols;
 	if (l<0) {
-		int rows = ceil(sectionLinks()->size()/(double)numCols);
+		uint rows = (uint)ceil(sectionLinks()->size()/(double)numCols);
 		l = (rows*numCols)+l;
 		if (l >= (int)sectionLinks()->size())
 			l -= numCols;
@@ -325,8 +325,8 @@ void Menu::linkUp() {
 void Menu::linkDown() {
 	uint l = iLink+numCols;
 	if (l >= sectionLinks()->size()) {
-		uint rows = ceil(sectionLinks()->size()/(double)numCols);
-		uint curCol = ceil((iLink+1)/(double)numCols);
+		uint rows = (uint)ceil(sectionLinks()->size()/(double)numCols);
+		uint curCol = (uint)ceil((iLink+1)/(double)numCols);
 		if (rows > curCol)
 			l = sectionLinks()->size()-1;
 		else

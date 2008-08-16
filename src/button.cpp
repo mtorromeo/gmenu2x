@@ -11,7 +11,6 @@ Button::Button(GMenu2X * gmenu2x, bool doubleClick) {
 	action = MakeDelegate(this, &Button::voidAction);
 	setPosition(0,0);
 	setSize(0,0);
-	pressed = false;
 }
 
 void Button::paint() {
@@ -27,8 +26,12 @@ bool Button::isPressed() {
 	return gmenu2x->ts.pressed() && gmenu2x->ts.inRect(rect);
 }
 
+bool Button::isReleased() {
+	return gmenu2x->ts.released() && gmenu2x->ts.inRect(rect);
+}
+
 bool Button::handleTS() {
-	if (pressed && !gmenu2x->ts.pressed()) {
+	if (isReleased()) {
 		if (doubleClick) {
 			int tickNow = SDL_GetTicks();
 			if (tickNow - lastTick < 400)
@@ -37,16 +40,10 @@ bool Button::handleTS() {
 		} else {
 			exec();
 		}
-		pressed = false;
 		gmenu2x->ts.setHandled();
 		return true;
-	} else if (isPressed()) {
-		pressed = true;
-		return false;
-	} else {
-		pressed = false;
-		return false;
 	}
+	return false;
 }
 
 void Button::exec() {
