@@ -29,7 +29,7 @@ Touchscreen::Touchscreen() {
 	wm97xx = 0;
 	calibrated = false;
 	wasPressed = false;
-	handled = false;
+	_handled = false;
 	x = 0;
 	y = 0;
 }
@@ -89,17 +89,21 @@ bool Touchscreen::poll() {
 		event.pressure = 0;
 	}
 #endif
-	handled = false;
+	_handled = false;
 	return pressed();
+}
+
+bool Touchscreen::handled() {
+	return _handled;
 }
 
 void Touchscreen::setHandled() {
 	wasPressed = false;
-	handled = true;
+	_handled = true;
 }
 
 bool Touchscreen::pressed() {
-	return !handled && event.pressure>0;
+	return !_handled && event.pressure>0;
 }
 
 bool Touchscreen::released() {
@@ -107,7 +111,7 @@ bool Touchscreen::released() {
 }
 
 bool Touchscreen::inRect(SDL_Rect r) {
-	return !handled && (y>=r.y) && (y<=r.y+r.h) && (x>=r.x) && (x<=r.x+r.w);
+	return !_handled && (y>=r.y) && (y<=r.y+r.h) && (x>=r.x) && (x<=r.x+r.w);
 }
 
 bool Touchscreen::inRect(int x, int y, int w, int h) {

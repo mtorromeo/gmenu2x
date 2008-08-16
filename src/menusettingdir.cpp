@@ -22,12 +22,19 @@
 #include "utilities.h"
 
 using namespace std;
+using namespace fastdelegate;
 
 MenuSettingDir::MenuSettingDir(GMenu2X *gmenu2x, string name, string description, string *value)
 	: MenuSetting(gmenu2x,name,description) {
 	this->gmenu2x = gmenu2x;
 	_value = value;
 	originalValue = *value;
+
+	btnClear = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Clear"]);
+	btnClear->setAction(MakeDelegate(this, &MenuSettingDir::clear));
+
+	btnSelect = new IconButton(gmenu2x, "skin:imgs/buttons/b.png", gmenu2x->tr["Select a directory"]);
+	btnSelect->setAction(MakeDelegate(this, &MenuSettingDir::select));
 }
 
 void MenuSettingDir::draw(int y) {
@@ -35,25 +42,33 @@ void MenuSettingDir::draw(int y) {
 	gmenu2x->s->write( gmenu2x->font, value(), 155, y+6, SFontHAlignLeft, SFontVAlignMiddle );
 }
 
+void MenuSettingDir::handleTS() {
+	btnSelect->handleTS();
+	btnClear->handleTS();
+}
+
 #ifdef TARGET_GP2X
 #include "gp2x.h"
 
 void MenuSettingDir::manageInput() {
 	if ( gmenu2x->joy[GP2X_BUTTON_X] ) setValue("");
-	if ( gmenu2x->joy[GP2X_BUTTON_B] ) {
-		DirDialog dd(gmenu2x, description, value());
-		if (dd.exec()) setValue( dd.path );
-	}
+	if ( gmenu2x->joy[GP2X_BUTTON_B] ) select();
 }
 #else
 void MenuSettingDir::manageInput() {
-	if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) setValue("");
-	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
-		DirDialog dd(gmenu2x, description, value());
-		if (dd.exec()) setValue( dd.path );
-	}
+	if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) clear();
+	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) select();
 }
 #endif
+
+void MenuSettingDir::clear() {
+	setValue("");
+}
+
+void MenuSettingDir::select() {
+	DirDialog dd(gmenu2x, description, value());
+	if (dd.exec()) setValue( dd.path );
+}
 
 void MenuSettingDir::setValue(string value) {
 	*_value = value;
@@ -66,8 +81,8 @@ string MenuSettingDir::value() {
 void MenuSettingDir::adjustInput() {}
 
 void MenuSettingDir::drawSelected(int) {
-	gmenu2x->drawButton(gmenu2x->s, "x", gmenu2x->tr["Clear"],
-	gmenu2x->drawButton(gmenu2x->s, "b", gmenu2x->tr["Select a directory"], 5));
+	gmenu2x->drawButton(btnClear,
+	gmenu2x->drawButton(btnSelect));
 }
 
 bool MenuSettingDir::edited() {

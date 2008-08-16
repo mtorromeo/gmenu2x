@@ -44,6 +44,7 @@ public:
 	Button(GMenu2X *gmenu2x, bool doubleClick = false);
 	virtual ~Button() {};
 
+	SDL_Rect getRect();
 	void setSize(int w, int h);
 	void setPosition(int x, int y);
 

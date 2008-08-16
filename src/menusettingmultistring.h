@@ -32,6 +32,7 @@ private:
 	string originalValue;
 	vector<string> *choices;
 	GMenu2X *gmenu2x;
+	IconButton *btnDec, *btnInc;
 
 	void incSel();
 	void decSel();
@@ -42,6 +43,7 @@ public:
 	virtual ~MenuSettingMultiString() {};
 
 	virtual void draw(int y);
+	virtual void handleTS();
 	virtual void manageInput();
 	virtual void adjustInput();
 	virtual void drawSelected(int y);

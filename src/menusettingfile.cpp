@@ -22,6 +22,7 @@
 #include "utilities.h"
 
 using namespace std;
+using namespace fastdelegate;
 
 MenuSettingFile::MenuSettingFile(GMenu2X *gmenu2x, string name, string description, string *value, string filter)
 	: MenuSetting(gmenu2x,name,description) {
@@ -29,6 +30,12 @@ MenuSettingFile::MenuSettingFile(GMenu2X *gmenu2x, string name, string descripti
 	this->filter = filter;
 	_value = value;
 	originalValue = *value;
+
+	btnClear = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Clear"]);
+	btnClear->setAction(MakeDelegate(this, &MenuSettingFile::clear));
+
+	btnSelect = new IconButton(gmenu2x, "skin:imgs/buttons/b.png", gmenu2x->tr["Select a file"]);
+	btnSelect->setAction(MakeDelegate(this, &MenuSettingFile::select));
 }
 
 void MenuSettingFile::draw(int y) {
@@ -36,25 +43,33 @@ void MenuSettingFile::draw(int y) {
 	gmenu2x->s->write( gmenu2x->font, value(), 155, y+6, SFontHAlignLeft, SFontVAlignMiddle );
 }
 
+void MenuSettingFile::handleTS() {
+	btnSelect->handleTS();
+	btnClear->handleTS();
+}
+
 #ifdef TARGET_GP2X
 #include "gp2x.h"
 
 void MenuSettingFile::manageInput() {
 	if ( gmenu2x->joy[GP2X_BUTTON_X] ) setValue("");
-	if ( gmenu2x->joy[GP2X_BUTTON_B] ) {
-		FileDialog fd(gmenu2x, description, filter, value());
-		if (fd.exec()) setValue( fd.path()+"/"+fd.file );
-	}
+	if ( gmenu2x->joy[GP2X_BUTTON_B] ) select();
 }
 #else
 void MenuSettingFile::manageInput() {
-	if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) setValue("");
-	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
-		FileDialog fd(gmenu2x, description, filter, value());
-		if (fd.exec()) setValue( fd.path()+"/"+fd.file );
-	}
+	if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) clear();
+	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) select();
 }
 #endif
+
+void MenuSettingFile::clear() {
+	setValue("");
+}
+
+void MenuSettingFile::select() {
+	FileDialog fd(gmenu2x, description, filter, value());
+	if (fd.exec()) setValue( fd.path()+"/"+fd.file );
+}
 
 void MenuSettingFile::setValue(string value) {
 	*_value = value;
@@ -67,8 +82,8 @@ string MenuSettingFile::value() {
 void MenuSettingFile::adjustInput() {}
 
 void MenuSettingFile::drawSelected(int) {
-	gmenu2x->drawButton(gmenu2x->s, "x", gmenu2x->tr["Clear"],
-	gmenu2x->drawButton(gmenu2x->s, "b", gmenu2x->tr["Select a file"], 5));
+	gmenu2x->drawButton(btnClear,
+	gmenu2x->drawButton(btnSelect));
 }
 
 bool MenuSettingFile::edited() {

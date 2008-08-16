@@ -21,6 +21,7 @@
 #include "utilities.h"
 
 using namespace std;
+using namespace fastdelegate;
 
 MenuSettingMultiString::MenuSettingMultiString(GMenu2X *gmenu2x, string name, string description, string *value, vector<string> *choices)
 	: MenuSetting(gmenu2x,name,description) {
@@ -29,11 +30,22 @@ MenuSettingMultiString::MenuSettingMultiString(GMenu2X *gmenu2x, string name, st
 	this->value = value;
 	originalValue = *value;
 	setSel( find(choices->begin(),choices->end(),*value)-choices->begin() );
+
+	btnDec = new IconButton(gmenu2x, "skin:imgs/buttons/left.png");
+	btnDec->setAction(MakeDelegate(this, &MenuSettingMultiString::decSel));
+
+	btnInc = new IconButton(gmenu2x, "skin:imgs/buttons/right.png", gmenu2x->tr["Change value"]);
+	btnInc->setAction(MakeDelegate(this, &MenuSettingMultiString::incSel));
 }
 
 void MenuSettingMultiString::draw(int y) {
 	MenuSetting::draw(y);
 	gmenu2x->s->write( gmenu2x->font, *value, 155, y+6, SFontHAlignLeft, SFontVAlignMiddle );
+}
+
+void MenuSettingMultiString::handleTS() {
+	btnDec->handleTS();
+	btnInc->handleTS();
 }
 
 #ifdef TARGET_GP2X
@@ -68,8 +80,8 @@ void MenuSettingMultiString::setSel(int sel) {
 void MenuSettingMultiString::adjustInput() {}
 
 void MenuSettingMultiString::drawSelected(int) {
-	gmenu2x->drawButton(gmenu2x->s, "right", gmenu2x->tr["Change value"],
-	gmenu2x->drawButton(gmenu2x->s, "left", "", 5)-10);
+	gmenu2x->drawButton(btnInc,
+	gmenu2x->drawButton(btnDec)-6);
 }
 
 bool MenuSettingMultiString::edited() {

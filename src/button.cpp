@@ -9,8 +9,10 @@ Button::Button(GMenu2X * gmenu2x, bool doubleClick) {
 	this->doubleClick = doubleClick;
 	lastTick = 0;
 	action = MakeDelegate(this, &Button::voidAction);
-	setPosition(0,0);
-	setSize(0,0);
+	rect.x = 0;
+	rect.y = 0;
+	rect.w = 0;
+	rect.h = 0;
 }
 
 void Button::paint() {
@@ -40,14 +42,18 @@ bool Button::handleTS() {
 		} else {
 			exec();
 		}
-		gmenu2x->ts.setHandled();
 		return true;
 	}
 	return false;
 }
 
 void Button::exec() {
+	gmenu2x->ts.setHandled();
 	action();
+}
+
+SDL_Rect Button::getRect() {
+	return rect;
 }
 
 void Button::setSize(int w, int h) {

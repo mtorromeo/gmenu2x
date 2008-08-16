@@ -29,16 +29,24 @@ using std::string;
 class MenuSettingRGBA : public MenuSetting {
 private:
 	unsigned short selPart;
+	int y;
 	string strR, strG, strB, strA;
 	RGBAColor originalValue;
 	RGBAColor *_value;
 	GMenu2X *gmenu2x;
+	IconButton *btnDec, *btnInc, *btnLeftComponent, *btnRightComponent;
+
+	void dec();
+	void inc();
+	void leftComponent();
+	void rightComponent();
 
 public:
 	MenuSettingRGBA(GMenu2X *gmenu2x, string name, string description, RGBAColor *value);
 	virtual ~MenuSettingRGBA() {};
 
 	virtual void draw(int y);
+	virtual void handleTS();
 	virtual void manageInput();
 	virtual void adjustInput();
 	virtual void drawSelected(int y);

@@ -37,7 +37,7 @@ typedef struct {
 class Touchscreen {
 private:
 	int wm97xx;
-	bool calibrated, handled;
+	bool calibrated, _handled;
 	TS_EVENT event;
 	int calibX, calibY;
 
@@ -57,6 +57,8 @@ public:
 	bool poll();
 	bool pressed();
 	bool released();
+
+	bool handled();
 	void setHandled();
 
 	bool inRect(SDL_Rect r);

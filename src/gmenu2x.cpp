@@ -705,6 +705,7 @@ int GMenu2X::main() {
 	string batteryIcon = "imgs/battery/0.png";
 	stringstream ss;
 	uint sectionsCoordX = 24;
+	SDL_Rect re = {0,0,0,0};
 
 #ifdef DEBUG
 	//framerate
@@ -714,7 +715,6 @@ int GMenu2X::main() {
 
 	IconButton btnContextMenu(this,"skin:imgs/menu.png");
 	btnContextMenu.setPosition(282, 222);
-	btnContextMenu.setSize(16, 16);
 	btnContextMenu.setAction(MakeDelegate(this, &GMenu2X::contextMenu));
 
 	while (!quit) {
@@ -842,14 +842,19 @@ int GMenu2X::main() {
 		if (f200) {
 			ts.poll();
 			btnContextMenu.handleTS();
-			if (ts.pressed() && ts.y<=32)
-				for (i=menu->firstDispSection(); i<menu->sections.size() && i<menu->firstDispSection()+5; i++) {
+			re.x = 0; re.y = 0; re.h = 32; re.w = 320;
+			if (ts.pressed() && ts.inRect(re)) {
+				re.w = 60;
+				for (i=menu->firstDispSection(); !ts.handled() && i<menu->sections.size() && i<menu->firstDispSection()+5; i++) {
 					sectionsCoordX = 10 + max(0, min( 5-menu->sections.size(), 5 )) * 30;
-					x = (i-menu->firstDispSection())*60+sectionsCoordX;
+					re.x = (i-menu->firstDispSection())*60+sectionsCoordX;
 
-					if (ts.x>=x && ts.x<x+60)
+					if (ts.inRect(re)) {
 						menu->setSectionIndex(i);
+						ts.setHandled();
+					}
 				}
+			}
 
 			i=menu->firstDispRow()*numCols;
 			while ( i<(menu->firstDispRow()*numCols)+linksPerPage && i<menu->sectionLinks()->size()) {
@@ -859,8 +864,6 @@ int GMenu2X::main() {
 					i = menu->sectionLinks()->size();
 				i++;
 			}
-
-			ts.setHandled();
 		}
 
 #ifdef TARGET_GP2X
@@ -1254,7 +1257,7 @@ void GMenu2X::contextMenu() {
 		//touchscreen
 		if (f200) {
 			ts.poll();
-			if (ts.pressed()) {
+			if (ts.released()) {
 				if (!ts.inRect(box))
 					close = true;
 				else if (ts.x>=selbox.x && ts.x<=selbox.x+selbox.w)
@@ -1266,6 +1269,14 @@ void GMenu2X::contextMenu() {
 							i = voices.size();
 						}
 					}
+			} else if (ts.pressed() && ts.inRect(box)) {
+				for (i=0; i<voices.size(); i++) {
+					selbox.y = box.y+4+(h+2)*i;
+					if (ts.y>=selbox.y && ts.y<=selbox.y+selbox.h) {
+						sel = i;
+						i = voices.size();
+					}
+				}
 			}
 		}
 
@@ -1768,39 +1779,24 @@ string GMenu2X::getDiskFree() {
 	return df;
 }
 
-int GMenu2X::drawButton(IconButton *btn, string text, int x, int y, bool *clicked) {
+int GMenu2X::drawButton(IconButton *btn, int x, int y) {
 	btn->setPosition(x, y-7);
 	btn->paint();
-	x += sc[btn->getIcon()]->raw->w+3;
-	s->write(font, text, x, y, SFontHAlignLeft, SFontVAlignMiddle);
-	return x+6+font->getTextWidth(text);
-}
-int GMenu2X::drawButton(IconButton *btn, string text, int x, bool *clicked) {
-	return drawButton(btn,text,x,230,clicked);
+	return x+btn->getRect().w+6;
 }
 
-int GMenu2X::drawButton(Surface *s, string btn, string text, int x, int y, bool *clicked) {
-	SDL_Rect re = {x, y-9, 0, 18};
+int GMenu2X::drawButton(Surface *s, string btn, string text, int x, int y) {
+	SDL_Rect re = {x, y-7, 0, 16};
 	if (sc.skinRes("imgs/buttons/"+btn+".png") != NULL) {
 		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
 		re.w = sc["imgs/buttons/"+btn+".png"]->raw->w+3;
 		s->write(font, text, x+re.w, y, SFontHAlignLeft, SFontVAlignMiddle);
-		re.w += font->getTextWidth(text)+2;
+		re.w += font->getTextWidth(text);
 	}
-
-	if (clicked != NULL) *clicked = false;
-	if (ts.inRect(re)) {
-		if (ts.pressed()) s->rectangle(re, selectionColor);
-		if (clicked != NULL && ts.released()) *clicked = true;
-	}
-
-	return x+re.w+4;
-}
-int GMenu2X::drawButton(Surface *s, string btn, string text, int x, bool *clicked) {
-	return drawButton(s,btn,text,x,230,clicked);
+	return x+re.w+6;
 }
 
-int GMenu2X::drawButtonRight(Surface *s, string btn, string text, int x, int y, bool *clicked) {
+int GMenu2X::drawButtonRight(Surface *s, string btn, string text, int x, int y) {
 	if (sc.skinRes("imgs/buttons/"+btn+".png") != NULL) {
 		x -= 16;
 		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
@@ -1809,9 +1805,6 @@ int GMenu2X::drawButtonRight(Surface *s, string btn, string text, int x, int y, 
 		return x-6-font->getTextWidth(text);
 	}
 	return x-6;
-}
-int GMenu2X::drawButtonRight(Surface *s, string btn, string text, int x, bool *clicked) {
-	return drawButtonRight(s,btn,text,x,230,clicked);
 }
 
 void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height) {

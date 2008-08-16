@@ -38,6 +38,9 @@ private:
 	IconButton *btnDec2;
 	GMenu2X *gmenu2x;
 
+	void inc();
+	void dec();
+
 public:
 	MenuSettingInt(GMenu2X *gmenu2x, string name, string description, int *value, int min, int max);
 	virtual ~MenuSettingInt() {};
@@ -51,8 +54,6 @@ public:
 
 	int min, max;
 	virtual void setValue(int value);
-	void inc();
-	void dec();
 	int value();
 };
 

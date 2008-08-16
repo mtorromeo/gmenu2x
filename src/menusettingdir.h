@@ -30,12 +30,17 @@ private:
 	string originalValue;
 	string *_value;
 	GMenu2X *gmenu2x;
+	IconButton *btnClear, *btnSelect;
+
+	void select();
+	void clear();
 
 public:
 	MenuSettingDir(GMenu2X *gmenu2x, string name, string description, string *value);
 	virtual ~MenuSettingDir() {};
 
 	virtual void draw(int y);
+	virtual void handleTS();
 	virtual void manageInput();
 	virtual void adjustInput();
 	virtual void drawSelected(int y);

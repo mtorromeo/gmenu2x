@@ -31,12 +31,17 @@ protected:
 	string *_value;
 	string filter;
 	GMenu2X *gmenu2x;
+	IconButton *btnClear, *btnSelect;
+
+	void select();
+	void clear();
 
 public:
 	MenuSettingFile(GMenu2X *gmenu2x, string name, string description, string *value, string filter="");
 	virtual ~MenuSettingFile() {};
 
 	virtual void draw(int y);
+	virtual void handleTS();
 	virtual void manageInput();
 	virtual void adjustInput();
 	virtual void drawSelected(int y);

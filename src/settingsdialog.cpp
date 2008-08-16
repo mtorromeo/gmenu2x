@@ -96,16 +96,15 @@ bool SettingsDialog::exec() {
 		gmenu2x->s->write(gmenu2x->font, voices[sel]->description, 40,27, SFontHAlignLeft, SFontVAlignMiddle);
 
 		gmenu2x->s->flip();
+		voices[sel]->handleTS();
 
 #ifdef TARGET_GP2X
-		voices[sel]->handleTS();
 		gmenu2x->joy.update();
 		if ( gmenu2x->joy[GP2X_BUTTON_START] ) action = SD_ACTION_CLOSE;
 		if ( gmenu2x->joy[GP2X_BUTTON_UP   ] ) action = SD_ACTION_UP;
 		if ( gmenu2x->joy[GP2X_BUTTON_DOWN ] ) action = SD_ACTION_DOWN;
 		voices[sel]->manageInput();
 #else
-		voices[sel]->handleTS();
 		while (SDL_PollEvent(&gmenu2x->event)) {
 			if ( gmenu2x->event.type == SDL_QUIT ) action = SD_ACTION_CLOSE;
 			if ( gmenu2x->event.type==SDL_KEYDOWN ) {

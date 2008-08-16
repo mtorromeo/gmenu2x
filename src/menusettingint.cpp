@@ -32,22 +32,22 @@ MenuSettingInt::MenuSettingInt(GMenu2X *gmenu2x, string name, string description
 	this->min = min;
 	this->max = max;
 	setValue(this->value());
-	
-	btnInc = new IconButton(gmenu2x, "skin:imgs/buttons/y.png");
-	btnInc->setSize(16, 16);
-	btnInc->setAction(MakeDelegate(this, &MenuSettingInt::inc));
-	
-	btnDec = new IconButton(gmenu2x, "skin:imgs/buttons/x.png");
-	btnDec->setSize(16, 16);
-	btnDec->setAction(MakeDelegate(this, &MenuSettingInt::dec));
-	
+
+	//Delegates
+	ButtonAction actionInc = MakeDelegate(this, &MenuSettingInt::inc);
+	ButtonAction actionDec = MakeDelegate(this, &MenuSettingInt::dec);
+
+	btnInc = new IconButton(gmenu2x, "skin:imgs/buttons/y.png", gmenu2x->tr["Increase value"]);
+	btnInc->setAction(actionInc);
+
+	btnDec = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Decrease value"]);
+	btnDec->setAction(actionDec);
+
 	btnInc2 = new IconButton(gmenu2x, "skin:imgs/buttons/right.png");
-	btnInc2->setSize(16, 16);
-	btnInc2->setAction(MakeDelegate(this, &MenuSettingInt::inc));
-	
+	btnInc2->setAction(actionInc);
+
 	btnDec2 = new IconButton(gmenu2x, "skin:imgs/buttons/left.png");
-	btnDec2->setSize(16, 16);
-	btnDec2->setAction(MakeDelegate(this, &MenuSettingInt::dec));
+	btnDec2->setAction(actionDec);
 }
 
 void MenuSettingInt::draw(int y) {
@@ -101,10 +101,10 @@ void MenuSettingInt::adjustInput() {
 }
 
 void MenuSettingInt::drawSelected(int) {
-	gmenu2x->drawButton(btnInc, gmenu2x->tr["Increase value"],
-	gmenu2x->drawButton(btnInc2, "",
-	gmenu2x->drawButton(btnDec, gmenu2x->tr["Decrease value"],
-	gmenu2x->drawButton(btnDec2, "", 5)-10))-10);
+	gmenu2x->drawButton(btnInc,
+	gmenu2x->drawButton(btnInc2,
+	gmenu2x->drawButton(btnDec,
+	gmenu2x->drawButton(btnDec2)-10))-10);
 }
 
 bool MenuSettingInt::edited() {

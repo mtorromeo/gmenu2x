@@ -31,8 +31,7 @@ MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, string name, string descripti
 	originalValue = *value;
 	setValue(this->value());
 
-	btnToggle = new IconButton(gmenu2x, "skin:imgs/buttons/b.png");
-	btnToggle->setSize(16, 16);
+	btnToggle = new IconButton(gmenu2x, "skin:imgs/buttons/b.png", gmenu2x->tr["Switch"]);
 	btnToggle->setAction(MakeDelegate(this, &MenuSettingBool::toggle));
 }
 
@@ -70,7 +69,7 @@ bool MenuSettingBool::value() {
 void MenuSettingBool::adjustInput() {}
 
 void MenuSettingBool::drawSelected(int) {
-	gmenu2x->drawButton(btnToggle, gmenu2x->tr["Switch"], 5);
+	gmenu2x->drawButton(btnToggle);
 }
 
 bool MenuSettingBool::edited() {

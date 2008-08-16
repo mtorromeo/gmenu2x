@@ -22,10 +22,8 @@
 
 #include "iconbutton.h"
 #include "menusetting.h"
-#include "FastDelegate.h"
 
 using std::string;
-using fastdelegate::FastDelegate0;
 class GMenu2X;
 
 class MenuSettingBool : public MenuSetting {
@@ -33,8 +31,10 @@ private:
 	bool originalValue;
 	bool *_value;
 	string strvalue;
-	IconButton *btnToggle;
 	GMenu2X *gmenu2x;
+	IconButton *btnToggle;
+
+	void toggle();
 
 public:
 	MenuSettingBool(GMenu2X *gmenu2x, string name, string description, bool *value);
@@ -48,7 +48,6 @@ public:
 	virtual bool edited();
 
 	void setValue(bool value);
-	void toggle();
 	bool value();
 };
 

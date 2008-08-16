@@ -193,12 +193,9 @@ public:
 	void deleteSection();
 
 	void initBG();
-	int drawButton(IconButton *btn, string text, int x, int y=230, bool *clicked=NULL);
-	int drawButton(IconButton *btn, string text, int x, bool *clicked);
-	int drawButton(Surface *s, string btn, string text, int x, int y=230, bool *clicked=NULL);
-	int drawButton(Surface *s, string btn, string text, int x, bool *clicked);
-	int drawButtonRight(Surface *s, string btn, string text, int x, int y=230, bool *clicked=NULL);
-	int drawButtonRight(Surface *s, string btn, string text, int x, bool *clicked);
+	int drawButton(IconButton *btn, int x=5, int y=230);
+	int drawButton(Surface *s, string btn, string text, int x=5, int y=230);
+	int drawButtonRight(Surface *s, string btn, string text, int x=5, int y=230);
 	void drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height);
 
 	void drawTitleIcon(string icon, bool skinRes=true, Surface *s=NULL);

@@ -22,6 +22,7 @@
 #include "utilities.h"
 
 using namespace std;
+using namespace fastdelegate;
 
 MenuSettingString::MenuSettingString(GMenu2X *gmenu2x, string name, string description, string *value, string diagTitle, string diagIcon)
 	: MenuSetting(gmenu2x,name,description) {
@@ -30,6 +31,12 @@ MenuSettingString::MenuSettingString(GMenu2X *gmenu2x, string name, string descr
 	originalValue = *value;
 	this->diagTitle = diagTitle;
 	this->diagIcon = diagIcon;
+
+	btnClear = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Clear"]);
+	btnClear->setAction(MakeDelegate(this, &MenuSettingString::clear));
+
+	btnEdit = new IconButton(gmenu2x, "skin:imgs/buttons/b.png", gmenu2x->tr["Edit"]);
+	btnEdit->setAction(MakeDelegate(this, &MenuSettingString::edit));
 }
 
 void MenuSettingString::draw(int y) {
@@ -37,23 +44,21 @@ void MenuSettingString::draw(int y) {
 	gmenu2x->s->write( gmenu2x->font, value(), 155, y+6, SFontHAlignLeft, SFontVAlignMiddle );
 }
 
+void MenuSettingString::handleTS() {
+	btnEdit->handleTS();
+}
+
 #ifdef TARGET_GP2X
 #include "gp2x.h"
 
 void MenuSettingString::manageInput() {
-	if ( gmenu2x->joy[GP2X_BUTTON_X] ) setValue("");
-	if ( gmenu2x->joy[GP2X_BUTTON_B] ) {
-		InputDialog id(gmenu2x,description,value(), diagTitle,diagIcon);
-		if (id.exec()) setValue(id.input);
-	}
+	if ( gmenu2x->joy[GP2X_BUTTON_X] ) clear();
+	if ( gmenu2x->joy[GP2X_BUTTON_B] ) edit();
 }
 #else
 void MenuSettingString::manageInput() {
-	if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) setValue("");
-	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
-		InputDialog id(gmenu2x,description,value(), diagTitle,diagIcon);
-		if (id.exec()) setValue(id.input);
-	}
+	if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) clear();
+	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) edit();
 }
 #endif
 
@@ -67,9 +72,18 @@ string MenuSettingString::value() {
 
 void MenuSettingString::adjustInput() {}
 
+void MenuSettingString::clear() {
+	setValue("");
+}
+
+void MenuSettingString::edit() {
+	InputDialog id(gmenu2x,description,value(), diagTitle,diagIcon);
+	if (id.exec()) setValue(id.input);
+}
+
 void MenuSettingString::drawSelected(int) {
-	gmenu2x->drawButton(gmenu2x->s, "x", gmenu2x->tr["Clear"],
-	gmenu2x->drawButton(gmenu2x->s, "b", gmenu2x->tr["Edit"], 5));
+	gmenu2x->drawButton(btnClear,
+	gmenu2x->drawButton(btnEdit));
 }
 
 bool MenuSettingString::edited() {
