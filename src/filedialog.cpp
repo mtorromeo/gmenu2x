@@ -91,10 +91,14 @@ bool FileDialog::exec() {
 		if (gmenu2x->f200 && gmenu2x->ts.pressed() && !gmenu2x->ts.inRect(2,44,308,179)) ts_pressed = false;
 		for (i=firstElement; i<fl.size() && i<firstElement+10; i++) {
 			iY = i-firstElement;
-			if (fl.isDirectory(i))
-				gmenu2x->sc.skinRes("imgs/folder.png")->blit(gmenu2x->s, 5, 45+(iY*17));
-			else
+			if (fl.isDirectory(i)) {
+				if (fl[i]=="..")
+					gmenu2x->sc.skinRes("imgs/go-up.png")->blit(gmenu2x->s, 5, 45+(iY*17));
+				else
+					gmenu2x->sc.skinRes("imgs/folder.png")->blit(gmenu2x->s, 5, 45+(iY*17));
+			} else {
 				gmenu2x->sc.skinRes("imgs/file.png")->blit(gmenu2x->s, 5, 45+(iY*17));
+			}
 			gmenu2x->s->write(gmenu2x->font, fl[i], 24, 52+(iY*17), SFontHAlignLeft, SFontVAlignMiddle);
 			if (gmenu2x->f200 && gmenu2x->ts.pressed() && gmenu2x->ts.inRect(2, 44+(iY*17), 308, 16)) {
 				ts_pressed = true;

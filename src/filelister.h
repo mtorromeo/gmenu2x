@@ -36,7 +36,7 @@ public:
 	FileLister(string startPath = "/mnt/sd", bool showDirectories = true, bool showFiles = true);
 	void browse();
 
-	vector<string> directories, files;
+	vector<string> directories, files, exclude;
 	uint size();
 	uint dirCount();
 	uint fileCount();

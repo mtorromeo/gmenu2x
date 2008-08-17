@@ -27,6 +27,7 @@
 #include "inputdialog.h"
 
 using namespace std;
+using namespace fastdelegate;
 
 InputDialog::InputDialog(GMenu2X *gmenu2x, string text, string startvalue, string title, string icon) {
 	this->gmenu2x = gmenu2x;
@@ -80,6 +81,23 @@ InputDialog::InputDialog(GMenu2X *gmenu2x, string text, string startvalue, strin
 	keyboard[6].push_back("ШЩЪЫЬЭЮЯØðßÐÞþ");
 
 	setKeyboard(0);
+
+	ButtonAction actBackspace = MakeDelegate(this, &InputDialog::backspace);
+
+	btnBackspaceX = new IconButton(gmenu2x, "skin:imgs/buttons/x.png");
+	btnBackspaceX->setAction(actBackspace);
+
+	btnBackspaceL = new IconButton(gmenu2x, "skin:imgs/buttons/l.png", gmenu2x->tr["Backspace"]);
+	btnBackspaceL->setAction(actBackspace);
+
+	btnSpace = new IconButton(gmenu2x, "skin:imgs/buttons/r.png", gmenu2x->tr["Space"]);
+	btnSpace->setAction(MakeDelegate(this, &InputDialog::space));
+
+	btnConfirm = new IconButton(gmenu2x, "skin:imgs/buttons/b.png", gmenu2x->tr["Confirm"]);
+	btnConfirm->setAction(MakeDelegate(this, &InputDialog::confirm));
+
+	btnChangeKeys = new IconButton(gmenu2x, "skin:imgs/buttons/y.png", gmenu2x->tr["Change keys"]);
+	btnChangeKeys->setAction(MakeDelegate(this, &InputDialog::changeKeys));
 }
 
 void InputDialog::setKeyboard(int kb) {
@@ -110,7 +128,8 @@ bool InputDialog::exec() {
 	bool caretOn = true;
 
 	uint action;
-	bool close = false, ok = true;
+	close = false;
+	ok = true;
 	while (!close) {
 		gmenu2x->bg->blit(gmenu2x->s,0,0);
 		gmenu2x->writeTitle(title);
@@ -120,8 +139,8 @@ bool InputDialog::exec() {
 		gmenu2x->drawButton(gmenu2x->s, "y", gmenu2x->tr["Change keys"],
 		gmenu2x->drawButton(gmenu2x->s, "b", gmenu2x->tr["Confirm"],
 		gmenu2x->drawButton(gmenu2x->s, "r", gmenu2x->tr["Space"],
-		gmenu2x->drawButton(gmenu2x->s, "l", gmenu2x->tr["Backspace"],
-		gmenu2x->drawButton(gmenu2x->s, "x", "", 5)-10))));
+		gmenu2x->drawButton(btnBackspaceL,
+		gmenu2x->drawButton(btnBackspaceX)-6))));
 
 		box.w = gmenu2x->font->getTextWidth(input)+18;
 		box.x = 160-box.w/2;
@@ -187,39 +206,48 @@ bool InputDialog::exec() {
 			case ID_ACTION_RIGHT: {
 				selCol++;
 			} break;
-			case ID_ACTION_BACKSPACE: {
-				//                                      check for utf8 characters
-				input = input.substr(0,input.length()-( gmenu2x->font->utf8Code(input[input.length()-2]) ? 2 : 1 ));
-			} break;
-			case ID_ACTION_SPACE: {
-				input += " ";
-			} break;
-			case ID_ACTION_KB_CHANGE: {
-				if (curKeyboard==6)
-					setKeyboard(0);
-				else
-					setKeyboard(curKeyboard+1);
-			} break;
-			case ID_ACTION_SELECT: {
-				if (selRow==(int)kb->size()) {
-					if (selCol==0)
-						ok = false;
-					close = true;
-				} else {
-					bool utf8;
-					int xc=0;
-					for (uint x=0; x<kb->at(selRow).length(); x++) {
-						utf8 = gmenu2x->font->utf8Code(kb->at(selRow)[x]);
-						if (xc==selCol) input += kb->at(selRow).substr(x, utf8 ? 2 : 1);
-						if (utf8) x++;
-						xc++;
-					}
-				}
-			} break;
+			case ID_ACTION_BACKSPACE: backspace(); break;
+			case ID_ACTION_SPACE: space(); break;
+			case ID_ACTION_KB_CHANGE: changeKeys(); break;
+			case ID_ACTION_SELECT: confirm(); break;
 		}
 	}
 
 	return ok;
+}
+
+void InputDialog::backspace() {
+	//                                      check for utf8 characters
+	input = input.substr(0,input.length()-( gmenu2x->font->utf8Code(input[input.length()-2]) ? 2 : 1 ));
+}
+
+void InputDialog::space() {
+	//                                      check for utf8 characters
+	input += " ";
+}
+
+void InputDialog::confirm() {
+	if (selRow==(int)kb->size()) {
+		if (selCol==0)
+			ok = false;
+		close = true;
+	} else {
+		bool utf8;
+		int xc=0;
+		for (uint x=0; x<kb->at(selRow).length(); x++) {
+			utf8 = gmenu2x->font->utf8Code(kb->at(selRow)[x]);
+			if (xc==selCol) input += kb->at(selRow).substr(x, utf8 ? 2 : 1);
+			if (utf8) x++;
+			xc++;
+		}
+	}
+}
+
+void InputDialog::changeKeys() {
+	if (curKeyboard==6)
+		setKeyboard(0);
+	else
+		setKeyboard(curKeyboard+1);
 }
 
 int InputDialog::drawVirtualKeyboard() {

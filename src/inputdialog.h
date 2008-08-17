@@ -48,6 +48,7 @@ typedef vector<string> stringlist;
 class InputDialog {
 private:
 	int selRow, selCol;
+	bool close, ok;
 	string title, text, icon;
 	GMenu2X *gmenu2x;
 	short curKeyboard;
@@ -55,6 +56,12 @@ private:
 	stringlist *kb;
 	int kbLength, kbWidth, kbHeight, kbLeft;
 	SDL_Rect kbRect;
+	IconButton *btnBackspaceX, *btnBackspaceL, *btnSpace, *btnConfirm, *btnChangeKeys;
+
+	void backspace();
+	void space();
+	void confirm();
+	void changeKeys();
 
 	int drawVirtualKeyboard();
 	void setKeyboard(int);

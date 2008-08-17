@@ -81,10 +81,13 @@ void FileLister::browse() {
 				continue;
 			}
 
+			if (find(exclude.begin(), exclude.end(), file) != exclude.end())
+				continue;
+
 			if (S_ISDIR(st.st_mode)) {
 				if (!showDirectories) continue;
 #ifdef TARGET_GP2X
-				if (!(path=="/mnt/" && (file!="sd" && file!="ext" && file!="nand")))
+				if (!(path=="/mnt/" && (file!="sd" && file!="ext" && (file!="nand" || gmenu2x->f200 || gmenu2x->fwType=="open2x"))))
 #endif
 					directories.push_back(file);
 			} else {

@@ -1010,6 +1010,7 @@ void GMenu2X::options() {
 
 void GMenu2X::skinMenu() {
 	FileLister fl_sk("skins",true,false);
+	fl_sk.exclude.push_back("..");
 	fl_sk.browse();
 	string curSkin = skin;
 

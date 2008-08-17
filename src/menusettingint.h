@@ -32,10 +32,7 @@ private:
 	int originalValue;
 	int *_value;
 	string strvalue;
-	IconButton *btnInc;
-	IconButton *btnDec;
-	IconButton *btnInc2;
-	IconButton *btnDec2;
+	IconButton *btnInc, *btnDec, *btnInc2, *btnDec2;
 	GMenu2X *gmenu2x;
 
 	void inc();
