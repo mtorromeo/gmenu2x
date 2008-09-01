@@ -34,7 +34,15 @@
 #include "joystick.h"
 #endif
 
-#define BATTERY_READS 10
+const int MAX_VOLUME_SCALE_FACTOR = 200;
+// Default values - going to add settings adjustment, saving, loading and such
+const int VOLUME_SCALER_MUTE = 0;
+const int VOLUME_SCALER_PHONES = 70;
+const int VOLUME_SCALER_NORMAL = 100;
+const int VOLUME_MODE_MUTE = 0;
+const int VOLUME_MODE_PHONES = 1;
+const int VOLUME_MODE_NORMAL = 2;
+const int BATTERY_READS = 10;
 
 using std::string;
 using fastdelegate::FastDelegate0;
@@ -94,6 +102,7 @@ private:
 	string ip, defaultgw, lastSelectorDir;
 	int lastSelectorElement;
 	void readConfig();
+	void readConfigOpen2x();
 	void readTmp();
 	void readCommonIni();
 	void writeCommonIni();
@@ -151,6 +160,16 @@ public:
 	//gp2x type
 	bool f200;
 
+	// Open2x settings ---------------------------------------------------------
+	bool o2x_usb_net_on_boot, o2x_ftp_on_boot, o2x_telnet_on_boot, o2x_gp2xjoy_on_boot, o2x_usb_host_on_boot, o2x_usb_hid_on_boot, o2x_usb_storage_on_boot;
+	string o2x_usb_net_ip;
+	int volumeMode, savedVolumeMode;		//	just use the const int scale values at top of source
+
+	//  Volume scaling values to store from config files
+	int volumeScalerPhones;
+	int volumeScalerNormal;
+	//--------------------------------------------------------------------------
+
 	SurfaceCollection sc;
 	Translator tr;
 	Surface *s, *bg;
@@ -159,6 +178,7 @@ public:
 	//Status functions
 	int main();
 	void options();
+	void settingsOpen2x();
 	void skinMenu();
 	void activateSdUsb();
 	void activateNandUsb();
@@ -174,11 +194,16 @@ public:
 
 	void setClock(unsigned mhz);
 	void setGamma(int gamma);
+
 	void setVolume(int vol);
+	int getVolume();
+	void setVolumeScaler(int scaler);
+	int getVolumeScaler();
 
 	void setInputSpeed();
 
 	void writeConfig();
+	void writeConfigOpen2x();
 	void writeSkinConfig();
 	void writeTmp(int selelem=-1, string selectordir="");
 

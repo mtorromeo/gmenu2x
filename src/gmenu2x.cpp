@@ -184,12 +184,28 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	outputLogs = false;
 	maxClock = 300;
 	menuClock = f200 ? 136 : 100;
-	globalVolume = 100;
+	globalVolume = fwType == "open2x" ? 67 : 100;
 	numRows = 4;
 	numCols = 5;
 	tvoutEncoding = "NTSC";
 	wallpaper = "";
 	skinWallpaper = "";
+
+	//open2x
+	savedVolumeMode = 0;
+	volumeMode = VOLUME_MODE_NORMAL;
+	volumeScalerNormal = VOLUME_MODE_NORMAL;
+	volumeScalerPhones = VOLUME_SCALER_PHONES;
+
+	o2x_usb_net_on_boot = false;
+	o2x_usb_net_ip = "";
+	o2x_ftp_on_boot = false;
+	o2x_telnet_on_boot = false;
+	o2x_gp2xjoy_on_boot = false;
+	o2x_usb_host_on_boot = false;
+	o2x_usb_hid_on_boot = false;
+	o2x_usb_storage_on_boot = false;
+
 	//G
 	gamma = 10;
 	startSectionIndex = 0;
@@ -200,7 +216,16 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 
 	//load config data
 	readConfig();
-	readCommonIni();
+	if (fwType=="open2x") {
+		readConfigOpen2x();
+		//	VOLUME MODIFIER
+		switch(volumeMode) {
+			case VOLUME_MODE_MUTE:   setVolumeScaler(VOLUME_SCALER_MUTE); break;
+			case VOLUME_MODE_PHONES: setVolumeScaler(volumeScalerPhones);	break;
+			case VOLUME_MODE_NORMAL: setVolumeScaler(volumeScalerNormal); break;
+		}
+	} else
+		readCommonIni();
 
 	path = "";
 	getExePath();
@@ -289,6 +314,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	recalcLinkGrid = true;
 	main();
 	writeConfig();
+	if (fwType=="open2x") writeConfigOpen2x();
 
 	quit();
 	exit(0);
@@ -398,13 +424,14 @@ void GMenu2X::initMenu() {
 		//Add virtual links in the setting section
 		else if (menu->sections[i]=="settings") {
 			menu->addActionLink(i,"GMenu2X",MakeDelegate(this,&GMenu2X::options),tr["Configure GMenu2X's options"],"skin:icons/configure.png");
+			if (fwType=="open2x")
+				menu->addActionLink(i,"Open2x",MakeDelegate(this,&GMenu2X::settingsOpen2x),tr["Configure Open2x system settings"],"skin:icons/o2xconfigure.png");
 			menu->addActionLink(i,tr["Skin"],MakeDelegate(this,&GMenu2X::skinMenu),tr["Configure skin"],"skin:icons/skin.png");
 			menu->addActionLink(i,tr["Wallpaper"],MakeDelegate(this,&GMenu2X::changeWallpaper),tr["Change GMenu2X wallpaper"],"skin:icons/wallpaper.png");
 			menu->addActionLink(i,"TV",MakeDelegate(this,&GMenu2X::toggleTvOut),tr["Activate/deactivate tv-out"],"skin:icons/tv.png");
 			menu->addActionLink(i,"USB Sd",MakeDelegate(this,&GMenu2X::activateSdUsb),tr["Activate Usb on SD"],"skin:icons/usb.png");
-			if (fwType=="gph" && !f200) {
+			if (fwType=="gph" && !f200)
 				menu->addActionLink(i,"USB Nand",MakeDelegate(this,&GMenu2X::activateNandUsb),tr["Activate Usb on Nand"],"skin:icons/usb.png");
-			}
 			if (fileExists(path+"log.txt"))
 				menu->addActionLink(i,tr["Log Viewer"],MakeDelegate(this,&GMenu2X::viewLog),tr["Displays last launched program's output"],"skin:icons/ebook.png");
 			menu->addActionLink(i,tr["About"],MakeDelegate(this,&GMenu2X::about),tr["Info about GMenu2X"],"skin:icons/about.png");
@@ -558,6 +585,56 @@ void GMenu2X::writeConfig() {
 	ledOff();
 }
 
+
+void GMenu2X::readConfigOpen2x() {
+	string conffile = "/etc/config/open2x.conf";
+	if (fileExists(conffile)) {
+		ifstream inf(conffile.c_str(), ios_base::in);
+		if (inf.is_open()) {
+			string line;
+			while (getline(inf, line, '\n')) {
+				string::size_type pos = line.find("=");
+				string name = trim(line.substr(0,pos));
+				string value = trim(line.substr(pos+1,line.length()));
+
+				if (name=="USB_NET_ON_BOOT") o2x_usb_net_on_boot = value == "y" ? true : false;
+				else if (name=="USB_NET_IP") o2x_usb_net_ip = value;
+				else if (name=="TELNET_ON_BOOT") o2x_telnet_on_boot = value == "y" ? true : false;
+				else if (name=="FTP_ON_BOOT") o2x_ftp_on_boot = value == "y" ? true : false;
+				else if (name=="GP2XJOY_ON_BOOT") o2x_gp2xjoy_on_boot = value == "y" ? true : false;
+				else if (name=="USB_HOST_ON_BOOT") o2x_usb_host_on_boot = value == "y" ? true : false;
+				else if (name=="USB_HID_ON_BOOT") o2x_usb_hid_on_boot = value == "y" ? true : false;
+				else if (name=="USB_STORAGE_ON_BOOT") o2x_usb_storage_on_boot = value == "y" ? true : false;
+				else if (name=="VOLUME_MODE") volumeMode = savedVolumeMode = constrain( atoi(value.c_str()), 0, 2);
+				else if (name=="PHONES_VALUE") volumeScalerPhones = constrain( atoi(value.c_str()), 0, 100);
+				else if (name=="NORMAL_VALUE") volumeScalerNormal = constrain( atoi(value.c_str()), 0, 100);
+			}
+			inf.close();
+		}
+	}
+}
+void GMenu2X::writeConfigOpen2x() {
+	ledOn();
+	string conffile = "/etc/config/open2x.conf";
+	ofstream inf(conffile.c_str());
+	if (inf.is_open()) {
+		inf << "USB_NET_ON_BOOT=" << ( o2x_usb_net_on_boot ? "y" : "n" ) << endl;
+		inf << "USB_NET_IP=" << o2x_usb_net_ip << endl;
+		inf << "TELNET_ON_BOOT=" << ( o2x_telnet_on_boot ? "y" : "n" ) << endl;
+		inf << "FTP_ON_BOOT=" << ( o2x_ftp_on_boot ? "y" : "n" ) << endl;
+		inf << "GP2XJOY_ON_BOOT=" << ( o2x_gp2xjoy_on_boot ? "y" : "n" ) << endl;
+		inf << "USB_HOST_ON_BOOT=" << ( o2x_usb_host_on_boot ? "y" : "n" ) << endl;
+		inf << "USB_HID_ON_BOOT=" << ( o2x_usb_hid_on_boot ? "y" : "n" ) << endl;
+		inf << "USB_STORAGE_ON_BOOT=" << ( o2x_usb_storage_on_boot ? "y" : "n" ) << endl;
+		inf << "VOLUME_MODE=" << volumeMode << endl;
+		if (volumeScalerPhones != VOLUME_SCALER_PHONES) inf << "PHONES_VALUE=" << volumeScalerPhones << endl;
+		if (volumeScalerNormal != VOLUME_SCALER_NORMAL) inf << "NORMAL_VALUE=" << volumeScalerNormal << endl;
+		inf.close();
+		sync();
+	}
+	ledOff();
+}
+
 void GMenu2X::writeSkinConfig() {
 	ledOn();
 	string conffile = path+"skins/"+skin+"/skin.conf";
@@ -699,7 +776,7 @@ int GMenu2X::main() {
 	uint linksPerPage = 0, linkH = 0, linkW = 0;
 
 	bool quit = false;
-	int x,y, offset = 0;
+	int x,y, offset = 0, helpBoxHeight = fwType=="open2x" ? 154 : 139;
 	uint i;
 	long tickBattery = -60000, tickNow;
 	string batteryIcon = "imgs/battery/0.png";
@@ -778,6 +855,12 @@ int GMenu2X::main() {
 
 		drawScrollBar(numRows,menu->sectionLinks()->size()/numCols + ((menu->sectionLinks()->size()%numCols==0) ? 0 : 1),menu->firstDispRow(),43,159);
 
+		switch(volumeMode) {
+			case VOLUME_MODE_MUTE:   sc.skinRes("imgs/mute.png")->blit(s,279,222); break;
+			case VOLUME_MODE_PHONES: sc.skinRes("imgs/phones.png")->blit(s,279,222); break;
+			default: sc.skinRes("imgs/volume.png")->blit(s,279,222); break;
+		}
+
 		if (menu->selLink()!=NULL) {
 			s->write ( font, menu->selLink()->getDescription(), 160, 221, SFontHAlignCenter, SFontVAlignBottom );
 			if (menu->selLinkApp()!=NULL) {
@@ -815,7 +898,7 @@ int GMenu2X::main() {
 #endif
 		{
 			s->box(10,50,300,143, messageBoxColor);
-			s->rectangle( 12,52,296,139, messageBoxBorderColor );
+			s->rectangle( 12,52,296,helpBoxHeight, messageBoxBorderColor );
 			s->write( font, tr["CONTROLS"], 20, 60 );
 			s->write( font, tr["B, Stick press: Launch link / Confirm action"], 20, 80 );
 			s->write( font, tr["L, R: Change section"], 20, 95 );
@@ -824,6 +907,7 @@ int GMenu2X::main() {
 			s->write( font, tr["A+VOLUP, A+VOLDOWN: Change volume"], 20, 140 );
 			s->write( font, tr["SELECT: Show contextual menu"], 20, 155 );
 			s->write( font, tr["START: Show options menu"], 20, 170 );
+			if (fwType=="open2x") s->write( font, tr["X: Toggle speaker mode"], 20, 185 );
 		}
 
 #ifdef DEBUG
@@ -871,6 +955,18 @@ int GMenu2X::main() {
 		if ( (joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK]) && menu->selLink()!=NULL ) menu->selLink()->run();
 		else if ( joy[GP2X_BUTTON_START]  ) options();
 		else if ( joy[GP2X_BUTTON_SELECT] ) contextMenu();
+		// VOLUME SCALE MODIFIER
+		else if ( joy[GP2X_BUTTON_X] ) {
+			volumeMode = constrain(volumeMode-1, -VOLUME_MODE_MUTE-1, VOLUME_MODE_NORMAL);
+			if(volumeMode < VOLUME_MODE_MUTE)
+				volumeMode = VOLUME_MODE_NORMAL;
+			switch(volumeMode) {
+				case VOLUME_MODE_MUTE:   setVolumeScaler(VOLUME_SCALER_MUTE); break;
+				case VOLUME_MODE_PHONES: setVolumeScaler(volumeScalerPhones); break;
+				case VOLUME_MODE_NORMAL: setVolumeScaler(volumeScalerNormal); break;
+			}
+			setVolume(getVolume());
+		}
 		// LINK NAVIGATION
 		else if ( joy[GP2X_BUTTON_LEFT ]  ) menu->linkLeft();
 		else if ( joy[GP2X_BUTTON_RIGHT]  ) menu->linkRight();
@@ -955,6 +1051,8 @@ void GMenu2X::explorer() {
 	if (fd.exec()) {
 		if (saveSelection && (startSectionIndex!=menu->selSectionIndex() || startLinkIndex!=menu->selLinkIndex()))
 			writeConfig();
+		if (fwType == "open2x" && savedVolumeMode != volumeMode)
+			writeConfigOpen2x();
 		string command = cmdclean(fd.path()+"/"+fd.file) + "; sync & cd "+cmdclean(getExePath())+"; exec ./gmenu2x";
 		chdir(fd.path().c_str());
 		quit();
@@ -1006,6 +1104,24 @@ void GMenu2X::options() {
 			symlink("/","/mnt/root");
 		writeConfig();
 	}
+}
+
+void GMenu2X::settingsOpen2x() {
+	SettingsDialog sd(this,tr["Open2x Settings"]);
+	sd.addSetting(new MenuSettingBool(this,tr["USB net on boot"],tr["Allow USB networking to be started at boot time"],&o2x_usb_net_on_boot));
+	sd.addSetting(new MenuSettingString(this,tr["USB net IP"],tr["IP address to be used for USB networking"],&o2x_usb_net_ip));
+	sd.addSetting(new MenuSettingBool(this,tr["Telnet on boot"],tr["Allow telnet to be started at boot time"],&o2x_telnet_on_boot));
+	sd.addSetting(new MenuSettingBool(this,tr["FTP on boot"],tr["Allow FTP to be started at boot time"],&o2x_ftp_on_boot));
+	sd.addSetting(new MenuSettingBool(this,tr["GP2XJOY on boot"],tr["Create a js0 device for GP2X controls"],&o2x_gp2xjoy_on_boot));
+	sd.addSetting(new MenuSettingBool(this,tr["USB host on boot"],tr["Allow USB host to be started at boot time"],&o2x_usb_host_on_boot));
+	sd.addSetting(new MenuSettingBool(this,tr["USB HID on boot"],tr["Allow USB HID to be started at boot time"],&o2x_usb_hid_on_boot));
+	sd.addSetting(new MenuSettingBool(this,tr["USB storage on boot"],tr["Allow USB storage to be started at boot time"],&o2x_usb_storage_on_boot));
+	//sd.addSetting(new MenuSettingInt(this,tr["Speaker Mode on boot"],tr["Set Speaker mode. 0 = Mute, 1 = Phones, 2 = Speaker"],&volumeMode,0,2));
+	sd.addSetting(new MenuSettingInt(this,tr["Speaker Scaler"],tr["Set the Speaker scaling"],&volumeScalerNormal,0,150));
+	sd.addSetting(new MenuSettingInt(this,tr["Headphones Scaler"],tr["Set the Headphones scaling"],&volumeScalerPhones,0,100));
+
+	if (sd.exec() && sd.edited())
+		writeConfigOpen2x();
 }
 
 void GMenu2X::skinMenu() {
@@ -1677,6 +1793,7 @@ void GMenu2X::setInputSpeed() {
 	joy.setInterval(500, GP2X_BUTTON_START  );
 	joy.setInterval(500, GP2X_BUTTON_SELECT );
 	joy.setInterval(300, GP2X_BUTTON_X      );
+	joy.setInterval(30,  GP2X_BUTTON_Y      );
 	joy.setInterval(1000,GP2X_BUTTON_B      );
 	joy.setInterval(1000,GP2X_BUTTON_CLICK  );
 	joy.setInterval(300, GP2X_BUTTON_L      );
@@ -1741,15 +1858,47 @@ void GMenu2X::setGamma(int gamma) {
 #endif
 }
 
+int GMenu2X::getVolume() {
+	int vol = -1;
+	unsigned long soundDev = open("/dev/mixer", O_RDONLY);
+	if (soundDev) {
+		ioctl(soundDev, SOUND_MIXER_READ_PCM, &vol);
+		close(soundDev);
+		if (vol != -1) {
+			//just return one channel , not both channels, they're hopefully the same anyways
+			return vol & 0xFF;
+		}
+	}
+	return vol;
+}
+
 void GMenu2X::setVolume(int vol) {
-#ifdef TARGET_GP2X
+	vol = constrain(vol,0,100);
 	unsigned long soundDev = open("/dev/mixer", O_RDWR);
 	if (soundDev) {
-		vol =(((vol*0x50)/100)<<8)|((vol*0x50)/100);
+		vol = (vol << 8) | vol;
 		ioctl(soundDev, SOUND_MIXER_WRITE_PCM, &vol);
 		close(soundDev);
 	}
-#endif
+}
+
+void GMenu2X::setVolumeScaler(int scale) {
+	scale = constrain(scale,0,MAX_VOLUME_SCALE_FACTOR);
+	unsigned long soundDev = open("/dev/mixer", O_WRONLY);
+	if (soundDev) {
+		ioctl(soundDev, SOUND_MIXER_PRIVATE2, &scale);
+		close(soundDev);
+	}
+}
+
+int GMenu2X::getVolumeScaler() {
+	int currentscalefactor = -1;
+	unsigned long soundDev = open("/dev/mixer", O_RDONLY);
+	if (soundDev) {
+		ioctl(soundDev, SOUND_MIXER_PRIVATE1, &currentscalefactor);
+		close(soundDev);
+	}
+	return currentscalefactor;
 }
 
 string GMenu2X::getExePath() {

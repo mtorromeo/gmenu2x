@@ -444,6 +444,8 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 	} else {
 		if (gmenu2x->saveSelection && (gmenu2x->startSectionIndex!=gmenu2x->menu->selSectionIndex() || gmenu2x->startLinkIndex!=gmenu2x->menu->selLinkIndex()))
 			gmenu2x->writeConfig();
+		if (gmenu2x->fwType == "open2x" && gmenu2x->savedVolumeMode != gmenu2x->volumeMode)
+			gmenu2x->writeConfigOpen2x();
 		if (selectedFile=="")
 			gmenu2x->writeTmp();
 		gmenu2x->quit();

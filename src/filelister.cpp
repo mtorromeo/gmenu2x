@@ -87,7 +87,7 @@ void FileLister::browse() {
 			if (S_ISDIR(st.st_mode)) {
 				if (!showDirectories) continue;
 #ifdef TARGET_GP2X
-				if (!(path=="/mnt/" && (file!="sd" && file!="ext" && (file!="nand" || gmenu2x->f200 || gmenu2x->fwType=="open2x"))))
+				if (!(path=="/mnt/" && (file!="sd" && file!="ext" && file!="nand")))
 #endif
 					directories.push_back(file);
 			} else {
