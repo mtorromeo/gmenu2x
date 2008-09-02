@@ -44,7 +44,7 @@ private:
 	void calibrate(/*TS_EVENT event*/);
 
 public:
-	int x,y;
+	int x,y, startX,startY;
 	bool wasPressed;
 
 	Touchscreen();
@@ -63,6 +63,8 @@ public:
 
 	bool inRect(SDL_Rect r);
 	bool inRect(int x, int y, int w, int h);
+	bool startedInRect(SDL_Rect r);
+	bool startedInRect(int x, int y, int w, int h);
 };
 
 #endif

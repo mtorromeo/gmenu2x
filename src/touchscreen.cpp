@@ -32,6 +32,8 @@ Touchscreen::Touchscreen() {
 	_handled = false;
 	x = 0;
 	y = 0;
+	startX = 0;
+	startY = 0;
 }
 
 Touchscreen::~Touchscreen() {
@@ -90,6 +92,12 @@ bool Touchscreen::poll() {
 	}
 #endif
 	_handled = false;
+
+	if (!wasPressed && pressed()) {
+		startX = x;
+		startY = y;
+	}
+
 	return pressed();
 }
 
@@ -117,4 +125,13 @@ bool Touchscreen::inRect(SDL_Rect r) {
 bool Touchscreen::inRect(int x, int y, int w, int h) {
 	SDL_Rect rect = {x,y,w,h};
 	return inRect(rect);
+}
+
+bool Touchscreen::startedInRect(SDL_Rect r) {
+	return !_handled && (startY>=r.y) && (startY<=r.y+r.h) && (startX>=r.x) && (startX<=r.x+r.w);
+}
+
+bool Touchscreen::startedInRect(int x, int y, int w, int h) {
+	SDL_Rect rect = {x,y,w,h};
+	return startedInRect(rect);
 }
