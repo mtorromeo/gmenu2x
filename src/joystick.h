@@ -33,18 +33,24 @@ Manages the joystick
 */
 class Joystick {
 private:
-	int numButtons;
+    void initSecondJoy(int joyNum);
+    int getMappedButton(int button);    //  returns the USBJoy button mapped at this GP2X button
+    int secondJoyID;
+	int numButtons[2];
 	vector<Uint32> joyTick;
 	vector<Uint32> interval;
 
 public:
 	Joystick();
 	Joystick(int joynum);
+	Joystick(int joynum, int secondJoy);    //  Define the secondary joypad 0 == gp2x -1 == first available anything else identifies a specific joy
 	~Joystick();
 	void init(int joynum);
+	void init(int joynum, int secondJoy);
 
-	SDL_Joystick *joystick;
-	vector<bool> buttons;
+	SDL_Joystick *joystick[2];
+	vector<bool> buttons;   //  We only need the one set of buttons since we want the USBJoy to complement the GP2XJoy
+	vector<int> buttonMaps; //  Stores the mapped buttons of USBJoy
 
 	void update();
 	int count();

@@ -23,33 +23,56 @@
 
 using namespace std;
 
-Joystick::Joystick() {}
+Joystick::Joystick() {secondJoyID = -1;}
 
 Joystick::Joystick(int joynum) {
 	init(joynum);
 }
 
 Joystick::~Joystick() {
-	SDL_JoystickClose(joystick);
+    if(SDL_JoystickOpened(0))
+        SDL_JoystickClose(joystick[0]);
+    if(secondJoyID != -1)
+        if(SDL_JoystickOpened(secondJoyID))
+            SDL_JoystickClose(joystick[1]);
 }
 
 void Joystick::init( int joynum ) {
+    secondJoyID = -1;
 	SDL_JoystickEventState(SDL_IGNORE);
-	joystick = SDL_JoystickOpen(joynum);
-	numButtons = SDL_JoystickNumButtons(joystick);
-	for (int x=0; x<numButtons; x++) {
+	joystick[0] = SDL_JoystickOpen(joynum);
+	numButtons[0] = SDL_JoystickNumButtons(joystick[0]);
+	for (int x=0; x<numButtons[0]; x++) {
 		buttons.push_back(false);
 		joyTick.push_back(0);
 		interval.push_back(0);
 	}
 }
 
+void Joystick::initSecondJoy(int joynum){
+	joystick[1] = SDL_JoystickOpen(joynum);
+	numButtons[1] = SDL_JoystickNumButtons(joystick[0]);
+	secondJoyID = joynum;
+    for (int x=0; x<numButtons[0]; ++x)
+        buttonMaps.push_back(0);
+}
+
+void Joystick::init(int joynum, int secondJoy){
+    int numJoys = SDL_NumJoysticks();
+    if(numJoys >= 1 || secondJoy == -1){
+        if(numJoys < secondJoy)
+            initSecondJoy(secondJoy);
+        else
+            initSecondJoy(1);
+    }
+}
+
 void Joystick::update() {
 	SDL_JoystickUpdate();
 	Uint32 tick = SDL_GetTicks();
-	for (int x=0; x<numButtons; x++) {
+	for (int x=0; x<numButtons[0]; x++) {
 		buttons[x] = false;
-		if (SDL_JoystickGetButton(joystick,x)) {
+		if (SDL_JoystickGetButton(joystick[0],x)) {
 			if (tick-joyTick[x]>interval[x]) {
 				buttons[x] = true;
 				joyTick[x] = tick;
@@ -61,22 +84,31 @@ void Joystick::update() {
 }
 
 int Joystick::count() {
-	return numButtons;
+	return numButtons[0];
 }
 
 void Joystick::setInterval(int ms, int button) {
 	if (button<0)
-		for (int x=0; x<numButtons; x++)
+		for (int x=0; x<numButtons[0]; x++)
 			interval[x] = ms;
 	else
 		interval[button] = ms;
 }
 
+int Joystick::getMappedButton(int button){
+    //  Check button exists
+    if(button < numButtons[1])
+        return buttonMaps[button];
+    return -1;  //  Invalid button
+}
+
 bool Joystick::operator [](int button) {
-	if (button<0 || button>=numButtons) return false;
+	if (button<0 || button>=numButtons[0]) return false;
 	return buttons[button];
 }
 
 bool Joystick::isDown(int button) {
-	return SDL_JoystickGetButton(joystick,button);
+    if(secondJoyID != -1)
+        return SDL_JoystickGetButton(joystick[0],button) || SDL_JoystickGetButton(joystick[1],getMappedButton(button));
+    return SDL_JoystickGetButton(joystick[0],button);
 }
