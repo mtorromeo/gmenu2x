@@ -21,7 +21,6 @@
 #include <SDL.h>
 #include <SDL_gfxPrimitives.h>
 
-#include "gp2x.h"
 #include "messagebox.h"
 
 using namespace std;
@@ -44,23 +43,23 @@ MessageBox::MessageBox(GMenu2X *gmenu2x, string text, string icon) {
 	}
 
 	//Default enabled button
-	buttons[GP2X_BUTTON_B] = "OK";
+	buttons[ACTION_B] = "OK";
 
 	//Default labels
-	buttonLabels[GP2X_BUTTON_UP] = "up";
-	buttonLabels[GP2X_BUTTON_DOWN] = "down";
-	buttonLabels[GP2X_BUTTON_LEFT] = "left";
-	buttonLabels[GP2X_BUTTON_RIGHT] = "right";
-	buttonLabels[GP2X_BUTTON_A] = "a";
-	buttonLabels[GP2X_BUTTON_B] = "b";
-	buttonLabels[GP2X_BUTTON_X] = "x";
-	buttonLabels[GP2X_BUTTON_Y] = "y";
-	buttonLabels[GP2X_BUTTON_L] = "l";
-	buttonLabels[GP2X_BUTTON_R] = "r";
-	buttonLabels[GP2X_BUTTON_START] = "start";
-	buttonLabels[GP2X_BUTTON_SELECT] = "select";
-	buttonLabels[GP2X_BUTTON_VOLUP] = "vol+";
-	buttonLabels[GP2X_BUTTON_VOLDOWN] = "vol-";
+	buttonLabels[ACTION_UP] = "up";
+	buttonLabels[ACTION_DOWN] = "down";
+	buttonLabels[ACTION_LEFT] = "left";
+	buttonLabels[ACTION_RIGHT] = "right";
+	buttonLabels[ACTION_A] = "a";
+	buttonLabels[ACTION_B] = "b";
+	buttonLabels[ACTION_X] = "x";
+	buttonLabels[ACTION_Y] = "y";
+	buttonLabels[ACTION_L] = "l";
+	buttonLabels[ACTION_R] = "r";
+	buttonLabels[ACTION_START] = "start";
+	buttonLabels[ACTION_SELECT] = "select";
+	buttonLabels[ACTION_VOLUP] = "vol+";
+	buttonLabels[ACTION_VOLDOWN] = "vol-";
 }
 
 int MessageBox::exec() {
@@ -114,19 +113,9 @@ int MessageBox::exec() {
 			}
 		}
 
-#ifdef TARGET_GP2X
 		gmenu2x->joy.update();
 		for (uint i=0; i<buttons.size(); i++)
 			if (buttons[i]!="" && gmenu2x->joy[i]) result = i;
-#else
-		while (SDL_PollEvent(&gmenu2x->event)) {
-			if ( gmenu2x->event.type == SDL_QUIT ) result = GP2X_BUTTON_X;
-			if ( gmenu2x->event.type==SDL_KEYDOWN ) {
-				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) result = GP2X_BUTTON_X;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) result = GP2X_BUTTON_B;
-			}
-		}
-#endif
 	}
 
 	return result;

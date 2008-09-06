@@ -28,10 +28,6 @@
 #include "selector.h"
 #include "textmanualdialog.h"
 
-#ifdef TARGET_GP2X
-#include "gp2x.h"
-#endif
-
 using namespace std;
 
 LinkApp::LinkApp(GMenu2X *gmenu2x, const char* linkfile)
@@ -308,18 +304,10 @@ void LinkApp::showManual() {
 				repaint = false;
 			}
 
-#ifdef TARGET_GP2X
 			gmenu2x->joy.update();
-			if ( gmenu2x->joy[GP2X_BUTTON_Y] || gmenu2x->joy[GP2X_BUTTON_X] || gmenu2x->joy[GP2X_BUTTON_START] ) close = true;
-			if ( gmenu2x->joy[GP2X_BUTTON_LEFT] && page>0 ) { page--; repaint=true; }
-			if ( gmenu2x->joy[GP2X_BUTTON_RIGHT] && page<pagecount-1 ) { page++; repaint=true; }
-#else
-			while (SDL_PollEvent(&gmenu2x->event)) {
-				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) close = true;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_LEFT && page>0 ) { page--; repaint=true; }
-				if ( gmenu2x->event.key.keysym.sym==SDLK_RIGHT && page<pagecount-1 ) { page++; repaint=true; }
-			}
-#endif
+			if ( gmenu2x->joy[ACTION_Y] || gmenu2x->joy[ACTION_X] || gmenu2x->joy[ACTION_START] ) close = true;
+			if ( gmenu2x->joy[ACTION_LEFT] && page>0 ) { page--; repaint=true; }
+			if ( gmenu2x->joy[ACTION_RIGHT] && page<pagecount-1 ) { page++; repaint=true; }
 		}
 		return;
 	}

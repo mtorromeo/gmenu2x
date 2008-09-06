@@ -165,7 +165,7 @@ depend:
 ../objs/gp2x/button.o: translator.h touchscreen.h /usr/include/fcntl.h
 ../objs/gp2x/button.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
 ../objs/gp2x/button.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
-../objs/gp2x/button.o: joystick.h
+../objs/gp2x/button.o: inputmanager.h
 ../objs/gp2x/dirdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
 ../objs/gp2x/dirdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/dirdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -231,20 +231,14 @@ depend:
 ../objs/gp2x/dirdialog.o: /usr/include/dirent.h /usr/include/bits/dirent.h
 ../objs/gp2x/dirdialog.o: /usr/include/bits/posix1_lim.h
 ../objs/gp2x/dirdialog.o: /usr/include/bits/local_lim.h
-../objs/gp2x/dirdialog.o: /usr/include/linux/limits.h gp2x.h
-../objs/gp2x/dirdialog.o: /usr/include/linux/types.h
-../objs/gp2x/dirdialog.o: /usr/include/linux/posix_types.h
-../objs/gp2x/dirdialog.o: /usr/include/linux/stddef.h
-../objs/gp2x/dirdialog.o: /usr/include/asm/posix_types.h
-../objs/gp2x/dirdialog.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/dirdialog.o: /usr/include/asm/types.h dirdialog.h gmenu2x.h
+../objs/gp2x/dirdialog.o: /usr/include/linux/limits.h dirdialog.h gmenu2x.h
 ../objs/gp2x/dirdialog.o: surfacecollection.h surface.h
 ../objs/gp2x/dirdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/dirdialog.o: asfont.h sfontplus.h utilities.h iconbutton.h
 ../objs/gp2x/dirdialog.o: button.h FastDelegate.h /usr/include/memory.h
 ../objs/gp2x/dirdialog.o: translator.h touchscreen.h /usr/include/fcntl.h
 ../objs/gp2x/dirdialog.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
-../objs/gp2x/dirdialog.o: joystick.h filelister.h
+../objs/gp2x/dirdialog.o: inputmanager.h filelister.h
 ../objs/gp2x/filedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
 ../objs/gp2x/filedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/filedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -313,20 +307,15 @@ depend:
 ../objs/gp2x/filedialog.o: /usr/include/dirent.h /usr/include/bits/dirent.h
 ../objs/gp2x/filedialog.o: /usr/include/bits/posix1_lim.h
 ../objs/gp2x/filedialog.o: /usr/include/bits/local_lim.h
-../objs/gp2x/filedialog.o: /usr/include/linux/limits.h gp2x.h
-../objs/gp2x/filedialog.o: /usr/include/linux/types.h
-../objs/gp2x/filedialog.o: /usr/include/linux/posix_types.h
-../objs/gp2x/filedialog.o: /usr/include/linux/stddef.h
-../objs/gp2x/filedialog.o: /usr/include/asm/posix_types.h
-../objs/gp2x/filedialog.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/filedialog.o: /usr/include/asm/types.h filedialog.h filelister.h
-../objs/gp2x/filedialog.o: gmenu2x.h surfacecollection.h surface.h
+../objs/gp2x/filedialog.o: /usr/include/linux/limits.h filedialog.h
+../objs/gp2x/filedialog.o: filelister.h gmenu2x.h surfacecollection.h
+../objs/gp2x/filedialog.o: surface.h
 ../objs/gp2x/filedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/filedialog.o: asfont.h sfontplus.h utilities.h iconbutton.h
 ../objs/gp2x/filedialog.o: button.h FastDelegate.h /usr/include/memory.h
 ../objs/gp2x/filedialog.o: translator.h touchscreen.h /usr/include/fcntl.h
 ../objs/gp2x/filedialog.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
-../objs/gp2x/filedialog.o: joystick.h
+../objs/gp2x/filedialog.o: inputmanager.h
 ../objs/gp2x/filelister.o: /usr/include/sys/stat.h /usr/include/features.h
 ../objs/gp2x/filelister.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/filelister.o: /usr/include/bits/wordsize.h
@@ -463,18 +452,20 @@ depend:
 ../objs/gp2x/gmenu2x.o: /usr/include/bits/sigcontext.h
 ../objs/gp2x/gmenu2x.o: /usr/include/bits/sigstack.h
 ../objs/gp2x/gmenu2x.o: /usr/include/sys/ucontext.h
-../objs/gp2x/gmenu2x.o: /usr/include/bits/sigthread.h /usr/include/sys/vfs.h
-../objs/gp2x/gmenu2x.o: /usr/include/sys/statfs.h /usr/include/bits/statfs.h
-../objs/gp2x/gmenu2x.o: gp2x.h /usr/include/linux/types.h
+../objs/gp2x/gmenu2x.o: /usr/include/bits/sigthread.h
+../objs/gp2x/gmenu2x.o: /usr/include/sys/statvfs.h
+../objs/gp2x/gmenu2x.o: /usr/include/bits/statvfs.h gp2x.h
+../objs/gp2x/gmenu2x.o: /usr/include/linux/types.h
 ../objs/gp2x/gmenu2x.o: /usr/include/linux/posix_types.h
 ../objs/gp2x/gmenu2x.o: /usr/include/linux/stddef.h
 ../objs/gp2x/gmenu2x.o: /usr/include/asm/posix_types.h
 ../objs/gp2x/gmenu2x.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/gmenu2x.o: /usr/include/asm/types.h /usr/include/sys/fcntl.h
-../objs/gp2x/gmenu2x.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
-../objs/gp2x/gmenu2x.o: /usr/include/bits/uio.h /usr/include/sys/stat.h
-../objs/gp2x/gmenu2x.o: /usr/include/bits/stat.h /usr/include/dirent.h
-../objs/gp2x/gmenu2x.o: /usr/include/bits/dirent.h
+../objs/gp2x/gmenu2x.o: /usr/include/asm/types.h
+../objs/gp2x/gmenu2x.o: /usr/include/asm-generic/int-ll64.h
+../objs/gp2x/gmenu2x.o: /usr/include/sys/fcntl.h /usr/include/fcntl.h
+../objs/gp2x/gmenu2x.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
+../objs/gp2x/gmenu2x.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
+../objs/gp2x/gmenu2x.o: /usr/include/dirent.h /usr/include/bits/dirent.h
 ../objs/gp2x/gmenu2x.o: /usr/include/bits/posix1_lim.h
 ../objs/gp2x/gmenu2x.o: /usr/include/bits/local_lim.h
 ../objs/gp2x/gmenu2x.o: /usr/include/linux/limits.h /usr/include/sys/ioctl.h
@@ -491,10 +482,10 @@ depend:
 ../objs/gp2x/gmenu2x.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/gmenu2x.o: filedialog.h filelister.h gmenu2x.h
 ../objs/gp2x/gmenu2x.o: surfacecollection.h utilities.h iconbutton.h
-../objs/gp2x/gmenu2x.o: translator.h touchscreen.h joystick.h messagebox.h
-../objs/gp2x/gmenu2x.o: inputdialog.h settingsdialog.h menusetting.h
-../objs/gp2x/gmenu2x.o: wallpaperdialog.h textdialog.h menusettingint.h
-../objs/gp2x/gmenu2x.o: menusettingbool.h menusettingrgba.h
+../objs/gp2x/gmenu2x.o: translator.h touchscreen.h inputmanager.h
+../objs/gp2x/gmenu2x.o: messagebox.h inputdialog.h settingsdialog.h
+../objs/gp2x/gmenu2x.o: menusetting.h wallpaperdialog.h textdialog.h
+../objs/gp2x/gmenu2x.o: menusettingint.h menusettingbool.h menusettingrgba.h
 ../objs/gp2x/gmenu2x.o: menusettingstring.h menusettingmultistring.h
 ../objs/gp2x/gmenu2x.o: menusettingfile.h menusettingimage.h menusettingdir.h
 ../objs/gp2x/gmenu2x.o: /usr/include/sys/mman.h /usr/include/bits/mman.h
@@ -570,7 +561,7 @@ depend:
 ../objs/gp2x/iconbutton.o: touchscreen.h /usr/include/fcntl.h
 ../objs/gp2x/iconbutton.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
 ../objs/gp2x/iconbutton.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
-../objs/gp2x/iconbutton.o: joystick.h
+../objs/gp2x/iconbutton.o: inputmanager.h
 ../objs/gp2x/imagedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
 ../objs/gp2x/imagedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/imagedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -639,13 +630,7 @@ depend:
 ../objs/gp2x/imagedialog.o: /usr/include/dirent.h /usr/include/bits/dirent.h
 ../objs/gp2x/imagedialog.o: /usr/include/bits/posix1_lim.h
 ../objs/gp2x/imagedialog.o: /usr/include/bits/local_lim.h
-../objs/gp2x/imagedialog.o: /usr/include/linux/limits.h gp2x.h
-../objs/gp2x/imagedialog.o: /usr/include/linux/types.h
-../objs/gp2x/imagedialog.o: /usr/include/linux/posix_types.h
-../objs/gp2x/imagedialog.o: /usr/include/linux/stddef.h
-../objs/gp2x/imagedialog.o: /usr/include/asm/posix_types.h
-../objs/gp2x/imagedialog.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/imagedialog.o: /usr/include/asm/types.h imagedialog.h
+../objs/gp2x/imagedialog.o: /usr/include/linux/limits.h imagedialog.h
 ../objs/gp2x/imagedialog.o: filedialog.h filelister.h gmenu2x.h
 ../objs/gp2x/imagedialog.o: surfacecollection.h surface.h
 ../objs/gp2x/imagedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
@@ -653,7 +638,7 @@ depend:
 ../objs/gp2x/imagedialog.o: button.h FastDelegate.h /usr/include/memory.h
 ../objs/gp2x/imagedialog.o: translator.h touchscreen.h /usr/include/fcntl.h
 ../objs/gp2x/imagedialog.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
-../objs/gp2x/imagedialog.o: joystick.h
+../objs/gp2x/imagedialog.o: inputmanager.h
 ../objs/gp2x/inputdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
 ../objs/gp2x/inputdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/inputdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -717,75 +702,83 @@ depend:
 ../objs/gp2x/inputdialog.o: /usr/include/bits/huge_vall.h
 ../objs/gp2x/inputdialog.o: /usr/include/bits/inf.h /usr/include/bits/nan.h
 ../objs/gp2x/inputdialog.o: /usr/include/bits/mathdef.h
-../objs/gp2x/inputdialog.o: /usr/include/bits/mathcalls.h gp2x.h
-../objs/gp2x/inputdialog.o: /usr/include/linux/types.h
-../objs/gp2x/inputdialog.o: /usr/include/linux/posix_types.h
-../objs/gp2x/inputdialog.o: /usr/include/linux/stddef.h
-../objs/gp2x/inputdialog.o: /usr/include/asm/posix_types.h
-../objs/gp2x/inputdialog.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/inputdialog.o: /usr/include/asm/types.h inputdialog.h gmenu2x.h
-../objs/gp2x/inputdialog.o: surfacecollection.h surface.h
+../objs/gp2x/inputdialog.o: /usr/include/bits/mathcalls.h inputdialog.h
+../objs/gp2x/inputdialog.o: gmenu2x.h surfacecollection.h surface.h
 ../objs/gp2x/inputdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/inputdialog.o: asfont.h sfontplus.h utilities.h iconbutton.h
 ../objs/gp2x/inputdialog.o: button.h FastDelegate.h /usr/include/memory.h
 ../objs/gp2x/inputdialog.o: translator.h touchscreen.h /usr/include/fcntl.h
 ../objs/gp2x/inputdialog.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
 ../objs/gp2x/inputdialog.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
-../objs/gp2x/inputdialog.o: joystick.h
-../objs/gp2x/joystick.o: joystick.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_config.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_platform.h
-../objs/gp2x/joystick.o: /usr/include/sys/types.h /usr/include/features.h
-../objs/gp2x/joystick.o: /usr/include/sys/cdefs.h
-../objs/gp2x/joystick.o: /usr/include/bits/wordsize.h
-../objs/gp2x/joystick.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
-../objs/gp2x/joystick.o: /usr/include/bits/types.h
-../objs/gp2x/joystick.o: /usr/include/bits/typesizes.h /usr/include/time.h
-../objs/gp2x/joystick.o: /usr/include/endian.h /usr/include/bits/endian.h
-../objs/gp2x/joystick.o: /usr/include/sys/select.h /usr/include/bits/select.h
-../objs/gp2x/joystick.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
-../objs/gp2x/joystick.o: /usr/include/sys/sysmacros.h
-../objs/gp2x/joystick.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/joystick.o: /usr/include/stdio.h /usr/include/libio.h
-../objs/gp2x/joystick.o: /usr/include/_G_config.h /usr/include/wchar.h
-../objs/gp2x/joystick.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/joystick.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/joystick.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
-../objs/gp2x/joystick.o: /usr/include/bits/waitstatus.h
-../objs/gp2x/joystick.o: /usr/include/xlocale.h /usr/include/alloca.h
-../objs/gp2x/joystick.o: /usr/include/string.h /usr/include/strings.h
-../objs/gp2x/joystick.o: /usr/include/inttypes.h /usr/include/stdint.h
-../objs/gp2x/joystick.o: /usr/include/bits/wchar.h /usr/include/ctype.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/iconv.h
-../objs/gp2x/joystick.o: /usr/include/errno.h /usr/include/bits/errno.h
-../objs/gp2x/joystick.o: /usr/include/linux/errno.h /usr/include/asm/errno.h
-../objs/gp2x/joystick.o: /usr/include/asm-generic/errno.h
-../objs/gp2x/joystick.o: /usr/include/asm-generic/errno-base.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/begin_code.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/close_code.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_audio.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_error.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_endian.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_mutex.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_thread.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_rwops.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_cdrom.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_cpuinfo.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_events.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_active.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_keyboard.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_keysym.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_mouse.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_video.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_joystick.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_quit.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_loadso.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
-../objs/gp2x/joystick.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
+../objs/gp2x/inputdialog.o: inputmanager.h
+../objs/gp2x/inputmanager.o: inputmanager.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_config.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_platform.h
+../objs/gp2x/inputmanager.o: /usr/include/sys/types.h /usr/include/features.h
+../objs/gp2x/inputmanager.o: /usr/include/sys/cdefs.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/wordsize.h
+../objs/gp2x/inputmanager.o: /usr/include/gnu/stubs.h
+../objs/gp2x/inputmanager.o: /usr/include/gnu/stubs-64.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/types.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/typesizes.h
+../objs/gp2x/inputmanager.o: /usr/include/time.h /usr/include/endian.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/endian.h
+../objs/gp2x/inputmanager.o: /usr/include/sys/select.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/select.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/sigset.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/time.h
+../objs/gp2x/inputmanager.o: /usr/include/sys/sysmacros.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/pthreadtypes.h
+../objs/gp2x/inputmanager.o: /usr/include/stdio.h /usr/include/libio.h
+../objs/gp2x/inputmanager.o: /usr/include/_G_config.h /usr/include/wchar.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/stdio_lim.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/sys_errlist.h
+../objs/gp2x/inputmanager.o: /usr/include/stdlib.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/waitflags.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/waitstatus.h
+../objs/gp2x/inputmanager.o: /usr/include/xlocale.h /usr/include/alloca.h
+../objs/gp2x/inputmanager.o: /usr/include/string.h /usr/include/strings.h
+../objs/gp2x/inputmanager.o: /usr/include/inttypes.h /usr/include/stdint.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/iconv.h
+../objs/gp2x/inputmanager.o: /usr/include/errno.h /usr/include/bits/errno.h
+../objs/gp2x/inputmanager.o: /usr/include/linux/errno.h
+../objs/gp2x/inputmanager.o: /usr/include/asm/errno.h
+../objs/gp2x/inputmanager.o: /usr/include/asm-generic/errno.h
+../objs/gp2x/inputmanager.o: /usr/include/asm-generic/errno-base.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/begin_code.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/close_code.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_audio.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_error.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_endian.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_mutex.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_thread.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_rwops.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_cdrom.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_cpuinfo.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_events.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_active.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_keyboard.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_keysym.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_mouse.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_video.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_joystick.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_quit.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_loadso.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
+../objs/gp2x/inputmanager.o: utilities.h
+../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
+../objs/gp2x/inputmanager.o: /usr/include/math.h /usr/include/bits/huge_val.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/huge_valf.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/huge_vall.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/inf.h /usr/include/bits/nan.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/mathdef.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/mathcalls.h
 ../objs/gp2x/link.o: link.h button.h
 ../objs/gp2x/link.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
 ../objs/gp2x/link.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
@@ -849,7 +842,7 @@ depend:
 ../objs/gp2x/link.o: touchscreen.h /usr/include/fcntl.h
 ../objs/gp2x/link.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
 ../objs/gp2x/link.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
-../objs/gp2x/link.o: joystick.h
+../objs/gp2x/link.o: inputmanager.h
 ../objs/gp2x/linkaction.o: linkaction.h FastDelegate.h /usr/include/memory.h
 ../objs/gp2x/linkaction.o: /usr/include/features.h /usr/include/sys/cdefs.h
 ../objs/gp2x/linkaction.o: /usr/include/bits/wordsize.h
@@ -976,13 +969,7 @@ depend:
 ../objs/gp2x/linkapp.o: /usr/include/bits/mathcalls.h iconbutton.h
 ../objs/gp2x/linkapp.o: translator.h touchscreen.h /usr/include/fcntl.h
 ../objs/gp2x/linkapp.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
-../objs/gp2x/linkapp.o: joystick.h textmanualdialog.h textdialog.h gp2x.h
-../objs/gp2x/linkapp.o: /usr/include/linux/types.h
-../objs/gp2x/linkapp.o: /usr/include/linux/posix_types.h
-../objs/gp2x/linkapp.o: /usr/include/linux/stddef.h
-../objs/gp2x/linkapp.o: /usr/include/asm/posix_types.h
-../objs/gp2x/linkapp.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/linkapp.o: /usr/include/asm/types.h
+../objs/gp2x/linkapp.o: inputmanager.h textmanualdialog.h textdialog.h
 ../objs/gp2x/listview.o: listview.h gmenu2x.h surfacecollection.h surface.h
 ../objs/gp2x/listview.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
 ../objs/gp2x/listview.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
@@ -1049,7 +1036,7 @@ depend:
 ../objs/gp2x/listview.o: touchscreen.h /usr/include/fcntl.h
 ../objs/gp2x/listview.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
 ../objs/gp2x/listview.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
-../objs/gp2x/listview.o: joystick.h listviewitem.h
+../objs/gp2x/listview.o: inputmanager.h listviewitem.h
 ../objs/gp2x/listviewitem.o: listview.h gmenu2x.h surfacecollection.h
 ../objs/gp2x/listviewitem.o: surface.h
 ../objs/gp2x/listviewitem.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
@@ -1123,7 +1110,7 @@ depend:
 ../objs/gp2x/listviewitem.o: translator.h touchscreen.h /usr/include/fcntl.h
 ../objs/gp2x/listviewitem.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/listviewitem.o: /usr/include/bits/uio.h /usr/include/sys/stat.h
-../objs/gp2x/listviewitem.o: /usr/include/bits/stat.h joystick.h
+../objs/gp2x/listviewitem.o: /usr/include/bits/stat.h inputmanager.h
 ../objs/gp2x/listviewitem.o: listviewitem.h
 ../objs/gp2x/menu.o: /usr/include/sys/stat.h /usr/include/features.h
 ../objs/gp2x/menu.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
@@ -1138,7 +1125,12 @@ depend:
 ../objs/gp2x/menu.o: /usr/include/bits/dirent.h
 ../objs/gp2x/menu.o: /usr/include/bits/posix1_lim.h
 ../objs/gp2x/menu.o: /usr/include/bits/local_lim.h
-../objs/gp2x/menu.o: /usr/include/linux/limits.h gmenu2x.h
+../objs/gp2x/menu.o: /usr/include/linux/limits.h /usr/include/math.h
+../objs/gp2x/menu.o: /usr/include/bits/huge_val.h
+../objs/gp2x/menu.o: /usr/include/bits/huge_valf.h
+../objs/gp2x/menu.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
+../objs/gp2x/menu.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
+../objs/gp2x/menu.o: /usr/include/bits/mathcalls.h gmenu2x.h
 ../objs/gp2x/menu.o: surfacecollection.h surface.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
@@ -1184,17 +1176,12 @@ depend:
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/menu.o: asfont.h sfontplus.h utilities.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
-../objs/gp2x/menu.o: /usr/include/math.h /usr/include/bits/huge_val.h
-../objs/gp2x/menu.o: /usr/include/bits/huge_valf.h
-../objs/gp2x/menu.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
-../objs/gp2x/menu.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
-../objs/gp2x/menu.o: /usr/include/bits/mathcalls.h iconbutton.h button.h
-../objs/gp2x/menu.o: FastDelegate.h /usr/include/memory.h translator.h
-../objs/gp2x/menu.o: touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/menu.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
-../objs/gp2x/menu.o: joystick.h linkapp.h link.h menu.h linkaction.h
-../objs/gp2x/menu.o: filelister.h
-../objs/gp2x/menusetting.o: menusetting.h joystick.h
+../objs/gp2x/menu.o: iconbutton.h button.h FastDelegate.h
+../objs/gp2x/menu.o: /usr/include/memory.h translator.h touchscreen.h
+../objs/gp2x/menu.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+../objs/gp2x/menu.o: /usr/include/bits/uio.h inputmanager.h linkapp.h link.h
+../objs/gp2x/menu.o: menu.h linkaction.h filelister.h
+../objs/gp2x/menusetting.o: menusetting.h inputmanager.h
 ../objs/gp2x/menusetting.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
 ../objs/gp2x/menusetting.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/menusetting.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -1329,7 +1316,7 @@ depend:
 ../objs/gp2x/menusettingbool.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
 ../objs/gp2x/menusettingbool.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
 ../objs/gp2x/menusettingbool.o: FastDelegate.h /usr/include/memory.h
-../objs/gp2x/menusettingbool.o: menusetting.h joystick.h
+../objs/gp2x/menusettingbool.o: menusetting.h inputmanager.h
 ../objs/gp2x/menusettingbool.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/menusettingbool.o: gmenu2x.h surfacecollection.h surface.h
 ../objs/gp2x/menusettingbool.o: asfont.h sfontplus.h utilities.h
@@ -1346,13 +1333,7 @@ depend:
 ../objs/gp2x/menusettingbool.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingbool.o: /usr/include/bits/uio.h
 ../objs/gp2x/menusettingbool.o: /usr/include/sys/stat.h
-../objs/gp2x/menusettingbool.o: /usr/include/bits/stat.h gp2x.h
-../objs/gp2x/menusettingbool.o: /usr/include/linux/types.h
-../objs/gp2x/menusettingbool.o: /usr/include/linux/posix_types.h
-../objs/gp2x/menusettingbool.o: /usr/include/linux/stddef.h
-../objs/gp2x/menusettingbool.o: /usr/include/asm/posix_types.h
-../objs/gp2x/menusettingbool.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/menusettingbool.o: /usr/include/asm/types.h
+../objs/gp2x/menusettingbool.o: /usr/include/bits/stat.h
 ../objs/gp2x/menusettingdir.o: menusettingdir.h gmenu2x.h surfacecollection.h
 ../objs/gp2x/menusettingdir.o: surface.h
 ../objs/gp2x/menusettingdir.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
@@ -1430,14 +1411,8 @@ depend:
 ../objs/gp2x/menusettingdir.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingdir.o: /usr/include/bits/uio.h
 ../objs/gp2x/menusettingdir.o: /usr/include/sys/stat.h
-../objs/gp2x/menusettingdir.o: /usr/include/bits/stat.h joystick.h
-../objs/gp2x/menusettingdir.o: menusetting.h dirdialog.h gp2x.h
-../objs/gp2x/menusettingdir.o: /usr/include/linux/types.h
-../objs/gp2x/menusettingdir.o: /usr/include/linux/posix_types.h
-../objs/gp2x/menusettingdir.o: /usr/include/linux/stddef.h
-../objs/gp2x/menusettingdir.o: /usr/include/asm/posix_types.h
-../objs/gp2x/menusettingdir.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/menusettingdir.o: /usr/include/asm/types.h
+../objs/gp2x/menusettingdir.o: /usr/include/bits/stat.h inputmanager.h
+../objs/gp2x/menusettingdir.o: menusetting.h dirdialog.h
 ../objs/gp2x/menusettingfile.o: menusettingfile.h gmenu2x.h
 ../objs/gp2x/menusettingfile.o: surfacecollection.h surface.h
 ../objs/gp2x/menusettingfile.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
@@ -1518,14 +1493,8 @@ depend:
 ../objs/gp2x/menusettingfile.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingfile.o: /usr/include/bits/uio.h
 ../objs/gp2x/menusettingfile.o: /usr/include/sys/stat.h
-../objs/gp2x/menusettingfile.o: /usr/include/bits/stat.h joystick.h
+../objs/gp2x/menusettingfile.o: /usr/include/bits/stat.h inputmanager.h
 ../objs/gp2x/menusettingfile.o: menusetting.h filedialog.h filelister.h
-../objs/gp2x/menusettingfile.o: gp2x.h /usr/include/linux/types.h
-../objs/gp2x/menusettingfile.o: /usr/include/linux/posix_types.h
-../objs/gp2x/menusettingfile.o: /usr/include/linux/stddef.h
-../objs/gp2x/menusettingfile.o: /usr/include/asm/posix_types.h
-../objs/gp2x/menusettingfile.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/menusettingfile.o: /usr/include/asm/types.h
 ../objs/gp2x/menusettingimage.o: menusettingimage.h gmenu2x.h
 ../objs/gp2x/menusettingimage.o: surfacecollection.h surface.h
 ../objs/gp2x/menusettingimage.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
@@ -1608,15 +1577,9 @@ depend:
 ../objs/gp2x/menusettingimage.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingimage.o: /usr/include/bits/uio.h
 ../objs/gp2x/menusettingimage.o: /usr/include/sys/stat.h
-../objs/gp2x/menusettingimage.o: /usr/include/bits/stat.h joystick.h
+../objs/gp2x/menusettingimage.o: /usr/include/bits/stat.h inputmanager.h
 ../objs/gp2x/menusettingimage.o: menusettingfile.h menusetting.h
 ../objs/gp2x/menusettingimage.o: imagedialog.h filedialog.h filelister.h
-../objs/gp2x/menusettingimage.o: gp2x.h /usr/include/linux/types.h
-../objs/gp2x/menusettingimage.o: /usr/include/linux/posix_types.h
-../objs/gp2x/menusettingimage.o: /usr/include/linux/stddef.h
-../objs/gp2x/menusettingimage.o: /usr/include/asm/posix_types.h
-../objs/gp2x/menusettingimage.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/menusettingimage.o: /usr/include/asm/types.h
 ../objs/gp2x/menusettingint.o: menusettingint.h iconbutton.h button.h
 ../objs/gp2x/menusettingint.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
 ../objs/gp2x/menusettingint.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
@@ -1678,7 +1641,7 @@ depend:
 ../objs/gp2x/menusettingint.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
 ../objs/gp2x/menusettingint.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
 ../objs/gp2x/menusettingint.o: FastDelegate.h /usr/include/memory.h
-../objs/gp2x/menusettingint.o: menusetting.h joystick.h
+../objs/gp2x/menusettingint.o: menusetting.h inputmanager.h
 ../objs/gp2x/menusettingint.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/menusettingint.o: gmenu2x.h surfacecollection.h surface.h
 ../objs/gp2x/menusettingint.o: asfont.h sfontplus.h utilities.h
@@ -1695,13 +1658,7 @@ depend:
 ../objs/gp2x/menusettingint.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingint.o: /usr/include/bits/uio.h
 ../objs/gp2x/menusettingint.o: /usr/include/sys/stat.h
-../objs/gp2x/menusettingint.o: /usr/include/bits/stat.h gp2x.h
-../objs/gp2x/menusettingint.o: /usr/include/linux/types.h
-../objs/gp2x/menusettingint.o: /usr/include/linux/posix_types.h
-../objs/gp2x/menusettingint.o: /usr/include/linux/stddef.h
-../objs/gp2x/menusettingint.o: /usr/include/asm/posix_types.h
-../objs/gp2x/menusettingint.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/menusettingint.o: /usr/include/asm/types.h
+../objs/gp2x/menusettingint.o: /usr/include/bits/stat.h
 ../objs/gp2x/menusettingmultistring.o: menusettingmultistring.h gmenu2x.h
 ../objs/gp2x/menusettingmultistring.o: surfacecollection.h surface.h
 ../objs/gp2x/menusettingmultistring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
@@ -1788,14 +1745,8 @@ depend:
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/uio.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/sys/stat.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/bits/stat.h joystick.h
-../objs/gp2x/menusettingmultistring.o: menusetting.h gp2x.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/linux/types.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/linux/posix_types.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/linux/stddef.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/asm/posix_types.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/asm/types.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/bits/stat.h
+../objs/gp2x/menusettingmultistring.o: inputmanager.h menusetting.h
 ../objs/gp2x/menusettingrgba.o: menusettingrgba.h gmenu2x.h
 ../objs/gp2x/menusettingrgba.o: surfacecollection.h surface.h
 ../objs/gp2x/menusettingrgba.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
@@ -1876,14 +1827,8 @@ depend:
 ../objs/gp2x/menusettingrgba.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/bits/uio.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/sys/stat.h
-../objs/gp2x/menusettingrgba.o: /usr/include/bits/stat.h joystick.h
-../objs/gp2x/menusettingrgba.o: menusetting.h gp2x.h
-../objs/gp2x/menusettingrgba.o: /usr/include/linux/types.h
-../objs/gp2x/menusettingrgba.o: /usr/include/linux/posix_types.h
-../objs/gp2x/menusettingrgba.o: /usr/include/linux/stddef.h
-../objs/gp2x/menusettingrgba.o: /usr/include/asm/posix_types.h
-../objs/gp2x/menusettingrgba.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/menusettingrgba.o: /usr/include/asm/types.h
+../objs/gp2x/menusettingrgba.o: /usr/include/bits/stat.h inputmanager.h
+../objs/gp2x/menusettingrgba.o: menusetting.h
 ../objs/gp2x/menusettingstring.o: menusettingstring.h gmenu2x.h
 ../objs/gp2x/menusettingstring.o: surfacecollection.h surface.h
 ../objs/gp2x/menusettingstring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
@@ -1967,14 +1912,8 @@ depend:
 ../objs/gp2x/menusettingstring.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingstring.o: /usr/include/bits/uio.h
 ../objs/gp2x/menusettingstring.o: /usr/include/sys/stat.h
-../objs/gp2x/menusettingstring.o: /usr/include/bits/stat.h joystick.h
-../objs/gp2x/menusettingstring.o: menusetting.h inputdialog.h gp2x.h
-../objs/gp2x/menusettingstring.o: /usr/include/linux/types.h
-../objs/gp2x/menusettingstring.o: /usr/include/linux/posix_types.h
-../objs/gp2x/menusettingstring.o: /usr/include/linux/stddef.h
-../objs/gp2x/menusettingstring.o: /usr/include/asm/posix_types.h
-../objs/gp2x/menusettingstring.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/menusettingstring.o: /usr/include/asm/types.h
+../objs/gp2x/menusettingstring.o: /usr/include/bits/stat.h inputmanager.h
+../objs/gp2x/menusettingstring.o: menusetting.h inputdialog.h
 ../objs/gp2x/messagebox.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
 ../objs/gp2x/messagebox.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/messagebox.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -2038,21 +1977,15 @@ depend:
 ../objs/gp2x/messagebox.o: /usr/include/bits/huge_vall.h
 ../objs/gp2x/messagebox.o: /usr/include/bits/inf.h /usr/include/bits/nan.h
 ../objs/gp2x/messagebox.o: /usr/include/bits/mathdef.h
-../objs/gp2x/messagebox.o: /usr/include/bits/mathcalls.h gp2x.h
-../objs/gp2x/messagebox.o: /usr/include/linux/types.h
-../objs/gp2x/messagebox.o: /usr/include/linux/posix_types.h
-../objs/gp2x/messagebox.o: /usr/include/linux/stddef.h
-../objs/gp2x/messagebox.o: /usr/include/asm/posix_types.h
-../objs/gp2x/messagebox.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/messagebox.o: /usr/include/asm/types.h messagebox.h gmenu2x.h
-../objs/gp2x/messagebox.o: surfacecollection.h surface.h
+../objs/gp2x/messagebox.o: /usr/include/bits/mathcalls.h messagebox.h
+../objs/gp2x/messagebox.o: gmenu2x.h surfacecollection.h surface.h
 ../objs/gp2x/messagebox.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/messagebox.o: asfont.h sfontplus.h utilities.h iconbutton.h
 ../objs/gp2x/messagebox.o: button.h FastDelegate.h /usr/include/memory.h
 ../objs/gp2x/messagebox.o: translator.h touchscreen.h /usr/include/fcntl.h
 ../objs/gp2x/messagebox.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
 ../objs/gp2x/messagebox.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
-../objs/gp2x/messagebox.o: joystick.h
+../objs/gp2x/messagebox.o: inputmanager.h
 ../objs/gp2x/selector.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
 ../objs/gp2x/selector.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/selector.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -2116,13 +2049,7 @@ depend:
 ../objs/gp2x/selector.o: /usr/include/dirent.h /usr/include/bits/dirent.h
 ../objs/gp2x/selector.o: /usr/include/bits/posix1_lim.h
 ../objs/gp2x/selector.o: /usr/include/bits/local_lim.h
-../objs/gp2x/selector.o: /usr/include/linux/limits.h gp2x.h
-../objs/gp2x/selector.o: /usr/include/linux/types.h
-../objs/gp2x/selector.o: /usr/include/linux/posix_types.h
-../objs/gp2x/selector.o: /usr/include/linux/stddef.h
-../objs/gp2x/selector.o: /usr/include/asm/posix_types.h
-../objs/gp2x/selector.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/selector.o: /usr/include/asm/types.h menu.h linkaction.h
+../objs/gp2x/selector.o: /usr/include/linux/limits.h menu.h linkaction.h
 ../objs/gp2x/selector.o: FastDelegate.h /usr/include/memory.h link.h button.h
 ../objs/gp2x/selector.o: linkapp.h selector.h gmenu2x.h surfacecollection.h
 ../objs/gp2x/selector.o: surface.h
@@ -2130,7 +2057,7 @@ depend:
 ../objs/gp2x/selector.o: asfont.h sfontplus.h utilities.h iconbutton.h
 ../objs/gp2x/selector.o: translator.h touchscreen.h /usr/include/fcntl.h
 ../objs/gp2x/selector.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
-../objs/gp2x/selector.o: joystick.h filelister.h
+../objs/gp2x/selector.o: inputmanager.h filelister.h
 ../objs/gp2x/settingsdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
 ../objs/gp2x/settingsdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/settingsdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -2198,13 +2125,7 @@ depend:
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/inf.h
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/nan.h
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/mathdef.h
-../objs/gp2x/settingsdialog.o: /usr/include/bits/mathcalls.h gp2x.h
-../objs/gp2x/settingsdialog.o: /usr/include/linux/types.h
-../objs/gp2x/settingsdialog.o: /usr/include/linux/posix_types.h
-../objs/gp2x/settingsdialog.o: /usr/include/linux/stddef.h
-../objs/gp2x/settingsdialog.o: /usr/include/asm/posix_types.h
-../objs/gp2x/settingsdialog.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/settingsdialog.o: /usr/include/asm/types.h settingsdialog.h
+../objs/gp2x/settingsdialog.o: /usr/include/bits/mathcalls.h settingsdialog.h
 ../objs/gp2x/settingsdialog.o: gmenu2x.h surfacecollection.h surface.h
 ../objs/gp2x/settingsdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/settingsdialog.o: asfont.h sfontplus.h utilities.h iconbutton.h
@@ -2213,7 +2134,7 @@ depend:
 ../objs/gp2x/settingsdialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/uio.h
 ../objs/gp2x/settingsdialog.o: /usr/include/sys/stat.h
-../objs/gp2x/settingsdialog.o: /usr/include/bits/stat.h joystick.h
+../objs/gp2x/settingsdialog.o: /usr/include/bits/stat.h inputmanager.h
 ../objs/gp2x/settingsdialog.o: menusetting.h
 ../objs/gp2x/sfontplus.o: sfontplus.h
 ../objs/gp2x/sfontplus.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
@@ -2406,13 +2327,8 @@ depend:
 ../objs/gp2x/surfacecollection.o: /usr/include/bits/nan.h
 ../objs/gp2x/surfacecollection.o: /usr/include/bits/mathdef.h
 ../objs/gp2x/surfacecollection.o: /usr/include/bits/mathcalls.h
-../objs/gp2x/textdialog.o: gp2x.h /usr/include/linux/types.h
-../objs/gp2x/textdialog.o: /usr/include/linux/posix_types.h
-../objs/gp2x/textdialog.o: /usr/include/linux/stddef.h
-../objs/gp2x/textdialog.o: /usr/include/asm/posix_types.h
-../objs/gp2x/textdialog.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/textdialog.o: /usr/include/asm/types.h textdialog.h gmenu2x.h
-../objs/gp2x/textdialog.o: surfacecollection.h surface.h
+../objs/gp2x/textdialog.o: textdialog.h gmenu2x.h surfacecollection.h
+../objs/gp2x/textdialog.o: surface.h
 ../objs/gp2x/textdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
 ../objs/gp2x/textdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/textdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -2483,15 +2399,9 @@ depend:
 ../objs/gp2x/textdialog.o: translator.h touchscreen.h /usr/include/fcntl.h
 ../objs/gp2x/textdialog.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
 ../objs/gp2x/textdialog.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
-../objs/gp2x/textdialog.o: joystick.h
-../objs/gp2x/textmanualdialog.o: gp2x.h /usr/include/linux/types.h
-../objs/gp2x/textmanualdialog.o: /usr/include/linux/posix_types.h
-../objs/gp2x/textmanualdialog.o: /usr/include/linux/stddef.h
-../objs/gp2x/textmanualdialog.o: /usr/include/asm/posix_types.h
-../objs/gp2x/textmanualdialog.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/textmanualdialog.o: /usr/include/asm/types.h textmanualdialog.h
-../objs/gp2x/textmanualdialog.o: textdialog.h gmenu2x.h surfacecollection.h
-../objs/gp2x/textmanualdialog.o: surface.h
+../objs/gp2x/textdialog.o: inputmanager.h
+../objs/gp2x/textmanualdialog.o: textmanualdialog.h textdialog.h gmenu2x.h
+../objs/gp2x/textmanualdialog.o: surfacecollection.h surface.h
 ../objs/gp2x/textmanualdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
 ../objs/gp2x/textmanualdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/textmanualdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -2572,7 +2482,7 @@ depend:
 ../objs/gp2x/textmanualdialog.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/bits/uio.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/sys/stat.h
-../objs/gp2x/textmanualdialog.o: /usr/include/bits/stat.h joystick.h
+../objs/gp2x/textmanualdialog.o: /usr/include/bits/stat.h inputmanager.h
 ../objs/gp2x/touchscreen.o: /usr/include/unistd.h /usr/include/features.h
 ../objs/gp2x/touchscreen.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/touchscreen.o: /usr/include/bits/wordsize.h
@@ -2769,13 +2679,8 @@ depend:
 ../objs/gp2x/utilities.o: /usr/include/bits/inf.h /usr/include/bits/nan.h
 ../objs/gp2x/utilities.o: /usr/include/bits/mathdef.h
 ../objs/gp2x/utilities.o: /usr/include/bits/mathcalls.h
-../objs/gp2x/wallpaperdialog.o: gp2x.h /usr/include/linux/types.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/linux/posix_types.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/linux/stddef.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/asm/posix_types.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/asm/posix_types_64.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/asm/types.h wallpaperdialog.h
-../objs/gp2x/wallpaperdialog.o: gmenu2x.h surfacecollection.h surface.h
+../objs/gp2x/wallpaperdialog.o: wallpaperdialog.h gmenu2x.h
+../objs/gp2x/wallpaperdialog.o: surfacecollection.h surface.h
 ../objs/gp2x/wallpaperdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL.h
 ../objs/gp2x/wallpaperdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/wallpaperdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -2854,5 +2759,5 @@ depend:
 ../objs/gp2x/wallpaperdialog.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/bits/uio.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/sys/stat.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/bits/stat.h joystick.h
+../objs/gp2x/wallpaperdialog.o: /usr/include/bits/stat.h inputmanager.h
 ../objs/gp2x/wallpaperdialog.o: filelister.h

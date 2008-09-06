@@ -21,9 +21,6 @@
 #include <SDL.h>
 #include <SDL_gfxPrimitives.h>
 
-#ifdef TARGET_GP2X
-#include "gp2x.h"
-#endif
 #include "inputdialog.h"
 
 using namespace std;
@@ -161,33 +158,17 @@ bool InputDialog::exec() {
 		action = drawVirtualKeyboard();
 		gmenu2x->s->flip();
 
-#ifdef TARGET_GP2X
 		gmenu2x->joy.update();
-		if ( gmenu2x->joy[GP2X_BUTTON_START] ) action = ID_ACTION_CLOSE;
-		if ( gmenu2x->joy[GP2X_BUTTON_UP   ] ) action = ID_ACTION_UP;
-		if ( gmenu2x->joy[GP2X_BUTTON_DOWN ] ) action = ID_ACTION_DOWN;
-		if ( gmenu2x->joy[GP2X_BUTTON_LEFT ] ) action = ID_ACTION_LEFT;
-		if ( gmenu2x->joy[GP2X_BUTTON_RIGHT] ) action = ID_ACTION_RIGHT;
-		if ( gmenu2x->joy[GP2X_BUTTON_B]     ) action = ID_ACTION_SELECT;
-		if ( gmenu2x->joy[GP2X_BUTTON_Y]     ) action = ID_ACTION_KB_CHANGE;
-		if ( gmenu2x->joy[GP2X_BUTTON_X] || gmenu2x->joy[GP2X_BUTTON_L] ) action = ID_ACTION_BACKSPACE;
-		if ( gmenu2x->joy[GP2X_BUTTON_R    ] ) action = ID_ACTION_SPACE;
-#else
-		while (SDL_PollEvent(&gmenu2x->event)) {
-			if ( gmenu2x->event.type == SDL_QUIT ) action = ID_ACTION_CLOSE;
-			if ( gmenu2x->event.type==SDL_KEYDOWN ) {
-				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) action = ID_ACTION_CLOSE;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_UP ) action = ID_ACTION_UP;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN ) action = ID_ACTION_DOWN;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_LEFT ) action = ID_ACTION_LEFT;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_RIGHT ) action = ID_ACTION_RIGHT;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) action = ID_ACTION_BACKSPACE;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_SPACE ) action = ID_ACTION_SPACE;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_LSHIFT ) action = ID_ACTION_KB_CHANGE;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) action = ID_ACTION_SELECT;
-			}
-		}
-#endif
+		if ( gmenu2x->joy[ACTION_START] ) action = ID_ACTION_CLOSE;
+		if ( gmenu2x->joy[ACTION_UP   ] ) action = ID_ACTION_UP;
+		if ( gmenu2x->joy[ACTION_DOWN ] ) action = ID_ACTION_DOWN;
+		if ( gmenu2x->joy[ACTION_LEFT ] ) action = ID_ACTION_LEFT;
+		if ( gmenu2x->joy[ACTION_RIGHT] ) action = ID_ACTION_RIGHT;
+		if ( gmenu2x->joy[ACTION_B]     ) action = ID_ACTION_SELECT;
+		if ( gmenu2x->joy[ACTION_Y]     ) action = ID_ACTION_KB_CHANGE;
+		if ( gmenu2x->joy[ACTION_X] || gmenu2x->joy[ACTION_L] ) action = ID_ACTION_BACKSPACE;
+		if ( gmenu2x->joy[ACTION_R    ] ) action = ID_ACTION_SPACE;
+
 		switch (action) {
 			case ID_ACTION_CLOSE: {
 				ok = false;

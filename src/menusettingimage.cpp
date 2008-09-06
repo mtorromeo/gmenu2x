@@ -31,25 +31,13 @@ MenuSettingImage::MenuSettingImage(GMenu2X *gmenu2x, string name, string descrip
 	originalValue = *value;
 }
 
-#ifdef TARGET_GP2X
-#include "gp2x.h"
-
 void MenuSettingImage::manageInput() {
-	if ( gmenu2x->joy[GP2X_BUTTON_X] ) setValue("");
-	if ( gmenu2x->joy[GP2X_BUTTON_B] ) {
+	if ( gmenu2x->joy[ACTION_X] ) setValue("");
+	if ( gmenu2x->joy[ACTION_B] ) {
 		ImageDialog id(gmenu2x, description, filter, value());
 		if (id.exec()) setValue( id.path()+"/"+id.file );
 	}
 }
-#else
-void MenuSettingImage::manageInput() {
-	if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) setValue("");
-	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
-		ImageDialog id(gmenu2x, description, filter, value());
-		if (id.exec()) setValue( id.path()+"/"+id.file );
-	}
-}
-#endif
 
 void MenuSettingImage::setValue(string value) {
 	string skinpath = gmenu2x->getExePath()+"skins/"+gmenu2x->skin;

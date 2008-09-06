@@ -72,23 +72,12 @@ void MenuSettingRGBA::handleTS() {
 	btnRightComponent->handleTS();
 }
 
-#ifdef TARGET_GP2X
-#include "gp2x.h"
-
 void MenuSettingRGBA::manageInput() {
-	if ( gmenu2x->joy[GP2X_BUTTON_Y    ]) inc();
-	if ( gmenu2x->joy[GP2X_BUTTON_X    ]) dec();
-	if ( gmenu2x->joy[GP2X_BUTTON_LEFT ]) leftComponent();
-	if ( gmenu2x->joy[GP2X_BUTTON_RIGHT]) rightComponent();
+	if ( gmenu2x->joy[ACTION_Y    ]) inc();
+	if ( gmenu2x->joy[ACTION_X    ]) dec();
+	if ( gmenu2x->joy[ACTION_LEFT ]) leftComponent();
+	if ( gmenu2x->joy[ACTION_RIGHT]) rightComponent();
 }
-#else
-void MenuSettingRGBA::manageInput() {
-	if ( gmenu2x->event.key.keysym.sym==SDLK_y    ) inc();
-	if ( gmenu2x->event.key.keysym.sym==SDLK_x    ) dec();
-	if ( gmenu2x->event.key.keysym.sym==SDLK_LEFT ) leftComponent();
-	if ( gmenu2x->event.key.keysym.sym==SDLK_RIGHT) rightComponent();
-}
-#endif
 
 void MenuSettingRGBA::dec() {
 	setSelPart( constrain(getSelPart()-1,0,255) );
@@ -158,9 +147,9 @@ unsigned short MenuSettingRGBA::getSelPart() {
 
 void MenuSettingRGBA::adjustInput() {
 #ifdef TARGET_GP2X
-	gmenu2x->joy.setInterval(30, GP2X_BUTTON_Y );
-	gmenu2x->joy.setInterval(30, GP2X_BUTTON_X );
-	gmenu2x->joy.setInterval(30, GP2X_BUTTON_L );
+	gmenu2x->joy.setInterval(30, ACTION_Y );
+	gmenu2x->joy.setInterval(30, ACTION_X );
+	gmenu2x->joy.setInterval(30, ACTION_L );
 #endif
 }
 

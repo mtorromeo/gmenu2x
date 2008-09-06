@@ -48,19 +48,10 @@ void MenuSettingString::handleTS() {
 	btnEdit->handleTS();
 }
 
-#ifdef TARGET_GP2X
-#include "gp2x.h"
-
 void MenuSettingString::manageInput() {
-	if ( gmenu2x->joy[GP2X_BUTTON_X] ) clear();
-	if ( gmenu2x->joy[GP2X_BUTTON_B] ) edit();
+	if ( gmenu2x->joy[ACTION_X] ) clear();
+	if ( gmenu2x->joy[ACTION_B] ) edit();
 }
-#else
-void MenuSettingString::manageInput() {
-	if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) clear();
-	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) edit();
-}
-#endif
 
 void MenuSettingString::setValue(string value) {
 	*_value = value;

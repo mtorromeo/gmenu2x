@@ -48,19 +48,10 @@ void MenuSettingMultiString::handleTS() {
 	btnInc->handleTS();
 }
 
-#ifdef TARGET_GP2X
-#include "gp2x.h"
-
 void MenuSettingMultiString::manageInput() {
-	if ( gmenu2x->joy[GP2X_BUTTON_LEFT ] ) decSel();
-	if ( gmenu2x->joy[GP2X_BUTTON_RIGHT] ) incSel();
+	if ( gmenu2x->joy[ACTION_LEFT ] ) decSel();
+	if ( gmenu2x->joy[ACTION_RIGHT] ) incSel();
 }
-#else
-void MenuSettingMultiString::manageInput() {
-	if ( gmenu2x->event.key.keysym.sym==SDLK_LEFT  ) decSel();
-	if ( gmenu2x->event.key.keysym.sym==SDLK_RIGHT ) incSel();
-}
-#endif
 
 void MenuSettingMultiString::incSel() {
 	setSel(selected+1);

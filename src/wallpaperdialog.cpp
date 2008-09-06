@@ -18,9 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifdef TARGET_GP2X
-#include "gp2x.h"
-#endif
 #include "wallpaperdialog.h"
 #include "filelister.h"
 
@@ -87,40 +84,39 @@ bool WallpaperDialog::exec() {
 		gmenu2x->s->flip();
 
 
-#ifdef TARGET_GP2X
 		gmenu2x->joy.update();
-		if ( gmenu2x->joy[GP2X_BUTTON_SELECT] ) { close = true; result = false; }
-		if ( gmenu2x->joy[GP2X_BUTTON_UP    ] ) {
+		if ( gmenu2x->joy[ACTION_SELECT] ) { close = true; result = false; }
+		if ( gmenu2x->joy[ACTION_UP    ] ) {
 			if (selected==0)
 				selected = wallpapers.size()-1;
 			else
 				selected -= 1;
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_L     ] ) {
+		if ( gmenu2x->joy[ACTION_L     ] ) {
 			if ((int)(selected-9)<0) {
 				selected = 0;
 			} else {
 				selected -= 9;
 			}
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_DOWN  ] ) {
+		if ( gmenu2x->joy[ACTION_DOWN  ] ) {
 			if (selected+1>=wallpapers.size())
 				selected = 0;
 			else
 				selected += 1;
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_R     ] ) {
+		if ( gmenu2x->joy[ACTION_R     ] ) {
 			if (selected+9>=wallpapers.size()) {
 				selected = wallpapers.size()-1;
 			} else {
 				selected += 9;
 			}
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_X] ) {
+		if ( gmenu2x->joy[ACTION_X] ) {
 			close = true;
 			result = false;
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK] ) {
+		if ( gmenu2x->joy[ACTION_B] ) {
 			close = true;
 			if (wallpapers.size()>0) {
 				if (selected<wallpapers.size()-fl.files.size())
@@ -129,39 +125,6 @@ bool WallpaperDialog::exec() {
 					wallpaper = "skins/Default/wallpapers/"+wallpapers[selected];
 			} else result = false;
 		}
-#else
-		while (SDL_PollEvent(&gmenu2x->event)) {
-			if ( gmenu2x->event.type == SDL_QUIT ) { close = true; result = false; }
-			if ( gmenu2x->event.type==SDL_KEYDOWN ) {
-				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) { close = true; result = false; }
-				if ( gmenu2x->event.key.keysym.sym==SDLK_UP ) {
-					if (selected==0) {
-						selected = wallpapers.size()-1;
-					} else
-						selected -= 1;
-				}
-				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN ) {
-					if (selected+1>=wallpapers.size())
-						selected = 0;
-					else
-						selected += 1;
-				}
-				if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) {
-					close = true;
-					result = false;
-				}
-				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
-					close = true;
-					if (wallpapers.size()>0) {
-						if (selected<wallpapers.size()-fl.files.size())
-							wallpaper = "skins/"+gmenu2x->skin+"/wallpapers/"+wallpapers[selected];
-						else
-							wallpaper = "skins/Default/wallpapers/"+wallpapers[selected];
-					} else result = false;
-				}
-			}
-		}
-#endif
 	}
 
 	for (uint i=0; i<wallpapers.size(); i++)

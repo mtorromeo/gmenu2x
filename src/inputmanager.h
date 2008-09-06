@@ -17,55 +17,71 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef JOYSTICK_H
-#define JOYSTICK_H
+#ifndef INPUTMANAGER_H
+#define INPUTMANAGER_H
+
+#define ACTION_UP      0
+#define ACTION_DOWN    1
+#define ACTION_LEFT    2
+#define ACTION_RIGHT   3
+#define ACTION_A       4
+#define ACTION_B       5
+#define ACTION_X       6
+#define ACTION_Y       7
+#define ACTION_L       8
+#define ACTION_R       9
+#define ACTION_START   10
+#define ACTION_SELECT  11
+#define ACTION_VOLUP   12
+#define ACTION_VOLDOWN 13
 
 #include <SDL.h>
 #include <SDL_image.h>
 #include <vector>
+#include <string>
 
 using std::vector;
+using std::string;
 
 typedef struct {
 	int type;
-	int num;
+	uint num;
+	int value;
 	int treshold;
-} JoyMap;
+} InputMap;
+
+typedef vector<InputMap> MappingList;
 
 /**
-Manages the joystick
-
-	@author Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
+Manages all input peripherals
+@author Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
 */
-class Joystick {
+class InputManager {
 private:
-	void initSecondJoy(int joyNum);
-	JoyMap getButtonMapping(int button);    //  returns the USBJoy button mapped at this GP2X button
-	int secondJoyID;
-	int numButtons[2];
-	vector<Uint32> joyTick;
+	InputMap getInputMapping(int action);
+	vector<Uint32> actionTick;
 	vector<Uint32> interval;
 
 public:
 	static const int MAPPING_TYPE_UNDEFINED = -1;
 	static const int MAPPING_TYPE_BUTTON = 0;
 	static const int MAPPING_TYPE_AXYS = 1;
+	static const int MAPPING_TYPE_KEYPRESS = 2;
 
-	Joystick();
-	Joystick(int joynum, int joynum2 = -1);
-	~Joystick();
+	InputManager();
+	~InputManager();
+	void init(string conffile = "input.conf");
 
-	void init(int joynum, int joynum2 = -1);
-
-	SDL_Joystick *joystick[2];
-	vector<bool> buttons;   //  We only need the one set of buttons since we want the USBJoy to complement the GP2XJoy
-	vector<JoyMap> mappings; //  Stores the mapped buttons of USBJoy
+	vector <SDL_Joystick*> joysticks;
+	vector<bool> actions;
+	vector<MappingList> mappings;
 
 	void update();
 	int count();
-	void setInterval(int ms, int button = -1);
-	bool operator[](int button);
-	bool isDown(int button);
+	void setActionsCount(int count);
+	void setInterval(int ms, int action = -1);
+	bool operator[](int action);
+	bool isActive(int action);
 };
 
 #endif

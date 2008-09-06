@@ -26,9 +26,6 @@
 #include <sys/types.h>
 #include <dirent.h>
 
-#ifdef TARGET_GP2X
-#include "gp2x.h"
-#endif
 #include "filedialog.h"
 
 using namespace std;
@@ -110,27 +107,15 @@ bool FileDialog::exec() {
 		gmenu2x->drawScrollBar(10,fl.size(),firstElement,44,170);
 		gmenu2x->s->flip();
 
-#ifdef TARGET_GP2X
 		gmenu2x->joy.update();
-		if ( gmenu2x->joy[GP2X_BUTTON_SELECT] ) action = FD_ACTION_CLOSE;
-		if ( gmenu2x->joy[GP2X_BUTTON_UP    ] ) action = FD_ACTION_UP;
-		if ( gmenu2x->joy[GP2X_BUTTON_L     ] ) action = FD_ACTION_SCROLLUP;
-		if ( gmenu2x->joy[GP2X_BUTTON_DOWN  ] ) action = FD_ACTION_DOWN;
-		if ( gmenu2x->joy[GP2X_BUTTON_R     ] ) action = FD_ACTION_SCROLLDOWN;
-		if ( gmenu2x->joy[GP2X_BUTTON_X] || gmenu2x->joy[GP2X_BUTTON_LEFT] ) action = FD_ACTION_GOUP;
-		if ( gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK] ) action = FD_ACTION_SELECT;
-#else
-		while (SDL_PollEvent(&gmenu2x->event)) {
-			if ( gmenu2x->event.type == SDL_QUIT ) action = FD_ACTION_CLOSE;
-			if ( gmenu2x->event.type==SDL_KEYDOWN ) {
-				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) action = FD_ACTION_CLOSE;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_UP ) action = FD_ACTION_UP;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN ) action = FD_ACTION_DOWN;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) action = FD_ACTION_GOUP;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) action = FD_ACTION_SELECT;
-			}
-		}
-#endif
+		if ( gmenu2x->joy[ACTION_SELECT] ) action = FD_ACTION_CLOSE;
+		if ( gmenu2x->joy[ACTION_UP    ] ) action = FD_ACTION_UP;
+		if ( gmenu2x->joy[ACTION_L     ] ) action = FD_ACTION_SCROLLUP;
+		if ( gmenu2x->joy[ACTION_DOWN  ] ) action = FD_ACTION_DOWN;
+		if ( gmenu2x->joy[ACTION_R     ] ) action = FD_ACTION_SCROLLDOWN;
+		if ( gmenu2x->joy[ACTION_X] || gmenu2x->joy[ACTION_LEFT] ) action = FD_ACTION_GOUP;
+		if ( gmenu2x->joy[ACTION_B     ] ) action = FD_ACTION_SELECT;
+
 		if (action == FD_ACTION_SELECT && fl[selected]=="..") action = FD_ACTION_GOUP;
 		switch (action) {
 			case FD_ACTION_CLOSE: {

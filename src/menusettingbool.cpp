@@ -45,12 +45,7 @@ void MenuSettingBool::handleTS() {
 }
 
 void MenuSettingBool::manageInput() {
-#ifdef TARGET_GP2X
-#include "gp2x.h"
-	if ( gmenu2x->joy[GP2X_BUTTON_B] ) toggle();
-#else
-	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) toggle();
-#endif
+	if ( gmenu2x->joy[ACTION_B] ) toggle();
 }
 
 void MenuSettingBool::toggle() {

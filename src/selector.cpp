@@ -26,9 +26,6 @@
 #include <sys/types.h>
 #include <dirent.h>
 
-#ifdef TARGET_GP2X
-#include "gp2x.h"
-#endif
 #include "menu.h"
 #include "linkapp.h"
 #include "selector.h"
@@ -115,10 +112,9 @@ int Selector::exec(int startSelection) {
 		gmenu2x->s->flip();
 
 
-#ifdef TARGET_GP2X
 		gmenu2x->joy.update();
-		if ( gmenu2x->joy[GP2X_BUTTON_START] ) { close = true; result = false; }
-		if ( gmenu2x->joy[GP2X_BUTTON_UP] ) {
+		if ( gmenu2x->joy[ACTION_START] ) { close = true; result = false; }
+		if ( gmenu2x->joy[ACTION_UP] ) {
 			if (selected==0) {
 				selected = fl.size()-1;
 			} else {
@@ -126,7 +122,7 @@ int Selector::exec(int startSelection) {
 			}
 			selTick = SDL_GetTicks();
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_L] ) {
+		if ( gmenu2x->joy[ACTION_L] ) {
 			if ((int)(selected-SELECTOR_ELEMENTS+1)<0) {
 				selected = 0;
 			} else {
@@ -134,7 +130,7 @@ int Selector::exec(int startSelection) {
 			}
 			selTick = SDL_GetTicks();
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_DOWN] ) {
+		if ( gmenu2x->joy[ACTION_DOWN] ) {
 			if (selected+1>=fl.size()) {
 				selected = 0;
 			} else {
@@ -142,7 +138,7 @@ int Selector::exec(int startSelection) {
 			}
 			selTick = SDL_GetTicks();
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_R] ) {
+		if ( gmenu2x->joy[ACTION_R] ) {
 			if (selected+SELECTOR_ELEMENTS-1>=fl.size()) {
 				selected = fl.size()-1;
 			} else {
@@ -150,7 +146,7 @@ int Selector::exec(int startSelection) {
 			}
 			selTick = SDL_GetTicks();
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_X] ) {
+		if ( gmenu2x->joy[ACTION_X] ) {
 			if (link->getSelectorBrowser()) {
 				string::size_type p = dir.rfind("/", dir.size()-2);
 				if (p==string::npos || dir.substr(0,4)!="/mnt" || p<4) {
@@ -168,7 +164,7 @@ int Selector::exec(int startSelection) {
 				result = false;
 			}
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK] ) {
+		if ( gmenu2x->joy[ACTION_B] ) {
 			if (fl.isFile(selected)) {
 				file = fl[selected];
 				close = true;
@@ -179,59 +175,6 @@ int Selector::exec(int startSelection) {
 				prepare(&fl,&screens,&titles);
 			}
 		}
-#else
-		while (SDL_PollEvent(&gmenu2x->event)) {
-			if ( gmenu2x->event.type == SDL_QUIT ) { close = true; result = false; }
-			if ( gmenu2x->event.type==SDL_KEYDOWN ) {
-				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) { close = true; result = false; }
-				if ( gmenu2x->event.key.keysym.sym==SDLK_UP ) {
-					if ((int)(selected-1)<0) {
-						selected = fl.size()-1;
-					} else {
-						selected -= 1;
-					}
-					selTick = SDL_GetTicks();
-				}
-				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN ) {
-					if (selected+1>=fl.size()) {
-						selected = 0;
-					} else {
-						selected += 1;
-					}
-					selTick = SDL_GetTicks();
-				}
-				if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) {
-					if (link->getSelectorBrowser()) {
-						string::size_type p = dir.rfind("/", dir.size()-2);
-						if (p==string::npos || dir.substr(0,4)!="/mnt" || p<4) {
-							close = true;
-							result = false;
-						} else {
-							dir = dir.substr(0,p+1);
-							cout << dir << endl;
-							selected = 0;
-							firstElement = 0;
-							prepare(&fl,&screens,&titles);
-						}
-					} else {
-						close = true;
-						result = false;
-					}
-				}
-				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) {
-					if (fl.isFile(selected)) {
-						file = fl[selected];
-						close = true;
-					} else {
-						dir = dir+fl[selected]+"/";
-						selected = 0;
-						firstElement = 0;
-						prepare(&fl,&screens,&titles);
-					}
-				}
-			}
-		}
-#endif
 	}
 	gmenu2x->sc.defaultAlpha = true;
 	freeScreenshots(&screens);

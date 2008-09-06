@@ -142,6 +142,7 @@ depend:
 ../objs/linux/button.o: translator.h touchscreen.h /usr/include/fcntl.h
 ../objs/linux/button.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
 ../objs/linux/button.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
+../objs/linux/button.o: inputmanager.h
 ../objs/linux/dirdialog.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
 ../objs/linux/dirdialog.o: /usr/include/SDL/SDL_stdinc.h
 ../objs/linux/dirdialog.o: /usr/include/SDL/SDL_config.h
@@ -209,7 +210,8 @@ depend:
 ../objs/linux/dirdialog.o: utilities.h iconbutton.h button.h FastDelegate.h
 ../objs/linux/dirdialog.o: /usr/include/memory.h translator.h touchscreen.h
 ../objs/linux/dirdialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
-../objs/linux/dirdialog.o: /usr/include/bits/uio.h filelister.h
+../objs/linux/dirdialog.o: /usr/include/bits/uio.h inputmanager.h
+../objs/linux/dirdialog.o: filelister.h
 ../objs/linux/filedialog.o: /usr/include/SDL/SDL.h
 ../objs/linux/filedialog.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/filedialog.o: /usr/include/SDL/SDL_stdinc.h
@@ -280,6 +282,7 @@ depend:
 ../objs/linux/filedialog.o: FastDelegate.h /usr/include/memory.h translator.h
 ../objs/linux/filedialog.o: touchscreen.h /usr/include/fcntl.h
 ../objs/linux/filedialog.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
+../objs/linux/filedialog.o: inputmanager.h
 ../objs/linux/filelister.o: /usr/include/sys/stat.h /usr/include/features.h
 ../objs/linux/filelister.o: /usr/include/sys/cdefs.h
 ../objs/linux/filelister.o: /usr/include/bits/wordsize.h
@@ -410,10 +413,11 @@ depend:
 ../objs/linux/gmenu2x.o: /usr/include/bits/sigcontext.h
 ../objs/linux/gmenu2x.o: /usr/include/bits/sigstack.h
 ../objs/linux/gmenu2x.o: /usr/include/sys/ucontext.h
-../objs/linux/gmenu2x.o: /usr/include/bits/sigthread.h /usr/include/sys/vfs.h
-../objs/linux/gmenu2x.o: /usr/include/sys/statfs.h /usr/include/bits/statfs.h
-../objs/linux/gmenu2x.o: /usr/include/errno.h /usr/include/bits/errno.h
-../objs/linux/gmenu2x.o: /usr/include/linux/errno.h /usr/include/asm/errno.h
+../objs/linux/gmenu2x.o: /usr/include/bits/sigthread.h
+../objs/linux/gmenu2x.o: /usr/include/sys/statvfs.h
+../objs/linux/gmenu2x.o: /usr/include/bits/statvfs.h /usr/include/errno.h
+../objs/linux/gmenu2x.o: /usr/include/bits/errno.h /usr/include/linux/errno.h
+../objs/linux/gmenu2x.o: /usr/include/asm/errno.h
 ../objs/linux/gmenu2x.o: /usr/include/asm-generic/errno.h
 ../objs/linux/gmenu2x.o: /usr/include/asm-generic/errno-base.h gp2x.h
 ../objs/linux/gmenu2x.o: /usr/include/linux/types.h
@@ -421,9 +425,12 @@ depend:
 ../objs/linux/gmenu2x.o: /usr/include/linux/stddef.h
 ../objs/linux/gmenu2x.o: /usr/include/asm/posix_types.h
 ../objs/linux/gmenu2x.o: /usr/include/asm/posix_types_64.h
-../objs/linux/gmenu2x.o: /usr/include/asm/types.h /usr/include/sys/stat.h
-../objs/linux/gmenu2x.o: /usr/include/bits/stat.h /usr/include/dirent.h
-../objs/linux/gmenu2x.o: /usr/include/bits/dirent.h
+../objs/linux/gmenu2x.o: /usr/include/asm/types.h
+../objs/linux/gmenu2x.o: /usr/include/asm-generic/int-ll64.h
+../objs/linux/gmenu2x.o: /usr/include/sys/fcntl.h /usr/include/fcntl.h
+../objs/linux/gmenu2x.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
+../objs/linux/gmenu2x.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
+../objs/linux/gmenu2x.o: /usr/include/dirent.h /usr/include/bits/dirent.h
 ../objs/linux/gmenu2x.o: /usr/include/bits/posix1_lim.h
 ../objs/linux/gmenu2x.o: /usr/include/bits/local_lim.h
 ../objs/linux/gmenu2x.o: /usr/include/linux/limits.h /usr/include/sys/ioctl.h
@@ -440,8 +447,7 @@ depend:
 ../objs/linux/gmenu2x.o: /usr/include/SDL/SDL_image.h filedialog.h
 ../objs/linux/gmenu2x.o: filelister.h gmenu2x.h surfacecollection.h
 ../objs/linux/gmenu2x.o: utilities.h iconbutton.h translator.h touchscreen.h
-../objs/linux/gmenu2x.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
-../objs/linux/gmenu2x.o: /usr/include/bits/uio.h messagebox.h inputdialog.h
+../objs/linux/gmenu2x.o: inputmanager.h messagebox.h inputdialog.h
 ../objs/linux/gmenu2x.o: settingsdialog.h menusetting.h wallpaperdialog.h
 ../objs/linux/gmenu2x.o: textdialog.h menusettingint.h menusettingbool.h
 ../objs/linux/gmenu2x.o: menusettingrgba.h menusettingstring.h
@@ -513,6 +519,7 @@ depend:
 ../objs/linux/iconbutton.o: touchscreen.h /usr/include/fcntl.h
 ../objs/linux/iconbutton.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
 ../objs/linux/iconbutton.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
+../objs/linux/iconbutton.o: inputmanager.h
 ../objs/linux/imagedialog.o: /usr/include/SDL/SDL.h
 ../objs/linux/imagedialog.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/imagedialog.o: /usr/include/SDL/SDL_stdinc.h
@@ -585,7 +592,7 @@ depend:
 ../objs/linux/imagedialog.o: FastDelegate.h /usr/include/memory.h
 ../objs/linux/imagedialog.o: translator.h touchscreen.h /usr/include/fcntl.h
 ../objs/linux/imagedialog.o: /usr/include/bits/fcntl.h
-../objs/linux/imagedialog.o: /usr/include/bits/uio.h
+../objs/linux/imagedialog.o: /usr/include/bits/uio.h inputmanager.h
 ../objs/linux/inputdialog.o: /usr/include/SDL/SDL.h
 ../objs/linux/inputdialog.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/inputdialog.o: /usr/include/SDL/SDL_stdinc.h
@@ -653,57 +660,70 @@ depend:
 ../objs/linux/inputdialog.o: translator.h touchscreen.h /usr/include/fcntl.h
 ../objs/linux/inputdialog.o: /usr/include/bits/fcntl.h
 ../objs/linux/inputdialog.o: /usr/include/bits/uio.h /usr/include/sys/stat.h
-../objs/linux/inputdialog.o: /usr/include/bits/stat.h
-../objs/linux/joystick.o: joystick.h /usr/include/SDL/SDL.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_main.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_stdinc.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_config.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_platform.h
-../objs/linux/joystick.o: /usr/include/sys/types.h /usr/include/features.h
-../objs/linux/joystick.o: /usr/include/sys/cdefs.h
-../objs/linux/joystick.o: /usr/include/bits/wordsize.h
-../objs/linux/joystick.o: /usr/include/gnu/stubs.h
-../objs/linux/joystick.o: /usr/include/gnu/stubs-64.h
-../objs/linux/joystick.o: /usr/include/bits/types.h
-../objs/linux/joystick.o: /usr/include/bits/typesizes.h /usr/include/time.h
-../objs/linux/joystick.o: /usr/include/endian.h /usr/include/bits/endian.h
-../objs/linux/joystick.o: /usr/include/sys/select.h
-../objs/linux/joystick.o: /usr/include/bits/select.h
-../objs/linux/joystick.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
-../objs/linux/joystick.o: /usr/include/sys/sysmacros.h
-../objs/linux/joystick.o: /usr/include/bits/pthreadtypes.h
-../objs/linux/joystick.o: /usr/include/stdio.h /usr/include/libio.h
-../objs/linux/joystick.o: /usr/include/_G_config.h /usr/include/wchar.h
-../objs/linux/joystick.o: /usr/include/bits/stdio_lim.h
-../objs/linux/joystick.o: /usr/include/bits/sys_errlist.h
-../objs/linux/joystick.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
-../objs/linux/joystick.o: /usr/include/bits/waitstatus.h
-../objs/linux/joystick.o: /usr/include/xlocale.h /usr/include/alloca.h
-../objs/linux/joystick.o: /usr/include/string.h /usr/include/strings.h
-../objs/linux/joystick.o: /usr/include/inttypes.h /usr/include/stdint.h
-../objs/linux/joystick.o: /usr/include/bits/wchar.h /usr/include/ctype.h
-../objs/linux/joystick.o: /usr/include/iconv.h /usr/include/SDL/begin_code.h
-../objs/linux/joystick.o: /usr/include/SDL/close_code.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_audio.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_error.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_endian.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_mutex.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_thread.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_rwops.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_cdrom.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_cpuinfo.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_events.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_active.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_keyboard.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_keysym.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_mouse.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_video.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_joystick.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_quit.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_loadso.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_timer.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_version.h
-../objs/linux/joystick.o: /usr/include/SDL/SDL_image.h
+../objs/linux/inputdialog.o: /usr/include/bits/stat.h inputmanager.h
+../objs/linux/inputmanager.o: inputmanager.h /usr/include/SDL/SDL.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_main.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_stdinc.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_config.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_platform.h
+../objs/linux/inputmanager.o: /usr/include/sys/types.h
+../objs/linux/inputmanager.o: /usr/include/features.h
+../objs/linux/inputmanager.o: /usr/include/sys/cdefs.h
+../objs/linux/inputmanager.o: /usr/include/bits/wordsize.h
+../objs/linux/inputmanager.o: /usr/include/gnu/stubs.h
+../objs/linux/inputmanager.o: /usr/include/gnu/stubs-64.h
+../objs/linux/inputmanager.o: /usr/include/bits/types.h
+../objs/linux/inputmanager.o: /usr/include/bits/typesizes.h
+../objs/linux/inputmanager.o: /usr/include/time.h /usr/include/endian.h
+../objs/linux/inputmanager.o: /usr/include/bits/endian.h
+../objs/linux/inputmanager.o: /usr/include/sys/select.h
+../objs/linux/inputmanager.o: /usr/include/bits/select.h
+../objs/linux/inputmanager.o: /usr/include/bits/sigset.h
+../objs/linux/inputmanager.o: /usr/include/bits/time.h
+../objs/linux/inputmanager.o: /usr/include/sys/sysmacros.h
+../objs/linux/inputmanager.o: /usr/include/bits/pthreadtypes.h
+../objs/linux/inputmanager.o: /usr/include/stdio.h /usr/include/libio.h
+../objs/linux/inputmanager.o: /usr/include/_G_config.h /usr/include/wchar.h
+../objs/linux/inputmanager.o: /usr/include/bits/stdio_lim.h
+../objs/linux/inputmanager.o: /usr/include/bits/sys_errlist.h
+../objs/linux/inputmanager.o: /usr/include/stdlib.h
+../objs/linux/inputmanager.o: /usr/include/bits/waitflags.h
+../objs/linux/inputmanager.o: /usr/include/bits/waitstatus.h
+../objs/linux/inputmanager.o: /usr/include/xlocale.h /usr/include/alloca.h
+../objs/linux/inputmanager.o: /usr/include/string.h /usr/include/strings.h
+../objs/linux/inputmanager.o: /usr/include/inttypes.h /usr/include/stdint.h
+../objs/linux/inputmanager.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+../objs/linux/inputmanager.o: /usr/include/iconv.h
+../objs/linux/inputmanager.o: /usr/include/SDL/begin_code.h
+../objs/linux/inputmanager.o: /usr/include/SDL/close_code.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_audio.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_error.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_endian.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_mutex.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_thread.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_rwops.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_cdrom.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_cpuinfo.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_events.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_active.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_keyboard.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_keysym.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_mouse.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_video.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_joystick.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_quit.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_loadso.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_timer.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_version.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_image.h utilities.h
+../objs/linux/inputmanager.o: /usr/include/SDL/SDL_gfxPrimitives.h
+../objs/linux/inputmanager.o: /usr/include/math.h
+../objs/linux/inputmanager.o: /usr/include/bits/huge_val.h
+../objs/linux/inputmanager.o: /usr/include/bits/huge_valf.h
+../objs/linux/inputmanager.o: /usr/include/bits/huge_vall.h
+../objs/linux/inputmanager.o: /usr/include/bits/inf.h /usr/include/bits/nan.h
+../objs/linux/inputmanager.o: /usr/include/bits/mathdef.h
+../objs/linux/inputmanager.o: /usr/include/bits/mathcalls.h
 ../objs/linux/link.o: link.h button.h /usr/include/SDL/SDL.h
 ../objs/linux/link.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/link.o: /usr/include/SDL/SDL_stdinc.h
@@ -760,6 +780,7 @@ depend:
 ../objs/linux/link.o: touchscreen.h /usr/include/fcntl.h
 ../objs/linux/link.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
 ../objs/linux/link.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
+../objs/linux/link.o: inputmanager.h
 ../objs/linux/linkaction.o: linkaction.h FastDelegate.h /usr/include/memory.h
 ../objs/linux/linkaction.o: /usr/include/features.h /usr/include/sys/cdefs.h
 ../objs/linux/linkaction.o: /usr/include/bits/wordsize.h
@@ -875,7 +896,7 @@ depend:
 ../objs/linux/linkapp.o: /usr/include/bits/mathcalls.h iconbutton.h
 ../objs/linux/linkapp.o: translator.h touchscreen.h /usr/include/fcntl.h
 ../objs/linux/linkapp.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
-../objs/linux/linkapp.o: textmanualdialog.h textdialog.h
+../objs/linux/linkapp.o: inputmanager.h textmanualdialog.h textdialog.h
 ../objs/linux/listview.o: listview.h gmenu2x.h surfacecollection.h surface.h
 ../objs/linux/listview.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
 ../objs/linux/listview.o: /usr/include/SDL/SDL_stdinc.h
@@ -937,7 +958,7 @@ depend:
 ../objs/linux/listview.o: touchscreen.h /usr/include/fcntl.h
 ../objs/linux/listview.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
 ../objs/linux/listview.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
-../objs/linux/listview.o: listviewitem.h
+../objs/linux/listview.o: inputmanager.h listviewitem.h
 ../objs/linux/listviewitem.o: listview.h gmenu2x.h surfacecollection.h
 ../objs/linux/listviewitem.o: surface.h /usr/include/SDL/SDL.h
 ../objs/linux/listviewitem.o: /usr/include/SDL/SDL_main.h
@@ -1007,7 +1028,8 @@ depend:
 ../objs/linux/listviewitem.o: translator.h touchscreen.h /usr/include/fcntl.h
 ../objs/linux/listviewitem.o: /usr/include/bits/fcntl.h
 ../objs/linux/listviewitem.o: /usr/include/bits/uio.h /usr/include/sys/stat.h
-../objs/linux/listviewitem.o: /usr/include/bits/stat.h listviewitem.h
+../objs/linux/listviewitem.o: /usr/include/bits/stat.h inputmanager.h
+../objs/linux/listviewitem.o: listviewitem.h
 ../objs/linux/menu.o: /usr/include/sys/stat.h /usr/include/features.h
 ../objs/linux/menu.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
 ../objs/linux/menu.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
@@ -1021,7 +1043,12 @@ depend:
 ../objs/linux/menu.o: /usr/include/bits/dirent.h
 ../objs/linux/menu.o: /usr/include/bits/posix1_lim.h
 ../objs/linux/menu.o: /usr/include/bits/local_lim.h
-../objs/linux/menu.o: /usr/include/linux/limits.h gmenu2x.h
+../objs/linux/menu.o: /usr/include/linux/limits.h /usr/include/math.h
+../objs/linux/menu.o: /usr/include/bits/huge_val.h
+../objs/linux/menu.o: /usr/include/bits/huge_valf.h
+../objs/linux/menu.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
+../objs/linux/menu.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
+../objs/linux/menu.o: /usr/include/bits/mathcalls.h gmenu2x.h
 ../objs/linux/menu.o: surfacecollection.h surface.h /usr/include/SDL/SDL.h
 ../objs/linux/menu.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/menu.o: /usr/include/SDL/SDL_stdinc.h
@@ -1059,15 +1086,11 @@ depend:
 ../objs/linux/menu.o: /usr/include/SDL/SDL_version.h
 ../objs/linux/menu.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
 ../objs/linux/menu.o: utilities.h /usr/include/SDL/SDL_gfxPrimitives.h
-../objs/linux/menu.o: /usr/include/math.h /usr/include/bits/huge_val.h
-../objs/linux/menu.o: /usr/include/bits/huge_valf.h
-../objs/linux/menu.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
-../objs/linux/menu.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
-../objs/linux/menu.o: /usr/include/bits/mathcalls.h iconbutton.h button.h
-../objs/linux/menu.o: FastDelegate.h /usr/include/memory.h translator.h
-../objs/linux/menu.o: touchscreen.h /usr/include/fcntl.h
-../objs/linux/menu.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
-../objs/linux/menu.o: linkapp.h link.h menu.h linkaction.h filelister.h
+../objs/linux/menu.o: iconbutton.h button.h FastDelegate.h
+../objs/linux/menu.o: /usr/include/memory.h translator.h touchscreen.h
+../objs/linux/menu.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+../objs/linux/menu.o: /usr/include/bits/uio.h inputmanager.h linkapp.h link.h
+../objs/linux/menu.o: menu.h linkaction.h filelister.h
 ../objs/linux/menusetting.o: menusetting.h gmenu2x.h surfacecollection.h
 ../objs/linux/menusetting.o: surface.h /usr/include/SDL/SDL.h
 ../objs/linux/menusetting.o: /usr/include/SDL/SDL_main.h
@@ -1135,7 +1158,7 @@ depend:
 ../objs/linux/menusetting.o: translator.h touchscreen.h /usr/include/fcntl.h
 ../objs/linux/menusetting.o: /usr/include/bits/fcntl.h
 ../objs/linux/menusetting.o: /usr/include/bits/uio.h /usr/include/sys/stat.h
-../objs/linux/menusetting.o: /usr/include/bits/stat.h
+../objs/linux/menusetting.o: /usr/include/bits/stat.h inputmanager.h
 ../objs/linux/menusettingbool.o: menusettingbool.h iconbutton.h button.h
 ../objs/linux/menusettingbool.o: /usr/include/SDL/SDL.h
 ../objs/linux/menusettingbool.o: /usr/include/SDL/SDL_main.h
@@ -1210,7 +1233,7 @@ depend:
 ../objs/linux/menusettingbool.o: /usr/include/bits/fcntl.h
 ../objs/linux/menusettingbool.o: /usr/include/bits/uio.h
 ../objs/linux/menusettingbool.o: /usr/include/sys/stat.h
-../objs/linux/menusettingbool.o: /usr/include/bits/stat.h
+../objs/linux/menusettingbool.o: /usr/include/bits/stat.h inputmanager.h
 ../objs/linux/menusettingdir.o: menusettingdir.h gmenu2x.h
 ../objs/linux/menusettingdir.o: surfacecollection.h surface.h
 ../objs/linux/menusettingdir.o: /usr/include/SDL/SDL.h
@@ -1284,8 +1307,8 @@ depend:
 ../objs/linux/menusettingdir.o: /usr/include/bits/fcntl.h
 ../objs/linux/menusettingdir.o: /usr/include/bits/uio.h
 ../objs/linux/menusettingdir.o: /usr/include/sys/stat.h
-../objs/linux/menusettingdir.o: /usr/include/bits/stat.h menusetting.h
-../objs/linux/menusettingdir.o: dirdialog.h
+../objs/linux/menusettingdir.o: /usr/include/bits/stat.h inputmanager.h
+../objs/linux/menusettingdir.o: menusetting.h dirdialog.h
 ../objs/linux/menusettingfile.o: menusettingfile.h gmenu2x.h
 ../objs/linux/menusettingfile.o: surfacecollection.h surface.h
 ../objs/linux/menusettingfile.o: /usr/include/SDL/SDL.h
@@ -1361,8 +1384,8 @@ depend:
 ../objs/linux/menusettingfile.o: /usr/include/bits/fcntl.h
 ../objs/linux/menusettingfile.o: /usr/include/bits/uio.h
 ../objs/linux/menusettingfile.o: /usr/include/sys/stat.h
-../objs/linux/menusettingfile.o: /usr/include/bits/stat.h menusetting.h
-../objs/linux/menusettingfile.o: filedialog.h filelister.h
+../objs/linux/menusettingfile.o: /usr/include/bits/stat.h inputmanager.h
+../objs/linux/menusettingfile.o: menusetting.h filedialog.h filelister.h
 ../objs/linux/menusettingimage.o: menusettingimage.h gmenu2x.h
 ../objs/linux/menusettingimage.o: surfacecollection.h surface.h
 ../objs/linux/menusettingimage.o: /usr/include/SDL/SDL.h
@@ -1439,9 +1462,9 @@ depend:
 ../objs/linux/menusettingimage.o: /usr/include/bits/fcntl.h
 ../objs/linux/menusettingimage.o: /usr/include/bits/uio.h
 ../objs/linux/menusettingimage.o: /usr/include/sys/stat.h
-../objs/linux/menusettingimage.o: /usr/include/bits/stat.h menusettingfile.h
-../objs/linux/menusettingimage.o: menusetting.h imagedialog.h filedialog.h
-../objs/linux/menusettingimage.o: filelister.h
+../objs/linux/menusettingimage.o: /usr/include/bits/stat.h inputmanager.h
+../objs/linux/menusettingimage.o: menusettingfile.h menusetting.h
+../objs/linux/menusettingimage.o: imagedialog.h filedialog.h filelister.h
 ../objs/linux/menusettingint.o: menusettingint.h iconbutton.h button.h
 ../objs/linux/menusettingint.o: /usr/include/SDL/SDL.h
 ../objs/linux/menusettingint.o: /usr/include/SDL/SDL_main.h
@@ -1514,7 +1537,7 @@ depend:
 ../objs/linux/menusettingint.o: /usr/include/bits/fcntl.h
 ../objs/linux/menusettingint.o: /usr/include/bits/uio.h
 ../objs/linux/menusettingint.o: /usr/include/sys/stat.h
-../objs/linux/menusettingint.o: /usr/include/bits/stat.h
+../objs/linux/menusettingint.o: /usr/include/bits/stat.h inputmanager.h
 ../objs/linux/menusettingmultistring.o: menusettingmultistring.h gmenu2x.h
 ../objs/linux/menusettingmultistring.o: surfacecollection.h surface.h
 ../objs/linux/menusettingmultistring.o: /usr/include/SDL/SDL.h
@@ -1596,7 +1619,7 @@ depend:
 ../objs/linux/menusettingmultistring.o: /usr/include/bits/uio.h
 ../objs/linux/menusettingmultistring.o: /usr/include/sys/stat.h
 ../objs/linux/menusettingmultistring.o: /usr/include/bits/stat.h
-../objs/linux/menusettingmultistring.o: menusetting.h
+../objs/linux/menusettingmultistring.o: inputmanager.h menusetting.h
 ../objs/linux/menusettingrgba.o: menusettingrgba.h gmenu2x.h
 ../objs/linux/menusettingrgba.o: surfacecollection.h surface.h
 ../objs/linux/menusettingrgba.o: /usr/include/SDL/SDL.h
@@ -1672,7 +1695,8 @@ depend:
 ../objs/linux/menusettingrgba.o: /usr/include/bits/fcntl.h
 ../objs/linux/menusettingrgba.o: /usr/include/bits/uio.h
 ../objs/linux/menusettingrgba.o: /usr/include/sys/stat.h
-../objs/linux/menusettingrgba.o: /usr/include/bits/stat.h menusetting.h
+../objs/linux/menusettingrgba.o: /usr/include/bits/stat.h inputmanager.h
+../objs/linux/menusettingrgba.o: menusetting.h
 ../objs/linux/menusettingstring.o: menusettingstring.h gmenu2x.h
 ../objs/linux/menusettingstring.o: surfacecollection.h surface.h
 ../objs/linux/menusettingstring.o: /usr/include/SDL/SDL.h
@@ -1750,8 +1774,8 @@ depend:
 ../objs/linux/menusettingstring.o: /usr/include/bits/fcntl.h
 ../objs/linux/menusettingstring.o: /usr/include/bits/uio.h
 ../objs/linux/menusettingstring.o: /usr/include/sys/stat.h
-../objs/linux/menusettingstring.o: /usr/include/bits/stat.h menusetting.h
-../objs/linux/menusettingstring.o: inputdialog.h
+../objs/linux/menusettingstring.o: /usr/include/bits/stat.h inputmanager.h
+../objs/linux/menusettingstring.o: menusetting.h inputdialog.h
 ../objs/linux/messagebox.o: /usr/include/SDL/SDL.h
 ../objs/linux/messagebox.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/messagebox.o: /usr/include/SDL/SDL_stdinc.h
@@ -1810,20 +1834,14 @@ depend:
 ../objs/linux/messagebox.o: /usr/include/bits/huge_vall.h
 ../objs/linux/messagebox.o: /usr/include/bits/inf.h /usr/include/bits/nan.h
 ../objs/linux/messagebox.o: /usr/include/bits/mathdef.h
-../objs/linux/messagebox.o: /usr/include/bits/mathcalls.h gp2x.h
-../objs/linux/messagebox.o: /usr/include/linux/types.h
-../objs/linux/messagebox.o: /usr/include/linux/posix_types.h
-../objs/linux/messagebox.o: /usr/include/linux/stddef.h
-../objs/linux/messagebox.o: /usr/include/asm/posix_types.h
-../objs/linux/messagebox.o: /usr/include/asm/posix_types_64.h
-../objs/linux/messagebox.o: /usr/include/asm/types.h messagebox.h gmenu2x.h
-../objs/linux/messagebox.o: surfacecollection.h surface.h
+../objs/linux/messagebox.o: /usr/include/bits/mathcalls.h messagebox.h
+../objs/linux/messagebox.o: gmenu2x.h surfacecollection.h surface.h
 ../objs/linux/messagebox.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
 ../objs/linux/messagebox.o: utilities.h iconbutton.h button.h FastDelegate.h
 ../objs/linux/messagebox.o: /usr/include/memory.h translator.h touchscreen.h
 ../objs/linux/messagebox.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 ../objs/linux/messagebox.o: /usr/include/bits/uio.h /usr/include/sys/stat.h
-../objs/linux/messagebox.o: /usr/include/bits/stat.h
+../objs/linux/messagebox.o: /usr/include/bits/stat.h inputmanager.h
 ../objs/linux/selector.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
 ../objs/linux/selector.o: /usr/include/SDL/SDL_stdinc.h
 ../objs/linux/selector.o: /usr/include/SDL/SDL_config.h
@@ -1890,7 +1908,7 @@ depend:
 ../objs/linux/selector.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
 ../objs/linux/selector.o: utilities.h iconbutton.h translator.h touchscreen.h
 ../objs/linux/selector.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
-../objs/linux/selector.o: /usr/include/bits/uio.h filelister.h
+../objs/linux/selector.o: /usr/include/bits/uio.h inputmanager.h filelister.h
 ../objs/linux/settingsdialog.o: /usr/include/SDL/SDL.h
 ../objs/linux/settingsdialog.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/settingsdialog.o: /usr/include/SDL/SDL_stdinc.h
@@ -1964,7 +1982,8 @@ depend:
 ../objs/linux/settingsdialog.o: /usr/include/bits/fcntl.h
 ../objs/linux/settingsdialog.o: /usr/include/bits/uio.h
 ../objs/linux/settingsdialog.o: /usr/include/sys/stat.h
-../objs/linux/settingsdialog.o: /usr/include/bits/stat.h menusetting.h
+../objs/linux/settingsdialog.o: /usr/include/bits/stat.h inputmanager.h
+../objs/linux/settingsdialog.o: menusetting.h
 ../objs/linux/sfontplus.o: sfontplus.h /usr/include/SDL/SDL.h
 ../objs/linux/sfontplus.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/sfontplus.o: /usr/include/SDL/SDL_stdinc.h
@@ -2207,6 +2226,7 @@ depend:
 ../objs/linux/textdialog.o: translator.h touchscreen.h /usr/include/fcntl.h
 ../objs/linux/textdialog.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
 ../objs/linux/textdialog.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
+../objs/linux/textdialog.o: inputmanager.h
 ../objs/linux/textmanualdialog.o: textmanualdialog.h textdialog.h gmenu2x.h
 ../objs/linux/textmanualdialog.o: surfacecollection.h surface.h
 ../objs/linux/textmanualdialog.o: /usr/include/SDL/SDL.h
@@ -2283,7 +2303,7 @@ depend:
 ../objs/linux/textmanualdialog.o: /usr/include/bits/fcntl.h
 ../objs/linux/textmanualdialog.o: /usr/include/bits/uio.h
 ../objs/linux/textmanualdialog.o: /usr/include/sys/stat.h
-../objs/linux/textmanualdialog.o: /usr/include/bits/stat.h
+../objs/linux/textmanualdialog.o: /usr/include/bits/stat.h inputmanager.h
 ../objs/linux/touchscreen.o: /usr/include/unistd.h /usr/include/features.h
 ../objs/linux/touchscreen.o: /usr/include/sys/cdefs.h
 ../objs/linux/touchscreen.o: /usr/include/bits/wordsize.h
@@ -2540,4 +2560,5 @@ depend:
 ../objs/linux/wallpaperdialog.o: /usr/include/bits/fcntl.h
 ../objs/linux/wallpaperdialog.o: /usr/include/bits/uio.h
 ../objs/linux/wallpaperdialog.o: /usr/include/sys/stat.h
-../objs/linux/wallpaperdialog.o: /usr/include/bits/stat.h filelister.h
+../objs/linux/wallpaperdialog.o: /usr/include/bits/stat.h inputmanager.h
+../objs/linux/wallpaperdialog.o: filelister.h

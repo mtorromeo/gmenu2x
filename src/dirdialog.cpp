@@ -26,9 +26,6 @@
 #include <sys/types.h>
 #include <dirent.h>
 
-#ifdef TARGET_GP2X
-#include "gp2x.h"
-#endif
 #include "dirdialog.h"
 #include "filelister.h"
 
@@ -84,36 +81,35 @@ bool DirDialog::exec() {
 		gmenu2x->s->flip();
 
 
-#ifdef TARGET_GP2X
 		gmenu2x->joy.update();
-		if ( gmenu2x->joy[GP2X_BUTTON_SELECT] ) { close = true; result = false; }
-		if ( gmenu2x->joy[GP2X_BUTTON_UP    ] ) {
+		if ( gmenu2x->joy[ACTION_SELECT] ) { close = true; result = false; }
+		if ( gmenu2x->joy[ACTION_UP    ] ) {
 			if (selected==0)
 				selected = fl.size()-1;
 			else
 				selected -= 1;
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_L     ] ) {
+		if ( gmenu2x->joy[ACTION_L     ] ) {
 			if ((int)(selected-9)<0) {
 				selected = 0;
 			} else {
 				selected -= 9;
 			}
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_DOWN  ] ) {
+		if ( gmenu2x->joy[ACTION_DOWN  ] ) {
 			if (selected+1>=fl.size())
 				selected = 0;
 			else
 				selected += 1;
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_R     ] ) {
+		if ( gmenu2x->joy[ACTION_R     ] ) {
 			if (selected+9>=fl.size()) {
 				selected = fl.size()-1;
 			} else {
 				selected += 9;
 			}
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_X] || gmenu2x->joy[GP2X_BUTTON_LEFT] ) {
+		if ( gmenu2x->joy[ACTION_X] || gmenu2x->joy[ACTION_LEFT] ) {
 			string::size_type p = path.rfind("/");
 			if (p==string::npos || path.substr(0,4)!="/mnt" || p<4)
 				return false;
@@ -122,47 +118,12 @@ bool DirDialog::exec() {
 			selected = 0;
 			fl.setPath(path);
 		}
-		if ( (gmenu2x->joy[GP2X_BUTTON_B] || gmenu2x->joy[GP2X_BUTTON_CLICK]) && selected<fl.size() ) {
+		if ( gmenu2x->joy[ACTION_B] && selected<fl.size() ) {
 			path += "/"+fl[selected];
 			selected = 0;
 			fl.setPath(path);
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_START] ) close = true;
-#else
-		while (SDL_PollEvent(&gmenu2x->event)) {
-			if ( gmenu2x->event.type == SDL_QUIT ) { close = true; result = false; }
-			if ( gmenu2x->event.type==SDL_KEYDOWN ) {
-				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) { close = true; result = false; }
-				if ( gmenu2x->event.key.keysym.sym==SDLK_UP ) {
-					if (selected==0) {
-						selected = fl.size()-1;
-					} else
-						selected -= 1;
-				}
-				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN ) {
-					if (selected+1>=fl.size())
-						selected = 0;
-					else
-						selected += 1;
-				}
-				if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) {
-					string::size_type p = path.rfind("/");
-					if (p==string::npos || path.substr(0,4)!="/mnt" || p<4)
-						return false;
-					else
-						path = path.substr(0,p);
-					selected = 0;
-					fl.setPath(path);
-				}
-				if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN && selected<fl.size()) {
-					path += "/"+fl[selected];
-					selected = 0;
-					fl.setPath(path);
-				}
-				if ( gmenu2x->event.key.keysym.sym==SDLK_s ) close = true;
-			}
-		}
-#endif
+		if ( gmenu2x->joy[ACTION_START] ) close = true;
 	}
 
 	return result;

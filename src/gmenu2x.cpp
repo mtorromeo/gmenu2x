@@ -32,11 +32,7 @@
 #include <errno.h>
 
 #include "gp2x.h"
-#ifdef TARGET_GP2X
-//#include <SDL_gp2x.h>
-#include <SDL_joystick.h>
 #include <sys/fcntl.h> //for battery
-#endif
 
 //for browsing the filesystem
 #include <sys/stat.h>
@@ -255,7 +251,6 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	}
 
 	s = new Surface();
-	SDL_JoystickOpen(0);
 #ifdef TARGET_GP2X
 	{
 		//I use a tmp variable to hide the cursor as soon as possible (and create the double buffer surface only after that)
@@ -288,13 +283,8 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	}
 
 	initBG();
-
-	//Events
-#ifdef TARGET_GP2X
-	joy.init(0);
-#endif
+	joy.init(path+"input.conf");
 	setInputSpeed();
-
 	initServices();
 
 	//G
@@ -509,9 +499,9 @@ void GMenu2X::viewLog() {
 			td.exec();
 
 			MessageBox mb(this, tr["Do you want to delete the log file?"], "icons/ebook.png");
-			mb.buttons[GP2X_BUTTON_B] = tr["Yes"];
-			mb.buttons[GP2X_BUTTON_X] = tr["No"];
-			if (mb.exec() == GP2X_BUTTON_B) {
+			mb.buttons[ACTION_B] = tr["Yes"];
+			mb.buttons[ACTION_X] = tr["No"];
+			if (mb.exec() == ACTION_B) {
 				ledOn();
 				unlink(logfile.c_str());
 				sync();
@@ -891,12 +881,7 @@ int GMenu2X::main() {
 		sc.skinRes(batteryIcon)->blit( s, 301, 222 );
 
 		//On Screen Help
-#ifdef TARGET_GP2X
-		if (joy[GP2X_BUTTON_A])
-#else
-		if (event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_h)
-#endif
-		{
+		if (joy[ACTION_A]) {
 			s->box(10,50,300,143, messageBoxColor);
 			s->rectangle( 12,52,296,helpBoxHeight, messageBoxBorderColor );
 			s->write( font, tr["CONTROLS"], 20, 60 );
@@ -950,13 +935,13 @@ int GMenu2X::main() {
 			}
 		}
 
-#ifdef TARGET_GP2X
+//#ifdef TARGET_GP2X
 		joy.update();
-		if ( (joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK]) && menu->selLink()!=NULL ) menu->selLink()->run();
-		else if ( joy[GP2X_BUTTON_START]  ) options();
-		else if ( joy[GP2X_BUTTON_SELECT] ) contextMenu();
+		if ( joy[ACTION_B] && menu->selLink()!=NULL ) menu->selLink()->run();
+		else if ( joy[ACTION_START]  ) options();
+		else if ( joy[ACTION_SELECT] ) contextMenu();
 		// VOLUME SCALE MODIFIER
-		else if ( joy[GP2X_BUTTON_X] ) {
+		else if ( joy[ACTION_X] ) {
 			volumeMode = constrain(volumeMode-1, -VOLUME_MODE_MUTE-1, VOLUME_MODE_NORMAL);
 			if(volumeMode < VOLUME_MODE_MUTE)
 				volumeMode = VOLUME_MODE_NORMAL;
@@ -968,43 +953,43 @@ int GMenu2X::main() {
 			setVolume(getVolume());
 		}
 		// LINK NAVIGATION
-		else if ( joy[GP2X_BUTTON_LEFT ]  ) menu->linkLeft();
-		else if ( joy[GP2X_BUTTON_RIGHT]  ) menu->linkRight();
-		else if ( joy[GP2X_BUTTON_UP   ]  ) menu->linkUp();
-		else if ( joy[GP2X_BUTTON_DOWN ]  ) menu->linkDown();
+		else if ( joy[ACTION_LEFT ]  ) menu->linkLeft();
+		else if ( joy[ACTION_RIGHT]  ) menu->linkRight();
+		else if ( joy[ACTION_UP   ]  ) menu->linkUp();
+		else if ( joy[ACTION_DOWN ]  ) menu->linkDown();
 		// SELLINKAPP SELECTED
 		else if (menu->selLinkApp()!=NULL) {
-			if ( joy[GP2X_BUTTON_Y] ) menu->selLinkApp()->showManual();
-			else if ( joy.isDown(GP2X_BUTTON_A) ) {
+			if ( joy[ACTION_Y] ) menu->selLinkApp()->showManual();
+			else if ( joy.isActive(ACTION_A) ) {
 				// VOLUME
-				if ( joy[GP2X_BUTTON_VOLDOWN] && !joy.isDown(GP2X_BUTTON_VOLUP) )
+				if ( joy[ACTION_VOLDOWN] && !joy.isActive(ACTION_VOLUP) )
 					menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()-1,0,100) );
-				if ( joy[GP2X_BUTTON_VOLUP] && !joy.isDown(GP2X_BUTTON_VOLDOWN) )
+				if ( joy[ACTION_VOLUP] && !joy.isActive(ACTION_VOLDOWN) )
 					menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()+1,0,100) );;
-				if ( joy.isDown(GP2X_BUTTON_VOLUP) && joy.isDown(GP2X_BUTTON_VOLDOWN) ) menu->selLinkApp()->setVolume(-1);
+				if ( joy.isActive(ACTION_VOLUP) && joy.isActive(ACTION_VOLDOWN) ) menu->selLinkApp()->setVolume(-1);
 			} else {
 				// CLOCK
-				if ( joy[GP2X_BUTTON_VOLDOWN] && !joy.isDown(GP2X_BUTTON_VOLUP) )
+				if ( joy[ACTION_VOLDOWN] && !joy.isActive(ACTION_VOLUP) )
 					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-1,50,maxClock) );
-				if ( joy[GP2X_BUTTON_VOLUP] && !joy.isDown(GP2X_BUTTON_VOLDOWN) )
+				if ( joy[ACTION_VOLUP] && !joy.isActive(ACTION_VOLDOWN) )
 					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+1,50,maxClock) );
-				if ( joy.isDown(GP2X_BUTTON_VOLUP) && joy.isDown(GP2X_BUTTON_VOLDOWN) ) menu->selLinkApp()->setClock(200);
+				if ( joy.isActive(ACTION_VOLUP) && joy.isActive(ACTION_VOLDOWN) ) menu->selLinkApp()->setClock(200);
 			}
 		}
-		if ( joy.isDown(GP2X_BUTTON_A) ) {
-			if (joy.isDown(GP2X_BUTTON_L) && joy.isDown(GP2X_BUTTON_R))
+		if ( joy.isActive(ACTION_A) ) {
+			if (joy.isActive(ACTION_L) && joy.isActive(ACTION_R))
 				saveScreenshot();
 		} else {
 			// SECTIONS
-			if ( joy[GP2X_BUTTON_L     ] ) {
+			if ( joy[ACTION_L     ] ) {
 				menu->decSectionIndex();
 				offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
-			} else if ( joy[GP2X_BUTTON_R     ] ) {
+			} else if ( joy[ACTION_R     ] ) {
 				menu->incSectionIndex();
 				offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
 			}
 		}
-#else
+/*#else
 		while (SDL_PollEvent(&event)) {
 			if ( event.type == SDL_QUIT ) quit = true;
 			if ( event.type==SDL_KEYDOWN ) {
@@ -1040,7 +1025,7 @@ int GMenu2X::main() {
 				if ( event.key.keysym.sym==SDLK_SPACE  ) contextMenu();
 			}
 		}
-#endif
+#endif*/
 	}
 
 	return -1;
@@ -1277,7 +1262,7 @@ void GMenu2X::activateSdUsb() {
 	} else {
 		system("scripts/usbon.sh sd");
 		MessageBox mb(this,tr["USB Enabled (SD)"],"icons/usb.png");
-		mb.buttons[GP2X_BUTTON_B] = tr["Turn off"];
+		mb.buttons[ACTION_B] = tr["Turn off"];
 		mb.exec();
 		system("scripts/usboff.sh sd");
 	}
@@ -1290,7 +1275,7 @@ void GMenu2X::activateNandUsb() {
 	} else {
 		system("scripts/usbon.sh nand");
 		MessageBox mb(this,tr["USB Enabled (Nand)"],"icons/usb.png");
-		mb.buttons[GP2X_BUTTON_B] = tr["Turn off"];
+		mb.buttons[ACTION_B] = tr["Turn off"];
 		mb.exec();
 		system("scripts/usboff.sh nand");
 	}
@@ -1303,7 +1288,7 @@ void GMenu2X::activateRootUsb() {
 	} else {
 		system("scripts/usbon.sh root");
 		MessageBox mb(this,tr["USB Enabled (Root)"],"icons/usb.png");
-		mb.buttons[GP2X_BUTTON_B] = tr["Turn off"];
+		mb.buttons[ACTION_B] = tr["Turn off"];
 		mb.exec();
 		system("scripts/usboff.sh root");
 	}
@@ -1397,23 +1382,11 @@ void GMenu2X::contextMenu() {
 			}
 		}
 
-#ifdef TARGET_GP2X
 		joy.update();
-		if ( joy[GP2X_BUTTON_SELECT] ) close = true;
-		if ( joy[GP2X_BUTTON_UP    ] ) sel = max(0, sel-1);
-		if ( joy[GP2X_BUTTON_DOWN  ] ) sel = min(voices.size()-1, sel+1);
-		if ( joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_CLICK] ) { voices[sel].action(); close = true; }
-#else
-		while (SDL_PollEvent(&event)) {
-			if ( event.type == SDL_QUIT ) return;
-			if ( event.type==SDL_KEYDOWN ) {
-				if ( event.key.keysym.sym==SDLK_ESCAPE ) close = true;
-				if ( event.key.keysym.sym==SDLK_UP ) sel = max(0, sel-1);
-				if ( event.key.keysym.sym==SDLK_DOWN ) sel = min((int)voices.size()-1, sel+1);
-				if ( event.key.keysym.sym==SDLK_RETURN ) { voices[sel].action(); close = true; }
-			}
-		}
-#endif
+		if ( joy[ACTION_SELECT] ) close = true;
+		if ( joy[ACTION_UP    ] ) sel = max(0, sel-1);
+		if ( joy[ACTION_DOWN  ] ) sel = min((int)voices.size()-1, sel+1);
+		if ( joy[ACTION_B] ) { voices[sel].action(); close = true; }
 	}
 }
 
@@ -1555,9 +1528,9 @@ void GMenu2X::editLink() {
 void GMenu2X::deleteLink() {
 	if (menu->selLinkApp()!=NULL) {
 		MessageBox mb(this, tr.translate("Deleting $1",menu->selLink()->getTitle().c_str(),NULL)+"\n"+tr["Are you sure?"], menu->selLink()->getIconPath());
-		mb.buttons[GP2X_BUTTON_B] = tr["Yes"];
-		mb.buttons[GP2X_BUTTON_X] = tr["No"];
-		if (mb.exec() == GP2X_BUTTON_B) {
+		mb.buttons[ACTION_B] = tr["Yes"];
+		mb.buttons[ACTION_X] = tr["No"];
+		if (mb.exec() == ACTION_B) {
 			ledOn();
 			menu->deleteSelectedLink();
 			sync();
@@ -1614,9 +1587,9 @@ void GMenu2X::renameSection() {
 
 void GMenu2X::deleteSection() {
 	MessageBox mb(this,tr["You will lose all the links in this section."]+"\n"+tr["Are you sure?"]);
-	mb.buttons[GP2X_BUTTON_B] = tr["Yes"];
-	mb.buttons[GP2X_BUTTON_X] = tr["No"];
-	if (mb.exec() == GP2X_BUTTON_B) {
+	mb.buttons[ACTION_B] = tr["Yes"];
+	mb.buttons[ACTION_X] = tr["No"];
+	if (mb.exec() == ACTION_B) {
 		ledOn();
 		if (rmtree(path+"sections/"+menu->selSection())) {
 			menu->deleteSelectedSection();
@@ -1703,13 +1676,8 @@ void GMenu2X::scanner() {
 
 	bool close = false;
 	while (!close) {
-#ifdef TARGET_GP2X
 		joy.update();
-		if (joy[GP2X_BUTTON_START] || joy[GP2X_BUTTON_B] || joy[GP2X_BUTTON_X]) close = true;
-#else
-		while (SDL_PollEvent(&event))
-			if (event.key.keysym.sym==SDLK_ESCAPE || event.key.keysym.sym==SDLK_RETURN) close = true;
-#endif
+		if (joy[ACTION_START] || joy[ACTION_B] || joy[ACTION_X]) close = true;
 	}
 
 	sync();
@@ -1785,22 +1753,19 @@ unsigned short GMenu2X::getBatteryLevel() {
 }
 
 void GMenu2X::setInputSpeed() {
-#ifdef TARGET_GP2X
 	joy.setInterval(150);
-	joy.setInterval(30,  GP2X_BUTTON_VOLDOWN);
-	joy.setInterval(30,  GP2X_BUTTON_VOLUP  );
-	joy.setInterval(30,  GP2X_BUTTON_A      );
-	joy.setInterval(500, GP2X_BUTTON_START  );
-	joy.setInterval(500, GP2X_BUTTON_SELECT );
-	joy.setInterval(300, GP2X_BUTTON_X      );
-	joy.setInterval(30,  GP2X_BUTTON_Y      );
-	joy.setInterval(1000,GP2X_BUTTON_B      );
-	joy.setInterval(1000,GP2X_BUTTON_CLICK  );
-	joy.setInterval(300, GP2X_BUTTON_L      );
-	joy.setInterval(300, GP2X_BUTTON_R      );
-#else
+	joy.setInterval(30,  ACTION_VOLDOWN);
+	joy.setInterval(30,  ACTION_VOLUP  );
+	joy.setInterval(30,  ACTION_A      );
+	joy.setInterval(500, ACTION_START  );
+	joy.setInterval(500, ACTION_SELECT );
+	joy.setInterval(300, ACTION_X      );
+	joy.setInterval(30,  ACTION_Y      );
+	joy.setInterval(1000,ACTION_B      );
+	//joy.setInterval(1000,ACTION_CLICK  );
+	joy.setInterval(300, ACTION_L      );
+	joy.setInterval(300, ACTION_R      );
 	SDL_EnableKeyRepeat(1,150);
-#endif
 }
 
 void GMenu2X::applyRamTimings() {

@@ -26,9 +26,6 @@
 #include <sys/types.h>
 #include <dirent.h>
 
-#ifdef TARGET_GP2X
-#include "gp2x.h"
-#endif
 #include "imagedialog.h"
 #include "filelister.h"
 

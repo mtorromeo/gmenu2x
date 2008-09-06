@@ -18,9 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifdef TARGET_GP2X
-#include "gp2x.h"
-#endif
 #include <sstream>
 #include "textmanualdialog.h"
 
@@ -103,36 +100,23 @@ void TextManualDialog::exec() {
 
 		gmenu2x->s->flip();
 
-#ifdef TARGET_GP2X
 		gmenu2x->joy.update();
-		if ( gmenu2x->joy[GP2X_BUTTON_UP   ] && firstRow>0 ) firstRow--;
-		if ( gmenu2x->joy[GP2X_BUTTON_DOWN ] && firstRow+rowsPerPage<pages[page].text.size() ) firstRow++;
-		if ( gmenu2x->joy[GP2X_BUTTON_LEFT ] && page>0 ) { page--; firstRow=0; }
-		if ( gmenu2x->joy[GP2X_BUTTON_RIGHT] && page<pages.size()-1 ) { page++; firstRow=0; }
-		if ( gmenu2x->joy[GP2X_BUTTON_L   ] ) {
+		if ( gmenu2x->joy[ACTION_UP   ] && firstRow>0 ) firstRow--;
+		if ( gmenu2x->joy[ACTION_DOWN ] && firstRow+rowsPerPage<pages[page].text.size() ) firstRow++;
+		if ( gmenu2x->joy[ACTION_LEFT ] && page>0 ) { page--; firstRow=0; }
+		if ( gmenu2x->joy[ACTION_RIGHT] && page<pages.size()-1 ) { page++; firstRow=0; }
+		if ( gmenu2x->joy[ACTION_L   ] ) {
 			if (firstRow>=rowsPerPage-1)
 				firstRow-= rowsPerPage-1;
 			else
 				firstRow = 0;
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_R   ] ) {
+		if ( gmenu2x->joy[ACTION_R   ] ) {
 			if (firstRow+rowsPerPage*2-1<pages[page].text.size())
 				firstRow+= rowsPerPage-1;
 			else
 				firstRow = max(0,pages[page].text.size()-rowsPerPage);
 		}
-		if ( gmenu2x->joy[GP2X_BUTTON_START] || gmenu2x->joy[GP2X_BUTTON_X] ) close = true;
-#else
-		while (SDL_PollEvent(&gmenu2x->event)) {
-			if ( gmenu2x->event.type == SDL_QUIT ) close = true;
-			if ( gmenu2x->event.type==SDL_KEYDOWN ) {
-				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) close = true;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_UP && firstRow>0 ) firstRow--;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN && firstRow+rowsPerPage<pages[page].text.size() ) firstRow++;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_LEFT && page>0 ) { page--; firstRow=0; }
-				if ( gmenu2x->event.key.keysym.sym==SDLK_RIGHT && page<pages.size()-1 ) { page++; firstRow=0; }
-			}
-		}
-#endif
+		if ( gmenu2x->joy[ACTION_START] || gmenu2x->joy[ACTION_X] ) close = true;
 	}
 }

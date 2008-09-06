@@ -1,0 +1,14 @@
+a=joystickbutton,0,12
+b=joystickbutton,0,13
+x=joystickbutton,0,14
+y=joystickbutton,0,15
+l=joystickbutton,0,10
+r=joystickbutton,0,11
+select=joystickbutton,0,9
+start=joystickbutton,0,8
+volup=joystickbutton,0,16
+voldown=joystickbutton,0,17
+up=joystickbutton,0,0
+down=joystickbutton,0,4
+left=joystickbutton,0,2
+right=joystickbutton,0,6

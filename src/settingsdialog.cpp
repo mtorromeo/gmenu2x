@@ -21,9 +21,6 @@
 #include <SDL.h>
 #include <SDL_gfxPrimitives.h>
 
-#ifdef TARGET_GP2X
-#include "gp2x.h"
-#endif
 #include "settingsdialog.h"
 
 using namespace std;
@@ -98,23 +95,12 @@ bool SettingsDialog::exec() {
 		gmenu2x->s->flip();
 		voices[sel]->handleTS();
 
-#ifdef TARGET_GP2X
 		gmenu2x->joy.update();
-		if ( gmenu2x->joy[GP2X_BUTTON_START] ) action = SD_ACTION_CLOSE;
-		if ( gmenu2x->joy[GP2X_BUTTON_UP   ] ) action = SD_ACTION_UP;
-		if ( gmenu2x->joy[GP2X_BUTTON_DOWN ] ) action = SD_ACTION_DOWN;
+		if ( gmenu2x->joy[ACTION_START] ) action = SD_ACTION_CLOSE;
+		if ( gmenu2x->joy[ACTION_UP   ] ) action = SD_ACTION_UP;
+		if ( gmenu2x->joy[ACTION_DOWN ] ) action = SD_ACTION_DOWN;
 		voices[sel]->manageInput();
-#else
-		while (SDL_PollEvent(&gmenu2x->event)) {
-			if ( gmenu2x->event.type == SDL_QUIT ) action = SD_ACTION_CLOSE;
-			if ( gmenu2x->event.type==SDL_KEYDOWN ) {
-				if ( gmenu2x->event.key.keysym.sym==SDLK_ESCAPE ) action = SD_ACTION_CLOSE;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_UP ) action = SD_ACTION_UP;
-				if ( gmenu2x->event.key.keysym.sym==SDLK_DOWN ) action = SD_ACTION_DOWN;
-				voices[sel]->manageInput();
-			}
-		}
-#endif
+
 		switch (action) {
 			case SD_ACTION_CLOSE: close = true; break;
 			case SD_ACTION_UP: {

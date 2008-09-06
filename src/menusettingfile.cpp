@@ -48,19 +48,10 @@ void MenuSettingFile::handleTS() {
 	btnClear->handleTS();
 }
 
-#ifdef TARGET_GP2X
-#include "gp2x.h"
-
 void MenuSettingFile::manageInput() {
-	if ( gmenu2x->joy[GP2X_BUTTON_X] ) setValue("");
-	if ( gmenu2x->joy[GP2X_BUTTON_B] ) select();
+	if ( gmenu2x->joy[ACTION_X] ) setValue("");
+	if ( gmenu2x->joy[ACTION_B] ) select();
 }
-#else
-void MenuSettingFile::manageInput() {
-	if ( gmenu2x->event.key.keysym.sym==SDLK_BACKSPACE ) clear();
-	if ( gmenu2x->event.key.keysym.sym==SDLK_RETURN ) select();
-}
-#endif
 
 void MenuSettingFile::clear() {
 	setValue("");

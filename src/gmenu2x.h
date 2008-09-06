@@ -29,10 +29,7 @@
 #include "FastDelegate.h"
 #include "utilities.h"
 #include "touchscreen.h"
-
-#ifdef TARGET_GP2X
-#include "joystick.h"
-#endif
+#include "inputmanager.h"
 
 const int MAX_VOLUME_SCALE_FACTOR = 200;
 // Default values - going to add settings adjustment, saving, loading and such
@@ -139,11 +136,7 @@ public:
 	*/
 	string getExePath();
 
-#ifdef TARGET_GP2X
-	Joystick joy;
-#else
-	SDL_Event event;
-#endif
+	InputManager joy;
 	Touchscreen ts;
 
 	//Configuration settings
