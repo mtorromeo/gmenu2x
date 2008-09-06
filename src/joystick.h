@@ -26,6 +26,12 @@
 
 using std::vector;
 
+typedef struct {
+	int type;
+	int num;
+	int treshold;
+} JoyMap;
+
 /**
 Manages the joystick
 
@@ -33,29 +39,32 @@ Manages the joystick
 */
 class Joystick {
 private:
-    void initSecondJoy(int joyNum);
-    int getMappedButton(int button);    //  returns the USBJoy button mapped at this GP2X button
-    int secondJoyID;
+	void initSecondJoy(int joyNum);
+	JoyMap getButtonMapping(int button);    //  returns the USBJoy button mapped at this GP2X button
+	int secondJoyID;
 	int numButtons[2];
 	vector<Uint32> joyTick;
 	vector<Uint32> interval;
 
 public:
+	static const int MAPPING_TYPE_UNDEFINED = -1;
+	static const int MAPPING_TYPE_BUTTON = 0;
+	static const int MAPPING_TYPE_AXYS = 1;
+
 	Joystick();
-	Joystick(int joynum);
-	Joystick(int joynum, int secondJoy);    //  Define the secondary joypad 0 == gp2x -1 == first available anything else identifies a specific joy
+	Joystick(int joynum, int joynum2 = -1);
 	~Joystick();
-	void init(int joynum);
-	void init(int joynum, int secondJoy);
+
+	void init(int joynum, int joynum2 = -1);
 
 	SDL_Joystick *joystick[2];
 	vector<bool> buttons;   //  We only need the one set of buttons since we want the USBJoy to complement the GP2XJoy
-	vector<int> buttonMaps; //  Stores the mapped buttons of USBJoy
+	vector<JoyMap> mappings; //  Stores the mapped buttons of USBJoy
 
 	void update();
 	int count();
 	void setInterval(int ms, int button = -1);
-	bool operator [](int button);
+	bool operator[](int button);
 	bool isDown(int button);
 };
 
