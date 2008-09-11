@@ -1040,9 +1040,18 @@ void GMenu2X::explorer() {
 			writeConfigOpen2x();
 		string command = cmdclean(fd.path()+"/"+fd.file) + "; sync & cd "+cmdclean(getExePath())+"; exec ./gmenu2x";
 		chdir(fd.path().c_str());
+		fflush(NULL);
 		quit();
 		setClock(200);
 		execlp("/bin/sh","/bin/sh","-c",command.c_str(),NULL);
+
+        //senquack -adding this, this should not be missing code to relaunch gmenu2x,
+		//as SDL is shut down at this point and any further blits will segfault it.
+
+		//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue
+		//try relaunching gmenu2x
+        chdir(getExePath().c_str());
+		execlp("./gmenu2x", "./gmenu2x", NULL);
 	}
 }
 
