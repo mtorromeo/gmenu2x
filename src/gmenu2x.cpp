@@ -180,7 +180,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	outputLogs = false;
 	maxClock = 300;
 	menuClock = f200 ? 136 : 100;
-	globalVolume = fwType == "open2x" ? 67 : 100;
+	globalVolume = 67;
 	numRows = 4;
 	numCols = 5;
 	tvoutEncoding = "NTSC";
@@ -190,7 +190,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	//open2x
 	savedVolumeMode = 0;
 	volumeMode = VOLUME_MODE_NORMAL;
-	volumeScalerNormal = VOLUME_MODE_NORMAL;
+	volumeScalerNormal = VOLUME_SCALER_NORMAL;
 	volumeScalerPhones = VOLUME_SCALER_PHONES;
 
 	o2x_usb_net_on_boot = false;
@@ -317,6 +317,7 @@ GMenu2X::~GMenu2X() {
 }
 
 void GMenu2X::quit() {
+	fflush(NULL);
 	sc.clear();
 	s->free();
 	SDL_Quit();
@@ -613,7 +614,7 @@ void GMenu2X::writeConfigOpen2x() {
 		inf << "TELNET_ON_BOOT=" << ( o2x_telnet_on_boot ? "y" : "n" ) << endl;
 		inf << "FTP_ON_BOOT=" << ( o2x_ftp_on_boot ? "y" : "n" ) << endl;
 		inf << "GP2XJOY_ON_BOOT=" << ( o2x_gp2xjoy_on_boot ? "y" : "n" ) << endl;
-		inf << "USB_HOST_ON_BOOT=" << ( o2x_usb_host_on_boot ? "y" : "n" ) << endl;
+		inf << "USB_HOST_ON_BOOT=" << ( (o2x_usb_host_on_boot || o2x_usb_hid_on_boot || o2x_usb_storage_on_boot) ? "y" : "n" ) << endl;
 		inf << "USB_HID_ON_BOOT=" << ( o2x_usb_hid_on_boot ? "y" : "n" ) << endl;
 		inf << "USB_STORAGE_ON_BOOT=" << ( o2x_usb_storage_on_boot ? "y" : "n" ) << endl;
 		inf << "VOLUME_MODE=" << volumeMode << endl;
@@ -950,7 +951,7 @@ int GMenu2X::main() {
 				case VOLUME_MODE_PHONES: setVolumeScaler(volumeScalerPhones); break;
 				case VOLUME_MODE_NORMAL: setVolumeScaler(volumeScalerNormal); break;
 			}
-			setVolume(getVolume());
+			setVolume(globalVolume);
 		}
 		// LINK NAVIGATION
 		else if ( joy[ACTION_LEFT ]  ) menu->linkLeft();
@@ -1038,19 +1039,18 @@ void GMenu2X::explorer() {
 			writeConfig();
 		if (fwType == "open2x" && savedVolumeMode != volumeMode)
 			writeConfigOpen2x();
-		string command = cmdclean(fd.path()+"/"+fd.file) + "; sync & cd "+cmdclean(getExePath())+"; exec ./gmenu2x";
+
+		//string command = cmdclean(fd.path()+"/"+fd.file) + "; sync & cd "+cmdclean(getExePath())+"; exec ./gmenu2x";
+		string command = cmdclean(fd.path()+"/"+fd.file);
 		chdir(fd.path().c_str());
-		fflush(NULL);
 		quit();
 		setClock(200);
 		execlp("/bin/sh","/bin/sh","-c",command.c_str(),NULL);
 
-        //senquack -adding this, this should not be missing code to relaunch gmenu2x,
-		//as SDL is shut down at this point and any further blits will segfault it.
-
 		//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue
 		//try relaunching gmenu2x
-        chdir(getExePath().c_str());
+		fprintf(stderr, "Error executing selected application, re-launching gmenu2x\n");
+		chdir(getExePath().c_str());
 		execlp("./gmenu2x", "./gmenu2x", NULL);
 	}
 }
@@ -1111,11 +1111,18 @@ void GMenu2X::settingsOpen2x() {
 	sd.addSetting(new MenuSettingBool(this,tr["USB HID on boot"],tr["Allow USB HID to be started at boot time"],&o2x_usb_hid_on_boot));
 	sd.addSetting(new MenuSettingBool(this,tr["USB storage on boot"],tr["Allow USB storage to be started at boot time"],&o2x_usb_storage_on_boot));
 	//sd.addSetting(new MenuSettingInt(this,tr["Speaker Mode on boot"],tr["Set Speaker mode. 0 = Mute, 1 = Phones, 2 = Speaker"],&volumeMode,0,2));
-	sd.addSetting(new MenuSettingInt(this,tr["Speaker Scaler"],tr["Set the Speaker scaling"],&volumeScalerNormal,0,150));
-	sd.addSetting(new MenuSettingInt(this,tr["Headphones Scaler"],tr["Set the Headphones scaling"],&volumeScalerPhones,0,100));
+	sd.addSetting(new MenuSettingInt(this,tr["Speaker Scaler"],tr["Set the Speaker Mode scaling 0-150\% (default is 100\%)"],&volumeScalerNormal,0,150));
+	sd.addSetting(new MenuSettingInt(this,tr["Headphones Scaler"],tr["Set the Headphones Mode scaling 0-100\% (default is 65\%)"],&volumeScalerPhones,0,100));
 
-	if (sd.exec() && sd.edited())
+	if (sd.exec() && sd.edited()) {
 		writeConfigOpen2x();
+		switch(volumeMode) {
+			case VOLUME_MODE_MUTE:   setVolumeScaler(VOLUME_SCALER_MUTE); break;
+			case VOLUME_MODE_PHONES: setVolumeScaler(volumeScalerPhones);   break;
+			case VOLUME_MODE_NORMAL: setVolumeScaler(volumeScalerNormal); break;
+		}
+		setVolume(globalVolume);
+	}
 }
 
 void GMenu2X::skinMenu() {
@@ -1769,7 +1776,7 @@ void GMenu2X::setInputSpeed() {
 	joy.setInterval(500, ACTION_START  );
 	joy.setInterval(500, ACTION_SELECT );
 	joy.setInterval(300, ACTION_X      );
-	joy.setInterval(30,  ACTION_Y      );
+	joy.setInterval(300,  ACTION_Y      );
 	joy.setInterval(1000,ACTION_B      );
 	//joy.setInterval(1000,ACTION_CLICK  );
 	joy.setInterval(300, ACTION_L      );

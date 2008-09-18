@@ -34,7 +34,7 @@
 const int MAX_VOLUME_SCALE_FACTOR = 200;
 // Default values - going to add settings adjustment, saving, loading and such
 const int VOLUME_SCALER_MUTE = 0;
-const int VOLUME_SCALER_PHONES = 70;
+const int VOLUME_SCALER_PHONES = 65;
 const int VOLUME_SCALER_NORMAL = 100;
 const int VOLUME_MODE_MUTE = 0;
 const int VOLUME_MODE_PHONES = 1;

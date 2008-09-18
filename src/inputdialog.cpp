@@ -46,7 +46,7 @@ InputDialog::InputDialog(GMenu2X *gmenu2x, string text, string startvalue, strin
 
 	keyboard[0].push_back("abcdefghijklm");
 	keyboard[0].push_back("nopqrstuvwxyz");
-	keyboard[0].push_back("0123456789   ");
+	keyboard[0].push_back("0123456789.  ");
 
 	keyboard[1].push_back("ABCDEFGHIJKLM");
 	keyboard[1].push_back("NOPQRSTUVWXYZ");
