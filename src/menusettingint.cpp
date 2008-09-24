@@ -63,8 +63,8 @@ void MenuSettingInt::handleTS() {
 }
 
 void MenuSettingInt::manageInput() {
-	if ( gmenu2x->joy[ACTION_LEFT ] || gmenu2x->joy[ACTION_X] ) dec();
-	if ( gmenu2x->joy[ACTION_RIGHT] || gmenu2x->joy[ACTION_Y] ) inc();
+	if ( gmenu2x->input[ACTION_LEFT ] || gmenu2x->input[ACTION_X] ) dec();
+	if ( gmenu2x->input[ACTION_RIGHT] || gmenu2x->input[ACTION_Y] ) inc();
 }
 
 void MenuSettingInt::inc() {
@@ -89,8 +89,8 @@ int MenuSettingInt::value() {
 
 void MenuSettingInt::adjustInput() {
 #ifdef TARGET_GP2X
-	gmenu2x->joy.setInterval(30, ACTION_LEFT );
-	gmenu2x->joy.setInterval(30, ACTION_RIGHT);
+	gmenu2x->input.setInterval(30, ACTION_LEFT );
+	gmenu2x->input.setInterval(30, ACTION_RIGHT);
 #endif
 }
 

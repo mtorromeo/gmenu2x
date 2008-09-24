@@ -112,9 +112,9 @@ int Selector::exec(int startSelection) {
 		gmenu2x->s->flip();
 
 
-		gmenu2x->joy.update();
-		if ( gmenu2x->joy[ACTION_START] ) { close = true; result = false; }
-		if ( gmenu2x->joy[ACTION_UP] ) {
+		gmenu2x->input.update();
+		if ( gmenu2x->input[ACTION_START] ) { close = true; result = false; }
+		if ( gmenu2x->input[ACTION_UP] ) {
 			if (selected==0) {
 				selected = fl.size()-1;
 			} else {
@@ -122,7 +122,7 @@ int Selector::exec(int startSelection) {
 			}
 			selTick = SDL_GetTicks();
 		}
-		if ( gmenu2x->joy[ACTION_L] ) {
+		if ( gmenu2x->input[ACTION_L] ) {
 			if ((int)(selected-SELECTOR_ELEMENTS+1)<0) {
 				selected = 0;
 			} else {
@@ -130,7 +130,7 @@ int Selector::exec(int startSelection) {
 			}
 			selTick = SDL_GetTicks();
 		}
-		if ( gmenu2x->joy[ACTION_DOWN] ) {
+		if ( gmenu2x->input[ACTION_DOWN] ) {
 			if (selected+1>=fl.size()) {
 				selected = 0;
 			} else {
@@ -138,7 +138,7 @@ int Selector::exec(int startSelection) {
 			}
 			selTick = SDL_GetTicks();
 		}
-		if ( gmenu2x->joy[ACTION_R] ) {
+		if ( gmenu2x->input[ACTION_R] ) {
 			if (selected+SELECTOR_ELEMENTS-1>=fl.size()) {
 				selected = fl.size()-1;
 			} else {
@@ -146,7 +146,7 @@ int Selector::exec(int startSelection) {
 			}
 			selTick = SDL_GetTicks();
 		}
-		if ( gmenu2x->joy[ACTION_X] ) {
+		if ( gmenu2x->input[ACTION_X] ) {
 			if (link->getSelectorBrowser()) {
 				string::size_type p = dir.rfind("/", dir.size()-2);
 				if (p==string::npos || dir.substr(0,4)!="/mnt" || p<4) {
@@ -164,7 +164,7 @@ int Selector::exec(int startSelection) {
 				result = false;
 			}
 		}
-		if ( gmenu2x->joy[ACTION_B] ) {
+		if ( gmenu2x->input[ACTION_B] ) {
 			if (fl.isFile(selected)) {
 				file = fl[selected];
 				close = true;

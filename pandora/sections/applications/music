@@ -1,0 +1,5 @@
+title=Music
+icon=skin:icons/music.png
+exec=/usr/gp2x/gp2xmenu
+params=--disable-autorun --enable-terminate --view-music
+clock=75

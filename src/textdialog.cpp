@@ -40,13 +40,13 @@ void TextDialog::preProcess() {
 		row = trim(text->at(i));
 
 		//check if this row is not too long
-		if (gmenu2x->font->getTextWidth(row)>305) {
+		if (gmenu2x->font->getTextWidth(row)>(int)gmenu2x->resX-15) {
 			vector<string> words;
 			split(words, row, " ");
 
 			uint numWords = words.size();
 			//find the maximum number of rows that can be printed on screen
-			while (gmenu2x->font->getTextWidth(row)>305 && numWords>0) {
+			while (gmenu2x->font->getTextWidth(row)>(int)gmenu2x->resX-15 && numWords>0) {
 				numWords--;
 				row = "";
 				for (uint x=0; x<numWords; x++)
@@ -74,14 +74,14 @@ void TextDialog::preProcess() {
 }
 
 void TextDialog::drawText(vector<string> *text, uint firstRow, uint rowsPerPage) {
-	gmenu2x->s->setClipRect(0,41,310,180);
+	gmenu2x->s->setClipRect(0,41,gmenu2x->resX-10,gmenu2x->resY-60);
 
 	for (uint i=firstRow; i<firstRow+rowsPerPage && i<text->size(); i++) {
 		int rowY;
 		if (text->at(i)=="----") { //draw a line
 			rowY = 42+(int)((i-firstRow+0.5)*gmenu2x->font->getHeight());
-			gmenu2x->s->hline(5,rowY,304,255,255,255,130);
-			gmenu2x->s->hline(5,rowY+1,304,0,0,0,130);
+			gmenu2x->s->hline(5,rowY,gmenu2x->resX-16,255,255,255,130);
+			gmenu2x->s->hline(5,rowY+1,gmenu2x->resX-16,0,0,0,130);
 		} else {
 			rowY = 42+(i-firstRow)*gmenu2x->font->getHeight();
 			gmenu2x->font->write(gmenu2x->s, text->at(i), 5, rowY);
@@ -89,7 +89,7 @@ void TextDialog::drawText(vector<string> *text, uint firstRow, uint rowsPerPage)
 	}
 
 	gmenu2x->s->clearClipRect();
-	gmenu2x->drawScrollBar(rowsPerPage,text->size(),firstRow,42,175);
+	gmenu2x->drawScrollBar(rowsPerPage,text->size(),firstRow,42,gmenu2x->resY-65);
 }
 
 void TextDialog::exec() {
@@ -109,28 +109,28 @@ void TextDialog::exec() {
 	gmenu2x->drawButton(&bg, "down", gmenu2x->tr["Scroll"],
 	gmenu2x->drawButton(&bg, "up", "", 5)-10));
 
-	uint firstRow = 0, rowsPerPage = 180/gmenu2x->font->getHeight();
+	uint firstRow = 0, rowsPerPage = (gmenu2x->resY-60)/gmenu2x->font->getHeight();
 	while (!close) {
 		bg.blit(gmenu2x->s,0,0);
 		drawText(text, firstRow, rowsPerPage);
 		gmenu2x->s->flip();
 
 
-		gmenu2x->joy.update();
-		if ( gmenu2x->joy[ACTION_UP  ] && firstRow>0 ) firstRow--;
-		if ( gmenu2x->joy[ACTION_DOWN] && firstRow+rowsPerPage<text->size() ) firstRow++;
-		if ( gmenu2x->joy[ACTION_L   ] ) {
+		gmenu2x->input.update();
+		if ( gmenu2x->input[ACTION_UP  ] && firstRow>0 ) firstRow--;
+		if ( gmenu2x->input[ACTION_DOWN] && firstRow+rowsPerPage<text->size() ) firstRow++;
+		if ( gmenu2x->input[ACTION_L   ] ) {
 			if (firstRow>=rowsPerPage-1)
 				firstRow-= rowsPerPage-1;
 			else
 				firstRow = 0;
 		}
-		if ( gmenu2x->joy[ACTION_R   ] ) {
+		if ( gmenu2x->input[ACTION_R   ] ) {
 			if (firstRow+rowsPerPage*2-1<text->size())
 				firstRow+= rowsPerPage-1;
 			else
 				firstRow = max(0,text->size()-rowsPerPage);
 		}
-		if ( gmenu2x->joy[ACTION_START] || gmenu2x->joy[ACTION_X] ) close = true;
+		if ( gmenu2x->input[ACTION_START] || gmenu2x->input[ACTION_X] ) close = true;
 	}
 }

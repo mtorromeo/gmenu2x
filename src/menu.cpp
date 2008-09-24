@@ -37,9 +37,6 @@ Menu::Menu(GMenu2X *gmenu2x) {
 	this->gmenu2x = gmenu2x;
 	iFirstDispSection = 0;
 
-	numRows = 4;
-	numCols = 6;
-
 	DIR *dirp;
 	struct stat st;
 	struct dirent *dptr;
@@ -140,6 +137,7 @@ bool Menu::addActionLink(uint section, string title, LinkRunAction action, strin
 	if (section>=sections.size()) return false;
 
 	LinkAction *linkact = new LinkAction(gmenu2x,action);
+	linkact->setSize(60,40);
 	linkact->setTitle(title);
 	linkact->setDescription(description);
 	if (gmenu2x->sc.exists(icon) || (icon.substr(0,5)=="skin:" && !gmenu2x->sc.getSkinFilePath(icon.substr(5,icon.length())).empty()) || fileExists(icon))
@@ -187,7 +185,7 @@ bool Menu::addLink(string path, string file, string section) {
 #endif
 
 	//Reduce title lenght to fit the column width
-	int linkW = 312/numCols;
+	int linkW = 312/gmenu2x->linkColumns;
 	string shorttitle = title;
 	if (gmenu2x->font->getTextWidth(shorttitle)>linkW) {
 		while (gmenu2x->font->getTextWidth(shorttitle+"..")>linkW)
@@ -298,39 +296,39 @@ bool Menu::linkChangeSection(uint linkIndex, uint oldSectionIndex, uint newSecti
 }
 
 void Menu::linkLeft() {
-	if (iLink%numCols == 0)
-		setLinkIndex( sectionLinks()->size()>iLink+numCols-1 ? iLink+numCols-1 : sectionLinks()->size()-1 );
+	if (iLink%gmenu2x->linkColumns == 0)
+		setLinkIndex( sectionLinks()->size()>iLink+gmenu2x->linkColumns-1 ? iLink+gmenu2x->linkColumns-1 : sectionLinks()->size()-1 );
 	else
 		setLinkIndex(iLink-1);
 }
 
 void Menu::linkRight() {
-	if (iLink%numCols == (numCols-1) || iLink == (int)sectionLinks()->size()-1)
-		setLinkIndex(iLink-iLink%numCols);
+	if (iLink%gmenu2x->linkColumns == (gmenu2x->linkColumns-1) || iLink == (int)sectionLinks()->size()-1)
+		setLinkIndex(iLink-iLink%gmenu2x->linkColumns);
 	else
 		setLinkIndex(iLink+1);
 }
 
 void Menu::linkUp() {
-	int l = iLink-numCols;
+	int l = iLink-gmenu2x->linkColumns;
 	if (l<0) {
-		uint rows = (uint)ceil(sectionLinks()->size()/(double)numCols);
-		l = (rows*numCols)+l;
+		uint rows = (uint)ceil(sectionLinks()->size()/(double)gmenu2x->linkColumns);
+		l = (rows*gmenu2x->linkColumns)+l;
 		if (l >= (int)sectionLinks()->size())
-			l -= numCols;
+			l -= gmenu2x->linkColumns;
 	}
 	setLinkIndex(l);
 }
 
 void Menu::linkDown() {
-	uint l = iLink+numCols;
+	uint l = iLink+gmenu2x->linkColumns;
 	if (l >= sectionLinks()->size()) {
-		uint rows = (uint)ceil(sectionLinks()->size()/(double)numCols);
-		uint curCol = (uint)ceil((iLink+1)/(double)numCols);
+		uint rows = (uint)ceil(sectionLinks()->size()/(double)gmenu2x->linkColumns);
+		uint curCol = (uint)ceil((iLink+1)/(double)gmenu2x->linkColumns);
 		if (rows > curCol)
 			l = sectionLinks()->size()-1;
 		else
-			l %= numCols;
+			l %= gmenu2x->linkColumns;
 	}
 	setLinkIndex(l);
 }
@@ -354,10 +352,10 @@ void Menu::setLinkIndex(int i) {
 	else if (i>=(int)sectionLinks()->size())
 		i=0;
 
-	if (i>=(int)(iFirstDispRow*numCols+numCols*numRows))
-		iFirstDispRow = i/numCols-numRows+1;
-	else if (i<(int)(iFirstDispRow*numCols))
-		iFirstDispRow = i/numCols;
+	if (i>=(int)(iFirstDispRow*gmenu2x->linkColumns+gmenu2x->linkColumns*gmenu2x->linkRows))
+		iFirstDispRow = i/gmenu2x->linkColumns-gmenu2x->linkRows+1;
+	else if (i<(int)(iFirstDispRow*gmenu2x->linkColumns))
+		iFirstDispRow = i/gmenu2x->linkColumns;
 
 	iLink = i;
 }
@@ -392,6 +390,7 @@ void Menu::readLinks() {
 		sort(linkfiles.begin(), linkfiles.end(),case_less());
 		for (uint x=0; x<linkfiles.size(); x++) {
 			LinkApp *link = new LinkApp(gmenu2x, linkfiles[x].c_str());
+			link->setSize(60,40);
 			if (link->targetExists())
 				links[i].push_back( link );
 			else

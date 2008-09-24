@@ -49,8 +49,8 @@ void MenuSettingString::handleTS() {
 }
 
 void MenuSettingString::manageInput() {
-	if ( gmenu2x->joy[ACTION_X] ) clear();
-	if ( gmenu2x->joy[ACTION_B] ) edit();
+	if ( gmenu2x->input[ACTION_X] ) clear();
+	if ( gmenu2x->input[ACTION_B] ) edit();
 }
 
 void MenuSettingString::setValue(string value) {

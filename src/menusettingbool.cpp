@@ -45,7 +45,7 @@ void MenuSettingBool::handleTS() {
 }
 
 void MenuSettingBool::manageInput() {
-	if ( gmenu2x->joy[ACTION_B] ) toggle();
+	if ( gmenu2x->input[ACTION_B] ) toggle();
 }
 
 void MenuSettingBool::toggle() {

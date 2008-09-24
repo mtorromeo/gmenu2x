@@ -107,14 +107,14 @@ bool FileDialog::exec() {
 		gmenu2x->drawScrollBar(10,fl.size(),firstElement,44,170);
 		gmenu2x->s->flip();
 
-		gmenu2x->joy.update();
-		if ( gmenu2x->joy[ACTION_SELECT] ) action = FD_ACTION_CLOSE;
-		if ( gmenu2x->joy[ACTION_UP    ] ) action = FD_ACTION_UP;
-		if ( gmenu2x->joy[ACTION_L     ] ) action = FD_ACTION_SCROLLUP;
-		if ( gmenu2x->joy[ACTION_DOWN  ] ) action = FD_ACTION_DOWN;
-		if ( gmenu2x->joy[ACTION_R     ] ) action = FD_ACTION_SCROLLDOWN;
-		if ( gmenu2x->joy[ACTION_X] || gmenu2x->joy[ACTION_LEFT] ) action = FD_ACTION_GOUP;
-		if ( gmenu2x->joy[ACTION_B     ] ) action = FD_ACTION_SELECT;
+		gmenu2x->input.update();
+		if ( gmenu2x->input[ACTION_SELECT] ) action = FD_ACTION_CLOSE;
+		if ( gmenu2x->input[ACTION_UP    ] ) action = FD_ACTION_UP;
+		if ( gmenu2x->input[ACTION_L     ] ) action = FD_ACTION_SCROLLUP;
+		if ( gmenu2x->input[ACTION_DOWN  ] ) action = FD_ACTION_DOWN;
+		if ( gmenu2x->input[ACTION_R     ] ) action = FD_ACTION_SCROLLDOWN;
+		if ( gmenu2x->input[ACTION_X] || gmenu2x->input[ACTION_LEFT] ) action = FD_ACTION_GOUP;
+		if ( gmenu2x->input[ACTION_B     ] ) action = FD_ACTION_SELECT;
 
 		if (action == FD_ACTION_SELECT && fl[selected]=="..") action = FD_ACTION_GOUP;
 		switch (action) {

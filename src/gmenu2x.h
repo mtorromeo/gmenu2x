@@ -95,7 +95,6 @@ private:
 		usbnet,
 		samba,
 		web;
-	bool recalcLinkGrid;
 	string ip, defaultgw, lastSelectorDir;
 	int lastSelectorElement;
 	void readConfig();
@@ -107,8 +106,6 @@ private:
 	void initServices();
 	void initFont();
 	void initMenu();
-
-	uint numRows, numCols;
 
 #ifdef TARGET_GP2X
 	unsigned long gp2x_mem;
@@ -128,6 +125,12 @@ public:
 	~GMenu2X();
 	void quit();
 
+	/*
+	 * Variables needed for elements disposition
+	 */
+	uint resX, resY, halfX, halfY, videoBpp;
+	uint bottomBarIconY, bottomBarTextY, linkColumns, linkRows;
+
 	/*!
 	Retrieves the parent directory of GMenu2X.
 	This functions is used to initialize the "path" variable.
@@ -136,7 +139,7 @@ public:
 	*/
 	string getExePath();
 
-	InputManager joy;
+	InputManager input;
 	Touchscreen ts;
 
 	//Configuration settings
@@ -211,9 +214,9 @@ public:
 	void deleteSection();
 
 	void initBG();
-	int drawButton(IconButton *btn, int x=5, int y=230);
-	int drawButton(Surface *s, string btn, string text, int x=5, int y=230);
-	int drawButtonRight(Surface *s, string btn, string text, int x=5, int y=230);
+	int drawButton(IconButton *btn, int x=5, int y=-10);
+	int drawButton(Surface *s, string btn, string text, int x=5, int y=-10);
+	int drawButtonRight(Surface *s, string btn, string text, int x=5, int y=-10);
 	void drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height);
 
 	void drawTitleIcon(string icon, bool skinRes=true, Surface *s=NULL);

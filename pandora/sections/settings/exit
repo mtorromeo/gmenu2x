@@ -1,0 +1,6 @@
+title=Exit
+description=Exit GMenu2X to the official frontend
+icon=skin:icons/exit.png
+exec=/usr/gp2x/gp2xmenu
+params=--disable-autorun
+clock=195

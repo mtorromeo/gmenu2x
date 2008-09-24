@@ -49,8 +49,6 @@ public:
 	Menu(GMenu2X *gmenu2x);
 	~Menu();
 
-	uint numRows, numCols;
-
 	vector<string> sections;
 	vector<linklist> links;
 	linklist *sectionLinks(int i = -1);

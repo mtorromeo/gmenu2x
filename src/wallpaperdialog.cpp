@@ -84,39 +84,39 @@ bool WallpaperDialog::exec() {
 		gmenu2x->s->flip();
 
 
-		gmenu2x->joy.update();
-		if ( gmenu2x->joy[ACTION_SELECT] ) { close = true; result = false; }
-		if ( gmenu2x->joy[ACTION_UP    ] ) {
+		gmenu2x->input.update();
+		if ( gmenu2x->input[ACTION_SELECT] ) { close = true; result = false; }
+		if ( gmenu2x->input[ACTION_UP    ] ) {
 			if (selected==0)
 				selected = wallpapers.size()-1;
 			else
 				selected -= 1;
 		}
-		if ( gmenu2x->joy[ACTION_L     ] ) {
+		if ( gmenu2x->input[ACTION_L     ] ) {
 			if ((int)(selected-9)<0) {
 				selected = 0;
 			} else {
 				selected -= 9;
 			}
 		}
-		if ( gmenu2x->joy[ACTION_DOWN  ] ) {
+		if ( gmenu2x->input[ACTION_DOWN  ] ) {
 			if (selected+1>=wallpapers.size())
 				selected = 0;
 			else
 				selected += 1;
 		}
-		if ( gmenu2x->joy[ACTION_R     ] ) {
+		if ( gmenu2x->input[ACTION_R     ] ) {
 			if (selected+9>=wallpapers.size()) {
 				selected = wallpapers.size()-1;
 			} else {
 				selected += 9;
 			}
 		}
-		if ( gmenu2x->joy[ACTION_X] ) {
+		if ( gmenu2x->input[ACTION_X] ) {
 			close = true;
 			result = false;
 		}
-		if ( gmenu2x->joy[ACTION_B] ) {
+		if ( gmenu2x->input[ACTION_B] ) {
 			close = true;
 			if (wallpapers.size()>0) {
 				if (selected<wallpapers.size()-fl.files.size())

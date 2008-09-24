@@ -49,8 +49,8 @@ void MenuSettingFile::handleTS() {
 }
 
 void MenuSettingFile::manageInput() {
-	if ( gmenu2x->joy[ACTION_X] ) setValue("");
-	if ( gmenu2x->joy[ACTION_B] ) select();
+	if ( gmenu2x->input[ACTION_X] ) setValue("");
+	if ( gmenu2x->input[ACTION_B] ) select();
 }
 
 void MenuSettingFile::clear() {

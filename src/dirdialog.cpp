@@ -81,35 +81,35 @@ bool DirDialog::exec() {
 		gmenu2x->s->flip();
 
 
-		gmenu2x->joy.update();
-		if ( gmenu2x->joy[ACTION_SELECT] ) { close = true; result = false; }
-		if ( gmenu2x->joy[ACTION_UP    ] ) {
+		gmenu2x->input.update();
+		if ( gmenu2x->input[ACTION_SELECT] ) { close = true; result = false; }
+		if ( gmenu2x->input[ACTION_UP    ] ) {
 			if (selected==0)
 				selected = fl.size()-1;
 			else
 				selected -= 1;
 		}
-		if ( gmenu2x->joy[ACTION_L     ] ) {
+		if ( gmenu2x->input[ACTION_L     ] ) {
 			if ((int)(selected-9)<0) {
 				selected = 0;
 			} else {
 				selected -= 9;
 			}
 		}
-		if ( gmenu2x->joy[ACTION_DOWN  ] ) {
+		if ( gmenu2x->input[ACTION_DOWN  ] ) {
 			if (selected+1>=fl.size())
 				selected = 0;
 			else
 				selected += 1;
 		}
-		if ( gmenu2x->joy[ACTION_R     ] ) {
+		if ( gmenu2x->input[ACTION_R     ] ) {
 			if (selected+9>=fl.size()) {
 				selected = fl.size()-1;
 			} else {
 				selected += 9;
 			}
 		}
-		if ( gmenu2x->joy[ACTION_X] || gmenu2x->joy[ACTION_LEFT] ) {
+		if ( gmenu2x->input[ACTION_X] || gmenu2x->input[ACTION_LEFT] ) {
 			string::size_type p = path.rfind("/");
 			if (p==string::npos || path.substr(0,4)!="/mnt" || p<4)
 				return false;
@@ -118,12 +118,12 @@ bool DirDialog::exec() {
 			selected = 0;
 			fl.setPath(path);
 		}
-		if ( gmenu2x->joy[ACTION_B] && selected<fl.size() ) {
+		if ( gmenu2x->input[ACTION_B] && selected<fl.size() ) {
 			path += "/"+fl[selected];
 			selected = 0;
 			fl.setPath(path);
 		}
-		if ( gmenu2x->joy[ACTION_START] ) close = true;
+		if ( gmenu2x->input[ACTION_START] ) close = true;
 	}
 
 	return result;

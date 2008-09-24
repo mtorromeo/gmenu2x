@@ -1,0 +1,5 @@
+title=Payback
+icon=/mnt/sd/PaybackDemo/PaybackDemo.png
+exec=/mnt/sd/PaybackDemo/PaybackDemo
+clock=200
+wrapper=true

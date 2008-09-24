@@ -1,0 +1,5 @@
+title=rubido
+icon=/mnt/sd/rubido/rubido.png
+exec=/mnt/sd/rubido/rubido.gpe
+clock=200
+wrapper=true

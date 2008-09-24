@@ -95,10 +95,10 @@ bool SettingsDialog::exec() {
 		gmenu2x->s->flip();
 		voices[sel]->handleTS();
 
-		gmenu2x->joy.update();
-		if ( gmenu2x->joy[ACTION_START] ) action = SD_ACTION_CLOSE;
-		if ( gmenu2x->joy[ACTION_UP   ] ) action = SD_ACTION_UP;
-		if ( gmenu2x->joy[ACTION_DOWN ] ) action = SD_ACTION_DOWN;
+		gmenu2x->input.update();
+		if ( gmenu2x->input[ACTION_START] ) action = SD_ACTION_CLOSE;
+		if ( gmenu2x->input[ACTION_UP   ] ) action = SD_ACTION_UP;
+		if ( gmenu2x->input[ACTION_DOWN ] ) action = SD_ACTION_DOWN;
 		voices[sel]->manageInput();
 
 		switch (action) {

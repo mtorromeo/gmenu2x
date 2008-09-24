@@ -49,8 +49,8 @@ void MenuSettingMultiString::handleTS() {
 }
 
 void MenuSettingMultiString::manageInput() {
-	if ( gmenu2x->joy[ACTION_LEFT ] ) decSel();
-	if ( gmenu2x->joy[ACTION_RIGHT] ) incSel();
+	if ( gmenu2x->input[ACTION_LEFT ] ) decSel();
+	if ( gmenu2x->input[ACTION_RIGHT] ) incSel();
 }
 
 void MenuSettingMultiString::incSel() {

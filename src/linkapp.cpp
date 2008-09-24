@@ -231,7 +231,7 @@ bool LinkApp::save() {
 
 void LinkApp::drawRun() {
 	//Darkened background
-	gmenu2x->s->box(0, 0, 320, 240, 0,0,0,150);
+	gmenu2x->s->box(0, 0, gmenu2x->resX, gmenu2x->resY, 0,0,0,150);
 
 	string text = gmenu2x->tr.translate("Launching $1",getTitle().c_str(),NULL);
 	int textW = gmenu2x->font->getTextWidth(text);
@@ -239,17 +239,17 @@ void LinkApp::drawRun() {
 	int halfBoxW = boxW/2;
 
 	//outer box
-	gmenu2x->s->box(158-halfBoxW, 97, halfBoxW*2+5, 47, gmenu2x->messageBoxColor);
+	gmenu2x->s->box(gmenu2x->halfX-2-halfBoxW, gmenu2x->halfY-23, halfBoxW*2+5, 47, gmenu2x->messageBoxColor);
 	//inner rectangle
-	gmenu2x->s->rectangle(160-halfBoxW, 99, boxW, 42, gmenu2x->messageBoxBorderColor);
+	gmenu2x->s->rectangle(gmenu2x->halfX-halfBoxW, gmenu2x->halfY-21, boxW, 42, gmenu2x->messageBoxBorderColor);
 
-	int x = 170-halfBoxW;
+	int x = gmenu2x->halfX+10-halfBoxW;
 	/*if (getIcon()!="")
 		gmenu2x->sc[getIcon()]->blit(gmenu2x->s,x,104);
 	else
 		gmenu2x->sc["icons/generic.png"]->blit(gmenu2x->s,x,104);*/
-	gmenu2x->sc[getIconPath()]->blit(gmenu2x->s,x,104);
-	gmenu2x->s->write( gmenu2x->font, text, x+42, 121, SFontHAlignLeft, SFontVAlignMiddle );
+	gmenu2x->sc[getIconPath()]->blit(gmenu2x->s,x,gmenu2x->halfY-16);
+	gmenu2x->s->write( gmenu2x->font, text, x+42, gmenu2x->halfY+1, SFontHAlignLeft, SFontVAlignMiddle );
 	gmenu2x->s->flip();
 }
 
@@ -304,10 +304,10 @@ void LinkApp::showManual() {
 				repaint = false;
 			}
 
-			gmenu2x->joy.update();
-			if ( gmenu2x->joy[ACTION_Y] || gmenu2x->joy[ACTION_X] || gmenu2x->joy[ACTION_START] ) close = true;
-			if ( gmenu2x->joy[ACTION_LEFT] && page>0 ) { page--; repaint=true; }
-			if ( gmenu2x->joy[ACTION_RIGHT] && page<pagecount-1 ) { page++; repaint=true; }
+			gmenu2x->input.update();
+			if ( gmenu2x->input[ACTION_Y] || gmenu2x->input[ACTION_X] || gmenu2x->input[ACTION_START] ) close = true;
+			if ( gmenu2x->input[ACTION_LEFT] && page>0 ) { page--; repaint=true; }
+			if ( gmenu2x->input[ACTION_RIGHT] && page<pagecount-1 ) { page++; repaint=true; }
 		}
 		return;
 	}

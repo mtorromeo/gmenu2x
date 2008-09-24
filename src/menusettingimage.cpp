@@ -32,8 +32,8 @@ MenuSettingImage::MenuSettingImage(GMenu2X *gmenu2x, string name, string descrip
 }
 
 void MenuSettingImage::manageInput() {
-	if ( gmenu2x->joy[ACTION_X] ) setValue("");
-	if ( gmenu2x->joy[ACTION_B] ) {
+	if ( gmenu2x->input[ACTION_X] ) setValue("");
+	if ( gmenu2x->input[ACTION_B] ) {
 		ImageDialog id(gmenu2x, description, filter, value());
 		if (id.exec()) setValue( id.path()+"/"+id.file );
 	}

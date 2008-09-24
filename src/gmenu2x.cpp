@@ -181,11 +181,13 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	maxClock = 300;
 	menuClock = f200 ? 136 : 100;
 	globalVolume = 67;
-	numRows = 4;
-	numCols = 5;
 	tvoutEncoding = "NTSC";
 	wallpaper = "";
 	skinWallpaper = "";
+
+	resX = 320;
+	resY = 240;
+	videoBpp = 16;
 
 	//open2x
 	savedVolumeMode = 0;
@@ -223,6 +225,13 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	} else
 		readCommonIni();
 
+	halfX = resX/2;
+	halfY = resY/2;
+	bottomBarIconY = resY-18;
+	bottomBarTextY = resY-10;
+	linkColumns = (resX-10)/60;
+	linkRows = (resY-75)/40;
+
 	path = "";
 	getExePath();
 
@@ -255,12 +264,12 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	{
 		//I use a tmp variable to hide the cursor as soon as possible (and create the double buffer surface only after that)
 		//I'm forced to use SW surfaces since with HW there are issuse with changing the clock frequency
-		SDL_Surface *tmps = SDL_SetVideoMode(320, 240, 16, SDL_SWSURFACE);
+		SDL_Surface *tmps = SDL_SetVideoMode(resX, resY, videoBpp, SDL_SWSURFACE);
 		SDL_ShowCursor(0);
 		s->enableVirtualDoubleBuffer(tmps);
 	}
 #else
-	s->raw = SDL_SetVideoMode(320, 240, 16, SDL_HWSURFACE|SDL_DOUBLEBUF);
+	s->raw = SDL_SetVideoMode(resX, resY, videoBpp, SDL_HWSURFACE|SDL_DOUBLEBUF);
 #endif
 
 	bg = NULL;
@@ -283,7 +292,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	}
 
 	initBG();
-	joy.init(path+"input.conf");
+	input.init(path+"input.conf");
 	setInputSpeed();
 	initServices();
 
@@ -301,7 +310,6 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 #ifdef DEBUG
 	cout << "Starting main()" << endl;
 #endif
-	recalcLinkGrid = true;
 	main();
 	writeConfig();
 	if (fwType=="open2x") writeConfigOpen2x();
@@ -340,7 +348,7 @@ void GMenu2X::initBG() {
 
 	if (!fileExists(wallpaper)) {
 		bg = new Surface(s);
-		bg->box(0,0,320,240,0,0,0);
+		bg->box(0,0,resX,resY,0,0,0);
 	} else {
 		bg = new Surface(wallpaper,false);
 	}
@@ -356,31 +364,31 @@ void GMenu2X::initBG() {
 	Surface volume("imgs/volume.png", skin);
 	string df = getDiskFree();
 
-	sd.blit( sc["bgmain"], 3, 222 );
-	sc["bgmain"]->write( font, df, 22, 230, SFontHAlignLeft, SFontVAlignMiddle );
+	sd.blit( sc["bgmain"], 3, bottomBarIconY );
+	sc["bgmain"]->write( font, df, 22, bottomBarTextY, SFontHAlignLeft, SFontVAlignMiddle );
 	volumeX = 27+font->getTextWidth(df);
-	volume.blit( sc["bgmain"], volumeX, 222 );
+	volume.blit( sc["bgmain"], volumeX, bottomBarIconY );
 	volumeX += 19;
 	cpuX = volumeX+font->getTextWidth("100")+5;
-	cpu.blit( sc["bgmain"], cpuX, 222 );
+	cpu.blit( sc["bgmain"], cpuX, bottomBarIconY );
 	cpuX += 19;
 	manualX = cpuX+font->getTextWidth("300Mhz")+5;
 
-	int serviceX = 282;
+	int serviceX = resX-38;
 	if (usbnet) {
 		if (web) {
 			Surface webserver("imgs/webserver.png", skin);
-			webserver.blit( sc["bgmain"], serviceX, 222 );
+			webserver.blit( sc["bgmain"], serviceX, bottomBarIconY );
 			serviceX -= 19;
 		}
 		if (samba) {
 			Surface sambaS("imgs/samba.png", skin);
-			sambaS.blit( sc["bgmain"], serviceX, 222 );
+			sambaS.blit( sc["bgmain"], serviceX, bottomBarIconY );
 			serviceX -= 19;
 		}
 		if (inet) {
 			Surface inetS("imgs/inet.png", skin);
-			inetS.blit( sc["bgmain"], serviceX, 222 );
+			inetS.blit( sc["bgmain"], serviceX, bottomBarIconY );
 			serviceX -= 19;
 		}
 	}
@@ -404,8 +412,6 @@ void GMenu2X::initFont() {
 void GMenu2X::initMenu() {
 	//Menu structure handler
 	menu = new Menu(this);
-	menu->numRows = numRows; numRows = 0;
-	menu->numCols = numCols; numCols = 0;
 	for (uint i=0; i<menu->sections.size(); i++) {
 		//Add virtual links in the applications section
 		if (menu->sections[i]=="applications") {
@@ -531,14 +537,16 @@ void GMenu2X::readConfig() {
 				else if (name=="menuClock") menuClock = constrain( atoi(value.c_str()), 50,300 );
 				else if (name=="maxClock") maxClock = constrain( atoi(value.c_str()), 50,300 );
 				else if (name=="globalVolume") globalVolume = constrain( atoi(value.c_str()), 0,100 );
-				else if (name=="numRows") numRows = constrain( atoi(value.c_str()), 2,4 );
-				else if (name=="numCols") numCols = constrain( atoi(value.c_str()), 1,6 );
 				else if (name=="lang") tr.setLang(value);
 				else if (name=="skin") skin = value;
 				else if (name=="wallpaper" && fileExists(value)) wallpaper = value;
 				else if (name=="tvoutEncoding" && (value=="PAL" || value=="NTSC")) tvoutEncoding = value;
 				//G
 				else if (name=="gamma") gamma = constrain( atoi(value.c_str()), 1,100 );
+				//VIDEO
+				else if (name=="resolutionX") resX = constrain( atoi(value.c_str()), 320,1600 );
+				else if (name=="resolutionY") resY = constrain( atoi(value.c_str()), 240,1200 );
+				else if (name=="videoBpp") videoBpp = constrain( atoi(value.c_str()), 8,32 );
 			}
 			inf.close();
 		}
@@ -565,8 +573,6 @@ void GMenu2X::writeConfig() {
 		inf << "menuClock=" << menuClock << endl;
 		inf << "maxClock=" << maxClock << endl;
 		inf << "globalVolume=" << globalVolume << endl;
-		inf << "numRows=" << menu->numRows << endl;
-		inf << "numCols=" << menu->numCols << endl;
 		inf << "tvoutEncoding=" << tvoutEncoding << endl;
 		//G
 		inf << "gamma=" << gamma << endl;
@@ -764,10 +770,12 @@ void GMenu2X::ledOff() {
 }
 
 int GMenu2X::main() {
-	uint linksPerPage = 0, linkH = 0, linkW = 0;
+	uint linksPerPage = linkColumns*linkRows, linkH = 40, linkW = 60;
+	int linkSpacingX = (resX-10 - linkColumns*60)/linkColumns;
+	int linkSpacingY = (resY-75 - linkRows*40)/linkRows;
 
 	bool quit = false;
-	int x,y, offset = 0, helpBoxHeight = fwType=="open2x" ? 154 : 139;
+	int x,y, offset = menu->sectionLinks()->size()>linksPerPage ? 2 : 6, helpBoxHeight = fwType=="open2x" ? 154 : 139;
 	uint i;
 	long tickBattery = -60000, tickNow;
 	string batteryIcon = "imgs/battery/0.png";
@@ -782,26 +790,11 @@ int GMenu2X::main() {
 #endif
 
 	IconButton btnContextMenu(this,"skin:imgs/menu.png");
-	btnContextMenu.setPosition(282, 222);
+	btnContextMenu.setPosition(282, bottomBarIconY);
 	btnContextMenu.setAction(MakeDelegate(this, &GMenu2X::contextMenu));
 
 	while (!quit) {
 		tickNow = SDL_GetTicks();
-
-		if (recalcLinkGrid || menu->numRows!=numRows || menu->numCols!=numCols) {
-			recalcLinkGrid = false;
-			numRows = menu->numRows;
-			numCols = menu->numCols;
-			linksPerPage = numRows*numCols;
-			linkH = 165/numRows;
-			linkW = 312/numCols;
-			//iconTextOffset = numRows < 4 ? 2 : 0;
-			offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
-
-			for (uint section_i=0; section_i<menu->sections.size(); section_i++)
-				for (uint link_i=0; link_i<menu->sectionLinks(section_i)->size(); link_i++)
-					menu->sectionLinks(section_i)->at(link_i)->setSize(linkW, 41);
-		}
 
 		//Background
 		sc["bgmain"]->blit(s,0,0);
@@ -811,14 +804,14 @@ int GMenu2X::main() {
 			sc.skinRes("imgs/l_enabled.png")->blit(s,0,0);
 		else
 			sc.skinRes("imgs/l_disabled.png")->blit(s,0,0);
-		if (menu->firstDispSection()+5<menu->sections.size())
-			sc.skinRes("imgs/r_enabled.png")->blit(s,310,0);
+		if (menu->firstDispSection()+linkColumns<menu->sections.size())
+			sc.skinRes("imgs/r_enabled.png")->blit(s,resX-10,0);
 		else
-			sc.skinRes("imgs/r_disabled.png")->blit(s,310,0);
-		for (i=menu->firstDispSection(); i<menu->sections.size() && i<menu->firstDispSection()+5; i++) {
+			sc.skinRes("imgs/r_disabled.png")->blit(s,resX-10,0);
+		for (i=menu->firstDispSection(); i<menu->sections.size() && i<menu->firstDispSection()+linkColumns; i++) {
 			string sectionIcon = "skin:sections/"+menu->sections[i]+".png";
 			//x = (i-menu->firstDispSection())*60+24;
-			sectionsCoordX = 24 + max(0, min( 5-menu->sections.size(), 5 )) * 30;
+			sectionsCoordX = 24 + max(0, min( (uint)(linkColumns-menu->sections.size()), linkColumns )) * 30;
 			x = (i-menu->firstDispSection())*60+sectionsCoordX;
 			if (menu->selSectionIndex()==(int)i)
 				s->box(x-14, 0, 60, 40, selectionColor);
@@ -830,11 +823,11 @@ int GMenu2X::main() {
 		}
 
 		//Links
-		s->setClipRect(offset,42,311,166);
-		for (i=menu->firstDispRow()*numCols; i<(menu->firstDispRow()*numCols)+linksPerPage && i<menu->sectionLinks()->size(); i++) {
-			int ir = i-menu->firstDispRow()*numCols;
-			x = (ir%numCols)*linkW+offset;
-			y = ir/numCols*linkH+42;
+		s->setClipRect(offset,40,resX-9,resY-74); //32*2+10
+		for (i=menu->firstDispRow()*linkColumns; i<(menu->firstDispRow()*linkColumns)+linksPerPage && i<menu->sectionLinks()->size(); i++) {
+			int ir = i-menu->firstDispRow()*linkColumns;
+			x = (ir%linkColumns)*(linkW+linkSpacingX)+offset;
+			y = ir/linkColumns*(linkH+linkSpacingY)+42;
 
 			if (i==(uint)menu->selLinkIndex())
 				menu->sectionLinks()->at(i)->paintHover();
@@ -844,22 +837,22 @@ int GMenu2X::main() {
 		}
 		s->clearClipRect();
 
-		drawScrollBar(numRows,menu->sectionLinks()->size()/numCols + ((menu->sectionLinks()->size()%numCols==0) ? 0 : 1),menu->firstDispRow(),43,159);
+		drawScrollBar(linkRows,menu->sectionLinks()->size()/linkColumns + ((menu->sectionLinks()->size()%linkColumns==0) ? 0 : 1),menu->firstDispRow(),43,resY-81);
 
 		switch(volumeMode) {
-			case VOLUME_MODE_MUTE:   sc.skinRes("imgs/mute.png")->blit(s,279,222); break;
-			case VOLUME_MODE_PHONES: sc.skinRes("imgs/phones.png")->blit(s,279,222); break;
-			default: sc.skinRes("imgs/volume.png")->blit(s,279,222); break;
+			case VOLUME_MODE_MUTE:   sc.skinRes("imgs/mute.png")->blit(s,279,bottomBarIconY); break;
+			case VOLUME_MODE_PHONES: sc.skinRes("imgs/phones.png")->blit(s,279,bottomBarIconY); break;
+			default: sc.skinRes("imgs/volume.png")->blit(s,279,bottomBarIconY); break;
 		}
 
 		if (menu->selLink()!=NULL) {
-			s->write ( font, menu->selLink()->getDescription(), 160, 221, SFontHAlignCenter, SFontVAlignBottom );
+			s->write ( font, menu->selLink()->getDescription(), halfX, resY-19, SFontHAlignCenter, SFontVAlignBottom );
 			if (menu->selLinkApp()!=NULL) {
-				s->write ( font, menu->selLinkApp()->clockStr(maxClock), cpuX, 230, SFontHAlignLeft, SFontVAlignMiddle );
-				s->write ( font, menu->selLinkApp()->volumeStr(), volumeX, 230, SFontHAlignLeft, SFontVAlignMiddle );
+				s->write ( font, menu->selLinkApp()->clockStr(maxClock), cpuX, bottomBarTextY, SFontHAlignLeft, SFontVAlignMiddle );
+				s->write ( font, menu->selLinkApp()->volumeStr(), volumeX, bottomBarTextY, SFontHAlignLeft, SFontVAlignMiddle );
 				//Manual indicator
 				if (!menu->selLinkApp()->getManual().empty())
-					sc.skinRes("imgs/manual.png")->blit(s,manualX,222);
+					sc.skinRes("imgs/manual.png")->blit(s,manualX,bottomBarIconY);
 			}
 		}
 
@@ -879,10 +872,10 @@ int GMenu2X::main() {
 				batteryIcon = "imgs/battery/"+batteryIcon+".png";
 			}
 		}
-		sc.skinRes(batteryIcon)->blit( s, 301, 222 );
+		sc.skinRes(batteryIcon)->blit( s, resX-19, bottomBarIconY );
 
 		//On Screen Help
-		if (joy[ACTION_A]) {
+		if (input[ACTION_A]) {
 			s->box(10,50,300,143, messageBoxColor);
 			s->rectangle( 12,52,296,helpBoxHeight, messageBoxBorderColor );
 			s->write( font, tr["CONTROLS"], 20, 60 );
@@ -903,7 +896,7 @@ int GMenu2X::main() {
 		ss >> fps;
 		fps += " FPS";
 		tickFPS = tickNow;
-		s->write( font, fps, 319,1 ,SFontHAlignRight );
+		s->write( font, fps, resX-1,1 ,SFontHAlignRight );
 #endif
 
 		s->flip();
@@ -912,11 +905,11 @@ int GMenu2X::main() {
 		if (f200) {
 			ts.poll();
 			btnContextMenu.handleTS();
-			re.x = 0; re.y = 0; re.h = 32; re.w = 320;
+			re.x = 0; re.y = 0; re.h = 32; re.w = resX;
 			if (ts.pressed() && ts.inRect(re)) {
 				re.w = 60;
-				for (i=menu->firstDispSection(); !ts.handled() && i<menu->sections.size() && i<menu->firstDispSection()+5; i++) {
-					sectionsCoordX = 10 + max(0, min( 5-menu->sections.size(), 5 )) * 30;
+				for (i=menu->firstDispSection(); !ts.handled() && i<menu->sections.size() && i<menu->firstDispSection()+linkColumns; i++) {
+					sectionsCoordX = 10 + max(0, min( (uint)(linkColumns-menu->sections.size()), linkColumns )) * 30;
 					re.x = (i-menu->firstDispSection())*60+sectionsCoordX;
 
 					if (ts.inRect(re)) {
@@ -926,8 +919,8 @@ int GMenu2X::main() {
 				}
 			}
 
-			i=menu->firstDispRow()*numCols;
-			while ( i<(menu->firstDispRow()*numCols)+linksPerPage && i<menu->sectionLinks()->size()) {
+			i=menu->firstDispRow()*linkColumns;
+			while ( i<(menu->firstDispRow()*linkColumns)+linksPerPage && i<menu->sectionLinks()->size()) {
 				if (menu->sectionLinks()->at(i)->isPressed())
 					menu->setLinkIndex(i);
 				if (menu->sectionLinks()->at(i)->handleTS())
@@ -937,12 +930,12 @@ int GMenu2X::main() {
 		}
 
 //#ifdef TARGET_GP2X
-		joy.update();
-		if ( joy[ACTION_B] && menu->selLink()!=NULL ) menu->selLink()->run();
-		else if ( joy[ACTION_START]  ) options();
-		else if ( joy[ACTION_SELECT] ) contextMenu();
+		input.update();
+		if ( input[ACTION_B] && menu->selLink()!=NULL ) menu->selLink()->run();
+		else if ( input[ACTION_START]  ) options();
+		else if ( input[ACTION_SELECT] ) contextMenu();
 		// VOLUME SCALE MODIFIER
-		else if ( joy[ACTION_X] ) {
+		else if ( fwType=="open2x" && input[ACTION_X] ) {
 			volumeMode = constrain(volumeMode-1, -VOLUME_MODE_MUTE-1, VOLUME_MODE_NORMAL);
 			if(volumeMode < VOLUME_MODE_MUTE)
 				volumeMode = VOLUME_MODE_NORMAL;
@@ -954,40 +947,40 @@ int GMenu2X::main() {
 			setVolume(globalVolume);
 		}
 		// LINK NAVIGATION
-		else if ( joy[ACTION_LEFT ]  ) menu->linkLeft();
-		else if ( joy[ACTION_RIGHT]  ) menu->linkRight();
-		else if ( joy[ACTION_UP   ]  ) menu->linkUp();
-		else if ( joy[ACTION_DOWN ]  ) menu->linkDown();
+		else if ( input[ACTION_LEFT ]  ) menu->linkLeft();
+		else if ( input[ACTION_RIGHT]  ) menu->linkRight();
+		else if ( input[ACTION_UP   ]  ) menu->linkUp();
+		else if ( input[ACTION_DOWN ]  ) menu->linkDown();
 		// SELLINKAPP SELECTED
 		else if (menu->selLinkApp()!=NULL) {
-			if ( joy[ACTION_Y] ) menu->selLinkApp()->showManual();
-			else if ( joy.isActive(ACTION_A) ) {
+			if ( input[ACTION_Y] ) menu->selLinkApp()->showManual();
+			else if ( input.isActive(ACTION_A) ) {
 				// VOLUME
-				if ( joy[ACTION_VOLDOWN] && !joy.isActive(ACTION_VOLUP) )
+				if ( input[ACTION_VOLDOWN] && !input.isActive(ACTION_VOLUP) )
 					menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()-1,0,100) );
-				if ( joy[ACTION_VOLUP] && !joy.isActive(ACTION_VOLDOWN) )
+				if ( input[ACTION_VOLUP] && !input.isActive(ACTION_VOLDOWN) )
 					menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()+1,0,100) );;
-				if ( joy.isActive(ACTION_VOLUP) && joy.isActive(ACTION_VOLDOWN) ) menu->selLinkApp()->setVolume(-1);
+				if ( input.isActive(ACTION_VOLUP) && input.isActive(ACTION_VOLDOWN) ) menu->selLinkApp()->setVolume(-1);
 			} else {
 				// CLOCK
-				if ( joy[ACTION_VOLDOWN] && !joy.isActive(ACTION_VOLUP) )
+				if ( input[ACTION_VOLDOWN] && !input.isActive(ACTION_VOLUP) )
 					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-1,50,maxClock) );
-				if ( joy[ACTION_VOLUP] && !joy.isActive(ACTION_VOLDOWN) )
+				if ( input[ACTION_VOLUP] && !input.isActive(ACTION_VOLDOWN) )
 					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+1,50,maxClock) );
-				if ( joy.isActive(ACTION_VOLUP) && joy.isActive(ACTION_VOLDOWN) ) menu->selLinkApp()->setClock(200);
+				if ( input.isActive(ACTION_VOLUP) && input.isActive(ACTION_VOLDOWN) ) menu->selLinkApp()->setClock(200);
 			}
 		}
-		if ( joy.isActive(ACTION_A) ) {
-			if (joy.isActive(ACTION_L) && joy.isActive(ACTION_R))
+		if ( input.isActive(ACTION_A) ) {
+			if (input.isActive(ACTION_L) && input.isActive(ACTION_R))
 				saveScreenshot();
 		} else {
 			// SECTIONS
-			if ( joy[ACTION_L     ] ) {
+			if ( input[ACTION_L     ] ) {
 				menu->decSectionIndex();
-				offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
-			} else if ( joy[ACTION_R     ] ) {
+				offset = menu->sectionLinks()->size()>linksPerPage ? 2 : 6;
+			} else if ( input[ACTION_R     ] ) {
 				menu->incSectionIndex();
-				offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
+				offset = menu->sectionLinks()->size()>linksPerPage ? 2 : 6;
 			}
 		}
 /*#else
@@ -1012,11 +1005,11 @@ int GMenu2X::main() {
 				// SECTIONS
 				if ( event.key.keysym.sym==SDLK_q      ) {
 					menu->decSectionIndex();
-					offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
+					offset = menu->sectionLinks()->size()>linksPerPage ? 2 : 6;
 				}
 				if ( event.key.keysym.sym==SDLK_w      ) {
 					menu->incSectionIndex();
-					offset = menu->sectionLinks()->size()>linksPerPage ? 0 : 4;
+					offset = menu->sectionLinks()->size()>linksPerPage ? 2 : 6;
 				}
 				if ( event.key.keysym.sym==SDLK_p      )
 					saveScreenshot();
@@ -1078,8 +1071,6 @@ void GMenu2X::options() {
 	sd.addSetting(new MenuSettingInt(this,tr["Maximum overclock"],tr["Set the maximum overclock for launching links"],&maxClock,50,325));
 	sd.addSetting(new MenuSettingInt(this,tr["Global Volume"],tr["Set the default volume for the gp2x soundcard"],&globalVolume,0,100));
 	sd.addSetting(new MenuSettingBool(this,tr["Output logs"],tr["Logs the output of the links. Use the Log Viewer to read them."],&outputLogs));
-	sd.addSetting(new MenuSettingInt(this,tr["Number of columns"],tr["Set the number of columns of links to display on a page"],(int*)&menu->numCols,1,6));
-	sd.addSetting(new MenuSettingInt(this,tr["Number of rows"],tr["Set the number of rows of links to display on a page"],(int*)&menu->numRows,2,4));
 	//G
 	sd.addSetting(new MenuSettingInt(this,tr["Gamma"],tr["Set gp2x gamma value (default: 10)"],&gamma,1,100));
 	sd.addSetting(new MenuSettingMultiString(this,tr["Tv-Out encoding"],tr["Encoding of the tv-out signal"],&tvoutEncoding,&encodings));
@@ -1360,7 +1351,7 @@ void GMenu2X::contextMenu() {
 
 	Surface bg(s);
 	//Darken background
-	bg.box(0, 0, 320, 240, 0,0,0,150);
+	bg.box(0, 0, resX, resY, 0,0,0,150);
 	bg.box(box.x, box.y, box.w, box.h, messageBoxColor);
 	bg.rectangle( box.x+2, box.y+2, box.w-4, box.h-4, messageBoxBorderColor );
 	while (!close) {
@@ -1398,11 +1389,11 @@ void GMenu2X::contextMenu() {
 			}
 		}
 
-		joy.update();
-		if ( joy[ACTION_SELECT] ) close = true;
-		if ( joy[ACTION_UP    ] ) sel = max(0, sel-1);
-		if ( joy[ACTION_DOWN  ] ) sel = min((int)voices.size()-1, sel+1);
-		if ( joy[ACTION_B] ) { voices[sel].action(); close = true; }
+		input.update();
+		if ( input[ACTION_SELECT] ) close = true;
+		if ( input[ACTION_UP    ] ) sel = max(0, sel-1);
+		if ( input[ACTION_DOWN  ] ) sel = min((int)voices.size()-1, sel+1);
+		if ( input[ACTION_B] ) { voices[sel].action(); close = true; }
 	}
 }
 
@@ -1440,7 +1431,6 @@ void GMenu2X::addLink() {
 		menu->addLink(fd.path(), fd.file);
 		sync();
 		ledOff();
-		recalcLinkGrid = true;
 	}
 }
 
@@ -1692,13 +1682,12 @@ void GMenu2X::scanner() {
 
 	bool close = false;
 	while (!close) {
-		joy.update();
-		if (joy[ACTION_START] || joy[ACTION_B] || joy[ACTION_X]) close = true;
+		input.update();
+		if (input[ACTION_START] || input[ACTION_B] || input[ACTION_X]) close = true;
 	}
 
 	sync();
 	ledOff();
-	recalcLinkGrid = true;
 }
 
 void GMenu2X::scanPath(string path, vector<string> *files) {
@@ -1769,18 +1758,18 @@ unsigned short GMenu2X::getBatteryLevel() {
 }
 
 void GMenu2X::setInputSpeed() {
-	joy.setInterval(150);
-	joy.setInterval(30,  ACTION_VOLDOWN);
-	joy.setInterval(30,  ACTION_VOLUP  );
-	joy.setInterval(30,  ACTION_A      );
-	joy.setInterval(500, ACTION_START  );
-	joy.setInterval(500, ACTION_SELECT );
-	joy.setInterval(300, ACTION_X      );
-	joy.setInterval(300,  ACTION_Y      );
-	joy.setInterval(1000,ACTION_B      );
+	input.setInterval(150);
+	input.setInterval(30,  ACTION_VOLDOWN);
+	input.setInterval(30,  ACTION_VOLUP  );
+	input.setInterval(30,  ACTION_A      );
+	input.setInterval(500, ACTION_START  );
+	input.setInterval(500, ACTION_SELECT );
+	input.setInterval(300, ACTION_X      );
+	input.setInterval(300,  ACTION_Y      );
+	input.setInterval(1000,ACTION_B      );
 	//joy.setInterval(1000,ACTION_CLICK  );
-	joy.setInterval(300, ACTION_L      );
-	joy.setInterval(300, ACTION_R      );
+	input.setInterval(300, ACTION_L      );
+	input.setInterval(300, ACTION_R      );
 	SDL_EnableKeyRepeat(1,150);
 }
 
@@ -1911,12 +1900,14 @@ string GMenu2X::getDiskFree() {
 }
 
 int GMenu2X::drawButton(IconButton *btn, int x, int y) {
+	if (y<0) y = resY+y;
 	btn->setPosition(x, y-7);
 	btn->paint();
 	return x+btn->getRect().w+6;
 }
 
 int GMenu2X::drawButton(Surface *s, string btn, string text, int x, int y) {
+	if (y<0) y = resY+y;
 	SDL_Rect re = {x, y-7, 0, 16};
 	if (sc.skinRes("imgs/buttons/"+btn+".png") != NULL) {
 		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
@@ -1928,6 +1919,7 @@ int GMenu2X::drawButton(Surface *s, string btn, string text, int x, int y) {
 }
 
 int GMenu2X::drawButtonRight(Surface *s, string btn, string text, int x, int y) {
+	if (y<0) y = resY+y;
 	if (sc.skinRes("imgs/buttons/"+btn+".png") != NULL) {
 		x -= 16;
 		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
@@ -1941,7 +1933,7 @@ int GMenu2X::drawButtonRight(Surface *s, string btn, string text, int x, int y) 
 void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height) {
 	if (totalsize<=pagesize) return;
 
-	s->rectangle(312, top, 7, height, selectionColor);
+	s->rectangle(resX-8, top, 7, height, selectionColor);
 
 	//internal bar total height = height-2
 	//bar size
@@ -1952,7 +1944,7 @@ void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint to
 	if (by+bs>top+height-2) by = top+height-2-bs;
 
 
-	s->box(314, by, 3, bs, selectionColor);
+	s->box(resX-6, by, 3, bs, selectionColor);
 }
 
 void GMenu2X::drawTitleIcon(string icon, bool skinRes, Surface *s) {
@@ -1989,7 +1981,7 @@ void GMenu2X::drawTopBar(Surface *s) {
 	if (bar != NULL)
 		bar->blit(s, 0, 0);
 	else
-		s->box(0, 0, 320, 40, topBarColor);
+		s->box(0, 0, resX, 40, topBarColor);
 }
 
 void GMenu2X::drawBottomBar(Surface *s) {
@@ -1997,7 +1989,7 @@ void GMenu2X::drawBottomBar(Surface *s) {
 
 	Surface *bar = sc.skinRes("imgs/bottombar.png");
 	if (bar != NULL)
-		bar->blit(s, 0, 240-bar->raw->h);
+		bar->blit(s, 0, resY-bar->raw->h);
 	else
-		s->box(0, 220, 320, 20, bottomBarColor);
+		s->box(0, resY-20, resX, 20, bottomBarColor);
 }

@@ -158,16 +158,16 @@ bool InputDialog::exec() {
 		action = drawVirtualKeyboard();
 		gmenu2x->s->flip();
 
-		gmenu2x->joy.update();
-		if ( gmenu2x->joy[ACTION_START] ) action = ID_ACTION_CLOSE;
-		if ( gmenu2x->joy[ACTION_UP   ] ) action = ID_ACTION_UP;
-		if ( gmenu2x->joy[ACTION_DOWN ] ) action = ID_ACTION_DOWN;
-		if ( gmenu2x->joy[ACTION_LEFT ] ) action = ID_ACTION_LEFT;
-		if ( gmenu2x->joy[ACTION_RIGHT] ) action = ID_ACTION_RIGHT;
-		if ( gmenu2x->joy[ACTION_B]     ) action = ID_ACTION_SELECT;
-		if ( gmenu2x->joy[ACTION_Y]     ) action = ID_ACTION_KB_CHANGE;
-		if ( gmenu2x->joy[ACTION_X] || gmenu2x->joy[ACTION_L] ) action = ID_ACTION_BACKSPACE;
-		if ( gmenu2x->joy[ACTION_R    ] ) action = ID_ACTION_SPACE;
+		gmenu2x->input.update();
+		if ( gmenu2x->input[ACTION_START] ) action = ID_ACTION_CLOSE;
+		if ( gmenu2x->input[ACTION_UP   ] ) action = ID_ACTION_UP;
+		if ( gmenu2x->input[ACTION_DOWN ] ) action = ID_ACTION_DOWN;
+		if ( gmenu2x->input[ACTION_LEFT ] ) action = ID_ACTION_LEFT;
+		if ( gmenu2x->input[ACTION_RIGHT] ) action = ID_ACTION_RIGHT;
+		if ( gmenu2x->input[ACTION_B]     ) action = ID_ACTION_SELECT;
+		if ( gmenu2x->input[ACTION_Y]     ) action = ID_ACTION_KB_CHANGE;
+		if ( gmenu2x->input[ACTION_X] || gmenu2x->input[ACTION_L] ) action = ID_ACTION_BACKSPACE;
+		if ( gmenu2x->input[ACTION_R    ] ) action = ID_ACTION_SPACE;
 
 		switch (action) {
 			case ID_ACTION_CLOSE: {

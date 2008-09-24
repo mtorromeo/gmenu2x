@@ -1,0 +1,5 @@
+title=Amiga
+description=UAE-2X
+exec=/mnt/sd/uae2x_01alpha/uae2x-tweak.gpe
+manual=fonttest.txt
+clock=200

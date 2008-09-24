@@ -113,9 +113,9 @@ int MessageBox::exec() {
 			}
 		}
 
-		gmenu2x->joy.update();
+		gmenu2x->input.update();
 		for (uint i=0; i<buttons.size(); i++)
-			if (buttons[i]!="" && gmenu2x->joy[i]) result = i;
+			if (buttons[i]!="" && gmenu2x->input[i]) result = i;
 	}
 
 	return result;
