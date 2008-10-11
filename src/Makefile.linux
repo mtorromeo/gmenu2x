@@ -40,7 +40,7 @@ depend:
 ../objs/linux/asfont.o: /usr/include/SDL/SDL_platform.h
 ../objs/linux/asfont.o: /usr/include/sys/types.h /usr/include/features.h
 ../objs/linux/asfont.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
-../objs/linux/asfont.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+../objs/linux/asfont.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 ../objs/linux/asfont.o: /usr/include/bits/types.h
 ../objs/linux/asfont.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/asfont.o: /usr/include/endian.h /usr/include/bits/endian.h
@@ -92,7 +92,7 @@ depend:
 ../objs/linux/button.o: /usr/include/SDL/SDL_platform.h
 ../objs/linux/button.o: /usr/include/sys/types.h /usr/include/features.h
 ../objs/linux/button.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
-../objs/linux/button.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+../objs/linux/button.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 ../objs/linux/button.o: /usr/include/bits/types.h
 ../objs/linux/button.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/button.o: /usr/include/endian.h /usr/include/bits/endian.h
@@ -151,7 +151,7 @@ depend:
 ../objs/linux/dirdialog.o: /usr/include/sys/cdefs.h
 ../objs/linux/dirdialog.o: /usr/include/bits/wordsize.h
 ../objs/linux/dirdialog.o: /usr/include/gnu/stubs.h
-../objs/linux/dirdialog.o: /usr/include/gnu/stubs-64.h
+../objs/linux/dirdialog.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/dirdialog.o: /usr/include/bits/types.h
 ../objs/linux/dirdialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/dirdialog.o: /usr/include/endian.h /usr/include/bits/endian.h
@@ -221,7 +221,7 @@ depend:
 ../objs/linux/filedialog.o: /usr/include/sys/cdefs.h
 ../objs/linux/filedialog.o: /usr/include/bits/wordsize.h
 ../objs/linux/filedialog.o: /usr/include/gnu/stubs.h
-../objs/linux/filedialog.o: /usr/include/gnu/stubs-64.h
+../objs/linux/filedialog.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/filedialog.o: /usr/include/bits/types.h
 ../objs/linux/filedialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/filedialog.o: /usr/include/endian.h /usr/include/bits/endian.h
@@ -287,7 +287,7 @@ depend:
 ../objs/linux/filelister.o: /usr/include/sys/cdefs.h
 ../objs/linux/filelister.o: /usr/include/bits/wordsize.h
 ../objs/linux/filelister.o: /usr/include/gnu/stubs.h
-../objs/linux/filelister.o: /usr/include/gnu/stubs-64.h
+../objs/linux/filelister.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/filelister.o: /usr/include/bits/types.h
 ../objs/linux/filelister.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/filelister.o: /usr/include/bits/stat.h /usr/include/sys/types.h
@@ -355,7 +355,7 @@ depend:
 ../objs/linux/gmenu2x.o: /usr/include/stdlib.h /usr/include/features.h
 ../objs/linux/gmenu2x.o: /usr/include/sys/cdefs.h
 ../objs/linux/gmenu2x.o: /usr/include/bits/wordsize.h
-../objs/linux/gmenu2x.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+../objs/linux/gmenu2x.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 ../objs/linux/gmenu2x.o: /usr/include/bits/waitflags.h
 ../objs/linux/gmenu2x.o: /usr/include/bits/waitstatus.h /usr/include/endian.h
 ../objs/linux/gmenu2x.o: /usr/include/bits/endian.h /usr/include/xlocale.h
@@ -411,6 +411,9 @@ depend:
 ../objs/linux/gmenu2x.o: /usr/include/bits/siginfo.h
 ../objs/linux/gmenu2x.o: /usr/include/bits/sigaction.h
 ../objs/linux/gmenu2x.o: /usr/include/bits/sigcontext.h
+../objs/linux/gmenu2x.o: /usr/include/asm/sigcontext.h
+../objs/linux/gmenu2x.o: /usr/include/asm/types.h
+../objs/linux/gmenu2x.o: /usr/include/asm-generic/int-ll64.h
 ../objs/linux/gmenu2x.o: /usr/include/bits/sigstack.h
 ../objs/linux/gmenu2x.o: /usr/include/sys/ucontext.h
 ../objs/linux/gmenu2x.o: /usr/include/bits/sigthread.h
@@ -424,9 +427,7 @@ depend:
 ../objs/linux/gmenu2x.o: /usr/include/linux/posix_types.h
 ../objs/linux/gmenu2x.o: /usr/include/linux/stddef.h
 ../objs/linux/gmenu2x.o: /usr/include/asm/posix_types.h
-../objs/linux/gmenu2x.o: /usr/include/asm/posix_types_64.h
-../objs/linux/gmenu2x.o: /usr/include/asm/types.h
-../objs/linux/gmenu2x.o: /usr/include/asm-generic/int-ll64.h
+../objs/linux/gmenu2x.o: /usr/include/asm/posix_types_32.h
 ../objs/linux/gmenu2x.o: /usr/include/sys/fcntl.h /usr/include/fcntl.h
 ../objs/linux/gmenu2x.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
 ../objs/linux/gmenu2x.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
@@ -463,7 +464,7 @@ depend:
 ../objs/linux/iconbutton.o: /usr/include/sys/cdefs.h
 ../objs/linux/iconbutton.o: /usr/include/bits/wordsize.h
 ../objs/linux/iconbutton.o: /usr/include/gnu/stubs.h
-../objs/linux/iconbutton.o: /usr/include/gnu/stubs-64.h
+../objs/linux/iconbutton.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/iconbutton.o: /usr/include/bits/types.h
 ../objs/linux/iconbutton.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/iconbutton.o: /usr/include/endian.h /usr/include/bits/endian.h
@@ -529,7 +530,7 @@ depend:
 ../objs/linux/imagedialog.o: /usr/include/sys/cdefs.h
 ../objs/linux/imagedialog.o: /usr/include/bits/wordsize.h
 ../objs/linux/imagedialog.o: /usr/include/gnu/stubs.h
-../objs/linux/imagedialog.o: /usr/include/gnu/stubs-64.h
+../objs/linux/imagedialog.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/imagedialog.o: /usr/include/bits/types.h
 ../objs/linux/imagedialog.o: /usr/include/bits/typesizes.h
 ../objs/linux/imagedialog.o: /usr/include/time.h /usr/include/endian.h
@@ -602,7 +603,7 @@ depend:
 ../objs/linux/inputdialog.o: /usr/include/sys/cdefs.h
 ../objs/linux/inputdialog.o: /usr/include/bits/wordsize.h
 ../objs/linux/inputdialog.o: /usr/include/gnu/stubs.h
-../objs/linux/inputdialog.o: /usr/include/gnu/stubs-64.h
+../objs/linux/inputdialog.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/inputdialog.o: /usr/include/bits/types.h
 ../objs/linux/inputdialog.o: /usr/include/bits/typesizes.h
 ../objs/linux/inputdialog.o: /usr/include/time.h /usr/include/endian.h
@@ -671,7 +672,7 @@ depend:
 ../objs/linux/inputmanager.o: /usr/include/sys/cdefs.h
 ../objs/linux/inputmanager.o: /usr/include/bits/wordsize.h
 ../objs/linux/inputmanager.o: /usr/include/gnu/stubs.h
-../objs/linux/inputmanager.o: /usr/include/gnu/stubs-64.h
+../objs/linux/inputmanager.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/inputmanager.o: /usr/include/bits/types.h
 ../objs/linux/inputmanager.o: /usr/include/bits/typesizes.h
 ../objs/linux/inputmanager.o: /usr/include/time.h /usr/include/endian.h
@@ -731,7 +732,7 @@ depend:
 ../objs/linux/link.o: /usr/include/SDL/SDL_platform.h
 ../objs/linux/link.o: /usr/include/sys/types.h /usr/include/features.h
 ../objs/linux/link.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
-../objs/linux/link.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+../objs/linux/link.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 ../objs/linux/link.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
 ../objs/linux/link.o: /usr/include/time.h /usr/include/endian.h
 ../objs/linux/link.o: /usr/include/bits/endian.h /usr/include/sys/select.h
@@ -785,7 +786,7 @@ depend:
 ../objs/linux/linkaction.o: /usr/include/features.h /usr/include/sys/cdefs.h
 ../objs/linux/linkaction.o: /usr/include/bits/wordsize.h
 ../objs/linux/linkaction.o: /usr/include/gnu/stubs.h
-../objs/linux/linkaction.o: /usr/include/gnu/stubs-64.h link.h button.h
+../objs/linux/linkaction.o: /usr/include/gnu/stubs-32.h link.h button.h
 ../objs/linux/linkaction.o: /usr/include/SDL/SDL.h
 ../objs/linux/linkaction.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/linkaction.o: /usr/include/SDL/SDL_stdinc.h
@@ -837,7 +838,7 @@ depend:
 ../objs/linux/linkapp.o: /usr/include/sys/types.h /usr/include/features.h
 ../objs/linux/linkapp.o: /usr/include/sys/cdefs.h
 ../objs/linux/linkapp.o: /usr/include/bits/wordsize.h
-../objs/linux/linkapp.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+../objs/linux/linkapp.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 ../objs/linux/linkapp.o: /usr/include/bits/types.h
 ../objs/linux/linkapp.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/linkapp.o: /usr/include/endian.h /usr/include/bits/endian.h
@@ -906,7 +907,7 @@ depend:
 ../objs/linux/listview.o: /usr/include/sys/cdefs.h
 ../objs/linux/listview.o: /usr/include/bits/wordsize.h
 ../objs/linux/listview.o: /usr/include/gnu/stubs.h
-../objs/linux/listview.o: /usr/include/gnu/stubs-64.h
+../objs/linux/listview.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/listview.o: /usr/include/bits/types.h
 ../objs/linux/listview.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/listview.o: /usr/include/endian.h /usr/include/bits/endian.h
@@ -970,7 +971,7 @@ depend:
 ../objs/linux/listviewitem.o: /usr/include/sys/cdefs.h
 ../objs/linux/listviewitem.o: /usr/include/bits/wordsize.h
 ../objs/linux/listviewitem.o: /usr/include/gnu/stubs.h
-../objs/linux/listviewitem.o: /usr/include/gnu/stubs-64.h
+../objs/linux/listviewitem.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/listviewitem.o: /usr/include/bits/types.h
 ../objs/linux/listviewitem.o: /usr/include/bits/typesizes.h
 ../objs/linux/listviewitem.o: /usr/include/time.h /usr/include/endian.h
@@ -1032,7 +1033,7 @@ depend:
 ../objs/linux/listviewitem.o: listviewitem.h
 ../objs/linux/menu.o: /usr/include/sys/stat.h /usr/include/features.h
 ../objs/linux/menu.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
-../objs/linux/menu.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+../objs/linux/menu.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 ../objs/linux/menu.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
 ../objs/linux/menu.o: /usr/include/time.h /usr/include/bits/stat.h
 ../objs/linux/menu.o: /usr/include/sys/types.h /usr/include/endian.h
@@ -1101,7 +1102,7 @@ depend:
 ../objs/linux/menusetting.o: /usr/include/sys/cdefs.h
 ../objs/linux/menusetting.o: /usr/include/bits/wordsize.h
 ../objs/linux/menusetting.o: /usr/include/gnu/stubs.h
-../objs/linux/menusetting.o: /usr/include/gnu/stubs-64.h
+../objs/linux/menusetting.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/menusetting.o: /usr/include/bits/types.h
 ../objs/linux/menusetting.o: /usr/include/bits/typesizes.h
 ../objs/linux/menusetting.o: /usr/include/time.h /usr/include/endian.h
@@ -1170,7 +1171,7 @@ depend:
 ../objs/linux/menusettingbool.o: /usr/include/sys/cdefs.h
 ../objs/linux/menusettingbool.o: /usr/include/bits/wordsize.h
 ../objs/linux/menusettingbool.o: /usr/include/gnu/stubs.h
-../objs/linux/menusettingbool.o: /usr/include/gnu/stubs-64.h
+../objs/linux/menusettingbool.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/menusettingbool.o: /usr/include/bits/types.h
 ../objs/linux/menusettingbool.o: /usr/include/bits/typesizes.h
 ../objs/linux/menusettingbool.o: /usr/include/time.h /usr/include/endian.h
@@ -1246,7 +1247,7 @@ depend:
 ../objs/linux/menusettingdir.o: /usr/include/sys/cdefs.h
 ../objs/linux/menusettingdir.o: /usr/include/bits/wordsize.h
 ../objs/linux/menusettingdir.o: /usr/include/gnu/stubs.h
-../objs/linux/menusettingdir.o: /usr/include/gnu/stubs-64.h
+../objs/linux/menusettingdir.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/menusettingdir.o: /usr/include/bits/types.h
 ../objs/linux/menusettingdir.o: /usr/include/bits/typesizes.h
 ../objs/linux/menusettingdir.o: /usr/include/time.h /usr/include/endian.h
@@ -1321,7 +1322,7 @@ depend:
 ../objs/linux/menusettingfile.o: /usr/include/sys/cdefs.h
 ../objs/linux/menusettingfile.o: /usr/include/bits/wordsize.h
 ../objs/linux/menusettingfile.o: /usr/include/gnu/stubs.h
-../objs/linux/menusettingfile.o: /usr/include/gnu/stubs-64.h
+../objs/linux/menusettingfile.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/menusettingfile.o: /usr/include/bits/types.h
 ../objs/linux/menusettingfile.o: /usr/include/bits/typesizes.h
 ../objs/linux/menusettingfile.o: /usr/include/time.h /usr/include/endian.h
@@ -1398,7 +1399,7 @@ depend:
 ../objs/linux/menusettingimage.o: /usr/include/sys/cdefs.h
 ../objs/linux/menusettingimage.o: /usr/include/bits/wordsize.h
 ../objs/linux/menusettingimage.o: /usr/include/gnu/stubs.h
-../objs/linux/menusettingimage.o: /usr/include/gnu/stubs-64.h
+../objs/linux/menusettingimage.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/menusettingimage.o: /usr/include/bits/types.h
 ../objs/linux/menusettingimage.o: /usr/include/bits/typesizes.h
 ../objs/linux/menusettingimage.o: /usr/include/time.h /usr/include/endian.h
@@ -1476,7 +1477,7 @@ depend:
 ../objs/linux/menusettingint.o: /usr/include/sys/cdefs.h
 ../objs/linux/menusettingint.o: /usr/include/bits/wordsize.h
 ../objs/linux/menusettingint.o: /usr/include/gnu/stubs.h
-../objs/linux/menusettingint.o: /usr/include/gnu/stubs-64.h
+../objs/linux/menusettingint.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/menusettingint.o: /usr/include/bits/types.h
 ../objs/linux/menusettingint.o: /usr/include/bits/typesizes.h
 ../objs/linux/menusettingint.o: /usr/include/time.h /usr/include/endian.h
@@ -1550,7 +1551,7 @@ depend:
 ../objs/linux/menusettingmultistring.o: /usr/include/sys/cdefs.h
 ../objs/linux/menusettingmultistring.o: /usr/include/bits/wordsize.h
 ../objs/linux/menusettingmultistring.o: /usr/include/gnu/stubs.h
-../objs/linux/menusettingmultistring.o: /usr/include/gnu/stubs-64.h
+../objs/linux/menusettingmultistring.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/menusettingmultistring.o: /usr/include/bits/types.h
 ../objs/linux/menusettingmultistring.o: /usr/include/bits/typesizes.h
 ../objs/linux/menusettingmultistring.o: /usr/include/time.h
@@ -1632,7 +1633,7 @@ depend:
 ../objs/linux/menusettingrgba.o: /usr/include/sys/cdefs.h
 ../objs/linux/menusettingrgba.o: /usr/include/bits/wordsize.h
 ../objs/linux/menusettingrgba.o: /usr/include/gnu/stubs.h
-../objs/linux/menusettingrgba.o: /usr/include/gnu/stubs-64.h
+../objs/linux/menusettingrgba.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/menusettingrgba.o: /usr/include/bits/types.h
 ../objs/linux/menusettingrgba.o: /usr/include/bits/typesizes.h
 ../objs/linux/menusettingrgba.o: /usr/include/time.h /usr/include/endian.h
@@ -1709,7 +1710,7 @@ depend:
 ../objs/linux/menusettingstring.o: /usr/include/sys/cdefs.h
 ../objs/linux/menusettingstring.o: /usr/include/bits/wordsize.h
 ../objs/linux/menusettingstring.o: /usr/include/gnu/stubs.h
-../objs/linux/menusettingstring.o: /usr/include/gnu/stubs-64.h
+../objs/linux/menusettingstring.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/menusettingstring.o: /usr/include/bits/types.h
 ../objs/linux/menusettingstring.o: /usr/include/bits/typesizes.h
 ../objs/linux/menusettingstring.o: /usr/include/time.h /usr/include/endian.h
@@ -1785,7 +1786,7 @@ depend:
 ../objs/linux/messagebox.o: /usr/include/sys/cdefs.h
 ../objs/linux/messagebox.o: /usr/include/bits/wordsize.h
 ../objs/linux/messagebox.o: /usr/include/gnu/stubs.h
-../objs/linux/messagebox.o: /usr/include/gnu/stubs-64.h
+../objs/linux/messagebox.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/messagebox.o: /usr/include/bits/types.h
 ../objs/linux/messagebox.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/messagebox.o: /usr/include/endian.h /usr/include/bits/endian.h
@@ -1850,7 +1851,7 @@ depend:
 ../objs/linux/selector.o: /usr/include/sys/cdefs.h
 ../objs/linux/selector.o: /usr/include/bits/wordsize.h
 ../objs/linux/selector.o: /usr/include/gnu/stubs.h
-../objs/linux/selector.o: /usr/include/gnu/stubs-64.h
+../objs/linux/selector.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/selector.o: /usr/include/bits/types.h
 ../objs/linux/selector.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/selector.o: /usr/include/endian.h /usr/include/bits/endian.h
@@ -1919,7 +1920,7 @@ depend:
 ../objs/linux/settingsdialog.o: /usr/include/sys/cdefs.h
 ../objs/linux/settingsdialog.o: /usr/include/bits/wordsize.h
 ../objs/linux/settingsdialog.o: /usr/include/gnu/stubs.h
-../objs/linux/settingsdialog.o: /usr/include/gnu/stubs-64.h
+../objs/linux/settingsdialog.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/settingsdialog.o: /usr/include/bits/types.h
 ../objs/linux/settingsdialog.o: /usr/include/bits/typesizes.h
 ../objs/linux/settingsdialog.o: /usr/include/time.h /usr/include/endian.h
@@ -1993,7 +1994,7 @@ depend:
 ../objs/linux/sfontplus.o: /usr/include/sys/cdefs.h
 ../objs/linux/sfontplus.o: /usr/include/bits/wordsize.h
 ../objs/linux/sfontplus.o: /usr/include/gnu/stubs.h
-../objs/linux/sfontplus.o: /usr/include/gnu/stubs-64.h
+../objs/linux/sfontplus.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/sfontplus.o: /usr/include/bits/types.h
 ../objs/linux/sfontplus.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/sfontplus.o: /usr/include/endian.h /usr/include/bits/endian.h
@@ -2040,7 +2041,7 @@ depend:
 ../objs/linux/surface.o: /usr/include/math.h /usr/include/features.h
 ../objs/linux/surface.o: /usr/include/sys/cdefs.h
 ../objs/linux/surface.o: /usr/include/bits/wordsize.h
-../objs/linux/surface.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+../objs/linux/surface.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 ../objs/linux/surface.o: /usr/include/bits/huge_val.h
 ../objs/linux/surface.o: /usr/include/bits/huge_valf.h
 ../objs/linux/surface.o: /usr/include/bits/huge_vall.h
@@ -2102,7 +2103,7 @@ depend:
 ../objs/linux/surfacecollection.o: /usr/include/sys/cdefs.h
 ../objs/linux/surfacecollection.o: /usr/include/bits/wordsize.h
 ../objs/linux/surfacecollection.o: /usr/include/gnu/stubs.h
-../objs/linux/surfacecollection.o: /usr/include/gnu/stubs-64.h
+../objs/linux/surfacecollection.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/surfacecollection.o: /usr/include/bits/types.h
 ../objs/linux/surfacecollection.o: /usr/include/bits/typesizes.h
 ../objs/linux/surfacecollection.o: /usr/include/time.h /usr/include/endian.h
@@ -2171,7 +2172,7 @@ depend:
 ../objs/linux/textdialog.o: /usr/include/sys/cdefs.h
 ../objs/linux/textdialog.o: /usr/include/bits/wordsize.h
 ../objs/linux/textdialog.o: /usr/include/gnu/stubs.h
-../objs/linux/textdialog.o: /usr/include/gnu/stubs-64.h
+../objs/linux/textdialog.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/textdialog.o: /usr/include/bits/types.h
 ../objs/linux/textdialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/textdialog.o: /usr/include/endian.h /usr/include/bits/endian.h
@@ -2239,7 +2240,7 @@ depend:
 ../objs/linux/textmanualdialog.o: /usr/include/sys/cdefs.h
 ../objs/linux/textmanualdialog.o: /usr/include/bits/wordsize.h
 ../objs/linux/textmanualdialog.o: /usr/include/gnu/stubs.h
-../objs/linux/textmanualdialog.o: /usr/include/gnu/stubs-64.h
+../objs/linux/textmanualdialog.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/textmanualdialog.o: /usr/include/bits/types.h
 ../objs/linux/textmanualdialog.o: /usr/include/bits/typesizes.h
 ../objs/linux/textmanualdialog.o: /usr/include/time.h /usr/include/endian.h
@@ -2308,7 +2309,7 @@ depend:
 ../objs/linux/touchscreen.o: /usr/include/sys/cdefs.h
 ../objs/linux/touchscreen.o: /usr/include/bits/wordsize.h
 ../objs/linux/touchscreen.o: /usr/include/gnu/stubs.h
-../objs/linux/touchscreen.o: /usr/include/gnu/stubs-64.h
+../objs/linux/touchscreen.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/touchscreen.o: /usr/include/bits/posix_opt.h
 ../objs/linux/touchscreen.o: /usr/include/bits/environments.h
 ../objs/linux/touchscreen.o: /usr/include/bits/types.h
@@ -2373,7 +2374,7 @@ depend:
 ../objs/linux/translator.o: /usr/include/sys/cdefs.h
 ../objs/linux/translator.o: /usr/include/bits/wordsize.h
 ../objs/linux/translator.o: /usr/include/gnu/stubs.h
-../objs/linux/translator.o: /usr/include/gnu/stubs-64.h
+../objs/linux/translator.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/translator.o: /usr/include/bits/types.h
 ../objs/linux/translator.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/translator.o: /usr/include/endian.h /usr/include/bits/endian.h
@@ -2427,7 +2428,7 @@ depend:
 ../objs/linux/utilities.o: /usr/include/sys/cdefs.h
 ../objs/linux/utilities.o: /usr/include/bits/wordsize.h
 ../objs/linux/utilities.o: /usr/include/gnu/stubs.h
-../objs/linux/utilities.o: /usr/include/gnu/stubs-64.h
+../objs/linux/utilities.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/utilities.o: /usr/include/bits/types.h
 ../objs/linux/utilities.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/utilities.o: /usr/include/bits/stat.h /usr/include/sys/types.h
@@ -2497,7 +2498,7 @@ depend:
 ../objs/linux/wallpaperdialog.o: /usr/include/sys/cdefs.h
 ../objs/linux/wallpaperdialog.o: /usr/include/bits/wordsize.h
 ../objs/linux/wallpaperdialog.o: /usr/include/gnu/stubs.h
-../objs/linux/wallpaperdialog.o: /usr/include/gnu/stubs-64.h
+../objs/linux/wallpaperdialog.o: /usr/include/gnu/stubs-32.h
 ../objs/linux/wallpaperdialog.o: /usr/include/bits/types.h
 ../objs/linux/wallpaperdialog.o: /usr/include/bits/typesizes.h
 ../objs/linux/wallpaperdialog.o: /usr/include/time.h /usr/include/endian.h

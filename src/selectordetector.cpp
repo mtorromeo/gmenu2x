@@ -1,25 +1,20 @@
-#include "SelectorDetector.h"
+#include "selectordetector.h"
 
-SelectorDetector::SelectorDetector()
-{
+SelectorDetector::SelectorDetector() {
     //ctor
     useSelectorBackground = false;
 }
 
-SelectorDetector::SelectorDetector(string config)
-{
+SelectorDetector::SelectorDetector(string config) {
     useSelectorBackground = false;
     readSelectorConfig(config);
 }
 
-SelectorDetector::~SelectorDetector()
-{
+SelectorDetector::~SelectorDetector() {
     //dtor
 }
 
-
-bool SelectorDetector::readSelectorConfig(string config)
-{
+bool SelectorDetector::readSelectorConfig(string config) {
 	if (fileExists(config)) {
 		ifstream inf(config.c_str(), ios_base::in);
 		if (inf.is_open()) {
