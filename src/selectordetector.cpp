@@ -1,4 +1,10 @@
+#include <iostream>
+#include <fstream>
+
 #include "selectordetector.h"
+#include "utilities.h"
+
+using namespace std;
 
 SelectorDetector::SelectorDetector() {
     //ctor
@@ -30,7 +36,7 @@ bool SelectorDetector::readSelectorConfig(string config) {
 				    if(filters.empty())
                         filters = value;
                     else
-                        filters += ("," + value;)
+                        filters += ("," + value);
 				}
 			}
 			inf.close();
