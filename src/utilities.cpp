@@ -43,6 +43,17 @@ string trim(const string& s) {
   return string(s, b, e - b + 1);
 }
 
+void string_copy(string s, char **cs) {
+	*cs = (char*)malloc(s.length());
+	strcpy(*cs, s.c_str());
+}
+
+char * string_copy(string s) {
+	char *cs = NULL;
+	string_copy(s, &cs);
+	return cs;
+}
+
 bool fileExists(string file) {
 	fstream fin;
 	fin.open(file.c_str() ,ios::in);

@@ -40,9 +40,9 @@ void MenuSettingImage::manageInput() {
 }
 
 void MenuSettingImage::setValue(string value) {
-	string skinpath = gmenu2x->getExePath()+"skins/"+gmenu2x->skin;
+	string skinpath = gmenu2x->getExePath()+"skins/"+gmenu2x->confStr["skin"];
 	bool inSkinDir = value.substr(0,skinpath.length()) == skinpath;
-	if (!inSkinDir && gmenu2x->skin != "Default") {
+	if (!inSkinDir && gmenu2x->confStr["skin"] != "Default") {
 		skinpath = gmenu2x->getExePath()+"skins/Default";
 		inSkinDir = value.substr(0,skinpath.length()) == skinpath;
 	}

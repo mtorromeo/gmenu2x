@@ -37,7 +37,7 @@ MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, string name, string descripti
 
 void MenuSettingBool::draw(int y) {
 	MenuSetting::draw(y);
-	gmenu2x->s->write( gmenu2x->font, strvalue, 155, y+6, SFontHAlignLeft, SFontVAlignMiddle );
+	gmenu2x->s->write( gmenu2x->font, strvalue, 155, y+gmenu2x->font->getHalfHeight(), SFontHAlignLeft, SFontVAlignMiddle );
 }
 
 void MenuSettingBool::handleTS() {

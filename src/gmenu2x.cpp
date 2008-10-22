@@ -151,6 +151,11 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	f200 = true;
 #endif
 
+	confStr.set_empty_key(NULL);
+	//confStr.set_deleted_key(NULL);
+	confInt.set_empty_key(NULL);
+	//confInt.set_deleted_key(NULL);
+
 	//Initialize configuration settings to default
 	topBarColor.r = 255;
 	topBarColor.g = 255;
@@ -181,13 +186,8 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	maxClock = 300;
 	menuClock = f200 ? 136 : 100;
 	globalVolume = 67;
-	tvoutEncoding = "NTSC";
 	wallpaper = "";
 	skinWallpaper = "";
-
-	resX = 320;
-	resY = 240;
-	videoBpp = 16;
 
 	//open2x
 	savedVolumeMode = 0;
@@ -203,11 +203,6 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	o2x_usb_host_on_boot = false;
 	o2x_usb_hid_on_boot = false;
 	o2x_usb_storage_on_boot = false;
-
-	//G
-	gamma = 10;
-	startSectionIndex = 0;
-	startLinkIndex = 0;
 
 	usbnet = samba = inet = web = false;
 	useSelectionPng = false;
@@ -264,28 +259,27 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	{
 		//I use a tmp variable to hide the cursor as soon as possible (and create the double buffer surface only after that)
 		//I'm forced to use SW surfaces since with HW there are issuse with changing the clock frequency
-		SDL_Surface *tmps = SDL_SetVideoMode(resX, resY, videoBpp, SDL_SWSURFACE);
+		SDL_Surface *tmps = SDL_SetVideoMode(resX, resY, confInt["videoBpp"], SDL_SWSURFACE);
 		SDL_ShowCursor(0);
 		s->enableVirtualDoubleBuffer(tmps);
 	}
 #else
-	s->raw = SDL_SetVideoMode(resX, resY, videoBpp, SDL_HWSURFACE|SDL_DOUBLEBUF);
+	s->raw = SDL_SetVideoMode(resX, resY, confInt["videoBpp"], SDL_HWSURFACE|SDL_DOUBLEBUF);
 #endif
 
 	bg = NULL;
 	font = NULL;
 	initMenu();
-	if (skin.empty() || !fileExists("skins/"+skin)) skin = "Default";
-	setSkin(skin, false);
+	setSkin(confStr["skin"], false);
 
 	if (!fileExists(wallpaper)) {
 #ifdef DEBUG
 		cout << "Searching wallpaper" << endl;
 #endif
-		FileLister fl("skins/"+skin+"/wallpapers",false,true);
+		FileLister fl("skins/"+confStr["skin"]+"/wallpapers",false,true);
 		fl.setFilter(".png,.jpg,.jpeg,.bmp");
 		fl.browse();
-		if (fl.files.size()<=0 && skin != "Default")
+		if (fl.files.size()<=0 && confStr["skin"] != "Default")
 			fl.setPath("skins/Default/wallpapers",true);
 		if (fl.files.size()>0)
 			wallpaper = fl.getPath()+fl.files[0];
@@ -297,7 +291,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	initServices();
 
 	//G
-	setGamma(gamma);
+	setGamma(confInt["gamma"]);
 	setVolume(globalVolume);
 	applyDefaultTimings();
 	setClock(menuClock);
@@ -359,9 +353,9 @@ void GMenu2X::initBG() {
 	Surface *bgmain = new Surface(bg);
 	sc.add(bgmain,"bgmain");
 
-	Surface sd("imgs/sd.png", skin);
-	Surface cpu("imgs/cpu.png", skin);
-	Surface volume("imgs/volume.png", skin);
+	Surface sd("imgs/sd.png", confStr["skin"]);
+	Surface cpu("imgs/cpu.png", confStr["skin"]);
+	Surface volume("imgs/volume.png", confStr["skin"]);
 	string df = getDiskFree();
 
 	sd.blit( sc["bgmain"], 3, bottomBarIconY );
@@ -377,17 +371,17 @@ void GMenu2X::initBG() {
 	int serviceX = resX-38;
 	if (usbnet) {
 		if (web) {
-			Surface webserver("imgs/webserver.png", skin);
+			Surface webserver("imgs/webserver.png", confStr["skin"]);
 			webserver.blit( sc["bgmain"], serviceX, bottomBarIconY );
 			serviceX -= 19;
 		}
 		if (samba) {
-			Surface sambaS("imgs/samba.png", skin);
+			Surface sambaS("imgs/samba.png", confStr["skin"]);
 			sambaS.blit( sc["bgmain"], serviceX, bottomBarIconY );
 			serviceX -= 19;
 		}
 		if (inet) {
-			Surface inetS("imgs/inet.png", skin);
+			Surface inetS("imgs/inet.png", confStr["skin"]);
 			inetS.blit( sc["bgmain"], serviceX, bottomBarIconY );
 			serviceX -= 19;
 		}
@@ -436,8 +430,8 @@ void GMenu2X::initMenu() {
 		}
 	}
 
-	menu->setSectionIndex(startSectionIndex);
-	menu->setLinkIndex(startLinkIndex);
+	menu->setSectionIndex(confInt["section"]);
+	menu->setLinkIndex(confInt["link"]);
 }
 
 void GMenu2X::about() {
@@ -528,29 +522,35 @@ void GMenu2X::readConfig() {
 			while (getline(inf, line, '\n')) {
 				string::size_type pos = line.find("=");
 				string name = trim(line.substr(0,pos));
+				char* cname = string_copy(name);
 				string value = trim(line.substr(pos+1,line.length()));
+
+				if (value.length()>1 && value.at(0)=='"' && value.at(value.length()-1)=='"')
+					confStr[cname] = value.substr(1,value.length()-2);
+				else
+					confInt[cname] = atoi(value.c_str());
 
 				if (name=="saveSelection") saveSelection = value == "on" ? true : false;
 				else if (name=="outputLogs") outputLogs = value == "on" ? true : false;
-				else if (name=="section") startSectionIndex = atoi(value.c_str());
-				else if (name=="link") startLinkIndex = atoi(value.c_str());
 				else if (name=="menuClock") menuClock = constrain( atoi(value.c_str()), 50,300 );
 				else if (name=="maxClock") maxClock = constrain( atoi(value.c_str()), 50,300 );
 				else if (name=="globalVolume") globalVolume = constrain( atoi(value.c_str()), 0,100 );
-				else if (name=="lang") tr.setLang(value);
-				else if (name=="skin") skin = value;
 				else if (name=="wallpaper" && fileExists(value)) wallpaper = value;
-				else if (name=="tvoutEncoding" && (value=="PAL" || value=="NTSC")) tvoutEncoding = value;
-				//G
-				else if (name=="gamma") gamma = constrain( atoi(value.c_str()), 1,100 );
-				//VIDEO
-				else if (name=="resolutionX") resX = constrain( atoi(value.c_str()), 320,1600 );
-				else if (name=="resolutionY") resY = constrain( atoi(value.c_str()), 240,1200 );
-				else if (name=="videoBpp") videoBpp = constrain( atoi(value.c_str()), 8,32 );
 			}
 			inf.close();
 		}
 	}
+
+	if (!confStr["lang"].empty()) tr.setLang(confStr["lang"]);
+	if (confStr["skin"].empty() || !fileExists("skins/"+confStr["skin"])) confStr["skin"] = "Default";
+	if (confStr["tvoutEncoding"] != "PAL") confStr["tvoutEncoding"] = "NTSC";
+	resX = constrain( confInt["resolutionX"], 320,1920 );
+	resY = constrain( confInt["resolutionY"], 240,1200 );
+	confInt["gamma"] = constrain( confInt["gamma"], 1,100 );
+	if (confInt["videoBpp"]==0)
+		confInt["videoBpp"] = 16;
+	else
+		confInt["videoBpp"] = constrain( confInt["videoBpp"], 8,32 );
 }
 
 void GMenu2X::writeConfig() {
@@ -559,23 +559,22 @@ void GMenu2X::writeConfig() {
 	ofstream inf(conffile.c_str());
 	if (inf.is_open()) {
 		if (saveSelection) {
-			startSectionIndex = menu->selSectionIndex();
-			startLinkIndex = menu->selLinkIndex();
+			confInt["section"] = menu->selSectionIndex();
+			confInt["link"] = menu->selLinkIndex();
 		}
 
 		if (!tr.lang().empty()) inf << "lang=" << tr.lang() << endl;
-		inf << "skin=" << skin << endl;
+		inf << "skin=" << confStr["skin"] << endl;
 		if (!wallpaper.empty()) inf << "wallpaper=" << wallpaper << endl;
 		inf << "saveSelection=" << ( saveSelection ? "on" : "off" ) << endl;
 		inf << "outputLogs=" << ( outputLogs ? "on" : "off" ) << endl;
-		inf << "section=" << startSectionIndex << endl;
-		inf << "link=" << startLinkIndex << endl;
+		inf << "section=" << confInt["section"] << endl;
+		inf << "link=" << confInt["link"] << endl;
 		inf << "menuClock=" << menuClock << endl;
 		inf << "maxClock=" << maxClock << endl;
 		inf << "globalVolume=" << globalVolume << endl;
-		inf << "tvoutEncoding=" << tvoutEncoding << endl;
-		//G
-		inf << "gamma=" << gamma << endl;
+		inf << "tvoutEncoding=" << confStr["tvoutEncoding"] << endl;
+		inf << "gamma=" << confInt["gamma"] << endl;
 		inf.close();
 		sync();
 	}
@@ -634,7 +633,7 @@ void GMenu2X::writeConfigOpen2x() {
 
 void GMenu2X::writeSkinConfig() {
 	ledOn();
-	string conffile = path+"skins/"+skin+"/skin.conf";
+	string conffile = path+"skins/"+confStr["skin"]+"/skin.conf";
 	ofstream inf(conffile.c_str());
 	if (inf.is_open()) {
 		inf << "selectionColorR=" << selectionColor.r << endl;
@@ -1028,7 +1027,7 @@ int GMenu2X::main() {
 void GMenu2X::explorer() {
 	FileDialog fd(this,tr["Select an application"],".gpu,.gpe,.sh");
 	if (fd.exec()) {
-		if (saveSelection && (startSectionIndex!=menu->selSectionIndex() || startLinkIndex!=menu->selLinkIndex()))
+		if (saveSelection && (confInt["section"]!=menu->selSectionIndex() || confInt["link"]!=menu->selLinkIndex()))
 			writeConfig();
 		if (fwType == "open2x" && savedVolumeMode != volumeMode)
 			writeConfigOpen2x();
@@ -1052,7 +1051,7 @@ void GMenu2X::options() {
 	int curMenuClock = menuClock;
 	int curGlobalVolume = globalVolume;
 	//G
-	int prevgamma = gamma;
+	int prevgamma = confInt["gamma"];
 	bool showRootFolder = fileExists("/mnt/root");
 
 	FileLister fl_tr("translations");
@@ -1072,13 +1071,13 @@ void GMenu2X::options() {
 	sd.addSetting(new MenuSettingInt(this,tr["Global Volume"],tr["Set the default volume for the gp2x soundcard"],&globalVolume,0,100));
 	sd.addSetting(new MenuSettingBool(this,tr["Output logs"],tr["Logs the output of the links. Use the Log Viewer to read them."],&outputLogs));
 	//G
-	sd.addSetting(new MenuSettingInt(this,tr["Gamma"],tr["Set gp2x gamma value (default: 10)"],&gamma,1,100));
-	sd.addSetting(new MenuSettingMultiString(this,tr["Tv-Out encoding"],tr["Encoding of the tv-out signal"],&tvoutEncoding,&encodings));
+	sd.addSetting(new MenuSettingInt(this,tr["Gamma"],tr["Set gp2x gamma value (default: 10)"],&confInt["gamma"],1,100));
+	sd.addSetting(new MenuSettingMultiString(this,tr["Tv-Out encoding"],tr["Encoding of the tv-out signal"],&confStr["tvoutEncoding"],&encodings));
 	sd.addSetting(new MenuSettingBool(this,tr["Show root"],tr["Show root folder in the file selection dialogs"],&showRootFolder));
 
 	if (sd.exec() && sd.edited()) {
 		//G
-		if (prevgamma!=gamma) setGamma(gamma);
+		if (prevgamma != confInt["gamma"]) setGamma(confInt["gamma"]);
 		if (curMenuClock!=menuClock) setClock(menuClock);
 		if (curGlobalVolume!=globalVolume) setVolume(globalVolume);
 		if (lang == "English") lang = "";
@@ -1120,10 +1119,10 @@ void GMenu2X::skinMenu() {
 	FileLister fl_sk("skins",true,false);
 	fl_sk.exclude.push_back("..");
 	fl_sk.browse();
-	string curSkin = skin;
+	string curSkin = confStr["skin"];
 
 	SettingsDialog sd(this,tr["Skin"]);
-	sd.addSetting(new MenuSettingMultiString(this,tr["Skin"],tr["Set the skin used by GMenu2X"],&skin,&fl_sk.directories));
+	sd.addSetting(new MenuSettingMultiString(this,tr["Skin"],tr["Set the skin used by GMenu2X"],&confStr["skin"],&fl_sk.directories));
 	sd.addSetting(new MenuSettingRGBA(this,tr["Top Bar Color"],tr["Color of the top bar"],&topBarColor));
 	sd.addSetting(new MenuSettingRGBA(this,tr["Bottom Bar Color"],tr["Color of the bottom bar"],&bottomBarColor));
 	sd.addSetting(new MenuSettingRGBA(this,tr["Selection Color"],tr["Color of the selection and other interface details"],&selectionColor));
@@ -1132,8 +1131,8 @@ void GMenu2X::skinMenu() {
 	sd.addSetting(new MenuSettingRGBA(this,tr["Message Box Selection Color"],tr["Color of the selection of the message box"],&messageBoxSelectionColor));
 
 	if (sd.exec() && sd.edited()) {
-		if (curSkin != skin) {
-			setSkin(skin);
+		if (curSkin != confStr["skin"]) {
+			setSkin(confStr["skin"]);
 			writeConfig();
 		}
 		writeSkinConfig();
@@ -1151,7 +1150,7 @@ void GMenu2X::toggleTvOut() {
 }
 
 void GMenu2X::setSkin(string skin, bool setWallpaper) {
-	this->skin = skin;
+	confStr["skin"] = skin;
 	//clear collection and change the skin path
 	sc.clear();
 	sc.setSkin(skin);
@@ -1336,6 +1335,7 @@ void GMenu2X::contextMenu() {
 	uint i, sel = 0;
 
 	int h = font->getHeight();
+	int h2 = font->getHalfHeight();
 	SDL_Rect box;
 	box.h = (h+2)*voices.size()+8;
 	box.w = 0;
@@ -1344,8 +1344,8 @@ void GMenu2X::contextMenu() {
 		if (w>box.w) box.w = w;
 	}
 	box.w += 23;
-	box.x = 160 - box.w/2;
-	box.y = 120 - box.h/2;
+	box.x = halfX - box.w/2;
+	box.y = halfY - box.h/2;
 
 	SDL_Rect selbox = {box.x+4, 0, box.w-8, h+2};
 
@@ -1360,7 +1360,7 @@ void GMenu2X::contextMenu() {
 		//draw selection rect
 		s->box( selbox.x, selbox.y, selbox.w, selbox.h, messageBoxSelectionColor );
 		for (i=0; i<voices.size(); i++)
-			s->write( font, voices[i].text, box.x+12, box.y+11+(h+2)*i, SFontHAlignLeft, SFontVAlignMiddle );
+			s->write( font, voices[i].text, box.x+12, box.y+h2+5+(h+2)*i, SFontHAlignLeft, SFontVAlignMiddle );
 		s->flip();
 
 		//touchscreen
@@ -1609,7 +1609,7 @@ void GMenu2X::scanner() {
 	Surface scanbg(bg);
 	drawButton(&scanbg, "x", tr["Exit"],
 	drawButton(&scanbg, "b", "", 5)-10);
-	scanbg.write(font,tr["Link Scanner"],160,7,SFontHAlignCenter,SFontVAlignMiddle);
+	scanbg.write(font,tr["Link Scanner"],halfX,7,SFontHAlignCenter,SFontVAlignMiddle);
 
 	uint lineY = 42;
 

@@ -72,7 +72,7 @@ string Link::getIcon() {
 }
 
 void Link::setIcon(string icon) {
-	string skinpath = gmenu2x->getExePath()+"skins/"+gmenu2x->skin;
+	string skinpath = gmenu2x->getExePath()+"skins/"+gmenu2x->confStr["skin"];
 	if (icon.substr(0,skinpath.length()) == skinpath) {
 		string tempIcon = icon.substr(skinpath.length(), icon.length());
 		string::size_type pos = tempIcon.find("/");

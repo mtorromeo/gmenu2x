@@ -31,14 +31,14 @@ WallpaperDialog::WallpaperDialog(GMenu2X *gmenu2x) {
 bool WallpaperDialog::exec() {
 	bool close = false, result = true;
 
-	FileLister fl("skins/"+gmenu2x->skin+"/wallpapers");
+	FileLister fl("skins/"+gmenu2x->confStr["skin"]+"/wallpapers");
 	fl.setFilter(".png,.jpg,.jpeg,.bmp");
 	vector<string> wallpapers;
-	if (fileExists("skins/"+gmenu2x->skin+"/wallpapers")) {
+	if (fileExists("skins/"+gmenu2x->confStr["skin"]+"/wallpapers")) {
 		fl.browse();
 		wallpapers = fl.files;
 	}
-	if (gmenu2x->skin != "Default") {
+	if (gmenu2x->confStr["skin"] != "Default") {
 		fl.setPath("skins/Default/wallpapers",true);
 		for (uint i=0; i<fl.files.size(); i++)
 			wallpapers.push_back(fl.files[i]);
@@ -54,7 +54,7 @@ bool WallpaperDialog::exec() {
 
 		//Wallpaper
 		if (selected<wallpapers.size()-fl.files.size())
-			gmenu2x->sc["skins/"+gmenu2x->skin+"/wallpapers/"+wallpapers[selected]]->blit(gmenu2x->s,0,0);
+			gmenu2x->sc["skins/"+gmenu2x->confStr["skin"]+"/wallpapers/"+wallpapers[selected]]->blit(gmenu2x->s,0,0);
 		else
 			gmenu2x->sc["skins/Default/wallpapers/"+wallpapers[selected]]->blit(gmenu2x->s,0,0);
 
@@ -120,7 +120,7 @@ bool WallpaperDialog::exec() {
 			close = true;
 			if (wallpapers.size()>0) {
 				if (selected<wallpapers.size()-fl.files.size())
-					wallpaper = "skins/"+gmenu2x->skin+"/wallpapers/"+wallpapers[selected];
+					wallpaper = "skins/"+gmenu2x->confStr["skin"]+"/wallpapers/"+wallpapers[selected];
 				else
 					wallpaper = "skins/Default/wallpapers/"+wallpapers[selected];
 			} else result = false;
@@ -129,7 +129,7 @@ bool WallpaperDialog::exec() {
 
 	for (uint i=0; i<wallpapers.size(); i++)
 		if (i<wallpapers.size()-fl.files.size())
-			gmenu2x->sc.del("skins/"+gmenu2x->skin+"/wallpapers/"+wallpapers[i]);
+			gmenu2x->sc.del("skins/"+gmenu2x->confStr["skin"]+"/wallpapers/"+wallpapers[i]);
 		else
 			gmenu2x->sc.del("skins/Default/wallpapers/"+wallpapers[i]);
 

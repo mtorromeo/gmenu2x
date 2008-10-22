@@ -26,7 +26,6 @@
 #include <fstream>
 #include <string>
 #include <vector>
-
 #include <ext/hash_map>
 
 using __gnu_cxx::hash_map;
@@ -40,6 +39,13 @@ namespace __gnu_cxx {
 	};
 }
 
+struct eqstr {
+	bool operator()(const char* s1, const char* s2) const {
+		return (s1 == s2) || (s1 && s2 && strcmp(s1, s2) == 0);
+	}
+};
+
+
 using std::string;
 using std::vector;
 class case_less {
@@ -50,6 +56,9 @@ public:
 string trim(const string& s);
 string strreplace (string orig, string search, string replace);
 string cmdclean (string cmdline);
+
+char *string_copy(string);
+void string_copy(string, char **);
 
 bool fileExists(string file);
 bool rmtree(string path);

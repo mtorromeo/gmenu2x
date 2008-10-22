@@ -47,6 +47,11 @@ bool SettingsDialog::exec() {
 	uint i, sel = 0, iY, firstElement = 0, action;
 	voices[sel]->adjustInput();
 
+	SDL_Rect clipRect = {0, 41, gmenu2x->resX-9, gmenu2x->resY-65};
+	SDL_Rect touchRect = {2, 44, gmenu2x->resX-12, clipRect.h};
+	uint rowHeight = gmenu2x->font->getHeight()+1; // gp2x=15+1 / pandora=19+1
+	uint numRows = (gmenu2x->resY-60)/rowHeight;
+
 	while (!close) {
 		action = SD_NO_ACTION;
 		if (gmenu2x->f200) gmenu2x->ts.poll();
@@ -57,37 +62,36 @@ bool SettingsDialog::exec() {
 		//link icon
 		gmenu2x->drawTitleIcon(icon);
 		gmenu2x->writeTitle(text);
-		//gmenu2x->s->write(gmenu2x->font, text, 40,13, SFontHAlignLeft, SFontVAlignMiddle);
 		gmenu2x->drawBottomBar(gmenu2x->s);
 
-		if (sel>firstElement+10) firstElement=sel-10;
+		if (sel>firstElement+numRows-1) firstElement=sel-numRows+1;
 		if (sel<firstElement) firstElement=sel;
 
 		//selection
 		iY = sel-firstElement;
-		iY = 42+(iY*16);
-		gmenu2x->s->setClipRect(0,41,311,175);
+		iY = 42+(iY*rowHeight);
+		gmenu2x->s->setClipRect(clipRect);
 		if (sel<voices.size())
-			gmenu2x->s->box(1, iY, 148, 14, gmenu2x->selectionColor);
+			gmenu2x->s->box(1, iY, 148, rowHeight-2, gmenu2x->selectionColor);
 		gmenu2x->s->clearClipRect();
 
 		//selected option
 		voices[sel]->drawSelected(iY);
 
-		gmenu2x->s->setClipRect(0,41,311,175);
+		gmenu2x->s->setClipRect(clipRect);
 		if (ts_pressed && !gmenu2x->ts.pressed()) ts_pressed = false;
-		if (gmenu2x->f200 && gmenu2x->ts.pressed() && !gmenu2x->ts.inRect(2,44,308,175)) ts_pressed = false;
-		for (i=firstElement; i<voices.size() && i<firstElement+11; i++) {
+		if (gmenu2x->f200 && gmenu2x->ts.pressed() && !gmenu2x->ts.inRect(touchRect)) ts_pressed = false;
+		for (i=firstElement; i<voices.size() && i<firstElement+numRows; i++) {
 			iY = i-firstElement;
-			voices[i]->draw(iY*16+42);
-			if (gmenu2x->f200 && gmenu2x->ts.pressed() && gmenu2x->ts.inRect(2, 44+(iY*16), 308, 16)) {
+			voices[i]->draw(iY*rowHeight+42);
+			if (gmenu2x->f200 && gmenu2x->ts.pressed() && gmenu2x->ts.inRect(touchRect.x, touchRect.y+(iY*rowHeight), touchRect.w, rowHeight)) {
 				ts_pressed = true;
 				sel = i;
 			}
 		}
 		gmenu2x->s->clearClipRect();
 
-		gmenu2x->drawScrollBar(11,voices.size(),firstElement,42,175);
+		gmenu2x->drawScrollBar(numRows,voices.size(),firstElement,clipRect.y+1,clipRect.h);
 
 		//description
 		gmenu2x->s->write(gmenu2x->font, voices[sel]->description, 40,27, SFontHAlignLeft, SFontVAlignMiddle);

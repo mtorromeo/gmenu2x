@@ -430,7 +430,7 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 	if (dontleave) {
 		system(command.c_str());
 	} else {
-		if (gmenu2x->saveSelection && (gmenu2x->startSectionIndex!=gmenu2x->menu->selSectionIndex() || gmenu2x->startLinkIndex!=gmenu2x->menu->selLinkIndex()))
+		if (gmenu2x->saveSelection && (gmenu2x->confInt["section"]!=gmenu2x->menu->selSectionIndex() || gmenu2x->confInt["link"]!=gmenu2x->menu->selLinkIndex()))
 			gmenu2x->writeConfig();
 		if (gmenu2x->fwType == "open2x" && gmenu2x->savedVolumeMode != gmenu2x->volumeMode)
 			gmenu2x->writeConfigOpen2x();
@@ -439,7 +439,7 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 		gmenu2x->quit();
 		if (clock()!=gmenu2x->menuClock)
 			gmenu2x->setClock(clock());
-		if (gamma()!=0 && gamma()!=gmenu2x->gamma)
+		if (gamma()!=0 && gamma()!=gmenu2x->confInt["gamma"])
 			gmenu2x->setGamma(gamma());
 		execlp("/bin/sh","/bin/sh","-c",command.c_str(),NULL);
 		//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue

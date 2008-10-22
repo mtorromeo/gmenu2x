@@ -23,6 +23,8 @@
 
 #include <string>
 #include <iostream>
+#include <google/dense_hash_map>
+
 #include "surfacecollection.h"
 #include "iconbutton.h"
 #include "translator.h"
@@ -43,8 +45,11 @@ const int BATTERY_READS = 10;
 
 using std::string;
 using fastdelegate::FastDelegate0;
+using google::dense_hash_map;
 
 typedef FastDelegate0<> MenuAction;
+typedef dense_hash_map<const char*, string, hash<const char*>, eqstr> ConfStrHash;
+typedef dense_hash_map<const char*, int, hash<const char*>, eqstr> ConfIntHash;
 
 typedef struct {
 	unsigned short batt;
@@ -113,7 +118,6 @@ private:
 	volatile unsigned short *MEM_REG;
 	int cx25874; //tv-out
 #endif
-	string tvoutEncoding;
 	void gp2x_tvout_on(bool pal);
 	void gp2x_tvout_off();
 	void gp2x_init();
@@ -128,7 +132,7 @@ public:
 	/*
 	 * Variables needed for elements disposition
 	 */
-	uint resX, resY, halfX, halfY, videoBpp;
+	uint resX, resY, halfX, halfY;
 	uint bottomBarIconY, bottomBarTextY, linkColumns, linkRows;
 
 	/*!
@@ -142,15 +146,17 @@ public:
 	InputManager input;
 	Touchscreen ts;
 
+	//Configuration hashes
+	ConfStrHash confStr;
+	ConfIntHash confInt;
+
 	//Configuration settings
 	RGBAColor selectionColor, topBarColor, bottomBarColor, messageBoxColor, messageBoxBorderColor, messageBoxSelectionColor;
 	bool saveSelection, outputLogs;
 	bool useSelectionPng;
-	int maxClock, menuClock, startSectionIndex, startLinkIndex, globalVolume;
-	string skin, skinWallpaper, wallpaper;
+	int maxClock, menuClock, globalVolume;
+	string skinWallpaper, wallpaper;
 	void setSkin(string skin, bool setWallpaper = true);
-	//G
-	int gamma;
 	//firmware type and version
 	string fwType, fwVersion;
 	//gp2x type

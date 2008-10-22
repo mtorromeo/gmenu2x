@@ -39,7 +39,7 @@ ImageDialog::ImageDialog(GMenu2X *gmenu2x, string text, string filter, string fi
 	setPath("/mnt");
 	title = "Image Browser";
 	if (!file.empty()) {
-		file = strreplace(file,"skin:",gmenu2x->getExePath()+"skins/"+gmenu2x->skin+"/");
+		file = strreplace(file,"skin:",gmenu2x->getExePath()+"skins/"+gmenu2x->confStr["skin"]+"/");
 		string::size_type pos = file.rfind("/");
 		if (pos != string::npos) {
 			setPath( file.substr(0, pos) );
