@@ -24,10 +24,23 @@
 using namespace std;
 using namespace fastdelegate;
 
+MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, string name, string description, int *value)
+	: MenuSetting(gmenu2x,name,description) {
+	this->gmenu2x = gmenu2x;
+	_ivalue = value;
+	_value = NULL;
+	originalValue = *value != 0;
+	setValue(this->value());
+
+	btnToggle = new IconButton(gmenu2x, "skin:imgs/buttons/b.png", gmenu2x->tr["Switch"]);
+	btnToggle->setAction(MakeDelegate(this, &MenuSettingBool::toggle));
+}
+
 MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, string name, string description, bool *value)
 	: MenuSetting(gmenu2x,name,description) {
 	this->gmenu2x = gmenu2x;
 	_value = value;
+	_ivalue = NULL;
 	originalValue = *value;
 	setValue(this->value());
 
@@ -52,13 +65,23 @@ void MenuSettingBool::toggle() {
 	setValue(!value());
 }
 
+void MenuSettingBool::setValue(int value) {
+	setValue(value != 0);
+}
+
 void MenuSettingBool::setValue(bool value) {
-	*_value = value;
+	if (_value == NULL)
+		*_ivalue = value;
+	else
+		*_value = value;
 	strvalue = value ? "ON" : "OFF";
 }
 
 bool MenuSettingBool::value() {
-	return *_value;
+	if (_value == NULL)
+		return *_ivalue != 0;
+	else
+		return *_value;
 }
 
 void MenuSettingBool::adjustInput() {}

@@ -158,7 +158,7 @@ void LinkApp::setVolume(int vol) {
 	stringstream ss;
 	svolume = "";
 	if (ivolume<0)
-		ss << gmenu2x->globalVolume;
+		ss << gmenu2x->confInt["globalVolume"];
 	else
 		ss << ivolume;
 	ss >> svolume;
@@ -270,7 +270,7 @@ void LinkApp::showManual() {
 		gmenu2x->setClock(200);
 
 		Surface pngman(manual);
-		Surface bg(gmenu2x->wallpaper,false);
+		Surface bg(gmenu2x->confStr["wallpaper"],false);
 		stringstream ss;
 		string pageStatus;
 
@@ -282,7 +282,7 @@ void LinkApp::showManual() {
 		ss >> spagecount;
 
 		//Lower the clock
-		gmenu2x->setClock(gmenu2x->menuClock);
+		gmenu2x->setClock(gmenu2x->confInt["menuClock"]);
 
 		while (!close) {
 			if (repaint) {
@@ -324,7 +324,7 @@ void LinkApp::showManual() {
 			infile.close();
 
 			TextManualDialog tmd(gmenu2x, getTitle(), getIconPath(), &txtman);
-			gmenu2x->setClock(gmenu2x->menuClock);
+			gmenu2x->setClock(gmenu2x->confInt["menuClock"]);
 			tmd.exec();
 		}
 
@@ -342,7 +342,7 @@ void LinkApp::showManual() {
 		infile.close();
 
 		TextDialog td(gmenu2x, getTitle(), "ReadMe", getIconPath(), &readme);
-		gmenu2x->setClock(gmenu2x->menuClock);
+		gmenu2x->setClock(gmenu2x->confInt["menuClock"]);
 		td.exec();
 	}
 }
@@ -425,19 +425,19 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 	} // else, well.. we are no worse off :)
 
 	if (params!="") command += " " + params;
-	if (gmenu2x->outputLogs) command += " &> " + cmdclean(gmenu2x->getExePath()) + "/log.txt";
+	if (gmenu2x->confInt["outputLogs"]) command += " &> " + cmdclean(gmenu2x->getExePath()) + "/log.txt";
 	if (wrapper) command += "; sync & cd "+cmdclean(gmenu2x->getExePath())+"; exec ./gmenu2x";
 	if (dontleave) {
 		system(command.c_str());
 	} else {
-		if (gmenu2x->saveSelection && (gmenu2x->confInt["section"]!=gmenu2x->menu->selSectionIndex() || gmenu2x->confInt["link"]!=gmenu2x->menu->selLinkIndex()))
+		if (gmenu2x->confInt["saveSelection"] && (gmenu2x->confInt["section"]!=gmenu2x->menu->selSectionIndex() || gmenu2x->confInt["link"]!=gmenu2x->menu->selLinkIndex()))
 			gmenu2x->writeConfig();
 		if (gmenu2x->fwType == "open2x" && gmenu2x->savedVolumeMode != gmenu2x->volumeMode)
 			gmenu2x->writeConfigOpen2x();
 		if (selectedFile=="")
 			gmenu2x->writeTmp();
 		gmenu2x->quit();
-		if (clock()!=gmenu2x->menuClock)
+		if (clock()!=gmenu2x->confInt["menuClock"])
 			gmenu2x->setClock(clock());
 		if (gamma()!=0 && gamma()!=gmenu2x->confInt["gamma"])
 			gmenu2x->setGamma(gamma());

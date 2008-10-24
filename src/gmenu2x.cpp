@@ -151,10 +151,10 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	f200 = true;
 #endif
 
-	confStr.set_empty_key(NULL);
-	//confStr.set_deleted_key(NULL);
-	confInt.set_empty_key(NULL);
-	//confInt.set_deleted_key(NULL);
+	confStr.set_empty_key(" ");
+	confStr.set_deleted_key("");
+	confInt.set_empty_key(" ");
+	confInt.set_deleted_key("");
 
 	//Initialize configuration settings to default
 	topBarColor.r = 255;
@@ -181,12 +181,6 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	messageBoxSelectionColor.g = 160;
 	messageBoxSelectionColor.b = 160;
 	messageBoxSelectionColor.a = 255;
-	saveSelection = true;
-	outputLogs = false;
-	maxClock = 300;
-	menuClock = f200 ? 136 : 100;
-	globalVolume = 67;
-	wallpaper = "";
 	skinWallpaper = "";
 
 	//open2x
@@ -272,7 +266,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	initMenu();
 	setSkin(confStr["skin"], false);
 
-	if (!fileExists(wallpaper)) {
+	if (!fileExists(confStr["wallpaper"])) {
 #ifdef DEBUG
 		cout << "Searching wallpaper" << endl;
 #endif
@@ -282,7 +276,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 		if (fl.files.size()<=0 && confStr["skin"] != "Default")
 			fl.setPath("skins/Default/wallpapers",true);
 		if (fl.files.size()>0)
-			wallpaper = fl.getPath()+fl.files[0];
+			confStr["wallpaper"] = fl.getPath()+fl.files[0];
 	}
 
 	initBG();
@@ -290,11 +284,10 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	setInputSpeed();
 	initServices();
 
-	//G
 	setGamma(confInt["gamma"]);
-	setVolume(globalVolume);
+	setVolume(confInt["globalVolume"]);
 	applyDefaultTimings();
-	setClock(menuClock);
+	setClock(confInt["menuClock"]);
 
 	//recover last session
 	readTmp();
@@ -340,11 +333,11 @@ void GMenu2X::initBG() {
 
 	if (bg != NULL) free(bg);
 
-	if (!fileExists(wallpaper)) {
+	if (!fileExists(confStr["wallpaper"])) {
 		bg = new Surface(s);
 		bg->box(0,0,resX,resY,0,0,0);
 	} else {
-		bg = new Surface(wallpaper,false);
+		bg = new Surface(confStr["wallpaper"],false);
 	}
 
 	drawTopBar(bg);
@@ -529,28 +522,26 @@ void GMenu2X::readConfig() {
 					confStr[cname] = value.substr(1,value.length()-2);
 				else
 					confInt[cname] = atoi(value.c_str());
-
-				if (name=="saveSelection") saveSelection = value == "on" ? true : false;
-				else if (name=="outputLogs") outputLogs = value == "on" ? true : false;
-				else if (name=="menuClock") menuClock = constrain( atoi(value.c_str()), 50,300 );
-				else if (name=="maxClock") maxClock = constrain( atoi(value.c_str()), 50,300 );
-				else if (name=="globalVolume") globalVolume = constrain( atoi(value.c_str()), 0,100 );
-				else if (name=="wallpaper" && fileExists(value)) wallpaper = value;
 			}
 			inf.close();
 		}
 	}
 
 	if (!confStr["lang"].empty()) tr.setLang(confStr["lang"]);
+	if (!confStr["wallpaper"].empty() && !fileExists(confStr["wallpaper"])) confStr["wallpaper"] = "";
 	if (confStr["skin"].empty() || !fileExists("skins/"+confStr["skin"])) confStr["skin"] = "Default";
+
+	evalIntConf( &confInt["saveSelection"], 1, 0,1 );
+	evalIntConf( &confInt["outputLogs"], 0, 0,1 );
+	evalIntConf( &confInt["maxClock"], 300, 200,300 );
+	evalIntConf( &confInt["menuClock"], f200 ? 136 : 100, 50,300 );
+	evalIntConf( &confInt["globalVolume"], 67, 0,100 );
+	evalIntConf( &confInt["gamma"], 1, 1,100 );
+	evalIntConf( &confInt["videoBpp"], 16, 8,32 );
+
 	if (confStr["tvoutEncoding"] != "PAL") confStr["tvoutEncoding"] = "NTSC";
 	resX = constrain( confInt["resolutionX"], 320,1920 );
 	resY = constrain( confInt["resolutionY"], 240,1200 );
-	confInt["gamma"] = constrain( confInt["gamma"], 1,100 );
-	if (confInt["videoBpp"]==0)
-		confInt["videoBpp"] = 16;
-	else
-		confInt["videoBpp"] = constrain( confInt["videoBpp"], 8,32 );
 }
 
 void GMenu2X::writeConfig() {
@@ -558,23 +549,14 @@ void GMenu2X::writeConfig() {
 	string conffile = path+"gmenu2x.conf";
 	ofstream inf(conffile.c_str());
 	if (inf.is_open()) {
-		if (saveSelection) {
-			confInt["section"] = menu->selSectionIndex();
-			confInt["link"] = menu->selLinkIndex();
-		}
+		ConfStrHash::iterator endS = confStr.end();
+		for(ConfStrHash::iterator curr = confStr.begin(); curr != endS; curr++)
+			inf << curr->first << "=\"" << curr->second << "\"" << endl;
 
-		if (!tr.lang().empty()) inf << "lang=" << tr.lang() << endl;
-		inf << "skin=" << confStr["skin"] << endl;
-		if (!wallpaper.empty()) inf << "wallpaper=" << wallpaper << endl;
-		inf << "saveSelection=" << ( saveSelection ? "on" : "off" ) << endl;
-		inf << "outputLogs=" << ( outputLogs ? "on" : "off" ) << endl;
-		inf << "section=" << confInt["section"] << endl;
-		inf << "link=" << confInt["link"] << endl;
-		inf << "menuClock=" << menuClock << endl;
-		inf << "maxClock=" << maxClock << endl;
-		inf << "globalVolume=" << globalVolume << endl;
-		inf << "tvoutEncoding=" << confStr["tvoutEncoding"] << endl;
-		inf << "gamma=" << confInt["gamma"] << endl;
+		ConfIntHash::iterator endI = confInt.end();
+		for(ConfIntHash::iterator curr = confInt.begin(); curr != endI; curr++)
+			inf << curr->first << "=" << curr->second << endl;
+
 		inf.close();
 		sync();
 	}
@@ -847,7 +829,7 @@ int GMenu2X::main() {
 		if (menu->selLink()!=NULL) {
 			s->write ( font, menu->selLink()->getDescription(), halfX, resY-19, SFontHAlignCenter, SFontVAlignBottom );
 			if (menu->selLinkApp()!=NULL) {
-				s->write ( font, menu->selLinkApp()->clockStr(maxClock), cpuX, bottomBarTextY, SFontHAlignLeft, SFontVAlignMiddle );
+				s->write ( font, menu->selLinkApp()->clockStr(confInt["maxClock"]), cpuX, bottomBarTextY, SFontHAlignLeft, SFontVAlignMiddle );
 				s->write ( font, menu->selLinkApp()->volumeStr(), volumeX, bottomBarTextY, SFontHAlignLeft, SFontVAlignMiddle );
 				//Manual indicator
 				if (!menu->selLinkApp()->getManual().empty())
@@ -943,7 +925,7 @@ int GMenu2X::main() {
 				case VOLUME_MODE_PHONES: setVolumeScaler(volumeScalerPhones); break;
 				case VOLUME_MODE_NORMAL: setVolumeScaler(volumeScalerNormal); break;
 			}
-			setVolume(globalVolume);
+			setVolume(confInt["globalVolume"]);
 		}
 		// LINK NAVIGATION
 		else if ( input[ACTION_LEFT ]  ) menu->linkLeft();
@@ -963,9 +945,9 @@ int GMenu2X::main() {
 			} else {
 				// CLOCK
 				if ( input[ACTION_VOLDOWN] && !input.isActive(ACTION_VOLUP) )
-					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-1,50,maxClock) );
+					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-1,50,confInt["maxClock"]) );
 				if ( input[ACTION_VOLUP] && !input.isActive(ACTION_VOLDOWN) )
-					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+1,50,maxClock) );
+					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+1,50,confInt["maxClock"]) );
 				if ( input.isActive(ACTION_VOLUP) && input.isActive(ACTION_VOLDOWN) ) menu->selLinkApp()->setClock(200);
 			}
 		}
@@ -1027,7 +1009,7 @@ int GMenu2X::main() {
 void GMenu2X::explorer() {
 	FileDialog fd(this,tr["Select an application"],".gpu,.gpe,.sh");
 	if (fd.exec()) {
-		if (saveSelection && (confInt["section"]!=menu->selSectionIndex() || confInt["link"]!=menu->selLinkIndex()))
+		if (confInt["saveSelection"] && (confInt["section"]!=menu->selSectionIndex() || confInt["link"]!=menu->selLinkIndex()))
 			writeConfig();
 		if (fwType == "open2x" && savedVolumeMode != volumeMode)
 			writeConfigOpen2x();
@@ -1048,8 +1030,8 @@ void GMenu2X::explorer() {
 }
 
 void GMenu2X::options() {
-	int curMenuClock = menuClock;
-	int curGlobalVolume = globalVolume;
+	int curMenuClock = confInt["menuClock"];
+	int curGlobalVolume = confInt["globalVolume"];
 	//G
 	int prevgamma = confInt["gamma"];
 	bool showRootFolder = fileExists("/mnt/root");
@@ -1065,11 +1047,11 @@ void GMenu2X::options() {
 
 	SettingsDialog sd(this,tr["Settings"]);
 	sd.addSetting(new MenuSettingMultiString(this,tr["Language"],tr["Set the language used by GMenu2X"],&lang,&fl_tr.files));
-	sd.addSetting(new MenuSettingBool(this,tr["Save last selection"],tr["Save the last selected link and section on exit"],&saveSelection));
-	sd.addSetting(new MenuSettingInt(this,tr["Clock for GMenu2X"],tr["Set the cpu working frequency when running GMenu2X"],&menuClock,50,325));
-	sd.addSetting(new MenuSettingInt(this,tr["Maximum overclock"],tr["Set the maximum overclock for launching links"],&maxClock,50,325));
-	sd.addSetting(new MenuSettingInt(this,tr["Global Volume"],tr["Set the default volume for the gp2x soundcard"],&globalVolume,0,100));
-	sd.addSetting(new MenuSettingBool(this,tr["Output logs"],tr["Logs the output of the links. Use the Log Viewer to read them."],&outputLogs));
+	sd.addSetting(new MenuSettingBool(this,tr["Save last selection"],tr["Save the last selected link and section on exit"],&confInt["saveSelection"]));
+	sd.addSetting(new MenuSettingInt(this,tr["Clock for GMenu2X"],tr["Set the cpu working frequency when running GMenu2X"],&confInt["menuClock"],50,325));
+	sd.addSetting(new MenuSettingInt(this,tr["Maximum overclock"],tr["Set the maximum overclock for launching links"],&confInt["maxClock"],50,325));
+	sd.addSetting(new MenuSettingInt(this,tr["Global Volume"],tr["Set the default volume for the gp2x soundcard"],&confInt["globalVolume"],0,100));
+	sd.addSetting(new MenuSettingBool(this,tr["Output logs"],tr["Logs the output of the links. Use the Log Viewer to read them."],&confInt["outputLogs"]));
 	//G
 	sd.addSetting(new MenuSettingInt(this,tr["Gamma"],tr["Set gp2x gamma value (default: 10)"],&confInt["gamma"],1,100));
 	sd.addSetting(new MenuSettingMultiString(this,tr["Tv-Out encoding"],tr["Encoding of the tv-out signal"],&confStr["tvoutEncoding"],&encodings));
@@ -1078,8 +1060,8 @@ void GMenu2X::options() {
 	if (sd.exec() && sd.edited()) {
 		//G
 		if (prevgamma != confInt["gamma"]) setGamma(confInt["gamma"]);
-		if (curMenuClock!=menuClock) setClock(menuClock);
-		if (curGlobalVolume!=globalVolume) setVolume(globalVolume);
+		if (curMenuClock!=confInt["menuClock"]) setClock(confInt["menuClock"]);
+		if (curGlobalVolume!=confInt["globalVolume"]) setVolume(confInt["globalVolume"]);
 		if (lang == "English") lang = "";
 		if (lang != tr.lang()) tr.setLang(lang);
 		if (fileExists("/mnt/root") && !showRootFolder)
@@ -1111,7 +1093,7 @@ void GMenu2X::settingsOpen2x() {
 			case VOLUME_MODE_PHONES: setVolumeScaler(volumeScalerPhones);   break;
 			case VOLUME_MODE_NORMAL: setVolumeScaler(volumeScalerNormal); break;
 		}
-		setVolume(globalVolume);
+		setVolume(confInt["globalVolume"]);
 	}
 }
 
@@ -1145,7 +1127,7 @@ void GMenu2X::toggleTvOut() {
 	if (cx25874!=0)
 		gp2x_tvout_off();
 	else
-		gp2x_tvout_on(tvoutEncoding == "PAL");
+		gp2x_tvout_on(confStr["tvoutEncoding"] == "PAL");
 #endif
 }
 
@@ -1221,7 +1203,7 @@ void GMenu2X::setSkin(string skin, bool setWallpaper) {
 				else if (name=="messageBoxSelectionColorB") messageBoxSelectionColor.b = constrain( atoi(value.c_str()), 0, 255 );
 				else if (name=="messageBoxSelectionColorA") messageBoxSelectionColor.a = constrain( atoi(value.c_str()), 0, 255 );
 				else if (setWallpaper && name=="wallpaper" && fileExists("skins/"+skin+"/wallpapers/"+value)) {
-					wallpaper = "skins/"+skin+"/wallpapers/"+value;
+					confStr["wallpaper"] = "skins/"+skin+"/wallpapers/"+value;
 					skinWallpaper = value;
 				}
 			}
@@ -1399,8 +1381,8 @@ void GMenu2X::contextMenu() {
 
 void GMenu2X::changeWallpaper() {
 	WallpaperDialog wp(this);
-	if (wp.exec() && wallpaper != wp.wallpaper) {
-		wallpaper = wp.wallpaper;
+	if (wp.exec() && confStr["wallpaper"] != wp.wallpaper) {
+		confStr["wallpaper"] = wp.wallpaper;
 		initBG();
 		writeConfig();
 	}
@@ -1469,7 +1451,7 @@ void GMenu2X::editLink() {
 	sd.addSetting(new MenuSettingMultiString(this,tr["Section"],tr["The section this link belongs to"],&newSection,&menu->sections));
 	sd.addSetting(new MenuSettingImage(this,tr["Icon"],tr.translate("Select an icon for the link: $1",linkTitle.c_str(),NULL),&linkIcon,".png,.bmp,.jpg,.jpeg"));
 	sd.addSetting(new MenuSettingFile(this,tr["Manual"],tr["Select a graphic/textual manual or a readme"],&linkManual,".man.png,.txt"));
-	sd.addSetting(new MenuSettingInt(this,tr["Clock (default: 200)"],tr["Cpu clock frequency to set when launching this link"],&linkClock,50,maxClock));
+	sd.addSetting(new MenuSettingInt(this,tr["Clock (default: 200)"],tr["Cpu clock frequency to set when launching this link"],&linkClock,50,confInt["maxClock"]));
 	sd.addSetting(new MenuSettingBool(this,tr["Tweak RAM Timings"],tr["This usually speeds up the application at the cost of stability"],&linkUseRamTimings));
 	sd.addSetting(new MenuSettingInt(this,tr["Volume (default: -1)"],tr["Volume to set for this link"],&linkVolume,-1,100));
 	sd.addSetting(new MenuSettingString(this,tr["Parameters"],tr["Parameters to pass to the application"],&linkParams, diagTitle,diagIcon));
@@ -1613,7 +1595,7 @@ void GMenu2X::scanner() {
 
 	uint lineY = 42;
 
-	if (menuClock<200) {
+	if (confInt["menuClock"]<200) {
 		setClock(200);
 		scanbg.write(font,tr["Raising cpu clock to 200Mhz"],5,lineY);
 		scanbg.blit(s,0,0);
@@ -1672,8 +1654,8 @@ void GMenu2X::scanner() {
 	s->flip();
 	lineY += 26;
 
-	if (menuClock<200) {
-		setClock(menuClock);
+	if (confInt["menuClock"]<200) {
+		setClock(confInt["menuClock"]);
 		scanbg.write(font,tr["Decreasing cpu clock"],5,lineY);
 		scanbg.blit(s,0,0);
 		s->flip();
@@ -1796,7 +1778,7 @@ void GMenu2X::applyDefaultTimings() {
 }
 
 void GMenu2X::setClock(unsigned mhz) {
-	mhz = constrain(mhz,50,maxClock);
+	mhz = constrain(mhz,50,confInt["maxClock"]);
 #ifdef TARGET_GP2X
 	if (gp2x_mem!=0) {
 		unsigned v;

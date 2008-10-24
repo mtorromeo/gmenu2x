@@ -24,6 +24,7 @@ dir:
 $(TARGET): $(OBJS)
 		@echo "Linking $(TARGET)..."
 		$(CXX) -o $(TARGET) $(OBJS) $(LDFLAGS)
+		-cp -f $(TARGET) ../pandora/gmenupandora
 #		$(STRIP) $(TARGET) #Don't strip if symbols are needed for gprof
 
 clean:

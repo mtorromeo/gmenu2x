@@ -23,6 +23,8 @@
 using namespace std;
 
 SurfaceCollection::SurfaceCollection(bool defaultAlpha, string skin) {
+	surfaces.set_empty_key(" ");
+	surfaces.set_deleted_key("");
 	this->defaultAlpha = defaultAlpha;
 	setSkin(skin);
 }
@@ -43,8 +45,8 @@ string SurfaceCollection::getSkinFilePath(string file) {
 }
 
 void SurfaceCollection::debug() {
-	hash_map<string, Surface*>::iterator end = surfaces.end();
-	for(hash_map<string, Surface*>::iterator curr = surfaces.begin(); curr != end; curr++){
+	SurfaceHash::iterator end = surfaces.end();
+	for(SurfaceHash::iterator curr = surfaces.begin(); curr != end; curr++){
 		cout << "key: " << curr->first << endl;
 	}
 }
@@ -95,7 +97,7 @@ Surface *SurfaceCollection::addSkinRes(string path, bool alpha) {
 }
 
 void SurfaceCollection::del(string path) {
-	hash_map<string, Surface*>::iterator i = surfaces.find(path);
+	SurfaceHash::iterator i = surfaces.find(path);
 	if (i != surfaces.end()) {
 		free(i->second);
 		surfaces.erase(i);
@@ -117,7 +119,7 @@ void SurfaceCollection::move(string from, string to) {
 }
 
 Surface *SurfaceCollection::operator[](string key) {
-	hash_map<string, Surface*>::iterator i = surfaces.find(key);
+	SurfaceHash::iterator i = surfaces.find(key);
 	if (i == surfaces.end())
 		return add(key, defaultAlpha);
 	else
@@ -127,7 +129,7 @@ Surface *SurfaceCollection::operator[](string key) {
 Surface *SurfaceCollection::skinRes(string key) {
 	if (key.empty()) return NULL;
 
-	hash_map<string, Surface*>::iterator i = surfaces.find(key);
+	SurfaceHash::iterator i = surfaces.find(key);
 	if (i == surfaces.end())
 		return addSkinRes(key, defaultAlpha);
 	else

@@ -30,6 +30,8 @@
 
 using __gnu_cxx::hash_map;
 using __gnu_cxx::hash;
+using std::string;
+using std::vector;
 
 namespace __gnu_cxx {
 	template<> struct hash< std::string > {
@@ -45,9 +47,6 @@ struct eqstr {
 	}
 };
 
-
-using std::string;
-using std::vector;
 class case_less {
 public:
 	bool operator()(string const &left, string const &right) const;
@@ -66,6 +65,11 @@ bool rmtree(string path);
 int max (int a, int b);
 int min (int a, int b);
 int constrain (int x, int imin, int imax);
+
+int evalIntConf (int val, int def, int imin, int imax);
+int evalIntConf (int *val, int def, int imin, int imax);
+string evalStrConf (string val, string def);
+string evalStrConf (string *val, string def);
 
 float max (float a, float b);
 float min (float a, float b);

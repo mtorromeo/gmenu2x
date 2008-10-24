@@ -152,10 +152,8 @@ public:
 
 	//Configuration settings
 	RGBAColor selectionColor, topBarColor, bottomBarColor, messageBoxColor, messageBoxBorderColor, messageBoxSelectionColor;
-	bool saveSelection, outputLogs;
 	bool useSelectionPng;
-	int maxClock, menuClock, globalVolume;
-	string skinWallpaper, wallpaper;
+	string skinWallpaper;
 	void setSkin(string skin, bool setWallpaper = true);
 	//firmware type and version
 	string fwType, fwVersion;

@@ -103,6 +103,26 @@ int constrain (int x, int imin, int imax) {
 	return min( imax, max(imin,x) );
 }
 
+//Configuration parsing utilities
+int evalIntConf (int val, int def, int imin, int imax) {
+	if (val==0 && (val<imin || val>imax))
+		return def;
+	val = constrain(val, imin, imax);
+	return val;
+}
+int evalIntConf (int *val, int def, int imin, int imax) {
+	*val = evalIntConf(*val, def, imin, imax);
+	return *val;
+}
+
+string evalStrConf (string val, string def) {
+	return val.empty() ? def : val;
+}
+string evalStrConf (string *val, string def) {
+	*val = evalStrConf(*val, def);
+	return *val;
+}
+
 float max (float a, float b) {
 	return a>b ? a : b;
 }

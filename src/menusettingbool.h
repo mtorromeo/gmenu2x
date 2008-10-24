@@ -30,6 +30,7 @@ class MenuSettingBool : public MenuSetting {
 private:
 	bool originalValue;
 	bool *_value;
+	int *_ivalue;
 	string strvalue;
 	GMenu2X *gmenu2x;
 	IconButton *btnToggle;
@@ -38,6 +39,7 @@ private:
 
 public:
 	MenuSettingBool(GMenu2X *gmenu2x, string name, string description, bool *value);
+	MenuSettingBool(GMenu2X *gmenu2x, string name, string description, int *value);
 	virtual ~MenuSettingBool() {};
 
 	virtual void draw(int y);
@@ -47,6 +49,7 @@ public:
 	virtual void drawSelected(int y);
 	virtual bool edited();
 
+	void setValue(int value);
 	void setValue(bool value);
 	bool value();
 };

@@ -41,7 +41,8 @@ SettingsDialog::~SettingsDialog() {
 }
 
 bool SettingsDialog::exec() {
-	Surface bg (gmenu2x->wallpaper,false);
+	//Surface bg (gmenu2x->confStr["wallpaper"],false);
+	Surface bg(gmenu2x->bg);
 
 	bool close = false, ts_pressed = false;
 	uint i, sel = 0, iY, firstElement = 0, action;

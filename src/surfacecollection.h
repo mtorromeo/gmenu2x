@@ -20,8 +20,13 @@
 #ifndef SURFACECOLLECTION_H
 #define SURFACECOLLECTION_H
 
+#include <google/dense_hash_map>
+
 #include "surface.h"
 #include "utilities.h"
+
+using google::dense_hash_map;
+typedef dense_hash_map<string, Surface *> SurfaceHash;
 
 /**
 Hash Map of surfaces that loads surfaces not already loaded and reuses already loaded ones.
@@ -30,7 +35,7 @@ Hash Map of surfaces that loads surfaces not already loaded and reuses already l
 */
 class SurfaceCollection {
 private:
-	hash_map<string, Surface*> surfaces;
+	SurfaceHash surfaces;
 	string skin;
 
 public:
