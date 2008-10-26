@@ -67,6 +67,7 @@ public:
 	void deleteSelectedLink();
 	void deleteSelectedSection();
 
+	void loadIcons();
 	bool linkChangeSection(uint linkIndex, uint oldSectionIndex, uint newSectionIndex);
 
 	int selLinkIndex();

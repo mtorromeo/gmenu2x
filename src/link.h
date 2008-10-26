@@ -35,9 +35,14 @@ Base class that represents a link on screen.
 	@author Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
 */
 class Link : public Button {
+private:
+	uint iconX, padding;
+
 protected:
 	bool edited;
 	string title, description, icon, iconPath;
+
+	void recalcCoordinates();
 
 public:
 	Link(GMenu2X *gmenu2x);
@@ -45,6 +50,9 @@ public:
 
 	virtual void paint();
 	virtual bool paintHover();
+
+	void setSize(int w, int h);
+	void setPosition(int x, int y);
 
 	string getTitle();
 	void setTitle(string title);

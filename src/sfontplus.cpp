@@ -107,7 +107,19 @@ void SFontPlus::initFont(SDL_Surface *font, string characters) {
 		}
 	}
 	SDL_UnlockSurface(surface);
-	SDL_SetColorKey(surface, SDL_SRCCOLORKEY, getPixel(0,surface->h-1));
+	Uint32 colKey = getPixel(0,surface->h-1);
+	SDL_SetColorKey(surface, SDL_SRCCOLORKEY, colKey);
+
+	string::size_type pos = characters.find("0")*2;
+	SDL_Rect srcrect = {charpos[pos], 1, charpos[pos+2] - charpos[pos], surface->h-1};
+	uint y = srcrect.h+1;
+	bool nonKeyFound = false;
+	while (y-->0 && !nonKeyFound) {
+		uint x = srcrect.w+1;
+		while (x-->0 && !nonKeyFound)
+			nonKeyFound = getPixel(x+srcrect.x,y+srcrect.y) != colKey;
+	}
+	lineHeight = y+1;
 }
 
 void SFontPlus::freeFont() {
@@ -177,4 +189,8 @@ uint SFontPlus::getTextWidth(string text) {
 
 uint SFontPlus::getHeight() {
 	return surface->h - 1;
+}
+
+uint SFontPlus::getLineHeight() {
+	return lineHeight;
 }

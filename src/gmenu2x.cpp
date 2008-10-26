@@ -155,18 +155,12 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	confStr.set_deleted_key("");
 	confInt.set_empty_key(" ");
 	confInt.set_deleted_key("");
+	skinConfInt.set_empty_key(" ");
+	skinConfInt.set_deleted_key("");
 	skinConfStr.set_empty_key(" ");
 	skinConfStr.set_deleted_key("");
 	skinConfColors.set_empty_key(" ");
 	skinConfColors.set_deleted_key("");
-
-	//Initialize configuration settings to default
-	skinConfColors["topBarBg"] = (RGBAColor){255,255,255,130};
-	skinConfColors["bottomBarBg"] = (RGBAColor){255,255,255,130};
-	skinConfColors["selectionBg"] = (RGBAColor){255,255,255,130};
-	skinConfColors["messageBoxBg"] = (RGBAColor){255,255,255,255};
-	skinConfColors["messageBoxBorder"] = (RGBAColor){80,80,80,255};
-	skinConfColors["messageBoxSelection"] = (RGBAColor){160,160,160,255};
 
 	//open2x
 	savedVolumeMode = 0;
@@ -203,8 +197,6 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	halfY = resY/2;
 	bottomBarIconY = resY-18;
 	bottomBarTextY = resY-10;
-	linkColumns = (resX-10)/60;
-	linkRows = (resY-75)/40;
 
 	path = "";
 	getExePath();
@@ -248,8 +240,9 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 
 	bg = NULL;
 	font = NULL;
-	initMenu();
+	menu = NULL;
 	setSkin(confStr["skin"], false);
+	initMenu();
 
 	if (!fileExists(confStr["wallpaper"])) {
 #ifdef DEBUG
@@ -410,6 +403,8 @@ void GMenu2X::initMenu() {
 
 	menu->setSectionIndex(confInt["section"]);
 	menu->setLinkIndex(confInt["link"]);
+
+	menu->loadIcons();
 }
 
 void GMenu2X::about() {
@@ -500,13 +495,12 @@ void GMenu2X::readConfig() {
 			while (getline(inf, line, '\n')) {
 				string::size_type pos = line.find("=");
 				string name = trim(line.substr(0,pos));
-				char* cname = string_copy(name);
 				string value = trim(line.substr(pos+1,line.length()));
 
 				if (value.length()>1 && value.at(0)=='"' && value.at(value.length()-1)=='"')
-					confStr[cname] = value.substr(1,value.length()-2);
+					confStr[name] = value.substr(1,value.length()-2);
 				else
-					confInt[cname] = atoi(value.c_str());
+					confInt[name] = atoi(value.c_str());
 			}
 			inf.close();
 		}
@@ -516,7 +510,6 @@ void GMenu2X::readConfig() {
 	if (!confStr["wallpaper"].empty() && !fileExists(confStr["wallpaper"])) confStr["wallpaper"] = "";
 	if (confStr["skin"].empty() || !fileExists("skins/"+confStr["skin"])) confStr["skin"] = "Default";
 
-	evalIntConf( &confInt["saveSelection"], 1, 0,1 );
 	evalIntConf( &confInt["outputLogs"], 0, 0,1 );
 	evalIntConf( &confInt["maxClock"], 300, 200,300 );
 	evalIntConf( &confInt["menuClock"], f200 ? 136 : 100, 50,300 );
@@ -607,8 +600,12 @@ void GMenu2X::writeSkinConfig() {
 		for(ConfStrHash::iterator curr = skinConfStr.begin(); curr != endS; curr++)
 			inf << curr->first << "=\"" << curr->second << "\"" << endl;
 
-		ConfRGBAHash::iterator endI = skinConfColors.end();
-		for(ConfRGBAHash::iterator curr = skinConfColors.begin(); curr != endI; curr++)
+		ConfIntHash::iterator endI = skinConfInt.end();
+		for(ConfIntHash::iterator curr = skinConfInt.begin(); curr != endI; curr++)
+			inf << curr->first << "=" << curr->second << endl;
+
+		ConfRGBAHash::iterator endC = skinConfColors.end();
+		for(ConfRGBAHash::iterator curr = skinConfColors.begin(); curr != endC; curr++)
 			inf << curr->first << "=#" << hex << curr->second.r << hex << curr->second.g << hex << curr->second.b << hex << curr->second.a << endl;
 
 		inf.close();
@@ -719,9 +716,10 @@ void GMenu2X::ledOff() {
 }
 
 int GMenu2X::main() {
-	uint linksPerPage = linkColumns*linkRows, linkH = 40, linkW = 60;
-	int linkSpacingX = (resX-10 - linkColumns*60)/linkColumns;
-	int linkSpacingY = (resY-75 - linkRows*40)/linkRows;
+	uint linksPerPage = linkColumns*linkRows;
+	int linkSpacingX = (resX-10 - linkColumns*skinConfInt["linkWidth"])/linkColumns;
+	int linkSpacingY = (resY-35 - skinConfInt["topBarHeight"] - linkRows*skinConfInt["linkHeight"])/linkRows;
+	uint sectionLinkPadding = (skinConfInt["topBarHeight"] - 32 - font->getLineHeight()) / 3;
 
 	bool quit = false;
 	int x,y, offset = menu->sectionLinks()->size()>linksPerPage ? 2 : 6, helpBoxHeight = fwType=="open2x" ? 154 : 139;
@@ -759,29 +757,29 @@ int GMenu2X::main() {
 			sc.skinRes("imgs/r_disabled.png")->blit(s,resX-10,0);
 		for (i=menu->firstDispSection(); i<menu->sections.size() && i<menu->firstDispSection()+linkColumns; i++) {
 			string sectionIcon = "skin:sections/"+menu->sections[i]+".png";
-			//x = (i-menu->firstDispSection())*60+24;
-			sectionsCoordX = 24 + max(0, min( (uint)(linkColumns-menu->sections.size()), linkColumns )) * 30;
-			x = (i-menu->firstDispSection())*60+sectionsCoordX;
+			sectionsCoordX = halfX - (constrain((uint)(linkColumns-menu->sections.size()), 0 , linkColumns) * skinConfInt["linkWidth"]) / 2;
+			x = (i-menu->firstDispSection())*skinConfInt["linkWidth"]+sectionsCoordX;
 			if (menu->selSectionIndex()==(int)i)
-				s->box(x-14, 0, 60, 40, skinConfColors["selectionBg"]);
+				s->box(x, 0, skinConfInt["linkWidth"], skinConfInt["topBarHeight"], skinConfColors["selectionBg"]);
+			x += skinConfInt["linkWidth"]/2;
 			if (sc.exists(sectionIcon))
-				sc[sectionIcon]->blit(s,x,0,32,32);
+				sc[sectionIcon]->blit(s,x-16,sectionLinkPadding,32,32);
 			else
-				sc.skinRes("icons/section.png")->blit(s,x,0);
-			s->write( font, menu->sections[i], x+16, 41, SFontHAlignCenter, SFontVAlignBottom );
+				sc.skinRes("icons/section.png")->blit(s,x,sectionLinkPadding);
+			s->write( font, menu->sections[i], x, skinConfInt["topBarHeight"]-sectionLinkPadding, SFontHAlignCenter, SFontVAlignBottom );
 		}
 
 		//Links
-		s->setClipRect(offset,40,resX-9,resY-74); //32*2+10
+		s->setClipRect(offset,skinConfInt["topBarHeight"],resX-9,resY-74); //32*2+10
 		for (i=menu->firstDispRow()*linkColumns; i<(menu->firstDispRow()*linkColumns)+linksPerPage && i<menu->sectionLinks()->size(); i++) {
 			int ir = i-menu->firstDispRow()*linkColumns;
-			x = (ir%linkColumns)*(linkW+linkSpacingX)+offset;
-			y = ir/linkColumns*(linkH+linkSpacingY)+42;
+			x = (ir%linkColumns)*(skinConfInt["linkWidth"]+linkSpacingX)+offset;
+			y = ir/linkColumns*(skinConfInt["linkHeight"]+linkSpacingY)+skinConfInt["topBarHeight"]+2;
+			menu->sectionLinks()->at(i)->setPosition(x,y);
 
 			if (i==(uint)menu->selLinkIndex())
 				menu->sectionLinks()->at(i)->paintHover();
 
-			menu->sectionLinks()->at(i)->setPosition(x,y);
 			menu->sectionLinks()->at(i)->paint();
 		}
 		s->clearClipRect();
@@ -854,12 +852,12 @@ int GMenu2X::main() {
 		if (f200) {
 			ts.poll();
 			btnContextMenu.handleTS();
-			re.x = 0; re.y = 0; re.h = 32; re.w = resX;
+			re.x = 0; re.y = 0; re.h = skinConfInt["topBarHeight"]; re.w = resX;
 			if (ts.pressed() && ts.inRect(re)) {
-				re.w = 60;
+				re.w = skinConfInt["linkWidth"];
 				for (i=menu->firstDispSection(); !ts.handled() && i<menu->sections.size() && i<menu->firstDispSection()+linkColumns; i++) {
-					sectionsCoordX = 10 + max(0, min( (uint)(linkColumns-menu->sections.size()), linkColumns )) * 30;
-					re.x = (i-menu->firstDispSection())*60+sectionsCoordX;
+					sectionsCoordX = halfX - (constrain((uint)(linkColumns-menu->sections.size()), 0 , linkColumns) * skinConfInt["linkWidth"]) / 2;
+					re.x = (i-menu->firstDispSection())*re.w+sectionsCoordX;
 
 					if (ts.inRect(re)) {
 						menu->setSectionIndex(i);
@@ -1105,6 +1103,7 @@ void GMenu2X::setSkin(string skin, bool setWallpaper) {
 	//Clear previous skin settings
 	skinConfColors.clear();
 	skinConfStr.clear();
+	skinConfInt.clear();
 
 	//clear collection and change the skin path
 	sc.clear();
@@ -1129,16 +1128,15 @@ void GMenu2X::setSkin(string skin, bool setWallpaper) {
 				cout << "skinconf: " << line << endl;
 				string::size_type pos = line.find("=");
 				string name = trim(line.substr(0,pos));
-				char* cname = string_copy(name);
 				string value = trim(line.substr(pos+1,line.length()));
 
 				if (value.length()>0) {
 					if (value.length()>1 && value.at(0)=='"' && value.at(value.length()-1)=='"')
-						skinConfStr[cname] = value.substr(1,value.length()-2);
+						skinConfStr[name] = value.substr(1,value.length()-2);
 					else if (value.at(0) == '#')
-						skinConfColors[cname] = strtorgba( value.substr(1,value.length()) );
-					/*else
-						skinConfInt[cname] = atoi(value.c_str());*/
+						skinConfColors[name] = strtorgba( value.substr(1,value.length()) );
+					else
+						skinConfInt[name] = atoi(value.c_str());
 				}
 			}
 			skinconf.close();
@@ -1148,30 +1146,15 @@ void GMenu2X::setSkin(string skin, bool setWallpaper) {
 		}
 	}
 
-	//reload section icons
-	for (uint i=0; i<menu->sections.size(); i++) {
-		string sectionIcon = "sections/"+menu->sections[i]+".png";
-		if (!sc.getSkinFilePath(sectionIcon).empty())
-			sc.add("skin:"+sectionIcon);
+	evalIntConf( &skinConfInt["topBarHeight"], 40, 32,120 );
+	evalIntConf( &skinConfInt["linkHeight"], 40, 32,120 );
+	evalIntConf( &skinConfInt["linkWidth"], 60, 32,120 );
 
-		//check link's icons
-		string linkIcon;
-		for (uint x=0; x<menu->sectionLinks(i)->size(); x++) {
-			linkIcon = menu->sectionLinks(i)->at(x)->getIcon();
-			LinkApp *linkapp = dynamic_cast<LinkApp*>(menu->sectionLinks(i)->at(x));
+	//recalculate some coordinates based on the new element sizes
+	linkColumns = (resX-10)/skinConfInt["linkWidth"];
+	linkRows = (resY-35-skinConfInt["topBarHeight"])/skinConfInt["linkHeight"];
 
-			if (linkIcon.substr(0,5)=="skin:") {
-				linkIcon = sc.getSkinFilePath(linkIcon.substr(5,linkIcon.length()));
-				if (linkapp != NULL && !fileExists(linkIcon))
-					linkapp->searchIcon();
-				else
-					menu->sectionLinks(i)->at(x)->setIconPath(linkIcon);
-
-			} else if (!fileExists(linkIcon)) {
-				if (linkapp != NULL) linkapp->searchIcon();
-			}
-		}
-	}
+	if (menu != NULL) menu->loadIcons();
 
 	//Selection png
 	useSelectionPng = sc.addSkinRes("imgs/selection.png") != NULL;
@@ -1251,7 +1234,7 @@ void GMenu2X::contextMenu() {
 	}
 
 	bool close = false;
-	uint i, sel = 0;
+	uint i, sel=0, fadeAlpha=0;
 
 	int h = font->getHeight();
 	int h2 = font->getHalfHeight();
@@ -1267,15 +1250,33 @@ void GMenu2X::contextMenu() {
 	box.y = halfY - box.h/2;
 
 	SDL_Rect selbox = {box.x+4, 0, box.w-8, h+2};
+	long tickNow, tickFade = SDL_GetTicks();
 
 	Surface bg(s);
-	//Darken background
+	/*//Darken background
 	bg.box(0, 0, resX, resY, 0,0,0,150);
 	bg.box(box.x, box.y, box.w, box.h, skinConfColors["messageBoxBg"]);
-	bg.rectangle( box.x+2, box.y+2, box.w-4, box.h-4, skinConfColors["messageBoxBorder"] );
+	bg.rectangle( box.x+2, box.y+2, box.w-4, box.h-4, skinConfColors["messageBoxBorder"] );*/
 	while (!close) {
+		tickNow = SDL_GetTicks();
+
 		selbox.y = box.y+4+(h+2)*sel;
 		bg.blit(s,0,0);
+
+		if (fadeAlpha<200) {
+			uint inc = floor((tickNow-tickFade)/3);
+			if (inc>0) {
+				fadeAlpha += inc;
+				if (fadeAlpha>200)
+					fadeAlpha = 200;
+				tickFade = tickNow;
+			}
+		}
+		s->box(0, 0, resX, resY, 0,0,0,fadeAlpha);
+		s->box(box.x, box.y, box.w, box.h, skinConfColors["messageBoxBg"]);
+		s->rectangle( box.x+2, box.y+2, box.w-4, box.h-4, skinConfColors["messageBoxBorder"] );
+
+
 		//draw selection rect
 		s->box( selbox.x, selbox.y, selbox.w, selbox.h, skinConfColors["messageBoxSelection"] );
 		for (i=0; i<voices.size(); i++)
@@ -1880,17 +1881,17 @@ void GMenu2X::drawTitleIcon(string icon, bool skinRes, Surface *s) {
 	if (i==NULL)
 		i = sc.skinRes("icons/generic.png");
 
-	i->blit(s,4,4);
+	i->blit(s,4,(skinConfInt["topBarHeight"]-32)/2);
 }
 
 void GMenu2X::writeTitle(string title, Surface *s) {
 	if (s==NULL) s = this->s;
-	s->write(font,title,40,13, SFontHAlignLeft, SFontVAlignMiddle);
+	s->write(font,title,40, skinConfInt["topBarHeight"]/4, SFontHAlignLeft, SFontVAlignMiddle);
 }
 
 void GMenu2X::writeSubTitle(string subtitle, Surface *s) {
 	if (s==NULL) s = this->s;
-	s->write(font,subtitle,40,27, SFontHAlignLeft, SFontVAlignMiddle);
+	s->write(font,subtitle,40, skinConfInt["topBarHeight"]/4*3, SFontHAlignLeft, SFontVAlignMiddle);
 }
 
 void GMenu2X::drawTopBar(Surface *s) {
@@ -1900,7 +1901,7 @@ void GMenu2X::drawTopBar(Surface *s) {
 	if (bar != NULL)
 		bar->blit(s, 0, 0);
 	else
-		s->box(0, 0, resX, 40, skinConfColors["topBarBg"]);
+		s->box(0, 0, resX, skinConfInt["topBarHeight"], skinConfColors["topBarBg"]);
 }
 
 void GMenu2X::drawBottomBar(Surface *s) {

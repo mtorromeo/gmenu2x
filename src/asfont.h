@@ -31,6 +31,8 @@ public:
 
 	int getHeight();
 	int getHalfHeight();
+	int getLineHeight();
+	int getHalfLineHeight();
 	int getTextWidth(const char* text);
 	int getTextWidth(const string& text);
 	int getTextWidth(vector<string> *text);
@@ -41,7 +43,7 @@ public:
 
 private:
 	SFontPlus font;
-	int halfHeight;
+	int halfHeight, halfLineHeight;
 };
 
 #endif /* ASFONT_H */

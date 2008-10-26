@@ -19,7 +19,7 @@ private:
 	SDL_Surface *surface;
 	vector<uint> charpos;
 	string characters;
-	uint height;
+	uint height, lineHeight;
 
 public:
 	SFontPlus();
@@ -37,6 +37,7 @@ public:
 
 	uint getTextWidth(string text);
 	uint getHeight();
+	uint getLineHeight();
 };
 
 #endif /* SFONTPLUS_H */

@@ -31,14 +31,15 @@ Link::Link(GMenu2X *gmenu2x) : Button(gmenu2x, true) {
 	action = MakeDelegate(this, &Link::run);
 	edited = false;
 	iconPath = gmenu2x->sc.getSkinFilePath("icons/generic.png");
+	iconX = 0;
+	padding = 0;
 }
 
 void Link::run() {}
 
 void Link::paint() {
-	int ix = rect.x+((rect.w-32)/2);
-	gmenu2x->sc[getIconPath()]->blit(gmenu2x->s,ix,rect.y,32,32);
-	gmenu2x->s->write( gmenu2x->font, getTitle(), ix+16, rect.y+42, SFontHAlignCenter, SFontVAlignBottom );
+	gmenu2x->sc[getIconPath()]->blit(gmenu2x->s, iconX, rect.y+padding, 32,32);
+	gmenu2x->s->write( gmenu2x->font, getTitle(), iconX+16, rect.y+gmenu2x->skinConfInt["linkHeight"]-padding, SFontHAlignCenter, SFontVAlignBottom );
 }
 
 bool Link::paintHover() {
@@ -105,4 +106,19 @@ void Link::setIconPath(string icon) {
 		iconPath = icon;
 	else
 		iconPath = gmenu2x->sc.getSkinFilePath("icons/generic.png");
+}
+
+void Link::setSize(int w, int h) {
+	Button::setSize(w,h);
+	recalcCoordinates();
+}
+
+void Link::setPosition(int x, int y) {
+	Button::setPosition(x,y);
+	recalcCoordinates();
+}
+
+void Link::recalcCoordinates() {
+	iconX = rect.x+(rect.w-32)/2;
+	padding = (gmenu2x->skinConfInt["linkHeight"] - 32 - gmenu2x->font->getLineHeight()) / 3;
 }

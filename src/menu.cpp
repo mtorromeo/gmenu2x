@@ -70,6 +70,33 @@ uint Menu::firstDispRow() {
 	return iFirstDispRow;
 }
 
+void Menu::loadIcons() {
+	//reload section icons
+	for (uint i=0; i<sections.size(); i++) {
+		string sectionIcon = "sections/"+sections[i]+".png";
+		if (!gmenu2x->sc.getSkinFilePath(sectionIcon).empty())
+			gmenu2x->sc.add("skin:"+sectionIcon);
+
+		//check link's icons
+		string linkIcon;
+		for (uint x=0; x<sectionLinks(i)->size(); x++) {
+			linkIcon = sectionLinks(i)->at(x)->getIcon();
+			LinkApp *linkapp = dynamic_cast<LinkApp*>(sectionLinks(i)->at(x));
+
+			if (linkIcon.substr(0,5)=="skin:") {
+				linkIcon = gmenu2x->sc.getSkinFilePath(linkIcon.substr(5,linkIcon.length()));
+				if (linkapp != NULL && !fileExists(linkIcon))
+					linkapp->searchIcon();
+				else
+					sectionLinks(i)->at(x)->setIconPath(linkIcon);
+
+			} else if (!fileExists(linkIcon)) {
+				if (linkapp != NULL) linkapp->searchIcon();
+			}
+		}
+	}
+}
+
 /*====================================
    SECTION MANAGEMENT
   ====================================*/
@@ -137,7 +164,7 @@ bool Menu::addActionLink(uint section, string title, LinkRunAction action, strin
 	if (section>=sections.size()) return false;
 
 	LinkAction *linkact = new LinkAction(gmenu2x,action);
-	linkact->setSize(60,40);
+	linkact->setSize(gmenu2x->skinConfInt["linkWidth"],gmenu2x->skinConfInt["linkHeight"]);
 	linkact->setTitle(title);
 	linkact->setDescription(description);
 	if (gmenu2x->sc.exists(icon) || (icon.substr(0,5)=="skin:" && !gmenu2x->sc.getSkinFilePath(icon.substr(5,icon.length())).empty()) || fileExists(icon))
@@ -184,11 +211,10 @@ bool Menu::addLink(string path, string file, string section) {
 	cout << "\033[0;34mGMENU2X:\033[0m Adding link: " << linkpath << endl;
 #endif
 
-	//Reduce title lenght to fit the column width
-	int linkW = 312/gmenu2x->linkColumns;
+	//Reduce title lenght to fit the link width
 	string shorttitle = title;
-	if (gmenu2x->font->getTextWidth(shorttitle)>linkW) {
-		while (gmenu2x->font->getTextWidth(shorttitle+"..")>linkW)
+	if (gmenu2x->font->getTextWidth(shorttitle)>gmenu2x->skinConfInt["linkWidth"]) {
+		while (gmenu2x->font->getTextWidth(shorttitle+"..")>gmenu2x->skinConfInt["linkWidth"])
 			shorttitle = shorttitle.substr(0,shorttitle.length()-1);
 		shorttitle += "..";
 	}
@@ -390,7 +416,7 @@ void Menu::readLinks() {
 		sort(linkfiles.begin(), linkfiles.end(),case_less());
 		for (uint x=0; x<linkfiles.size(); x++) {
 			LinkApp *link = new LinkApp(gmenu2x, linkfiles[x].c_str());
-			link->setSize(60,40);
+			link->setSize(gmenu2x->skinConfInt["linkWidth"],gmenu2x->skinConfInt["linkHeight"]);
 			if (link->targetExists())
 				links[i].push_back( link );
 			else

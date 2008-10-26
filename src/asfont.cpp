@@ -9,16 +9,19 @@ using namespace std;
 ASFont::ASFont(SDL_Surface* font) {
 	this->font.initFont(font);
 	halfHeight = getHeight()/2;
+	halfLineHeight = getLineHeight()/2;
 }
 
 ASFont::ASFont(Surface* font) {
 	this->font.initFont(font->raw);
 	halfHeight = getHeight()/2;
+	halfLineHeight = getLineHeight()/2;
 }
 
 ASFont::ASFont(string font) {
 	this->font.initFont(font);
 	halfHeight = getHeight()/2;
+	halfLineHeight = getLineHeight()/2;
 }
 
 ASFont::~ASFont() {
@@ -93,6 +96,13 @@ int ASFont::getHeight() {
 }
 int ASFont::getHalfHeight() {
 	return halfHeight;
+}
+
+int ASFont::getLineHeight() {
+	return font.getLineHeight();
+}
+int ASFont::getHalfLineHeight() {
+	return halfLineHeight;
 }
 
 int ASFont::getTextWidth(const char* text) {

@@ -48,9 +48,9 @@ using fastdelegate::FastDelegate0;
 using google::dense_hash_map;
 
 typedef FastDelegate0<> MenuAction;
-typedef dense_hash_map<const char*, string, hash<const char*>, eqstr> ConfStrHash;
-typedef dense_hash_map<const char*, int, hash<const char*>, eqstr> ConfIntHash;
-typedef dense_hash_map<const char*, RGBAColor, hash<const char*>, eqstr> ConfRGBAHash;
+typedef dense_hash_map<string, string, hash<string> > ConfStrHash;
+typedef dense_hash_map<string, int, hash<string> > ConfIntHash;
+typedef dense_hash_map<string, RGBAColor, hash<string> > ConfRGBAHash;
 
 typedef struct {
 	unsigned short batt;
@@ -148,10 +148,9 @@ public:
 	Touchscreen ts;
 
 	//Configuration hashes
-	ConfStrHash confStr;
-	ConfIntHash confInt;
+	ConfStrHash confStr, skinConfStr;
+	ConfIntHash confInt, skinConfInt;
 	ConfRGBAHash skinConfColors;
-	ConfStrHash skinConfStr;
 
 	//Configuration settings
 	bool useSelectionPng;
