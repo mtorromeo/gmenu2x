@@ -155,7 +155,7 @@ void MenuSettingRGBA::adjustInput() {
 
 void MenuSettingRGBA::drawSelected(int y) {
 	int x = 166+selPart*36;
-	gmenu2x->s->box( x, y, 36, 14, gmenu2x->selectionColor );
+	gmenu2x->s->box( x, y, 36, 14, gmenu2x->skinConfColors["selectionBg"] );
 
 	gmenu2x->drawButton(btnDec,
 	gmenu2x->drawButton(btnInc,

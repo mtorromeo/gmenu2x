@@ -50,6 +50,7 @@ using google::dense_hash_map;
 typedef FastDelegate0<> MenuAction;
 typedef dense_hash_map<const char*, string, hash<const char*>, eqstr> ConfStrHash;
 typedef dense_hash_map<const char*, int, hash<const char*>, eqstr> ConfIntHash;
+typedef dense_hash_map<const char*, RGBAColor, hash<const char*>, eqstr> ConfRGBAHash;
 
 typedef struct {
 	unsigned short batt;
@@ -149,11 +150,11 @@ public:
 	//Configuration hashes
 	ConfStrHash confStr;
 	ConfIntHash confInt;
+	ConfRGBAHash skinConfColors;
+	ConfStrHash skinConfStr;
 
 	//Configuration settings
-	RGBAColor selectionColor, topBarColor, bottomBarColor, messageBoxColor, messageBoxBorderColor, messageBoxSelectionColor;
 	bool useSelectionPng;
-	string skinWallpaper;
 	void setSkin(string skin, bool setWallpaper = true);
 	//firmware type and version
 	string fwType, fwVersion;

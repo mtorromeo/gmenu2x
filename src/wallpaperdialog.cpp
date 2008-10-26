@@ -70,7 +70,7 @@ bool WallpaperDialog::exec() {
 		//Selection
 		iY = selected-firstElement;
 		iY = 44+(iY*17);
-		gmenu2x->s->box(2, iY, 308, 16, gmenu2x->selectionColor);
+		gmenu2x->s->box(2, iY, 308, 16, gmenu2x->skinConfColors["selectionBg"]);
 
 		//Files & Directories
 		gmenu2x->s->setClipRect(0,41,311,179);

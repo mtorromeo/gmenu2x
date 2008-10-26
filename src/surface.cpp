@@ -26,6 +26,15 @@ using namespace std;
 #include "surface.h"
 #include "utilities.h"
 
+RGBAColor strtorgba(string strColor) {
+	RGBAColor c = {0,0,0,255};
+	c.r = constrain( strtol( strColor.substr(0,2).c_str(), NULL, 16 ), 0, 255 );
+	c.g = constrain( strtol( strColor.substr(2,2).c_str(), NULL, 16 ), 0, 255 );
+	c.b = constrain( strtol( strColor.substr(4,2).c_str(), NULL, 16 ), 0, 255 );
+	c.a = constrain( strtol( strColor.substr(6,2).c_str(), NULL, 16 ), 0, 255 );
+	return c;
+}
+
 Surface::Surface() {
 	raw = NULL;
 	dblbuffer = NULL;

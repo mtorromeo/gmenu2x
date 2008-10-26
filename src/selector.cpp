@@ -87,7 +87,7 @@ int Selector::exec(int startSelection) {
 		iY = selected-firstElement;
 		iY = 42+(iY*16);
 		if (selected<fl.size())
-			gmenu2x->s->box(1, iY, 309, 14, gmenu2x->selectionColor);
+			gmenu2x->s->box(1, iY, 309, 14, gmenu2x->skinConfColors["selectionBg"]);
 
 		//Screenshot
 		if (selected-fl.dirCount()<screens.size() && screens[selected-fl.dirCount()]!="") {

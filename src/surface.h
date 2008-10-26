@@ -32,6 +32,8 @@ struct RGBAColor {
 	unsigned short r,g,b,a;
 };
 
+RGBAColor strtorgba(string strColor);
+
 /**
 	Wrapper around SDL_Surface
 	@author Massimiliano Torromeo <massimiliano.torromeo@gmail.com>

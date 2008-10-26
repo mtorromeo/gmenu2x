@@ -77,9 +77,9 @@ int MessageBox::exec() {
 	int x = 160-halfBoxW;
 
 	//outer box
-	bg.box(x-2, 90, boxW+5, 61, gmenu2x->messageBoxColor);
+	bg.box(x-2, 90, boxW+5, 61, gmenu2x->skinConfColors["messageBoxBg"]);
 	//draw inner rectangle
-	bg.rectangle(x, 92, boxW, 36, gmenu2x->messageBoxBorderColor);
+	bg.rectangle(x, 92, boxW, 36, gmenu2x->skinConfColors["messageBoxBorder"]);
 	//icon+text
 	x += 10;
 	if (gmenu2x->sc[icon] != NULL) {
