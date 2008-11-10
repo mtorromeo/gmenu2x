@@ -84,9 +84,9 @@ void InputManager::init(string conffile) {
 
 				if (action >= 0) {
 					split(values, value, ",");
-					if (values.size() >= 3) {
+					if (values.size() >= 2) {
 
-						if (values[0] == "joystickbutton") {
+						if (values[0] == "joystickbutton" && values.size()==3) {
 							InputMap map;
 							map.type = InputManager::MAPPING_TYPE_BUTTON;
 							map.num = atoi(values[1].c_str());
@@ -99,6 +99,11 @@ void InputManager::init(string conffile) {
 							map.num = atoi(values[1].c_str());
 							map.value = atoi(values[2].c_str());
 							map.treshold = atoi(values[3].c_str());
+							mappings[action].push_back(map);
+						} else if (values[0] == "keyboard") {
+							InputMap map;
+							map.type = InputManager::MAPPING_TYPE_KEYPRESS;
+							map.value = atoi(values[1].c_str());
 							mappings[action].push_back(map);
 						}
 
@@ -125,6 +130,14 @@ void InputManager::setActionsCount(int count) {
 
 void InputManager::update() {
 	SDL_JoystickUpdate();
+	
+	events.clear();
+	SDL_Event event;
+	while (SDL_PollEvent(&event)) {
+		SDL_Event evcopy = event;
+		events.push_back(evcopy);
+	}
+	
 	Uint32 tick = SDL_GetTicks();
 	for (uint x=0; x<actions.size(); x++) {
 		actions[x] = false;
@@ -162,13 +175,20 @@ bool InputManager::isActive(int action) {
 
 		switch (map.type) {
 			case InputManager::MAPPING_TYPE_BUTTON:
-				return map.num < joysticks.size() && SDL_JoystickGetButton(joysticks[map.num], map.value);
+				if (map.num < joysticks.size() && SDL_JoystickGetButton(joysticks[map.num], map.value))
+					return true;
 			break;
 			case InputManager::MAPPING_TYPE_AXYS:
 				if (map.num < joysticks.size()) {
 					int axyspos = SDL_JoystickGetAxis(joysticks[map.num], map.value);
 					if (map.treshold<0 && axyspos < map.treshold) return true;
 					if (map.treshold>0 && axyspos > map.treshold) return true;
+				}
+			break;
+			case InputManager::MAPPING_TYPE_KEYPRESS:
+				for (uint ex=0; ex<events.size(); ex++) {
+					if (events[ex].type == SDL_KEYDOWN && events[ex].key.keysym.sym == map.value)
+						return true;
 				}
 			break;
 		}

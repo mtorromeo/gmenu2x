@@ -51,6 +51,7 @@ typedef struct {
 } InputMap;
 
 typedef vector<InputMap> MappingList;
+typedef vector<SDL_Event> SDLEventList;
 
 /**
 Manages all input peripherals
@@ -61,6 +62,7 @@ private:
 	InputMap getInputMapping(int action);
 	vector<Uint32> actionTick;
 	vector<Uint32> interval;
+	SDLEventList events;
 
 public:
 	static const int MAPPING_TYPE_UNDEFINED = -1;
