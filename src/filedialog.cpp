@@ -56,6 +56,11 @@ bool FileDialog::exec() {
 	fl.browse();
 
 	uint i, firstElement = 0, iY, action;
+	uint rowHeight = gmenu2x->font->getHeight()+1; // gp2x=15+1 / pandora=19+1
+	uint numRows = (gmenu2x->resY-gmenu2x->skinConfInt["topBarHeight"]-20)/rowHeight;
+	SDL_Rect clipRect = {0, gmenu2x->skinConfInt["topBarHeight"]+1, gmenu2x->resX-9, gmenu2x->resY-gmenu2x->skinConfInt["topBarHeight"]-25};
+	SDL_Rect touchRect = {2, gmenu2x->skinConfInt["topBarHeight"]+4, gmenu2x->resX-12, clipRect.h};
+	
 	selected = 0;
 	while (!close) {
 		action = FD_NO_ACTION;
@@ -69,42 +74,42 @@ bool FileDialog::exec() {
 		gmenu2x->drawButton(gmenu2x->s, "x", gmenu2x->tr["Up one folder"],
 		gmenu2x->drawButton(gmenu2x->s, "b", gmenu2x->tr["Enter folder/Confirm"], 5));
 
-		if (selected>firstElement+9) firstElement=selected-9;
+		if (selected>firstElement+numRows-1) firstElement=selected-numRows+1;
 		if (selected<firstElement) firstElement=selected;
 
 		//Selection
 		iY = selected-firstElement;
-		iY = 44+(iY*17);
-		gmenu2x->s->box(2, iY, 308, 16, gmenu2x->skinConfColors["selectionBg"]);
+		iY = gmenu2x->skinConfInt["topBarHeight"]+1+(iY*rowHeight);
+		gmenu2x->s->box(2, iY, gmenu2x->resX-12, rowHeight-1, gmenu2x->skinConfColors["selectionBg"]);
 
 		beforeFileList();
 
 		//Files & Directories
-		gmenu2x->s->setClipRect(0,41,311,179);
+		gmenu2x->s->setClipRect(clipRect);
 		if (ts_pressed && !gmenu2x->ts.pressed()) {
 			action = FD_ACTION_SELECT;
 			ts_pressed = false;
 		}
-		if (gmenu2x->f200 && gmenu2x->ts.pressed() && !gmenu2x->ts.inRect(2,44,308,179)) ts_pressed = false;
-		for (i=firstElement; i<fl.size() && i<firstElement+10; i++) {
+		if (gmenu2x->f200 && gmenu2x->ts.pressed() && !gmenu2x->ts.inRect(touchRect)) ts_pressed = false;
+		for (i=firstElement; i<fl.size() && i<firstElement+numRows; i++) {
 			iY = i-firstElement;
 			if (fl.isDirectory(i)) {
 				if (fl[i]=="..")
-					gmenu2x->sc.skinRes("imgs/go-up.png")->blit(gmenu2x->s, 5, 45+(iY*17));
+					gmenu2x->sc.skinRes("imgs/go-up.png")->blit(gmenu2x->s, 5, gmenu2x->skinConfInt["topBarHeight"]+1+(iY*rowHeight));
 				else
-					gmenu2x->sc.skinRes("imgs/folder.png")->blit(gmenu2x->s, 5, 45+(iY*17));
+					gmenu2x->sc.skinRes("imgs/folder.png")->blit(gmenu2x->s, 5, gmenu2x->skinConfInt["topBarHeight"]+1+(iY*rowHeight));
 			} else {
-				gmenu2x->sc.skinRes("imgs/file.png")->blit(gmenu2x->s, 5, 45+(iY*17));
+				gmenu2x->sc.skinRes("imgs/file.png")->blit(gmenu2x->s, 5, gmenu2x->skinConfInt["topBarHeight"]+1+(iY*rowHeight));
 			}
-			gmenu2x->s->write(gmenu2x->font, fl[i], 24, 52+(iY*17), SFontHAlignLeft, SFontVAlignMiddle);
-			if (gmenu2x->f200 && gmenu2x->ts.pressed() && gmenu2x->ts.inRect(2, 44+(iY*17), 308, 16)) {
+			gmenu2x->s->write(gmenu2x->font, fl[i], 24, gmenu2x->skinConfInt["topBarHeight"]+9+(iY*rowHeight), SFontHAlignLeft, SFontVAlignMiddle);
+			if (gmenu2x->f200 && gmenu2x->ts.pressed() && gmenu2x->ts.inRect(touchRect.x, touchRect.y+(iY*rowHeight), touchRect.w, rowHeight)) {
 				ts_pressed = true;
 				selected = i;
 			}
 		}
 		gmenu2x->s->clearClipRect();
 
-		gmenu2x->drawScrollBar(10,fl.size(),firstElement,44,170);
+		gmenu2x->drawScrollBar(numRows,fl.size(),firstElement,clipRect.y,clipRect.h);
 		gmenu2x->s->flip();
 
 		gmenu2x->input.update();
@@ -129,10 +134,10 @@ bool FileDialog::exec() {
 					selected -= 1;
 			} break;
 			case FD_ACTION_SCROLLUP: {
-				if ((int)(selected-9)<0) {
+				if ((int)(selected-(numRows-2))<0) {
 					selected = 0;
 				} else {
-					selected -= 9;
+					selected -= numRows-2;
 				}
 			} break;
 			case FD_ACTION_DOWN: {
@@ -142,10 +147,10 @@ bool FileDialog::exec() {
 					selected += 1;
 			} break;
 			case FD_ACTION_SCROLLDOWN: {
-				if (selected+9>=fl.size()) {
+				if (selected+(numRows-2)>=fl.size()) {
 					selected = fl.size()-1;
 				} else {
-					selected += 9;
+					selected += numRows-2;
 				}
 			} break;
 			case FD_ACTION_GOUP: {

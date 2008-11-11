@@ -737,7 +737,7 @@ int GMenu2X::main() {
 #endif
 
 	IconButton btnContextMenu(this,"skin:imgs/menu.png");
-	btnContextMenu.setPosition(282, bottomBarIconY);
+	btnContextMenu.setPosition(resX-38, bottomBarIconY);
 	btnContextMenu.setAction(MakeDelegate(this, &GMenu2X::contextMenu));
 
 	while (!quit) {
@@ -930,43 +930,6 @@ int GMenu2X::main() {
 				offset = menu->sectionLinks()->size()>linksPerPage ? 2 : 6;
 			}
 		}
-/*#else
-		while (SDL_PollEvent(&event)) {
-			if ( event.type == SDL_QUIT ) quit = true;
-			if ( event.type==SDL_KEYDOWN ) {
-				if ( event.key.keysym.sym==SDLK_ESCAPE ) quit = true;
-				// LINK NAVIGATION
-				if ( event.key.keysym.sym==SDLK_LEFT   ) menu->linkLeft();
-				if ( event.key.keysym.sym==SDLK_RIGHT  ) menu->linkRight();
-				if ( event.key.keysym.sym==SDLK_UP     ) menu->linkUp();
-				if ( event.key.keysym.sym==SDLK_DOWN   ) menu->linkDown();
-				// SELLINKAPP SELECTED
-				if (menu->selLinkApp()!=NULL) {
-					if ( event.key.keysym.sym==SDLK_y ) menu->selLinkApp()->showManual();
-					// CLOCK
-					if ( event.key.keysym.sym==SDLK_z )
-						menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-1,50,maxClock) );
-					if ( event.key.keysym.sym==SDLK_x )
-						menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+1,50,maxClock) );
-				}
-				// SECTIONS
-				if ( event.key.keysym.sym==SDLK_q      ) {
-					menu->decSectionIndex();
-					offset = menu->sectionLinks()->size()>linksPerPage ? 2 : 6;
-				}
-				if ( event.key.keysym.sym==SDLK_w      ) {
-					menu->incSectionIndex();
-					offset = menu->sectionLinks()->size()>linksPerPage ? 2 : 6;
-				}
-				if ( event.key.keysym.sym==SDLK_p      )
-					saveScreenshot();
-				//ACTIONS
-				if ( event.key.keysym.sym==SDLK_RETURN && menu->selLink()!=NULL ) menu->selLink()->run();
-				if ( event.key.keysym.sym==SDLK_s      ) options();
-				if ( event.key.keysym.sym==SDLK_SPACE  ) contextMenu();
-			}
-		}
-#endif*/
 	}
 
 	return -1;
