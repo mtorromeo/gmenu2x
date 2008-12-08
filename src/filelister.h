@@ -41,6 +41,7 @@ public:
 	uint dirCount();
 	uint fileCount();
 	string operator[](uint);
+	string at(uint);
 	bool isFile(uint);
 	bool isDirectory(uint);
 

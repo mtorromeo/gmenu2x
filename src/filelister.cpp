@@ -117,6 +117,10 @@ uint FileLister::fileCount() {
 }
 
 string FileLister::operator[](uint x) {
+	return at(x);
+}
+
+string FileLister::at(uint x) {
 	if (x<directories.size())
 		return directories[x];
 	else

@@ -747,6 +747,7 @@ int GMenu2X::main() {
 		sc["bgmain"]->blit(s,0,0);
 
 		//Sections
+		sectionsCoordX = halfX - (constrain((uint)menu->sections.size(), 0 , linkColumns) * skinConfInt["linkWidth"]) / 2;
 		if (menu->firstDispSection()>0)
 			sc.skinRes("imgs/l_enabled.png")->blit(s,0,0);
 		else
@@ -757,7 +758,6 @@ int GMenu2X::main() {
 			sc.skinRes("imgs/r_disabled.png")->blit(s,resX-10,0);
 		for (i=menu->firstDispSection(); i<menu->sections.size() && i<menu->firstDispSection()+linkColumns; i++) {
 			string sectionIcon = "skin:sections/"+menu->sections[i]+".png";
-			sectionsCoordX = halfX - (constrain((uint)(linkColumns-menu->sections.size()), 0 , linkColumns) * skinConfInt["linkWidth"]) / 2;
 			x = (i-menu->firstDispSection())*skinConfInt["linkWidth"]+sectionsCoordX;
 			if (menu->selSectionIndex()==(int)i)
 				s->box(x, 0, skinConfInt["linkWidth"], skinConfInt["topBarHeight"], skinConfColors["selectionBg"]);

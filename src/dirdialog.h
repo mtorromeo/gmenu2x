@@ -24,14 +24,35 @@
 #include <string>
 #include "gmenu2x.h"
 
+class FileLister;
+
 using std::string;
 using std::vector;
 
 class DirDialog {
+protected:
+	static const uint ACT_NONE = 0;
+	static const uint ACT_SELECT = 1;
+	static const uint ACT_CLOSE = 2;
+	static const uint ACT_UP = 3;
+	static const uint ACT_DOWN = 4;
+	static const uint ACT_SCROLLUP = 5;
+	static const uint ACT_SCROLLDOWN = 6;
+	static const uint ACT_GOUP = 7;
+	static const uint ACT_CONFIRM = 8;
+	
 private:
 	int selRow;
+	uint selected;
+	bool close, result;
+	FileLister *fl;
 	string text;
+	IconButton *btnUp, *btnEnter, *btnConfirm;
 	GMenu2X *gmenu2x;
+	
+	void up();
+	void enter();
+	void confirm();
 
 public:
 	string path;
