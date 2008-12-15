@@ -5,7 +5,7 @@ CC= $(CROSS_COMPILE)gcc
 CXX = $(CROSS_COMPILE)g++
 STRIP = $(CROSS_COMPILE)strip
 
-CFLAGS = -I"$(CHAINPREFIX)/include" `$(CHAINPREFIX)/bin/sdl-config --cflags` -DTARGET_GP2X -O3 -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops
+CFLAGS = -I"$(CHAINPREFIX)/include" `$(CHAINPREFIX)/bin/sdl-config --cflags` -DTARGET_GP2X -DTIXML_USE_STL -O3 -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops -Wall -Wno-unknown-pragmas -Wno-format
 CXXFLAGS = $(CFLAGS)
 LDFLAGS = -L$(CHAINPREFIX)/lib `$(CHAINPREFIX)/bin/sdl-config --libs` -lfreetype -lSDL_image -lSDL_gfx -ljpeg -lpng12 -lSDL -lz -ldl
 
@@ -14,28 +14,37 @@ OBJDIR = ../objs/gp2x
 
 SOURCES := $(wildcard *.cpp)
 OBJS := $(patsubst %.cpp, $(OBJDIR)/%.o, $(SOURCES))
+#TinyXml
+TXML_SOURCES := $(wildcard tinyxml/*.cpp)
+TXML_OBJS := $(patsubst %.cpp, $(OBJDIR)/%.o, $(TXML_SOURCES))
 
 #File types rules
+$(OBJDIR)/tinyxml/%.o: tinyxml/%.cpp
+	$(CXX) $(CFLAGS) -o $@ -c $<
+$(OBJDIR)/tinyxml/%.o: tinyxml/%.c
+	$(CXX) $(CFLAGS) -o $@ -c $<
 $(OBJDIR)/%.o: %.cpp %.h
 	$(CXX) $(CFLAGS) -o $@ -c $<
 
 all: dir static
 
 dir:
-	@if [ ! -d $(OBJDIR) ]; then mkdir -p $(OBJDIR); fi
+	@if [ ! -d $(OBJDIR)/tinyxml ]; then mkdir -p $(OBJDIR)/tinyxml; fi
 
-static: $(OBJS)
+static: $(TARGET)
+
+$(TARGET): $(OBJS) $(TXML_OBJS) 
 	@echo "Linking $(TARGET)..."
-	$(CXX) -o $(TARGET) $(OBJS) -static $(LDFLAGS)
+	$(CXX) -o $(TARGET) $(LDFLAGS) $(OBJS) $(TXML_OBJS)
 	$(STRIP) $(TARGET)
 
-shared: $(OBJS)
+shared: $(OBJS) $(TXML_OBJS) 
 	@echo "Linking $(TARGET)..."
-	$(CXX) -o $(TARGET) $(OBJS) $(LDFLAGS)
+	$(CXX) -o $(TARGET) $(LDFLAGS) $(OBJS) $(TXML_OBJS)
 	$(STRIP) $(TARGET)
 
 clean:
-	-rm -f $(OBJDIR)/*.o $(TARGET)
+	-rm -f $(OBJDIR)/*.o $(OBJDIR)/tinyxml/*.o $(TARGET)
 
 depend:
 	makedepend -p$(OBJDIR)/ -- $(CFLAGS) -- *.cpp
@@ -158,7 +167,9 @@ depend:
 ../objs/gp2x/button.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/densehashtable.h
 ../objs/gp2x/button.o: /usr/include/assert.h
 ../objs/gp2x/button.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/button.o: surfacecollection.h surface.h
+../objs/gp2x/button.o: surfacecollection.h
+../objs/gp2x/button.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/button.o: surface.h
 ../objs/gp2x/button.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/button.o: asfont.h sfontplus.h utilities.h
 ../objs/gp2x/button.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
@@ -242,7 +253,9 @@ depend:
 ../objs/gp2x/dirdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/densehashtable.h
 ../objs/gp2x/dirdialog.o: /usr/include/assert.h
 ../objs/gp2x/dirdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/dirdialog.o: surfacecollection.h surface.h
+../objs/gp2x/dirdialog.o: surfacecollection.h
+../objs/gp2x/dirdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/dirdialog.o: surface.h
 ../objs/gp2x/dirdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/dirdialog.o: asfont.h sfontplus.h utilities.h iconbutton.h
 ../objs/gp2x/dirdialog.o: button.h FastDelegate.h /usr/include/memory.h
@@ -324,7 +337,9 @@ depend:
 ../objs/gp2x/filedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/densehashtable.h
 ../objs/gp2x/filedialog.o: /usr/include/assert.h
 ../objs/gp2x/filedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/filedialog.o: surfacecollection.h surface.h
+../objs/gp2x/filedialog.o: surfacecollection.h
+../objs/gp2x/filedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/filedialog.o: surface.h
 ../objs/gp2x/filedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/filedialog.o: asfont.h sfontplus.h utilities.h iconbutton.h
 ../objs/gp2x/filedialog.o: button.h FastDelegate.h /usr/include/memory.h
@@ -502,13 +517,15 @@ depend:
 ../objs/gp2x/gmenu2x.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/densehashtable.h
 ../objs/gp2x/gmenu2x.o: /usr/include/assert.h
 ../objs/gp2x/gmenu2x.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/gmenu2x.o: surfacecollection.h utilities.h iconbutton.h
-../objs/gp2x/gmenu2x.o: translator.h touchscreen.h inputmanager.h
-../objs/gp2x/gmenu2x.o: messagebox.h inputdialog.h settingsdialog.h
-../objs/gp2x/gmenu2x.o: menusetting.h wallpaperdialog.h textdialog.h
-../objs/gp2x/gmenu2x.o: menusettingint.h menusettingbool.h menusettingrgba.h
-../objs/gp2x/gmenu2x.o: menusettingstring.h menusettingmultistring.h
-../objs/gp2x/gmenu2x.o: menusettingfile.h menusettingimage.h menusettingdir.h
+../objs/gp2x/gmenu2x.o: surfacecollection.h
+../objs/gp2x/gmenu2x.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/gmenu2x.o: utilities.h iconbutton.h translator.h touchscreen.h
+../objs/gp2x/gmenu2x.o: inputmanager.h messagebox.h inputdialog.h
+../objs/gp2x/gmenu2x.o: settingsdialog.h menusetting.h wallpaperdialog.h
+../objs/gp2x/gmenu2x.o: textdialog.h menusettingint.h menusettingbool.h
+../objs/gp2x/gmenu2x.o: menusettingrgba.h menusettingstring.h
+../objs/gp2x/gmenu2x.o: menusettingmultistring.h menusettingfile.h
+../objs/gp2x/gmenu2x.o: menusettingimage.h menusettingdir.h
 ../objs/gp2x/gmenu2x.o: /usr/include/sys/mman.h /usr/include/bits/mman.h
 ../objs/gp2x/iconbutton.o: iconbutton.h button.h
 ../objs/gp2x/iconbutton.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
@@ -574,7 +591,9 @@ depend:
 ../objs/gp2x/iconbutton.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/densehashtable.h
 ../objs/gp2x/iconbutton.o: /usr/include/assert.h
 ../objs/gp2x/iconbutton.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/iconbutton.o: surfacecollection.h surface.h
+../objs/gp2x/iconbutton.o: surfacecollection.h
+../objs/gp2x/iconbutton.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/iconbutton.o: surface.h
 ../objs/gp2x/iconbutton.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/iconbutton.o: asfont.h sfontplus.h utilities.h
 ../objs/gp2x/iconbutton.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
@@ -663,7 +682,9 @@ depend:
 ../objs/gp2x/imagedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/densehashtable.h
 ../objs/gp2x/imagedialog.o: /usr/include/assert.h
 ../objs/gp2x/imagedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/imagedialog.o: surfacecollection.h surface.h
+../objs/gp2x/imagedialog.o: surfacecollection.h
+../objs/gp2x/imagedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/imagedialog.o: surface.h
 ../objs/gp2x/imagedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/imagedialog.o: asfont.h sfontplus.h utilities.h iconbutton.h
 ../objs/gp2x/imagedialog.o: button.h FastDelegate.h /usr/include/memory.h
@@ -740,7 +761,9 @@ depend:
 ../objs/gp2x/inputdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/densehashtable.h
 ../objs/gp2x/inputdialog.o: /usr/include/assert.h
 ../objs/gp2x/inputdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/inputdialog.o: surfacecollection.h surface.h
+../objs/gp2x/inputdialog.o: surfacecollection.h
+../objs/gp2x/inputdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/inputdialog.o: surface.h
 ../objs/gp2x/inputdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/inputdialog.o: asfont.h sfontplus.h utilities.h iconbutton.h
 ../objs/gp2x/inputdialog.o: button.h FastDelegate.h /usr/include/memory.h
@@ -873,7 +896,9 @@ depend:
 ../objs/gp2x/link.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/densehashtable.h
 ../objs/gp2x/link.o: /usr/include/assert.h
 ../objs/gp2x/link.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/link.o: surfacecollection.h surface.h
+../objs/gp2x/link.o: surfacecollection.h
+../objs/gp2x/link.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/link.o: surface.h
 ../objs/gp2x/link.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/link.o: asfont.h sfontplus.h utilities.h
 ../objs/gp2x/link.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
@@ -1006,7 +1031,9 @@ depend:
 ../objs/gp2x/linkapp.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/densehashtable.h
 ../objs/gp2x/linkapp.o: /usr/include/assert.h
 ../objs/gp2x/linkapp.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/linkapp.o: surfacecollection.h surface.h
+../objs/gp2x/linkapp.o: surfacecollection.h
+../objs/gp2x/linkapp.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/linkapp.o: surface.h
 ../objs/gp2x/linkapp.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/linkapp.o: asfont.h sfontplus.h utilities.h
 ../objs/gp2x/linkapp.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
@@ -1042,7 +1069,9 @@ depend:
 ../objs/gp2x/listview.o: /usr/include/bits/pthreadtypes.h
 ../objs/gp2x/listview.o: /usr/include/alloca.h
 ../objs/gp2x/listview.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/listview.o: surfacecollection.h surface.h
+../objs/gp2x/listview.o: surfacecollection.h
+../objs/gp2x/listview.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/listview.o: surface.h
 ../objs/gp2x/listview.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/listview.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/listview.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -1119,7 +1148,9 @@ depend:
 ../objs/gp2x/listviewitem.o: /usr/include/bits/pthreadtypes.h
 ../objs/gp2x/listviewitem.o: /usr/include/alloca.h
 ../objs/gp2x/listviewitem.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/listviewitem.o: surfacecollection.h surface.h
+../objs/gp2x/listviewitem.o: surfacecollection.h
+../objs/gp2x/listviewitem.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/listviewitem.o: surface.h
 ../objs/gp2x/listviewitem.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/listviewitem.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/listviewitem.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -1188,28 +1219,29 @@ depend:
 ../objs/gp2x/menu.o: /usr/include/bits/huge_valf.h
 ../objs/gp2x/menu.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
 ../objs/gp2x/menu.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
-../objs/gp2x/menu.o: /usr/include/bits/mathcalls.h gmenu2x.h
-../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
-../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/sparseconfig.h
+../objs/gp2x/menu.o: /usr/include/bits/mathcalls.h tinyxml/tinyxml.h
+../objs/gp2x/menu.o: /usr/include/ctype.h /usr/include/xlocale.h
 ../objs/gp2x/menu.o: /usr/include/stdio.h /usr/include/libio.h
 ../objs/gp2x/menu.o: /usr/include/_G_config.h /usr/include/wchar.h
 ../objs/gp2x/menu.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/menu.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/densehashtable.h
-../objs/gp2x/menu.o: /usr/include/assert.h /usr/include/stdlib.h
+../objs/gp2x/menu.o: /usr/include/bits/sys_errlist.h /usr/include/stdlib.h
 ../objs/gp2x/menu.o: /usr/include/bits/waitflags.h
-../objs/gp2x/menu.o: /usr/include/bits/waitstatus.h /usr/include/xlocale.h
-../objs/gp2x/menu.o: /usr/include/alloca.h
+../objs/gp2x/menu.o: /usr/include/bits/waitstatus.h /usr/include/alloca.h
+../objs/gp2x/menu.o: /usr/include/string.h /usr/include/assert.h gmenu2x.h
+../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/sparseconfig.h
+../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/densehashtable.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/menu.o: surfacecollection.h surface.h
+../objs/gp2x/menu.o: surfacecollection.h
+../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/menu.o: surface.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_config.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_platform.h
-../objs/gp2x/menu.o: /usr/include/string.h /usr/include/strings.h
-../objs/gp2x/menu.o: /usr/include/inttypes.h /usr/include/stdint.h
-../objs/gp2x/menu.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+../objs/gp2x/menu.o: /usr/include/strings.h /usr/include/inttypes.h
+../objs/gp2x/menu.o: /usr/include/stdint.h /usr/include/bits/wchar.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/iconv.h
 ../objs/gp2x/menu.o: /usr/include/errno.h /usr/include/bits/errno.h
 ../objs/gp2x/menu.o: /usr/include/linux/errno.h /usr/include/asm/errno.h
@@ -1309,8 +1341,9 @@ depend:
 ../objs/gp2x/menusetting.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/densehashtable.h
 ../objs/gp2x/menusetting.o: /usr/include/assert.h
 ../objs/gp2x/menusetting.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/menusetting.o: surfacecollection.h surface.h asfont.h
-../objs/gp2x/menusetting.o: sfontplus.h utilities.h
+../objs/gp2x/menusetting.o: surfacecollection.h
+../objs/gp2x/menusetting.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/menusetting.o: surface.h asfont.h sfontplus.h utilities.h
 ../objs/gp2x/menusetting.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/menusetting.o: /usr/include/math.h /usr/include/bits/huge_val.h
 ../objs/gp2x/menusetting.o: /usr/include/bits/huge_valf.h
@@ -1393,8 +1426,9 @@ depend:
 ../objs/gp2x/menusettingbool.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/densehashtable.h
 ../objs/gp2x/menusettingbool.o: /usr/include/assert.h
 ../objs/gp2x/menusettingbool.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/menusettingbool.o: surfacecollection.h surface.h asfont.h
-../objs/gp2x/menusettingbool.o: sfontplus.h utilities.h
+../objs/gp2x/menusettingbool.o: surfacecollection.h
+../objs/gp2x/menusettingbool.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/menusettingbool.o: surface.h asfont.h sfontplus.h utilities.h
 ../objs/gp2x/menusettingbool.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/menusettingbool.o: /usr/include/math.h
 ../objs/gp2x/menusettingbool.o: /usr/include/bits/huge_val.h
@@ -1439,7 +1473,9 @@ depend:
 ../objs/gp2x/menusettingdir.o: /usr/include/bits/pthreadtypes.h
 ../objs/gp2x/menusettingdir.o: /usr/include/alloca.h
 ../objs/gp2x/menusettingdir.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/menusettingdir.o: surfacecollection.h surface.h
+../objs/gp2x/menusettingdir.o: surfacecollection.h
+../objs/gp2x/menusettingdir.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/menusettingdir.o: surface.h
 ../objs/gp2x/menusettingdir.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/menusettingdir.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/menusettingdir.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -1523,7 +1559,9 @@ depend:
 ../objs/gp2x/menusettingfile.o: /usr/include/bits/pthreadtypes.h
 ../objs/gp2x/menusettingfile.o: /usr/include/alloca.h
 ../objs/gp2x/menusettingfile.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/menusettingfile.o: surfacecollection.h surface.h
+../objs/gp2x/menusettingfile.o: surfacecollection.h
+../objs/gp2x/menusettingfile.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/menusettingfile.o: surface.h
 ../objs/gp2x/menusettingfile.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/menusettingfile.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/menusettingfile.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -1611,7 +1649,9 @@ depend:
 ../objs/gp2x/menusettingimage.o: /usr/include/bits/pthreadtypes.h
 ../objs/gp2x/menusettingimage.o: /usr/include/alloca.h
 ../objs/gp2x/menusettingimage.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/menusettingimage.o: surfacecollection.h surface.h
+../objs/gp2x/menusettingimage.o: surfacecollection.h
+../objs/gp2x/menusettingimage.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/menusettingimage.o: surface.h
 ../objs/gp2x/menusettingimage.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/menusettingimage.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/menusettingimage.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -1739,8 +1779,9 @@ depend:
 ../objs/gp2x/menusettingint.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/densehashtable.h
 ../objs/gp2x/menusettingint.o: /usr/include/assert.h
 ../objs/gp2x/menusettingint.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/menusettingint.o: surfacecollection.h surface.h asfont.h
-../objs/gp2x/menusettingint.o: sfontplus.h utilities.h
+../objs/gp2x/menusettingint.o: surfacecollection.h
+../objs/gp2x/menusettingint.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/menusettingint.o: surface.h asfont.h sfontplus.h utilities.h
 ../objs/gp2x/menusettingint.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/menusettingint.o: /usr/include/math.h
 ../objs/gp2x/menusettingint.o: /usr/include/bits/huge_val.h
@@ -1789,7 +1830,9 @@ depend:
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/pthreadtypes.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/alloca.h
 ../objs/gp2x/menusettingmultistring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/menusettingmultistring.o: surfacecollection.h surface.h
+../objs/gp2x/menusettingmultistring.o: surfacecollection.h
+../objs/gp2x/menusettingmultistring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/menusettingmultistring.o: surface.h
 ../objs/gp2x/menusettingmultistring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/menusettingmultistring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/menusettingmultistring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -1878,7 +1921,9 @@ depend:
 ../objs/gp2x/menusettingrgba.o: /usr/include/bits/pthreadtypes.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/alloca.h
 ../objs/gp2x/menusettingrgba.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/menusettingrgba.o: surfacecollection.h surface.h
+../objs/gp2x/menusettingrgba.o: surfacecollection.h
+../objs/gp2x/menusettingrgba.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/menusettingrgba.o: surface.h
 ../objs/gp2x/menusettingrgba.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/menusettingrgba.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/menusettingrgba.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -1968,7 +2013,9 @@ depend:
 ../objs/gp2x/menusettingstring.o: /usr/include/bits/pthreadtypes.h
 ../objs/gp2x/menusettingstring.o: /usr/include/alloca.h
 ../objs/gp2x/menusettingstring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/menusettingstring.o: surfacecollection.h surface.h
+../objs/gp2x/menusettingstring.o: surfacecollection.h
+../objs/gp2x/menusettingstring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/menusettingstring.o: surface.h
 ../objs/gp2x/menusettingstring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/menusettingstring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/menusettingstring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -2097,7 +2144,9 @@ depend:
 ../objs/gp2x/messagebox.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/densehashtable.h
 ../objs/gp2x/messagebox.o: /usr/include/assert.h
 ../objs/gp2x/messagebox.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/messagebox.o: surfacecollection.h surface.h
+../objs/gp2x/messagebox.o: surfacecollection.h
+../objs/gp2x/messagebox.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/messagebox.o: surface.h
 ../objs/gp2x/messagebox.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/messagebox.o: asfont.h sfontplus.h utilities.h iconbutton.h
 ../objs/gp2x/messagebox.o: button.h FastDelegate.h /usr/include/memory.h
@@ -2176,7 +2225,9 @@ depend:
 ../objs/gp2x/selector.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/densehashtable.h
 ../objs/gp2x/selector.o: /usr/include/assert.h
 ../objs/gp2x/selector.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/selector.o: surfacecollection.h surface.h
+../objs/gp2x/selector.o: surfacecollection.h
+../objs/gp2x/selector.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/selector.o: surface.h
 ../objs/gp2x/selector.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/selector.o: asfont.h sfontplus.h utilities.h iconbutton.h
 ../objs/gp2x/selector.o: translator.h touchscreen.h /usr/include/fcntl.h
@@ -2329,7 +2380,9 @@ depend:
 ../objs/gp2x/settingsdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/densehashtable.h
 ../objs/gp2x/settingsdialog.o: /usr/include/assert.h
 ../objs/gp2x/settingsdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/settingsdialog.o: surfacecollection.h surface.h
+../objs/gp2x/settingsdialog.o: surfacecollection.h
+../objs/gp2x/settingsdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/settingsdialog.o: surface.h
 ../objs/gp2x/settingsdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/settingsdialog.o: asfont.h sfontplus.h utilities.h iconbutton.h
 ../objs/gp2x/settingsdialog.o: button.h FastDelegate.h /usr/include/memory.h
@@ -2454,7 +2507,9 @@ depend:
 ../objs/gp2x/surface.o: surface.h
 ../objs/gp2x/surface.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/surface.o: asfont.h sfontplus.h utilities.h
-../objs/gp2x/surfacecollection.o: surfacecollection.h surface.h
+../objs/gp2x/surfacecollection.o: surfacecollection.h
+../objs/gp2x/surfacecollection.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/surfacecollection.o: surface.h
 ../objs/gp2x/surfacecollection.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/surfacecollection.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/surfacecollection.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -2557,7 +2612,9 @@ depend:
 ../objs/gp2x/textdialog.o: /usr/include/bits/pthreadtypes.h
 ../objs/gp2x/textdialog.o: /usr/include/alloca.h
 ../objs/gp2x/textdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/textdialog.o: surfacecollection.h surface.h
+../objs/gp2x/textdialog.o: surfacecollection.h
+../objs/gp2x/textdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/textdialog.o: surface.h
 ../objs/gp2x/textdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/textdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/textdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -2638,7 +2695,9 @@ depend:
 ../objs/gp2x/textmanualdialog.o: /usr/include/bits/pthreadtypes.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/alloca.h
 ../objs/gp2x/textmanualdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/textmanualdialog.o: surfacecollection.h surface.h
+../objs/gp2x/textmanualdialog.o: surfacecollection.h
+../objs/gp2x/textmanualdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/textmanualdialog.o: surface.h
 ../objs/gp2x/textmanualdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/textmanualdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/textmanualdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -2921,7 +2980,9 @@ depend:
 ../objs/gp2x/wallpaperdialog.o: /usr/include/bits/pthreadtypes.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/alloca.h
 ../objs/gp2x/wallpaperdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
-../objs/gp2x/wallpaperdialog.o: surfacecollection.h surface.h
+../objs/gp2x/wallpaperdialog.o: surfacecollection.h
+../objs/gp2x/wallpaperdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/wallpaperdialog.o: surface.h
 ../objs/gp2x/wallpaperdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/wallpaperdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/wallpaperdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h

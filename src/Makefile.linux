@@ -2,7 +2,7 @@ CC = gcc
 CXX = g++
 STRIP = strip
 
-CFLAGS = -I"/usr/include" `sdl-config --cflags` -DDEBUG -Wall -Wno-deprecated -pg -O2
+CFLAGS = -I"/usr/include" `sdl-config --cflags` -DDEBUG -Wall -Wno-deprecated -Wno-unknown-pragmas -Wno-format -pg -O3 -DTIXML_USE_STL
 CXXFLAGS = $(CFLAGS)
 LDFLAGS = -L"/usr/lib" `sdl-config --libs` -lfreetype -lSDL_image -lSDL_gfx -ljpeg -lpng12 -lz #-lSDL_gfx
 
@@ -11,24 +11,31 @@ OBJDIR = ../objs/linux
 
 SOURCES := $(wildcard *.cpp)
 OBJS := $(patsubst %.cpp, $(OBJDIR)/%.o, $(SOURCES))
+#TinyXml
+TXML_SOURCES := $(wildcard tinyxml/*.cpp)
+TXML_OBJS := $(patsubst %.cpp, $(OBJDIR)/%.o, $(TXML_SOURCES))
 
 #File types rules
+$(OBJDIR)/tinyxml/%.o: tinyxml/%.cpp
+	$(CXX) $(CFLAGS) -o $@ -c $<
+$(OBJDIR)/tinyxml/%.o: tinyxml/%.c
+	$(CXX) $(CFLAGS) -o $@ -c $<
 $(OBJDIR)/%.o: %.cpp %.h
 	$(CXX) $(CFLAGS) -o $@ -c $<
 
 all: dir $(TARGET)
 
 dir:
-	@if [ ! -d $(OBJDIR) ]; then mkdir -p $(OBJDIR); fi
+	@if [ ! -d $(OBJDIR)/tinyxml ]; then mkdir -p $(OBJDIR)/tinyxml; fi
 
-$(TARGET): $(OBJS)
-		@echo "Linking $(TARGET)..."
-		$(CXX) -o $(TARGET) $(OBJS) $(LDFLAGS)
-		-cp -f $(TARGET) ../pandora/gmenupandora
-#		$(STRIP) $(TARGET) #Don't strip if symbols are needed for gprof
+$(TARGET): $(OBJS) $(TXML_OBJS) 
+	@echo "Linking $(TARGET)..."
+	$(CXX) -o $(TARGET) $(LDFLAGS) $(OBJS) $(TXML_OBJS)
+	-cp -f $(TARGET) ../pandora/gmenupandora
+#	$(STRIP) $(TARGET) #Don't strip if symbols are needed for gprof
 
 clean:
-		-rm -f $(OBJDIR)/*.o *.gcda *.gcno $(TARGET)
+		-rm -f $(OBJDIR)/*.o $(OBJDIR)/tinyxml/*.o *.gcda *.gcno $(TARGET)
 
 depend:
 	makedepend -fMakefile.linux -p$(OBJDIR)/ -- $(CFLAGS) -- *.cpp
@@ -137,9 +144,9 @@ depend:
 ../objs/linux/button.o: /usr/include/google/sparsehash/densehashtable.h
 ../objs/linux/button.o: /usr/include/assert.h
 ../objs/linux/button.o: /usr/include/google/type_traits.h surfacecollection.h
-../objs/linux/button.o: surface.h /usr/include/SDL/SDL_image.h asfont.h
-../objs/linux/button.o: sfontplus.h utilities.h
-../objs/linux/button.o: /usr/include/SDL/SDL_gfxPrimitives.h
+../objs/linux/button.o: /usr/include/google/dense_hash_map surface.h
+../objs/linux/button.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
+../objs/linux/button.o: utilities.h /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/button.o: /usr/include/math.h /usr/include/bits/huge_val.h
 ../objs/linux/button.o: /usr/include/bits/huge_valf.h
 ../objs/linux/button.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
@@ -216,7 +223,8 @@ depend:
 ../objs/linux/dirdialog.o: /usr/include/google/sparsehash/densehashtable.h
 ../objs/linux/dirdialog.o: /usr/include/assert.h
 ../objs/linux/dirdialog.o: /usr/include/google/type_traits.h
-../objs/linux/dirdialog.o: surfacecollection.h surface.h
+../objs/linux/dirdialog.o: surfacecollection.h
+../objs/linux/dirdialog.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/dirdialog.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
 ../objs/linux/dirdialog.o: utilities.h iconbutton.h button.h FastDelegate.h
 ../objs/linux/dirdialog.o: /usr/include/memory.h translator.h touchscreen.h
@@ -293,7 +301,8 @@ depend:
 ../objs/linux/filedialog.o: /usr/include/google/sparsehash/densehashtable.h
 ../objs/linux/filedialog.o: /usr/include/assert.h
 ../objs/linux/filedialog.o: /usr/include/google/type_traits.h
-../objs/linux/filedialog.o: surfacecollection.h surface.h
+../objs/linux/filedialog.o: surfacecollection.h
+../objs/linux/filedialog.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/filedialog.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
 ../objs/linux/filedialog.o: utilities.h iconbutton.h button.h FastDelegate.h
 ../objs/linux/filedialog.o: /usr/include/memory.h translator.h touchscreen.h
@@ -468,15 +477,16 @@ depend:
 ../objs/linux/gmenu2x.o: /usr/include/google/sparsehash/densehashtable.h
 ../objs/linux/gmenu2x.o: /usr/include/assert.h
 ../objs/linux/gmenu2x.o: /usr/include/google/type_traits.h
-../objs/linux/gmenu2x.o: surfacecollection.h utilities.h iconbutton.h
-../objs/linux/gmenu2x.o: translator.h touchscreen.h inputmanager.h
-../objs/linux/gmenu2x.o: messagebox.h inputdialog.h settingsdialog.h
-../objs/linux/gmenu2x.o: menusetting.h wallpaperdialog.h textdialog.h
-../objs/linux/gmenu2x.o: menusettingint.h menusettingbool.h menusettingrgba.h
-../objs/linux/gmenu2x.o: menusettingstring.h menusettingmultistring.h
-../objs/linux/gmenu2x.o: menusettingfile.h menusettingimage.h
-../objs/linux/gmenu2x.o: menusettingdir.h /usr/include/sys/mman.h
-../objs/linux/gmenu2x.o: /usr/include/bits/mman.h
+../objs/linux/gmenu2x.o: surfacecollection.h
+../objs/linux/gmenu2x.o: /usr/include/google/dense_hash_map utilities.h
+../objs/linux/gmenu2x.o: iconbutton.h translator.h touchscreen.h
+../objs/linux/gmenu2x.o: inputmanager.h messagebox.h inputdialog.h
+../objs/linux/gmenu2x.o: settingsdialog.h menusetting.h wallpaperdialog.h
+../objs/linux/gmenu2x.o: textdialog.h menusettingint.h menusettingbool.h
+../objs/linux/gmenu2x.o: menusettingrgba.h menusettingstring.h
+../objs/linux/gmenu2x.o: menusettingmultistring.h menusettingfile.h
+../objs/linux/gmenu2x.o: menusettingimage.h menusettingdir.h
+../objs/linux/gmenu2x.o: /usr/include/sys/mman.h /usr/include/bits/mman.h
 ../objs/linux/iconbutton.o: iconbutton.h button.h /usr/include/SDL/SDL.h
 ../objs/linux/iconbutton.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/iconbutton.o: /usr/include/SDL/SDL_stdinc.h
@@ -535,7 +545,8 @@ depend:
 ../objs/linux/iconbutton.o: /usr/include/google/sparsehash/densehashtable.h
 ../objs/linux/iconbutton.o: /usr/include/assert.h
 ../objs/linux/iconbutton.o: /usr/include/google/type_traits.h
-../objs/linux/iconbutton.o: surfacecollection.h surface.h
+../objs/linux/iconbutton.o: surfacecollection.h
+../objs/linux/iconbutton.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/iconbutton.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
 ../objs/linux/iconbutton.o: utilities.h /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/iconbutton.o: /usr/include/math.h /usr/include/bits/huge_val.h
@@ -619,7 +630,8 @@ depend:
 ../objs/linux/imagedialog.o: /usr/include/google/sparsehash/densehashtable.h
 ../objs/linux/imagedialog.o: /usr/include/assert.h
 ../objs/linux/imagedialog.o: /usr/include/google/type_traits.h
-../objs/linux/imagedialog.o: surfacecollection.h surface.h
+../objs/linux/imagedialog.o: surfacecollection.h
+../objs/linux/imagedialog.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/imagedialog.o: /usr/include/SDL/SDL_image.h asfont.h
 ../objs/linux/imagedialog.o: sfontplus.h utilities.h iconbutton.h button.h
 ../objs/linux/imagedialog.o: FastDelegate.h /usr/include/memory.h
@@ -691,7 +703,8 @@ depend:
 ../objs/linux/inputdialog.o: /usr/include/google/sparsehash/densehashtable.h
 ../objs/linux/inputdialog.o: /usr/include/assert.h
 ../objs/linux/inputdialog.o: /usr/include/google/type_traits.h
-../objs/linux/inputdialog.o: surfacecollection.h surface.h
+../objs/linux/inputdialog.o: surfacecollection.h
+../objs/linux/inputdialog.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/inputdialog.o: /usr/include/SDL/SDL_image.h asfont.h
 ../objs/linux/inputdialog.o: sfontplus.h utilities.h iconbutton.h button.h
 ../objs/linux/inputdialog.o: FastDelegate.h /usr/include/memory.h
@@ -811,9 +824,10 @@ depend:
 ../objs/linux/link.o: /usr/include/google/sparsehash/sparseconfig.h
 ../objs/linux/link.o: /usr/include/google/sparsehash/densehashtable.h
 ../objs/linux/link.o: /usr/include/assert.h /usr/include/google/type_traits.h
-../objs/linux/link.o: surfacecollection.h surface.h
-../objs/linux/link.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
-../objs/linux/link.o: utilities.h /usr/include/SDL/SDL_gfxPrimitives.h
+../objs/linux/link.o: surfacecollection.h /usr/include/google/dense_hash_map
+../objs/linux/link.o: surface.h /usr/include/SDL/SDL_image.h asfont.h
+../objs/linux/link.o: sfontplus.h utilities.h
+../objs/linux/link.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/link.o: /usr/include/math.h /usr/include/bits/huge_val.h
 ../objs/linux/link.o: /usr/include/bits/huge_valf.h
 ../objs/linux/link.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
@@ -932,7 +946,8 @@ depend:
 ../objs/linux/linkapp.o: /usr/include/google/sparsehash/densehashtable.h
 ../objs/linux/linkapp.o: /usr/include/assert.h
 ../objs/linux/linkapp.o: /usr/include/google/type_traits.h
-../objs/linux/linkapp.o: surfacecollection.h surface.h
+../objs/linux/linkapp.o: surfacecollection.h
+../objs/linux/linkapp.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/linkapp.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
 ../objs/linux/linkapp.o: utilities.h /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/linkapp.o: /usr/include/math.h /usr/include/bits/huge_val.h
@@ -970,7 +985,8 @@ depend:
 ../objs/linux/listview.o: /usr/include/bits/pthreadtypes.h
 ../objs/linux/listview.o: /usr/include/alloca.h
 ../objs/linux/listview.o: /usr/include/google/type_traits.h
-../objs/linux/listview.o: surfacecollection.h surface.h
+../objs/linux/listview.o: surfacecollection.h
+../objs/linux/listview.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/listview.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
 ../objs/linux/listview.o: /usr/include/SDL/SDL_stdinc.h
 ../objs/linux/listview.o: /usr/include/SDL/SDL_config.h
@@ -1041,7 +1057,8 @@ depend:
 ../objs/linux/listviewitem.o: /usr/include/bits/pthreadtypes.h
 ../objs/linux/listviewitem.o: /usr/include/alloca.h
 ../objs/linux/listviewitem.o: /usr/include/google/type_traits.h
-../objs/linux/listviewitem.o: surfacecollection.h surface.h
+../objs/linux/listviewitem.o: surfacecollection.h
+../objs/linux/listviewitem.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/listviewitem.o: /usr/include/SDL/SDL.h
 ../objs/linux/listviewitem.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/listviewitem.o: /usr/include/SDL/SDL_stdinc.h
@@ -1106,26 +1123,26 @@ depend:
 ../objs/linux/menu.o: /usr/include/bits/huge_valf.h
 ../objs/linux/menu.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
 ../objs/linux/menu.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
-../objs/linux/menu.o: /usr/include/bits/mathcalls.h gmenu2x.h
-../objs/linux/menu.o: /usr/include/google/dense_hash_map
-../objs/linux/menu.o: /usr/include/google/sparsehash/sparseconfig.h
+../objs/linux/menu.o: /usr/include/bits/mathcalls.h tinyxml/tinyxml.h
+../objs/linux/menu.o: /usr/include/ctype.h /usr/include/xlocale.h
 ../objs/linux/menu.o: /usr/include/stdio.h /usr/include/libio.h
 ../objs/linux/menu.o: /usr/include/_G_config.h /usr/include/wchar.h
 ../objs/linux/menu.o: /usr/include/bits/stdio_lim.h
-../objs/linux/menu.o: /usr/include/bits/sys_errlist.h
-../objs/linux/menu.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/linux/menu.o: /usr/include/assert.h /usr/include/stdlib.h
+../objs/linux/menu.o: /usr/include/bits/sys_errlist.h /usr/include/stdlib.h
 ../objs/linux/menu.o: /usr/include/bits/waitflags.h
-../objs/linux/menu.o: /usr/include/bits/waitstatus.h /usr/include/xlocale.h
-../objs/linux/menu.o: /usr/include/alloca.h /usr/include/google/type_traits.h
-../objs/linux/menu.o: surfacecollection.h surface.h /usr/include/SDL/SDL.h
-../objs/linux/menu.o: /usr/include/SDL/SDL_main.h
+../objs/linux/menu.o: /usr/include/bits/waitstatus.h /usr/include/alloca.h
+../objs/linux/menu.o: /usr/include/string.h /usr/include/assert.h gmenu2x.h
+../objs/linux/menu.o: /usr/include/google/dense_hash_map
+../objs/linux/menu.o: /usr/include/google/sparsehash/sparseconfig.h
+../objs/linux/menu.o: /usr/include/google/sparsehash/densehashtable.h
+../objs/linux/menu.o: /usr/include/google/type_traits.h surfacecollection.h
+../objs/linux/menu.o: /usr/include/google/dense_hash_map surface.h
+../objs/linux/menu.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
 ../objs/linux/menu.o: /usr/include/SDL/SDL_stdinc.h
 ../objs/linux/menu.o: /usr/include/SDL/SDL_config.h
-../objs/linux/menu.o: /usr/include/SDL/SDL_platform.h /usr/include/string.h
-../objs/linux/menu.o: /usr/include/strings.h /usr/include/inttypes.h
-../objs/linux/menu.o: /usr/include/stdint.h /usr/include/bits/wchar.h
-../objs/linux/menu.o: /usr/include/ctype.h /usr/include/iconv.h
+../objs/linux/menu.o: /usr/include/SDL/SDL_platform.h /usr/include/strings.h
+../objs/linux/menu.o: /usr/include/inttypes.h /usr/include/stdint.h
+../objs/linux/menu.o: /usr/include/bits/wchar.h /usr/include/iconv.h
 ../objs/linux/menu.o: /usr/include/SDL/begin_code.h
 ../objs/linux/menu.o: /usr/include/SDL/close_code.h
 ../objs/linux/menu.o: /usr/include/SDL/SDL_audio.h
@@ -1182,7 +1199,8 @@ depend:
 ../objs/linux/menusetting.o: /usr/include/bits/pthreadtypes.h
 ../objs/linux/menusetting.o: /usr/include/alloca.h
 ../objs/linux/menusetting.o: /usr/include/google/type_traits.h
-../objs/linux/menusetting.o: surfacecollection.h surface.h
+../objs/linux/menusetting.o: surfacecollection.h
+../objs/linux/menusetting.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/menusetting.o: /usr/include/SDL/SDL.h
 ../objs/linux/menusetting.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/menusetting.o: /usr/include/SDL/SDL_stdinc.h
@@ -1291,7 +1309,8 @@ depend:
 ../objs/linux/menusettingbool.o: /usr/include/google/sparsehash/densehashtable.h
 ../objs/linux/menusettingbool.o: /usr/include/assert.h
 ../objs/linux/menusettingbool.o: /usr/include/google/type_traits.h
-../objs/linux/menusettingbool.o: surfacecollection.h surface.h
+../objs/linux/menusettingbool.o: surfacecollection.h
+../objs/linux/menusettingbool.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/menusettingbool.o: /usr/include/SDL/SDL_image.h asfont.h
 ../objs/linux/menusettingbool.o: sfontplus.h utilities.h
 ../objs/linux/menusettingbool.o: /usr/include/SDL/SDL_gfxPrimitives.h
@@ -1338,7 +1357,8 @@ depend:
 ../objs/linux/menusettingdir.o: /usr/include/bits/pthreadtypes.h
 ../objs/linux/menusettingdir.o: /usr/include/alloca.h
 ../objs/linux/menusettingdir.o: /usr/include/google/type_traits.h
-../objs/linux/menusettingdir.o: surfacecollection.h surface.h
+../objs/linux/menusettingdir.o: surfacecollection.h
+../objs/linux/menusettingdir.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/menusettingdir.o: /usr/include/SDL/SDL.h
 ../objs/linux/menusettingdir.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/menusettingdir.o: /usr/include/SDL/SDL_stdinc.h
@@ -1419,7 +1439,8 @@ depend:
 ../objs/linux/menusettingfile.o: /usr/include/bits/pthreadtypes.h
 ../objs/linux/menusettingfile.o: /usr/include/alloca.h
 ../objs/linux/menusettingfile.o: /usr/include/google/type_traits.h
-../objs/linux/menusettingfile.o: surfacecollection.h surface.h
+../objs/linux/menusettingfile.o: surfacecollection.h
+../objs/linux/menusettingfile.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/menusettingfile.o: /usr/include/SDL/SDL.h
 ../objs/linux/menusettingfile.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/menusettingfile.o: /usr/include/SDL/SDL_stdinc.h
@@ -1503,8 +1524,9 @@ depend:
 ../objs/linux/menusettingimage.o: /usr/include/bits/pthreadtypes.h
 ../objs/linux/menusettingimage.o: /usr/include/alloca.h
 ../objs/linux/menusettingimage.o: /usr/include/google/type_traits.h
-../objs/linux/menusettingimage.o: surfacecollection.h surface.h
-../objs/linux/menusettingimage.o: /usr/include/SDL/SDL.h
+../objs/linux/menusettingimage.o: surfacecollection.h
+../objs/linux/menusettingimage.o: /usr/include/google/dense_hash_map
+../objs/linux/menusettingimage.o: surface.h /usr/include/SDL/SDL.h
 ../objs/linux/menusettingimage.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/menusettingimage.o: /usr/include/SDL/SDL_stdinc.h
 ../objs/linux/menusettingimage.o: /usr/include/SDL/SDL_config.h
@@ -1617,7 +1639,8 @@ depend:
 ../objs/linux/menusettingint.o: /usr/include/google/sparsehash/densehashtable.h
 ../objs/linux/menusettingint.o: /usr/include/assert.h
 ../objs/linux/menusettingint.o: /usr/include/google/type_traits.h
-../objs/linux/menusettingint.o: surfacecollection.h surface.h
+../objs/linux/menusettingint.o: surfacecollection.h
+../objs/linux/menusettingint.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/menusettingint.o: /usr/include/SDL/SDL_image.h asfont.h
 ../objs/linux/menusettingint.o: sfontplus.h utilities.h
 ../objs/linux/menusettingint.o: /usr/include/SDL/SDL_gfxPrimitives.h
@@ -1668,8 +1691,9 @@ depend:
 ../objs/linux/menusettingmultistring.o: /usr/include/bits/pthreadtypes.h
 ../objs/linux/menusettingmultistring.o: /usr/include/alloca.h
 ../objs/linux/menusettingmultistring.o: /usr/include/google/type_traits.h
-../objs/linux/menusettingmultistring.o: surfacecollection.h surface.h
-../objs/linux/menusettingmultistring.o: /usr/include/SDL/SDL.h
+../objs/linux/menusettingmultistring.o: surfacecollection.h
+../objs/linux/menusettingmultistring.o: /usr/include/google/dense_hash_map
+../objs/linux/menusettingmultistring.o: surface.h /usr/include/SDL/SDL.h
 ../objs/linux/menusettingmultistring.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/menusettingmultistring.o: /usr/include/SDL/SDL_stdinc.h
 ../objs/linux/menusettingmultistring.o: /usr/include/SDL/SDL_config.h
@@ -1752,7 +1776,8 @@ depend:
 ../objs/linux/menusettingrgba.o: /usr/include/bits/pthreadtypes.h
 ../objs/linux/menusettingrgba.o: /usr/include/alloca.h
 ../objs/linux/menusettingrgba.o: /usr/include/google/type_traits.h
-../objs/linux/menusettingrgba.o: surfacecollection.h surface.h
+../objs/linux/menusettingrgba.o: surfacecollection.h
+../objs/linux/menusettingrgba.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/menusettingrgba.o: /usr/include/SDL/SDL.h
 ../objs/linux/menusettingrgba.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/menusettingrgba.o: /usr/include/SDL/SDL_stdinc.h
@@ -1837,8 +1862,9 @@ depend:
 ../objs/linux/menusettingstring.o: /usr/include/bits/pthreadtypes.h
 ../objs/linux/menusettingstring.o: /usr/include/alloca.h
 ../objs/linux/menusettingstring.o: /usr/include/google/type_traits.h
-../objs/linux/menusettingstring.o: surfacecollection.h surface.h
-../objs/linux/menusettingstring.o: /usr/include/SDL/SDL.h
+../objs/linux/menusettingstring.o: surfacecollection.h
+../objs/linux/menusettingstring.o: /usr/include/google/dense_hash_map
+../objs/linux/menusettingstring.o: surface.h /usr/include/SDL/SDL.h
 ../objs/linux/menusettingstring.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/menusettingstring.o: /usr/include/SDL/SDL_stdinc.h
 ../objs/linux/menusettingstring.o: /usr/include/SDL/SDL_config.h
@@ -1953,7 +1979,8 @@ depend:
 ../objs/linux/messagebox.o: /usr/include/google/sparsehash/densehashtable.h
 ../objs/linux/messagebox.o: /usr/include/assert.h
 ../objs/linux/messagebox.o: /usr/include/google/type_traits.h
-../objs/linux/messagebox.o: surfacecollection.h surface.h
+../objs/linux/messagebox.o: surfacecollection.h
+../objs/linux/messagebox.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/messagebox.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
 ../objs/linux/messagebox.o: utilities.h iconbutton.h button.h FastDelegate.h
 ../objs/linux/messagebox.o: /usr/include/memory.h translator.h touchscreen.h
@@ -2027,7 +2054,8 @@ depend:
 ../objs/linux/selector.o: /usr/include/google/sparsehash/densehashtable.h
 ../objs/linux/selector.o: /usr/include/assert.h
 ../objs/linux/selector.o: /usr/include/google/type_traits.h
-../objs/linux/selector.o: surfacecollection.h surface.h
+../objs/linux/selector.o: surfacecollection.h
+../objs/linux/selector.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/selector.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
 ../objs/linux/selector.o: utilities.h iconbutton.h translator.h touchscreen.h
 ../objs/linux/selector.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
@@ -2168,7 +2196,8 @@ depend:
 ../objs/linux/settingsdialog.o: /usr/include/google/sparsehash/densehashtable.h
 ../objs/linux/settingsdialog.o: /usr/include/assert.h
 ../objs/linux/settingsdialog.o: /usr/include/google/type_traits.h
-../objs/linux/settingsdialog.o: surfacecollection.h surface.h
+../objs/linux/settingsdialog.o: surfacecollection.h
+../objs/linux/settingsdialog.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/settingsdialog.o: /usr/include/SDL/SDL_image.h asfont.h
 ../objs/linux/settingsdialog.o: sfontplus.h utilities.h iconbutton.h button.h
 ../objs/linux/settingsdialog.o: FastDelegate.h /usr/include/memory.h
@@ -2286,8 +2315,9 @@ depend:
 ../objs/linux/surface.o: /usr/include/SDL/SDL_version.h surface.h
 ../objs/linux/surface.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
 ../objs/linux/surface.o: utilities.h
-../objs/linux/surfacecollection.o: surfacecollection.h surface.h
-../objs/linux/surfacecollection.o: /usr/include/SDL/SDL.h
+../objs/linux/surfacecollection.o: surfacecollection.h
+../objs/linux/surfacecollection.o: /usr/include/google/dense_hash_map
+../objs/linux/surfacecollection.o: surface.h /usr/include/SDL/SDL.h
 ../objs/linux/surfacecollection.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/surfacecollection.o: /usr/include/SDL/SDL_stdinc.h
 ../objs/linux/surfacecollection.o: /usr/include/SDL/SDL_config.h
@@ -2384,7 +2414,8 @@ depend:
 ../objs/linux/textdialog.o: /usr/include/bits/pthreadtypes.h
 ../objs/linux/textdialog.o: /usr/include/alloca.h
 ../objs/linux/textdialog.o: /usr/include/google/type_traits.h
-../objs/linux/textdialog.o: surfacecollection.h surface.h
+../objs/linux/textdialog.o: surfacecollection.h
+../objs/linux/textdialog.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/textdialog.o: /usr/include/SDL/SDL.h
 ../objs/linux/textdialog.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/textdialog.o: /usr/include/SDL/SDL_stdinc.h
@@ -2461,8 +2492,9 @@ depend:
 ../objs/linux/textmanualdialog.o: /usr/include/bits/pthreadtypes.h
 ../objs/linux/textmanualdialog.o: /usr/include/alloca.h
 ../objs/linux/textmanualdialog.o: /usr/include/google/type_traits.h
-../objs/linux/textmanualdialog.o: surfacecollection.h surface.h
-../objs/linux/textmanualdialog.o: /usr/include/SDL/SDL.h
+../objs/linux/textmanualdialog.o: surfacecollection.h
+../objs/linux/textmanualdialog.o: /usr/include/google/dense_hash_map
+../objs/linux/textmanualdialog.o: surface.h /usr/include/SDL/SDL.h
 ../objs/linux/textmanualdialog.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/textmanualdialog.o: /usr/include/SDL/SDL_stdinc.h
 ../objs/linux/textmanualdialog.o: /usr/include/SDL/SDL_config.h
@@ -2724,7 +2756,8 @@ depend:
 ../objs/linux/wallpaperdialog.o: /usr/include/bits/pthreadtypes.h
 ../objs/linux/wallpaperdialog.o: /usr/include/alloca.h
 ../objs/linux/wallpaperdialog.o: /usr/include/google/type_traits.h
-../objs/linux/wallpaperdialog.o: surfacecollection.h surface.h
+../objs/linux/wallpaperdialog.o: surfacecollection.h
+../objs/linux/wallpaperdialog.o: /usr/include/google/dense_hash_map surface.h
 ../objs/linux/wallpaperdialog.o: /usr/include/SDL/SDL.h
 ../objs/linux/wallpaperdialog.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/wallpaperdialog.o: /usr/include/SDL/SDL_stdinc.h

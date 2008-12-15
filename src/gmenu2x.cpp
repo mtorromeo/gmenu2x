@@ -405,6 +405,9 @@ void GMenu2X::initMenu() {
 	menu->setLinkIndex(confInt["link"]);
 
 	menu->loadIcons();
+	
+	//DEBUG
+	menu->addLink( "/mnt/sd/development/gmenu2x/", "sample.pxml", "applications" );
 }
 
 void GMenu2X::about() {
