@@ -938,7 +938,7 @@ int GMenu2X::main() {
 			}
 		}
 		
-		//usleep(15);
+		usleep(30000);
 	}
 
 	return -1;
