@@ -736,7 +736,8 @@ int GMenu2X::main() {
 #ifdef DEBUG
 	//framerate
 	long tickFPS = SDL_GetTicks();
-	string fps;
+	int drawn_frames = 0;
+	string fps = "";
 #endif
 
 	IconButton btnContextMenu(this,"skin:imgs/menu.png");
@@ -841,12 +842,15 @@ int GMenu2X::main() {
 
 #ifdef DEBUG
 		//framerate
-		ss.clear();
-		ss << 1000/(tickNow-tickFPS+1);
-		ss >> fps;
-		fps += " FPS";
-		tickFPS = tickNow;
-		s->write( font, fps, resX-1,1 ,SFontHAlignRight );
+		drawn_frames++;
+		if (tickNow-tickFPS>=1000) {
+			ss.clear();
+			ss << drawn_frames*(tickNow-tickFPS+1)/1000;
+			ss >> fps;
+			tickFPS = tickNow;
+			drawn_frames = 0;
+		}
+		s->write( font, fps+" FPS", resX-1,1 ,SFontHAlignRight );
 #endif
 
 		s->flip();
@@ -933,6 +937,8 @@ int GMenu2X::main() {
 				offset = menu->sectionLinks()->size()>linksPerPage ? 2 : 6;
 			}
 		}
+		
+		//usleep(15);
 	}
 
 	return -1;
