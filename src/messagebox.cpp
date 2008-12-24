@@ -36,10 +36,7 @@ MessageBox::MessageBox(GMenu2X *gmenu2x, string text, string icon) {
 	for (uint x=0; x<buttons.size(); x++) {
 		buttons[x] = "";
 		buttonLabels[x] = "";
-		buttonPositions[x].x = 0;
-		buttonPositions[x].y = 140;
-		buttonPositions[x].w = 0;
-		buttonPositions[x].h = 16;
+		buttonPositions[x].h = gmenu2x->font->getHeight();
 	}
 
 	//Default enabled button
@@ -67,34 +64,33 @@ int MessageBox::exec() {
 
 	Surface bg(gmenu2x->s);
 	//Darken background
-	bg.box(0, 0, 320, 240, 0,0,0,150);
-
-	int textW = gmenu2x->font->getTextWidth(text);
-	int boxW = textW + 20;
-	if (gmenu2x->sc[icon] != NULL)
-		boxW += 37;
-	int halfBoxW = boxW/2;
-	int x = 160-halfBoxW;
+	bg.box(0, 0, gmenu2x->resX, gmenu2x->resY, 0,0,0,200);
+	
+	SDL_Rect box;
+	box.h = gmenu2x->font->getHeight()*3 +4;
+	box.w = gmenu2x->font->getTextWidth(text) + 24 + (gmenu2x->sc[icon] != NULL ? 37 : 0);
+	box.x = gmenu2x->halfX - box.w/2 -2;
+	box.y = gmenu2x->halfY - box.h/2 -2;
 
 	//outer box
-	bg.box(x-2, 90, boxW+5, 61, gmenu2x->skinConfColors["messageBoxBg"]);
+	bg.box(box, gmenu2x->skinConfColors["messageBoxBg"]);
 	//draw inner rectangle
-	bg.rectangle(x, 92, boxW, 36, gmenu2x->skinConfColors["messageBoxBorder"]);
+	bg.rectangle(box.x+2, box.y+2, box.w-4, box.h-gmenu2x->font->getHeight(), gmenu2x->skinConfColors["messageBoxBorder"]);
 	//icon+text
-	x += 10;
-	if (gmenu2x->sc[icon] != NULL) {
-		gmenu2x->sc[icon]->blit( &bg, x-3, 94 );
-		x += 37;
-	}
-	bg.write( gmenu2x->font, text, x, 110, SFontHAlignLeft, SFontVAlignMiddle );
+	if (gmenu2x->sc[icon] != NULL)
+		gmenu2x->sc[icon]->blitCenter( &bg, box.x+25, box.y+gmenu2x->font->getHeight()+3 );
+	bg.write( gmenu2x->font, text, box.x+(gmenu2x->sc[icon] != NULL ? 47 : 10), box.y+gmenu2x->font->getHeight()+3, SFontHAlignLeft, SFontVAlignMiddle );
 
-	int btnX = 158+halfBoxW;
+	int btnX = gmenu2x->halfX+box.w/2-6;
 	for (uint i=0; i<buttons.size(); i++) {
 		if (buttons[i] != "") {
+			buttonPositions[i].y = box.y+box.h-4;
 			buttonPositions[i].w = btnX;
-			btnX = gmenu2x->drawButtonRight(&bg, buttonLabels[i], buttons[i], btnX, 140);
+			
+			btnX = gmenu2x->drawButtonRight(&bg, buttonLabels[i], buttons[i], btnX, buttonPositions[i].y);
+			
 			buttonPositions[i].x = btnX;
-			buttonPositions[i].w = buttonPositions[i].w-btnX-6;
+			buttonPositions[i].w = buttonPositions[i].x-btnX-6;
 		}
 	}
 
@@ -116,6 +112,8 @@ int MessageBox::exec() {
 		gmenu2x->input.update();
 		for (uint i=0; i<buttons.size(); i++)
 			if (buttons[i]!="" && gmenu2x->input[i]) result = i;
+		
+		usleep(LOOP_DELAY);
 	}
 
 	return result;

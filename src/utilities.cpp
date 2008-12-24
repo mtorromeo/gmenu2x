@@ -185,3 +185,10 @@ string cmdclean (string cmdline) {
 	}
 	return cmdline;
 }
+
+int intTransition(int from, int to, long tickStart, long duration, long tickNow) {
+	if (tickNow<0) tickNow = SDL_GetTicks();
+	float elapsed = (float)(tickNow-tickStart)/duration;
+	//                    elapsed                 increments
+	return constrain(round(elapsed*(to-from)),from,to);
+}

@@ -43,6 +43,8 @@ const int VOLUME_MODE_PHONES = 1;
 const int VOLUME_MODE_NORMAL = 2;
 const int BATTERY_READS = 10;
 
+const int LOOP_DELAY=30000;
+
 using std::string;
 using fastdelegate::FastDelegate0;
 using google::dense_hash_map;

@@ -70,6 +70,12 @@
 
 #include <sys/mman.h>
 
+#ifdef TARGET_PANDORA
+//#include <pnd_container.h>
+//#include <pnd_conf.h>
+//#include <pnd_discovery.h>
+#endif
+
 using namespace std;
 using namespace fastdelegate;
 
@@ -390,14 +396,16 @@ void GMenu2X::initMenu() {
 				menu->addActionLink(i,"Open2x",MakeDelegate(this,&GMenu2X::settingsOpen2x),tr["Configure Open2x system settings"],"skin:icons/o2xconfigure.png");
 			menu->addActionLink(i,tr["Skin"],MakeDelegate(this,&GMenu2X::skinMenu),tr["Configure skin"],"skin:icons/skin.png");
 			menu->addActionLink(i,tr["Wallpaper"],MakeDelegate(this,&GMenu2X::changeWallpaper),tr["Change GMenu2X wallpaper"],"skin:icons/wallpaper.png");
+#ifdef TARGET_GP2X
 			menu->addActionLink(i,"TV",MakeDelegate(this,&GMenu2X::toggleTvOut),tr["Activate/deactivate tv-out"],"skin:icons/tv.png");
 			menu->addActionLink(i,"USB Sd",MakeDelegate(this,&GMenu2X::activateSdUsb),tr["Activate Usb on SD"],"skin:icons/usb.png");
 			if (fwType=="gph" && !f200)
 				menu->addActionLink(i,"USB Nand",MakeDelegate(this,&GMenu2X::activateNandUsb),tr["Activate Usb on Nand"],"skin:icons/usb.png");
+			//menu->addActionLink(i,"USB Root",MakeDelegate(this,&GMenu2X::activateRootUsb),tr["Activate Usb on the root of the Gp2x Filesystem"],"skin:icons/usb.png");
+#endif
 			if (fileExists(path+"log.txt"))
 				menu->addActionLink(i,tr["Log Viewer"],MakeDelegate(this,&GMenu2X::viewLog),tr["Displays last launched program's output"],"skin:icons/ebook.png");
 			menu->addActionLink(i,tr["About"],MakeDelegate(this,&GMenu2X::about),tr["Info about GMenu2X"],"skin:icons/about.png");
-			//menu->addActionLink(i,"USB Root",MakeDelegate(this,&GMenu2X::activateRootUsb),tr["Activate Usb on the root of the Gp2x Filesystem"],"skin:icons/usb.png");
 		}
 	}
 
@@ -938,7 +946,7 @@ int GMenu2X::main() {
 			}
 		}
 		
-		usleep(30000);
+		usleep(LOOP_DELAY);
 	}
 
 	return -1;
@@ -1222,7 +1230,7 @@ void GMenu2X::contextMenu() {
 	box.y = halfY - box.h/2;
 
 	SDL_Rect selbox = {box.x+4, 0, box.w-8, h+2};
-	long tickNow, tickFade = SDL_GetTicks();
+	long tickNow, tickStart = SDL_GetTicks();
 
 	Surface bg(s);
 	/*//Darken background
@@ -1234,16 +1242,8 @@ void GMenu2X::contextMenu() {
 
 		selbox.y = box.y+4+(h+2)*sel;
 		bg.blit(s,0,0);
-
-		if (fadeAlpha<200) {
-			uint inc = floor((tickNow-tickFade)/3);
-			if (inc>0) {
-				fadeAlpha += inc;
-				if (fadeAlpha>200)
-					fadeAlpha = 200;
-				tickFade = tickNow;
-			}
-		}
+		
+		if (fadeAlpha<200) fadeAlpha = intTransition(0,200,tickStart,500,tickNow);
 		s->box(0, 0, resX, resY, 0,0,0,fadeAlpha);
 		s->box(box.x, box.y, box.w, box.h, skinConfColors["messageBoxBg"]);
 		s->rectangle( box.x+2, box.y+2, box.w-4, box.h-4, skinConfColors["messageBoxBorder"] );
@@ -1505,6 +1505,9 @@ void GMenu2X::scanner() {
 
 	uint lineY = 42;
 
+#ifdef _TARGET_PANDORA
+	//char *configpath = pnd_conf_query_searchpath();
+#else
 	if (confInt["menuClock"]<200) {
 		setClock(200);
 		scanbg.write(font,tr["Raising cpu clock to 200Mhz"],5,lineY);
@@ -1572,14 +1575,16 @@ void GMenu2X::scanner() {
 		lineY += 26;
 	}
 
+	sync();
+	ledOff();
+#endif
+
 	bool close = false;
 	while (!close) {
 		input.update();
 		if (input[ACTION_START] || input[ACTION_B] || input[ACTION_X]) close = true;
+		usleep(30000);
 	}
-
-	sync();
-	ledOff();
 }
 
 void GMenu2X::scanPath(string path, vector<string> *files) {
@@ -1600,7 +1605,11 @@ void GMenu2X::scanPath(string path, vector<string> *files) {
 			scanPath(filepath, files);
 		if (statRet != -1) {
 			ext = filepath.substr(filepath.length()-4,4);
+#ifdef TARGET_GP2X
 			if (ext==".gpu" || ext==".gpe")
+#else
+			if (ext==".pxml")
+#endif
 				files->push_back(filepath);
 		}
 	}

@@ -77,4 +77,6 @@ float constrain (float x, float imin, float imax);
 
 bool split (vector<string> &vec, const string &str, const string &delim, bool destructive=true);
 
+int intTransition(int from, int to, long int tickStart, long duration=500, long tickNow=-1);
+
 #endif
