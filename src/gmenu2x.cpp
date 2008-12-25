@@ -464,7 +464,7 @@ Jacopastorius\n\
 lorystorm90\n\
 and all the anonymous donors...\n\
 (If I missed to list you or if you want to be removed, contact me.)","\n");
-	TextDialog td(this, "GMenu2X", tr.translate("Version $1 (Build date: $2)","0.10-test3",__DATE__,NULL), "icons/about.png", &text);
+	TextDialog td(this, "GMenu2X", tr.translate("Version $1 (Build date: $2)","0.10-test4",__DATE__,NULL), "icons/about.png", &text);
 	td.exec();
 }
 
@@ -1623,7 +1623,7 @@ unsigned short GMenu2X::getBatteryLevel() {
 
 	if (f200) {
 		MMSP2ADC val;
-		int rv = read(batteryHandle, &val, sizeof(MMSP2ADC));
+		read(batteryHandle, &val, sizeof(MMSP2ADC));
 
 		if (val.batt==0) return 5;
 		if (val.batt==1) return 3;
@@ -1632,7 +1632,6 @@ unsigned short GMenu2X::getBatteryLevel() {
 	} else {
 		int battval = 0;
 		unsigned short cbv, min=900, max=0;
-		int v;
 
 		for (int i = 0; i < BATTERY_READS; i ++) {
 			if ( read(batteryHandle, &cbv, 2) == 2) {
@@ -1792,9 +1791,12 @@ string GMenu2X::getDiskFree() {
 
 	int ret = statvfs("/mnt/sd", &b);
 	if (ret==0) {
-		unsigned long free = b.f_bfree*b.f_frsize/1048576;
+		/*unsigned long free = b.f_bfree*b.f_frsize/1048576;
 		unsigned long total = b.f_blocks*b.f_frsize/1048576;
-		ss << free << "/" << total << "MB";
+		ss << free << "/" << total << "MB";*/
+		double free = (double)b.f_bfree * (double)b.f_bsize / 1048576.0;
+		double total = (double)b.f_blocks * (double)b.f_frsize / 1048576.0;
+		ss << (unsigned long)free << "/" << (unsigned long)total << "MB";
 		ss >> df;
 	} else cout << "\033[0;34mGMENU2X:\033[0;31m statvfs failed with error '" << strerror(errno) << "'\033[0m" << endl;
 	return df;

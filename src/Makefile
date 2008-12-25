@@ -7,7 +7,7 @@ STRIP = $(CROSS_COMPILE)strip
 
 CFLAGS = -I"$(CHAINPREFIX)/include" `$(CHAINPREFIX)/bin/sdl-config --cflags` -DTARGET_GP2X -DTIXML_USE_STL -O3 -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops -Wall -Wno-unknown-pragmas -Wno-format
 CXXFLAGS = $(CFLAGS)
-LDFLAGS = -L$(CHAINPREFIX)/lib `$(CHAINPREFIX)/bin/sdl-config --libs` -lpnd -lfreetype -lSDL_image -lSDL_gfx -ljpeg -lpng12 -lSDL -lz -ldl
+LDFLAGS = -L$(CHAINPREFIX)/lib `$(CHAINPREFIX)/bin/sdl-config --libs` -lfreetype -lSDL_image -lSDL_gfx -ljpeg -lpng12 -lSDL -lz -ldl # -lpnd
 
 TARGET = ../build/gmenu2x
 OBJDIR = ../objs/gp2x
