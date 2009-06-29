@@ -20,7 +20,7 @@
 #ifndef MENUSETTING_H
 #define MENUSETTING_H
 
-#ifdef TARGET_GP2X
+#if defined(TARGET_GP2X) || defined(TARGET_WIZ)
 #include "inputmanager.h"
 #endif
 

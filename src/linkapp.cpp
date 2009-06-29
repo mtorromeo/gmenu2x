@@ -37,7 +37,12 @@ LinkApp::LinkApp(GMenu2X *gmenu2x, const char* linkfile)
 	file = linkfile;
 	wrapper = false;
 	dontleave = false;
+#ifdef TARGET_GP2X
 	setClock(200);
+#endif
+#ifdef TARGET_WIZ
+	setClock(550);
+#endif
 	setVolume(-1);
 	//G
 	setGamma(0);
@@ -136,7 +141,12 @@ string LinkApp::clockStr(int maxClock) {
 }
 
 void LinkApp::setClock(int mhz) {
+#ifdef TARGET_GP2X
 	iclock = constrain(mhz,50,325);
+#endif
+#ifdef TARGET_WIZ
+	iclock = constrain(mhz,50,900);
+#endif
 	stringstream ss;
 	sclock = "";
 	ss << iclock << "Mhz";
@@ -187,7 +197,7 @@ void LinkApp::setGamma(int gamma) {
 // /G
 
 bool LinkApp::targetExists() {
-#ifndef TARGET_GP2X
+#if !defined(TARGET_GP2X) && !defined(TARGET_WIZ)
 	return true; //For displaying elements during testing on pc
 #endif
 
@@ -360,7 +370,7 @@ void LinkApp::selector(int startSelection, string selectorDir) {
 void LinkApp::launch(string selectedFile, string selectedDir) {
 	drawRun();
 	save();
-#ifndef TARGET_GP2X
+#if !defined(TARGET_GP2X) && !defined(TARGET_WIZ)
 	//delay for testing
 	SDL_Delay(1000);
 #endif

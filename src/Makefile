@@ -7,7 +7,7 @@ STRIP = $(CROSS_COMPILE)strip
 
 CFLAGS = -I"$(CHAINPREFIX)/include" `$(CHAINPREFIX)/bin/sdl-config --cflags` -DTARGET_GP2X -DTIXML_USE_STL -O3 -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops -Wall -Wno-unknown-pragmas -Wno-format
 CXXFLAGS = $(CFLAGS)
-LDFLAGS = -L$(CHAINPREFIX)/lib `$(CHAINPREFIX)/bin/sdl-config --libs` -lfreetype -lSDL_image -lSDL_gfx -ljpeg -lpng12 -lSDL -lz -ldl # -lpnd
+LDFLAGS = -L$(CHAINPREFIX)/lib `$(CHAINPREFIX)/bin/sdl-config --libs` -lfreetype -lSDL_image -lSDL_ttf -lSDL_gfx -ljpeg -lpng12 -lSDL -lz -ldl # -lpnd
 
 TARGET = ../build/gmenu2x
 OBJDIR = ../objs/gp2x
@@ -50,66 +50,6 @@ depend:
 	makedepend -p$(OBJDIR)/ -- $(CFLAGS) -- *.cpp
 # DO NOT DELETE
 
-../objs/gp2x/asfont.o: asfont.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_config.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_platform.h
-../objs/gp2x/asfont.o: /usr/include/sys/types.h /usr/include/features.h
-../objs/gp2x/asfont.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
-../objs/gp2x/asfont.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
-../objs/gp2x/asfont.o: /usr/include/bits/types.h
-../objs/gp2x/asfont.o: /usr/include/bits/typesizes.h /usr/include/time.h
-../objs/gp2x/asfont.o: /usr/include/endian.h /usr/include/bits/endian.h
-../objs/gp2x/asfont.o: /usr/include/sys/select.h /usr/include/bits/select.h
-../objs/gp2x/asfont.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
-../objs/gp2x/asfont.o: /usr/include/sys/sysmacros.h
-../objs/gp2x/asfont.o: /usr/include/bits/pthreadtypes.h /usr/include/stdio.h
-../objs/gp2x/asfont.o: /usr/include/libio.h /usr/include/_G_config.h
-../objs/gp2x/asfont.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
-../objs/gp2x/asfont.o: /usr/include/bits/sys_errlist.h /usr/include/stdlib.h
-../objs/gp2x/asfont.o: /usr/include/bits/waitflags.h
-../objs/gp2x/asfont.o: /usr/include/bits/waitstatus.h /usr/include/xlocale.h
-../objs/gp2x/asfont.o: /usr/include/alloca.h /usr/include/string.h
-../objs/gp2x/asfont.o: /usr/include/strings.h /usr/include/inttypes.h
-../objs/gp2x/asfont.o: /usr/include/stdint.h /usr/include/bits/wchar.h
-../objs/gp2x/asfont.o: /usr/include/ctype.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/iconv.h
-../objs/gp2x/asfont.o: /usr/include/errno.h /usr/include/bits/errno.h
-../objs/gp2x/asfont.o: /usr/include/linux/errno.h /usr/include/asm/errno.h
-../objs/gp2x/asfont.o: /usr/include/asm-generic/errno.h
-../objs/gp2x/asfont.o: /usr/include/asm-generic/errno-base.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/begin_code.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/close_code.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_audio.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_error.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_endian.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_mutex.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_thread.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_rwops.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_cdrom.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_cpuinfo.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_events.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_active.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_keyboard.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_keysym.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_mouse.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_video.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_joystick.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_quit.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_loadso.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
-../objs/gp2x/asfont.o: sfontplus.h surface.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/asfont.o: utilities.h
-../objs/gp2x/asfont.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
-../objs/gp2x/asfont.o: /usr/include/math.h /usr/include/bits/huge_val.h
-../objs/gp2x/asfont.o: /usr/include/bits/huge_valf.h
-../objs/gp2x/asfont.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
-../objs/gp2x/asfont.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
-../objs/gp2x/asfont.o: /usr/include/bits/mathcalls.h
 ../objs/gp2x/button.o: button.h
 ../objs/gp2x/button.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/button.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
@@ -122,9 +62,9 @@ depend:
 ../objs/gp2x/button.o: /usr/include/bits/types.h
 ../objs/gp2x/button.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/button.o: /usr/include/endian.h /usr/include/bits/endian.h
-../objs/gp2x/button.o: /usr/include/sys/select.h /usr/include/bits/select.h
-../objs/gp2x/button.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
-../objs/gp2x/button.o: /usr/include/sys/sysmacros.h
+../objs/gp2x/button.o: /usr/include/bits/byteswap.h /usr/include/sys/select.h
+../objs/gp2x/button.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
+../objs/gp2x/button.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
 ../objs/gp2x/button.o: /usr/include/bits/pthreadtypes.h /usr/include/stdio.h
 ../objs/gp2x/button.o: /usr/include/libio.h /usr/include/_G_config.h
 ../objs/gp2x/button.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
@@ -171,7 +111,7 @@ depend:
 ../objs/gp2x/button.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
 ../objs/gp2x/button.o: surface.h
 ../objs/gp2x/button.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/button.o: asfont.h sfontplus.h utilities.h
+../objs/gp2x/button.o: utilities.h
 ../objs/gp2x/button.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/button.o: /usr/include/math.h /usr/include/bits/huge_val.h
 ../objs/gp2x/button.o: /usr/include/bits/huge_valf.h
@@ -195,6 +135,7 @@ depend:
 ../objs/gp2x/dirdialog.o: /usr/include/bits/types.h
 ../objs/gp2x/dirdialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/dirdialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/dirdialog.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/dirdialog.o: /usr/include/sys/select.h
 ../objs/gp2x/dirdialog.o: /usr/include/bits/select.h
 ../objs/gp2x/dirdialog.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
@@ -257,11 +198,10 @@ depend:
 ../objs/gp2x/dirdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
 ../objs/gp2x/dirdialog.o: surface.h
 ../objs/gp2x/dirdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/dirdialog.o: asfont.h sfontplus.h utilities.h iconbutton.h
-../objs/gp2x/dirdialog.o: button.h FastDelegate.h /usr/include/memory.h
-../objs/gp2x/dirdialog.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/dirdialog.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
-../objs/gp2x/dirdialog.o: inputmanager.h filelister.h
+../objs/gp2x/dirdialog.o: utilities.h iconbutton.h button.h FastDelegate.h
+../objs/gp2x/dirdialog.o: /usr/include/memory.h translator.h touchscreen.h
+../objs/gp2x/dirdialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+../objs/gp2x/dirdialog.o: /usr/include/bits/uio.h inputmanager.h filelister.h
 ../objs/gp2x/filedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/filedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/filedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -275,6 +215,7 @@ depend:
 ../objs/gp2x/filedialog.o: /usr/include/bits/types.h
 ../objs/gp2x/filedialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/filedialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/filedialog.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/filedialog.o: /usr/include/sys/select.h
 ../objs/gp2x/filedialog.o: /usr/include/bits/select.h
 ../objs/gp2x/filedialog.o: /usr/include/bits/sigset.h
@@ -341,11 +282,10 @@ depend:
 ../objs/gp2x/filedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
 ../objs/gp2x/filedialog.o: surface.h
 ../objs/gp2x/filedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/filedialog.o: asfont.h sfontplus.h utilities.h iconbutton.h
-../objs/gp2x/filedialog.o: button.h FastDelegate.h /usr/include/memory.h
-../objs/gp2x/filedialog.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/filedialog.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
-../objs/gp2x/filedialog.o: inputmanager.h
+../objs/gp2x/filedialog.o: utilities.h iconbutton.h button.h FastDelegate.h
+../objs/gp2x/filedialog.o: /usr/include/memory.h translator.h touchscreen.h
+../objs/gp2x/filedialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+../objs/gp2x/filedialog.o: /usr/include/bits/uio.h inputmanager.h
 ../objs/gp2x/filelister.o: /usr/include/sys/stat.h /usr/include/features.h
 ../objs/gp2x/filelister.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/filelister.o: /usr/include/bits/wordsize.h
@@ -355,6 +295,7 @@ depend:
 ../objs/gp2x/filelister.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/filelister.o: /usr/include/bits/stat.h /usr/include/sys/types.h
 ../objs/gp2x/filelister.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/filelister.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/filelister.o: /usr/include/sys/select.h
 ../objs/gp2x/filelister.o: /usr/include/bits/select.h
 ../objs/gp2x/filelister.o: /usr/include/bits/sigset.h
@@ -421,7 +362,8 @@ depend:
 ../objs/gp2x/gmenu2x.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 ../objs/gp2x/gmenu2x.o: /usr/include/bits/waitflags.h
 ../objs/gp2x/gmenu2x.o: /usr/include/bits/waitstatus.h /usr/include/endian.h
-../objs/gp2x/gmenu2x.o: /usr/include/bits/endian.h /usr/include/xlocale.h
+../objs/gp2x/gmenu2x.o: /usr/include/bits/endian.h
+../objs/gp2x/gmenu2x.o: /usr/include/bits/byteswap.h /usr/include/xlocale.h
 ../objs/gp2x/gmenu2x.o: /usr/include/sys/types.h /usr/include/bits/types.h
 ../objs/gp2x/gmenu2x.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/gmenu2x.o: /usr/include/sys/select.h /usr/include/bits/select.h
@@ -509,7 +451,7 @@ depend:
 ../objs/gp2x/gmenu2x.o: /usr/include/linux/ioctl.h
 ../objs/gp2x/gmenu2x.o: /usr/include/linux/patchkey.h linkapp.h link.h
 ../objs/gp2x/gmenu2x.o: button.h FastDelegate.h /usr/include/memory.h
-../objs/gp2x/gmenu2x.o: linkaction.h menu.h asfont.h sfontplus.h surface.h
+../objs/gp2x/gmenu2x.o: linkaction.h menu.h sfontplus.h surface.h
 ../objs/gp2x/gmenu2x.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
 ../objs/gp2x/gmenu2x.o: filedialog.h filelister.h gmenu2x.h
 ../objs/gp2x/gmenu2x.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
@@ -541,6 +483,7 @@ depend:
 ../objs/gp2x/iconbutton.o: /usr/include/bits/types.h
 ../objs/gp2x/iconbutton.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/iconbutton.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/iconbutton.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/iconbutton.o: /usr/include/sys/select.h
 ../objs/gp2x/iconbutton.o: /usr/include/bits/select.h
 ../objs/gp2x/iconbutton.o: /usr/include/bits/sigset.h
@@ -595,7 +538,7 @@ depend:
 ../objs/gp2x/iconbutton.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
 ../objs/gp2x/iconbutton.o: surface.h
 ../objs/gp2x/iconbutton.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/iconbutton.o: asfont.h sfontplus.h utilities.h
+../objs/gp2x/iconbutton.o: utilities.h
 ../objs/gp2x/iconbutton.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/iconbutton.o: /usr/include/math.h /usr/include/bits/huge_val.h
 ../objs/gp2x/iconbutton.o: /usr/include/bits/huge_valf.h
@@ -620,6 +563,7 @@ depend:
 ../objs/gp2x/imagedialog.o: /usr/include/bits/types.h
 ../objs/gp2x/imagedialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/imagedialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/imagedialog.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/imagedialog.o: /usr/include/sys/select.h
 ../objs/gp2x/imagedialog.o: /usr/include/bits/select.h
 ../objs/gp2x/imagedialog.o: /usr/include/bits/sigset.h
@@ -686,11 +630,10 @@ depend:
 ../objs/gp2x/imagedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
 ../objs/gp2x/imagedialog.o: surface.h
 ../objs/gp2x/imagedialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/imagedialog.o: asfont.h sfontplus.h utilities.h iconbutton.h
-../objs/gp2x/imagedialog.o: button.h FastDelegate.h /usr/include/memory.h
-../objs/gp2x/imagedialog.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/imagedialog.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
-../objs/gp2x/imagedialog.o: inputmanager.h
+../objs/gp2x/imagedialog.o: utilities.h iconbutton.h button.h FastDelegate.h
+../objs/gp2x/imagedialog.o: /usr/include/memory.h translator.h touchscreen.h
+../objs/gp2x/imagedialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+../objs/gp2x/imagedialog.o: /usr/include/bits/uio.h inputmanager.h
 ../objs/gp2x/inputdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/inputdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/inputdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -704,6 +647,7 @@ depend:
 ../objs/gp2x/inputdialog.o: /usr/include/bits/types.h
 ../objs/gp2x/inputdialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/inputdialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/inputdialog.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/inputdialog.o: /usr/include/sys/select.h
 ../objs/gp2x/inputdialog.o: /usr/include/bits/select.h
 ../objs/gp2x/inputdialog.o: /usr/include/bits/sigset.h
@@ -765,12 +709,11 @@ depend:
 ../objs/gp2x/inputdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
 ../objs/gp2x/inputdialog.o: surface.h
 ../objs/gp2x/inputdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/inputdialog.o: asfont.h sfontplus.h utilities.h iconbutton.h
-../objs/gp2x/inputdialog.o: button.h FastDelegate.h /usr/include/memory.h
-../objs/gp2x/inputdialog.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/inputdialog.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
-../objs/gp2x/inputdialog.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
-../objs/gp2x/inputdialog.o: inputmanager.h
+../objs/gp2x/inputdialog.o: utilities.h iconbutton.h button.h FastDelegate.h
+../objs/gp2x/inputdialog.o: /usr/include/memory.h translator.h touchscreen.h
+../objs/gp2x/inputdialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+../objs/gp2x/inputdialog.o: /usr/include/bits/uio.h /usr/include/sys/stat.h
+../objs/gp2x/inputdialog.o: /usr/include/bits/stat.h inputmanager.h
 ../objs/gp2x/inputmanager.o: inputmanager.h
 ../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/inputmanager.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
@@ -786,6 +729,7 @@ depend:
 ../objs/gp2x/inputmanager.o: /usr/include/bits/typesizes.h
 ../objs/gp2x/inputmanager.o: /usr/include/time.h /usr/include/endian.h
 ../objs/gp2x/inputmanager.o: /usr/include/bits/endian.h
+../objs/gp2x/inputmanager.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/inputmanager.o: /usr/include/sys/select.h
 ../objs/gp2x/inputmanager.o: /usr/include/bits/select.h
 ../objs/gp2x/inputmanager.o: /usr/include/bits/sigset.h
@@ -850,9 +794,10 @@ depend:
 ../objs/gp2x/link.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 ../objs/gp2x/link.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
 ../objs/gp2x/link.o: /usr/include/time.h /usr/include/endian.h
-../objs/gp2x/link.o: /usr/include/bits/endian.h /usr/include/sys/select.h
-../objs/gp2x/link.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
-../objs/gp2x/link.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+../objs/gp2x/link.o: /usr/include/bits/endian.h /usr/include/bits/byteswap.h
+../objs/gp2x/link.o: /usr/include/sys/select.h /usr/include/bits/select.h
+../objs/gp2x/link.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+../objs/gp2x/link.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/link.o: /usr/include/bits/pthreadtypes.h /usr/include/stdio.h
 ../objs/gp2x/link.o: /usr/include/libio.h /usr/include/_G_config.h
 ../objs/gp2x/link.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
@@ -900,7 +845,7 @@ depend:
 ../objs/gp2x/link.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
 ../objs/gp2x/link.o: surface.h
 ../objs/gp2x/link.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/link.o: asfont.h sfontplus.h utilities.h
+../objs/gp2x/link.o: utilities.h
 ../objs/gp2x/link.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/link.o: /usr/include/math.h /usr/include/bits/huge_val.h
 ../objs/gp2x/link.o: /usr/include/bits/huge_valf.h
@@ -924,6 +869,7 @@ depend:
 ../objs/gp2x/linkaction.o: /usr/include/sys/types.h /usr/include/bits/types.h
 ../objs/gp2x/linkaction.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/linkaction.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/linkaction.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/linkaction.o: /usr/include/sys/select.h
 ../objs/gp2x/linkaction.o: /usr/include/bits/select.h
 ../objs/gp2x/linkaction.o: /usr/include/bits/sigset.h
@@ -974,6 +920,7 @@ depend:
 ../objs/gp2x/linkapp.o: /usr/include/bits/types.h
 ../objs/gp2x/linkapp.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/linkapp.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/linkapp.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/linkapp.o: /usr/include/sys/select.h /usr/include/bits/select.h
 ../objs/gp2x/linkapp.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
 ../objs/gp2x/linkapp.o: /usr/include/sys/sysmacros.h
@@ -1035,7 +982,7 @@ depend:
 ../objs/gp2x/linkapp.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
 ../objs/gp2x/linkapp.o: surface.h
 ../objs/gp2x/linkapp.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/linkapp.o: asfont.h sfontplus.h utilities.h
+../objs/gp2x/linkapp.o: utilities.h
 ../objs/gp2x/linkapp.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/linkapp.o: /usr/include/math.h /usr/include/bits/huge_val.h
 ../objs/gp2x/linkapp.o: /usr/include/bits/huge_valf.h
@@ -1061,7 +1008,8 @@ depend:
 ../objs/gp2x/listview.o: /usr/include/assert.h /usr/include/stdlib.h
 ../objs/gp2x/listview.o: /usr/include/bits/waitflags.h
 ../objs/gp2x/listview.o: /usr/include/bits/waitstatus.h /usr/include/endian.h
-../objs/gp2x/listview.o: /usr/include/bits/endian.h /usr/include/xlocale.h
+../objs/gp2x/listview.o: /usr/include/bits/endian.h
+../objs/gp2x/listview.o: /usr/include/bits/byteswap.h /usr/include/xlocale.h
 ../objs/gp2x/listview.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/listview.o: /usr/include/sys/select.h /usr/include/bits/select.h
 ../objs/gp2x/listview.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
@@ -1107,7 +1055,7 @@ depend:
 ../objs/gp2x/listview.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
 ../objs/gp2x/listview.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
 ../objs/gp2x/listview.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/listview.o: asfont.h sfontplus.h utilities.h
+../objs/gp2x/listview.o: utilities.h
 ../objs/gp2x/listview.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/listview.o: /usr/include/math.h /usr/include/bits/huge_val.h
 ../objs/gp2x/listview.o: /usr/include/bits/huge_valf.h
@@ -1139,6 +1087,7 @@ depend:
 ../objs/gp2x/listviewitem.o: /usr/include/bits/waitflags.h
 ../objs/gp2x/listviewitem.o: /usr/include/bits/waitstatus.h
 ../objs/gp2x/listviewitem.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/listviewitem.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/listviewitem.o: /usr/include/xlocale.h /usr/include/sys/types.h
 ../objs/gp2x/listviewitem.o: /usr/include/time.h /usr/include/sys/select.h
 ../objs/gp2x/listviewitem.o: /usr/include/bits/select.h
@@ -1187,7 +1136,7 @@ depend:
 ../objs/gp2x/listviewitem.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
 ../objs/gp2x/listviewitem.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
 ../objs/gp2x/listviewitem.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/listviewitem.o: asfont.h sfontplus.h utilities.h
+../objs/gp2x/listviewitem.o: utilities.h
 ../objs/gp2x/listviewitem.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/listviewitem.o: /usr/include/math.h /usr/include/bits/huge_val.h
 ../objs/gp2x/listviewitem.o: /usr/include/bits/huge_valf.h
@@ -1207,9 +1156,10 @@ depend:
 ../objs/gp2x/menu.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
 ../objs/gp2x/menu.o: /usr/include/time.h /usr/include/bits/stat.h
 ../objs/gp2x/menu.o: /usr/include/sys/types.h /usr/include/endian.h
-../objs/gp2x/menu.o: /usr/include/bits/endian.h /usr/include/sys/select.h
-../objs/gp2x/menu.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
-../objs/gp2x/menu.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+../objs/gp2x/menu.o: /usr/include/bits/endian.h /usr/include/bits/byteswap.h
+../objs/gp2x/menu.o: /usr/include/sys/select.h /usr/include/bits/select.h
+../objs/gp2x/menu.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+../objs/gp2x/menu.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/menu.o: /usr/include/bits/pthreadtypes.h /usr/include/dirent.h
 ../objs/gp2x/menu.o: /usr/include/bits/dirent.h
 ../objs/gp2x/menu.o: /usr/include/bits/posix1_lim.h
@@ -1219,18 +1169,18 @@ depend:
 ../objs/gp2x/menu.o: /usr/include/bits/huge_valf.h
 ../objs/gp2x/menu.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
 ../objs/gp2x/menu.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
-../objs/gp2x/menu.o: /usr/include/bits/mathcalls.h tinyxml/tinyxml.h
-../objs/gp2x/menu.o: /usr/include/ctype.h /usr/include/xlocale.h
+../objs/gp2x/menu.o: /usr/include/bits/mathcalls.h gmenu2x.h
+../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
+../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/sparseconfig.h
 ../objs/gp2x/menu.o: /usr/include/stdio.h /usr/include/libio.h
 ../objs/gp2x/menu.o: /usr/include/_G_config.h /usr/include/wchar.h
 ../objs/gp2x/menu.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/menu.o: /usr/include/bits/sys_errlist.h /usr/include/stdlib.h
-../objs/gp2x/menu.o: /usr/include/bits/waitflags.h
-../objs/gp2x/menu.o: /usr/include/bits/waitstatus.h /usr/include/alloca.h
-../objs/gp2x/menu.o: /usr/include/string.h /usr/include/assert.h gmenu2x.h
-../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
-../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/sparseconfig.h
+../objs/gp2x/menu.o: /usr/include/bits/sys_errlist.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/sparsehash/densehashtable.h
+../objs/gp2x/menu.o: /usr/include/assert.h /usr/include/stdlib.h
+../objs/gp2x/menu.o: /usr/include/bits/waitflags.h
+../objs/gp2x/menu.o: /usr/include/bits/waitstatus.h /usr/include/xlocale.h
+../objs/gp2x/menu.o: /usr/include/alloca.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
 ../objs/gp2x/menu.o: surfacecollection.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
@@ -1240,8 +1190,9 @@ depend:
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_config.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_platform.h
-../objs/gp2x/menu.o: /usr/include/strings.h /usr/include/inttypes.h
-../objs/gp2x/menu.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+../objs/gp2x/menu.o: /usr/include/string.h /usr/include/strings.h
+../objs/gp2x/menu.o: /usr/include/inttypes.h /usr/include/stdint.h
+../objs/gp2x/menu.o: /usr/include/bits/wchar.h /usr/include/ctype.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/iconv.h
 ../objs/gp2x/menu.o: /usr/include/errno.h /usr/include/bits/errno.h
 ../objs/gp2x/menu.o: /usr/include/linux/errno.h /usr/include/asm/errno.h
@@ -1269,13 +1220,13 @@ depend:
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/menu.o: asfont.h sfontplus.h utilities.h
+../objs/gp2x/menu.o: utilities.h
 ../objs/gp2x/menu.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/menu.o: iconbutton.h button.h FastDelegate.h
 ../objs/gp2x/menu.o: /usr/include/memory.h translator.h touchscreen.h
 ../objs/gp2x/menu.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 ../objs/gp2x/menu.o: /usr/include/bits/uio.h inputmanager.h linkapp.h link.h
-../objs/gp2x/menu.o: menu.h linkaction.h filelister.h
+../objs/gp2x/menu.o: menu.h linkaction.h filelister.h pxml.h
 ../objs/gp2x/menusetting.o: menusetting.h inputmanager.h
 ../objs/gp2x/menusetting.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/menusetting.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
@@ -1290,6 +1241,7 @@ depend:
 ../objs/gp2x/menusetting.o: /usr/include/bits/types.h
 ../objs/gp2x/menusetting.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/menusetting.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/menusetting.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/menusetting.o: /usr/include/sys/select.h
 ../objs/gp2x/menusetting.o: /usr/include/bits/select.h
 ../objs/gp2x/menusetting.o: /usr/include/bits/sigset.h
@@ -1343,7 +1295,7 @@ depend:
 ../objs/gp2x/menusetting.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
 ../objs/gp2x/menusetting.o: surfacecollection.h
 ../objs/gp2x/menusetting.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
-../objs/gp2x/menusetting.o: surface.h asfont.h sfontplus.h utilities.h
+../objs/gp2x/menusetting.o: surface.h utilities.h
 ../objs/gp2x/menusetting.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/menusetting.o: /usr/include/math.h /usr/include/bits/huge_val.h
 ../objs/gp2x/menusetting.o: /usr/include/bits/huge_valf.h
@@ -1371,6 +1323,7 @@ depend:
 ../objs/gp2x/menusettingbool.o: /usr/include/bits/typesizes.h
 ../objs/gp2x/menusettingbool.o: /usr/include/time.h /usr/include/endian.h
 ../objs/gp2x/menusettingbool.o: /usr/include/bits/endian.h
+../objs/gp2x/menusettingbool.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/menusettingbool.o: /usr/include/sys/select.h
 ../objs/gp2x/menusettingbool.o: /usr/include/bits/select.h
 ../objs/gp2x/menusettingbool.o: /usr/include/bits/sigset.h
@@ -1428,7 +1381,7 @@ depend:
 ../objs/gp2x/menusettingbool.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
 ../objs/gp2x/menusettingbool.o: surfacecollection.h
 ../objs/gp2x/menusettingbool.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
-../objs/gp2x/menusettingbool.o: surface.h asfont.h sfontplus.h utilities.h
+../objs/gp2x/menusettingbool.o: surface.h utilities.h
 ../objs/gp2x/menusettingbool.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/menusettingbool.o: /usr/include/math.h
 ../objs/gp2x/menusettingbool.o: /usr/include/bits/huge_val.h
@@ -1463,6 +1416,7 @@ depend:
 ../objs/gp2x/menusettingdir.o: /usr/include/bits/waitstatus.h
 ../objs/gp2x/menusettingdir.o: /usr/include/endian.h
 ../objs/gp2x/menusettingdir.o: /usr/include/bits/endian.h
+../objs/gp2x/menusettingdir.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/menusettingdir.o: /usr/include/xlocale.h
 ../objs/gp2x/menusettingdir.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/menusettingdir.o: /usr/include/sys/select.h
@@ -1512,7 +1466,7 @@ depend:
 ../objs/gp2x/menusettingdir.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
 ../objs/gp2x/menusettingdir.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
 ../objs/gp2x/menusettingdir.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/menusettingdir.o: asfont.h sfontplus.h utilities.h
+../objs/gp2x/menusettingdir.o: utilities.h
 ../objs/gp2x/menusettingdir.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/menusettingdir.o: /usr/include/math.h
 ../objs/gp2x/menusettingdir.o: /usr/include/bits/huge_val.h
@@ -1549,6 +1503,7 @@ depend:
 ../objs/gp2x/menusettingfile.o: /usr/include/bits/waitstatus.h
 ../objs/gp2x/menusettingfile.o: /usr/include/endian.h
 ../objs/gp2x/menusettingfile.o: /usr/include/bits/endian.h
+../objs/gp2x/menusettingfile.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/menusettingfile.o: /usr/include/xlocale.h
 ../objs/gp2x/menusettingfile.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/menusettingfile.o: /usr/include/sys/select.h
@@ -1600,7 +1555,7 @@ depend:
 ../objs/gp2x/menusettingfile.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
 ../objs/gp2x/menusettingfile.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
 ../objs/gp2x/menusettingfile.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/menusettingfile.o: asfont.h sfontplus.h utilities.h
+../objs/gp2x/menusettingfile.o: utilities.h
 ../objs/gp2x/menusettingfile.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/menusettingfile.o: /usr/include/math.h
 ../objs/gp2x/menusettingfile.o: /usr/include/bits/huge_val.h
@@ -1639,6 +1594,7 @@ depend:
 ../objs/gp2x/menusettingimage.o: /usr/include/bits/waitstatus.h
 ../objs/gp2x/menusettingimage.o: /usr/include/endian.h
 ../objs/gp2x/menusettingimage.o: /usr/include/bits/endian.h
+../objs/gp2x/menusettingimage.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/menusettingimage.o: /usr/include/xlocale.h
 ../objs/gp2x/menusettingimage.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/menusettingimage.o: /usr/include/sys/select.h
@@ -1691,7 +1647,7 @@ depend:
 ../objs/gp2x/menusettingimage.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
 ../objs/gp2x/menusettingimage.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
 ../objs/gp2x/menusettingimage.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/menusettingimage.o: asfont.h sfontplus.h utilities.h
+../objs/gp2x/menusettingimage.o: utilities.h
 ../objs/gp2x/menusettingimage.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/menusettingimage.o: /usr/include/math.h
 ../objs/gp2x/menusettingimage.o: /usr/include/bits/huge_val.h
@@ -1726,6 +1682,7 @@ depend:
 ../objs/gp2x/menusettingint.o: /usr/include/bits/typesizes.h
 ../objs/gp2x/menusettingint.o: /usr/include/time.h /usr/include/endian.h
 ../objs/gp2x/menusettingint.o: /usr/include/bits/endian.h
+../objs/gp2x/menusettingint.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/menusettingint.o: /usr/include/sys/select.h
 ../objs/gp2x/menusettingint.o: /usr/include/bits/select.h
 ../objs/gp2x/menusettingint.o: /usr/include/bits/sigset.h
@@ -1781,7 +1738,7 @@ depend:
 ../objs/gp2x/menusettingint.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/type_traits.h
 ../objs/gp2x/menusettingint.o: surfacecollection.h
 ../objs/gp2x/menusettingint.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
-../objs/gp2x/menusettingint.o: surface.h asfont.h sfontplus.h utilities.h
+../objs/gp2x/menusettingint.o: surface.h utilities.h
 ../objs/gp2x/menusettingint.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/menusettingint.o: /usr/include/math.h
 ../objs/gp2x/menusettingint.o: /usr/include/bits/huge_val.h
@@ -1819,6 +1776,7 @@ depend:
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/waitstatus.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/endian.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/endian.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/xlocale.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/sys/types.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/time.h
@@ -1873,7 +1831,7 @@ depend:
 ../objs/gp2x/menusettingmultistring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
 ../objs/gp2x/menusettingmultistring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
 ../objs/gp2x/menusettingmultistring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/menusettingmultistring.o: asfont.h sfontplus.h utilities.h
+../objs/gp2x/menusettingmultistring.o: utilities.h
 ../objs/gp2x/menusettingmultistring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/math.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/huge_val.h
@@ -1911,6 +1869,7 @@ depend:
 ../objs/gp2x/menusettingrgba.o: /usr/include/bits/waitstatus.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/endian.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/bits/endian.h
+../objs/gp2x/menusettingrgba.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/xlocale.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/sys/select.h
@@ -1962,7 +1921,7 @@ depend:
 ../objs/gp2x/menusettingrgba.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
 ../objs/gp2x/menusettingrgba.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
 ../objs/gp2x/menusettingrgba.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/menusettingrgba.o: asfont.h sfontplus.h utilities.h
+../objs/gp2x/menusettingrgba.o: utilities.h
 ../objs/gp2x/menusettingrgba.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/math.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/bits/huge_val.h
@@ -2002,6 +1961,7 @@ depend:
 ../objs/gp2x/menusettingstring.o: /usr/include/bits/waitstatus.h
 ../objs/gp2x/menusettingstring.o: /usr/include/endian.h
 ../objs/gp2x/menusettingstring.o: /usr/include/bits/endian.h
+../objs/gp2x/menusettingstring.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/menusettingstring.o: /usr/include/xlocale.h
 ../objs/gp2x/menusettingstring.o: /usr/include/sys/types.h
 ../objs/gp2x/menusettingstring.o: /usr/include/time.h
@@ -2056,7 +2016,7 @@ depend:
 ../objs/gp2x/menusettingstring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
 ../objs/gp2x/menusettingstring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
 ../objs/gp2x/menusettingstring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/menusettingstring.o: asfont.h sfontplus.h utilities.h
+../objs/gp2x/menusettingstring.o: utilities.h
 ../objs/gp2x/menusettingstring.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/menusettingstring.o: /usr/include/math.h
 ../objs/gp2x/menusettingstring.o: /usr/include/bits/huge_val.h
@@ -2087,6 +2047,7 @@ depend:
 ../objs/gp2x/messagebox.o: /usr/include/bits/types.h
 ../objs/gp2x/messagebox.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/messagebox.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/messagebox.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/messagebox.o: /usr/include/sys/select.h
 ../objs/gp2x/messagebox.o: /usr/include/bits/select.h
 ../objs/gp2x/messagebox.o: /usr/include/bits/sigset.h
@@ -2148,12 +2109,28 @@ depend:
 ../objs/gp2x/messagebox.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
 ../objs/gp2x/messagebox.o: surface.h
 ../objs/gp2x/messagebox.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/messagebox.o: asfont.h sfontplus.h utilities.h iconbutton.h
-../objs/gp2x/messagebox.o: button.h FastDelegate.h /usr/include/memory.h
-../objs/gp2x/messagebox.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/messagebox.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
-../objs/gp2x/messagebox.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
-../objs/gp2x/messagebox.o: inputmanager.h
+../objs/gp2x/messagebox.o: utilities.h iconbutton.h button.h FastDelegate.h
+../objs/gp2x/messagebox.o: /usr/include/memory.h translator.h touchscreen.h
+../objs/gp2x/messagebox.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+../objs/gp2x/messagebox.o: /usr/include/bits/uio.h /usr/include/sys/stat.h
+../objs/gp2x/messagebox.o: /usr/include/bits/stat.h inputmanager.h
+../objs/gp2x/pxml.o: pxml.h tinyxml/tinyxml.h /usr/include/ctype.h
+../objs/gp2x/pxml.o: /usr/include/features.h /usr/include/sys/cdefs.h
+../objs/gp2x/pxml.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
+../objs/gp2x/pxml.o: /usr/include/gnu/stubs-32.h /usr/include/bits/types.h
+../objs/gp2x/pxml.o: /usr/include/bits/typesizes.h /usr/include/endian.h
+../objs/gp2x/pxml.o: /usr/include/bits/endian.h /usr/include/bits/byteswap.h
+../objs/gp2x/pxml.o: /usr/include/xlocale.h /usr/include/stdio.h
+../objs/gp2x/pxml.o: /usr/include/libio.h /usr/include/_G_config.h
+../objs/gp2x/pxml.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
+../objs/gp2x/pxml.o: /usr/include/bits/sys_errlist.h /usr/include/stdlib.h
+../objs/gp2x/pxml.o: /usr/include/bits/waitflags.h
+../objs/gp2x/pxml.o: /usr/include/bits/waitstatus.h /usr/include/sys/types.h
+../objs/gp2x/pxml.o: /usr/include/time.h /usr/include/sys/select.h
+../objs/gp2x/pxml.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
+../objs/gp2x/pxml.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+../objs/gp2x/pxml.o: /usr/include/bits/pthreadtypes.h /usr/include/alloca.h
+../objs/gp2x/pxml.o: /usr/include/string.h /usr/include/assert.h
 ../objs/gp2x/selector.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/selector.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
 ../objs/gp2x/selector.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
@@ -2166,6 +2143,7 @@ depend:
 ../objs/gp2x/selector.o: /usr/include/bits/types.h
 ../objs/gp2x/selector.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/selector.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/selector.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/selector.o: /usr/include/sys/select.h /usr/include/bits/select.h
 ../objs/gp2x/selector.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
 ../objs/gp2x/selector.o: /usr/include/sys/sysmacros.h
@@ -2229,10 +2207,9 @@ depend:
 ../objs/gp2x/selector.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
 ../objs/gp2x/selector.o: surface.h
 ../objs/gp2x/selector.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/selector.o: asfont.h sfontplus.h utilities.h iconbutton.h
-../objs/gp2x/selector.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/selector.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
-../objs/gp2x/selector.o: inputmanager.h filelister.h
+../objs/gp2x/selector.o: utilities.h iconbutton.h translator.h touchscreen.h
+../objs/gp2x/selector.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+../objs/gp2x/selector.o: /usr/include/bits/uio.h inputmanager.h filelister.h
 ../objs/gp2x/selectordetector.o: selectordetector.h utilities.h
 ../objs/gp2x/selectordetector.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL.h
 ../objs/gp2x/selectordetector.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_main.h
@@ -2249,6 +2226,7 @@ depend:
 ../objs/gp2x/selectordetector.o: /usr/include/bits/typesizes.h
 ../objs/gp2x/selectordetector.o: /usr/include/time.h /usr/include/endian.h
 ../objs/gp2x/selectordetector.o: /usr/include/bits/endian.h
+../objs/gp2x/selectordetector.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/selectordetector.o: /usr/include/sys/select.h
 ../objs/gp2x/selectordetector.o: /usr/include/bits/select.h
 ../objs/gp2x/selectordetector.o: /usr/include/bits/sigset.h
@@ -2321,6 +2299,7 @@ depend:
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/typesizes.h
 ../objs/gp2x/settingsdialog.o: /usr/include/time.h /usr/include/endian.h
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/endian.h
+../objs/gp2x/settingsdialog.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/settingsdialog.o: /usr/include/sys/select.h
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/select.h
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/sigset.h
@@ -2384,8 +2363,8 @@ depend:
 ../objs/gp2x/settingsdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
 ../objs/gp2x/settingsdialog.o: surface.h
 ../objs/gp2x/settingsdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/settingsdialog.o: asfont.h sfontplus.h utilities.h iconbutton.h
-../objs/gp2x/settingsdialog.o: button.h FastDelegate.h /usr/include/memory.h
+../objs/gp2x/settingsdialog.o: utilities.h iconbutton.h button.h
+../objs/gp2x/settingsdialog.o: FastDelegate.h /usr/include/memory.h
 ../objs/gp2x/settingsdialog.o: translator.h touchscreen.h
 ../objs/gp2x/settingsdialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/uio.h
@@ -2406,6 +2385,7 @@ depend:
 ../objs/gp2x/sfontplus.o: /usr/include/bits/types.h
 ../objs/gp2x/sfontplus.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/sfontplus.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/sfontplus.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/sfontplus.o: /usr/include/sys/select.h
 ../objs/gp2x/sfontplus.o: /usr/include/bits/select.h
 ../objs/gp2x/sfontplus.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
@@ -2447,7 +2427,9 @@ depend:
 ../objs/gp2x/sfontplus.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_loadso.h
 ../objs/gp2x/sfontplus.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
 ../objs/gp2x/sfontplus.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
+../objs/gp2x/sfontplus.o: surface.h
 ../objs/gp2x/sfontplus.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
+../objs/gp2x/sfontplus.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_ttf.h
 ../objs/gp2x/surface.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/surface.o: /usr/include/math.h /usr/include/features.h
 ../objs/gp2x/surface.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
@@ -2465,6 +2447,7 @@ depend:
 ../objs/gp2x/surface.o: /usr/include/sys/types.h /usr/include/bits/types.h
 ../objs/gp2x/surface.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/surface.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/surface.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/surface.o: /usr/include/sys/select.h /usr/include/bits/select.h
 ../objs/gp2x/surface.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
 ../objs/gp2x/surface.o: /usr/include/sys/sysmacros.h
@@ -2506,7 +2489,7 @@ depend:
 ../objs/gp2x/surface.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
 ../objs/gp2x/surface.o: surface.h
 ../objs/gp2x/surface.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/surface.o: asfont.h sfontplus.h utilities.h
+../objs/gp2x/surface.o: utilities.h
 ../objs/gp2x/surfacecollection.o: surfacecollection.h
 ../objs/gp2x/surfacecollection.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/google/dense_hash_map
 ../objs/gp2x/surfacecollection.o: surface.h
@@ -2525,6 +2508,7 @@ depend:
 ../objs/gp2x/surfacecollection.o: /usr/include/bits/typesizes.h
 ../objs/gp2x/surfacecollection.o: /usr/include/time.h /usr/include/endian.h
 ../objs/gp2x/surfacecollection.o: /usr/include/bits/endian.h
+../objs/gp2x/surfacecollection.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/surfacecollection.o: /usr/include/sys/select.h
 ../objs/gp2x/surfacecollection.o: /usr/include/bits/select.h
 ../objs/gp2x/surfacecollection.o: /usr/include/bits/sigset.h
@@ -2575,7 +2559,7 @@ depend:
 ../objs/gp2x/surfacecollection.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
 ../objs/gp2x/surfacecollection.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
 ../objs/gp2x/surfacecollection.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/surfacecollection.o: asfont.h sfontplus.h utilities.h
+../objs/gp2x/surfacecollection.o: utilities.h
 ../objs/gp2x/surfacecollection.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/surfacecollection.o: /usr/include/math.h
 ../objs/gp2x/surfacecollection.o: /usr/include/bits/huge_val.h
@@ -2603,6 +2587,7 @@ depend:
 ../objs/gp2x/textdialog.o: /usr/include/bits/waitflags.h
 ../objs/gp2x/textdialog.o: /usr/include/bits/waitstatus.h
 ../objs/gp2x/textdialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/textdialog.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/textdialog.o: /usr/include/xlocale.h /usr/include/sys/types.h
 ../objs/gp2x/textdialog.o: /usr/include/time.h /usr/include/sys/select.h
 ../objs/gp2x/textdialog.o: /usr/include/bits/select.h
@@ -2651,7 +2636,7 @@ depend:
 ../objs/gp2x/textdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
 ../objs/gp2x/textdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
 ../objs/gp2x/textdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/textdialog.o: asfont.h sfontplus.h utilities.h
+../objs/gp2x/textdialog.o: utilities.h
 ../objs/gp2x/textdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/textdialog.o: /usr/include/math.h /usr/include/bits/huge_val.h
 ../objs/gp2x/textdialog.o: /usr/include/bits/huge_valf.h
@@ -2685,6 +2670,7 @@ depend:
 ../objs/gp2x/textmanualdialog.o: /usr/include/bits/waitstatus.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/endian.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/bits/endian.h
+../objs/gp2x/textmanualdialog.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/xlocale.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/sys/select.h
@@ -2737,7 +2723,7 @@ depend:
 ../objs/gp2x/textmanualdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
 ../objs/gp2x/textmanualdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
 ../objs/gp2x/textmanualdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/textmanualdialog.o: asfont.h sfontplus.h utilities.h
+../objs/gp2x/textmanualdialog.o: utilities.h
 ../objs/gp2x/textmanualdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/math.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/bits/huge_val.h
@@ -2772,6 +2758,7 @@ depend:
 ../objs/gp2x/touchscreen.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_platform.h
 ../objs/gp2x/touchscreen.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/touchscreen.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/touchscreen.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/touchscreen.o: /usr/include/sys/select.h
 ../objs/gp2x/touchscreen.o: /usr/include/bits/select.h
 ../objs/gp2x/touchscreen.o: /usr/include/bits/sigset.h
@@ -2833,6 +2820,7 @@ depend:
 ../objs/gp2x/translator.o: /usr/include/bits/types.h
 ../objs/gp2x/translator.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/translator.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/translator.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/translator.o: /usr/include/sys/select.h
 ../objs/gp2x/translator.o: /usr/include/bits/select.h
 ../objs/gp2x/translator.o: /usr/include/bits/sigset.h
@@ -2893,6 +2881,7 @@ depend:
 ../objs/gp2x/utilities.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/utilities.o: /usr/include/bits/stat.h /usr/include/sys/types.h
 ../objs/gp2x/utilities.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/utilities.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/utilities.o: /usr/include/sys/select.h
 ../objs/gp2x/utilities.o: /usr/include/bits/select.h
 ../objs/gp2x/utilities.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
@@ -2970,6 +2959,7 @@ depend:
 ../objs/gp2x/wallpaperdialog.o: /usr/include/bits/waitstatus.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/endian.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/bits/endian.h
+../objs/gp2x/wallpaperdialog.o: /usr/include/bits/byteswap.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/xlocale.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/sys/select.h
@@ -3021,7 +3011,7 @@ depend:
 ../objs/gp2x/wallpaperdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_timer.h
 ../objs/gp2x/wallpaperdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_version.h
 ../objs/gp2x/wallpaperdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_image.h
-../objs/gp2x/wallpaperdialog.o: asfont.h sfontplus.h utilities.h
+../objs/gp2x/wallpaperdialog.o: utilities.h
 ../objs/gp2x/wallpaperdialog.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_gfxPrimitives.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/math.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/bits/huge_val.h

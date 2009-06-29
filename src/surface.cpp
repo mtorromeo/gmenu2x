@@ -35,6 +35,10 @@ RGBAColor strtorgba(string strColor) {
 	return c;
 }
 
+SDL_Color rgbatosdl(RGBAColor color) {
+	return (SDL_Color){color.r, color.g, color.b, color.a};
+}
+
 Surface::Surface() {
 	raw = NULL;
 	dblbuffer = NULL;
@@ -85,7 +89,7 @@ Surface::Surface(int w, int h, Uint32 flags) {
 	bmask = 0x00ff0000;
 	amask = 0xff000000;
 #endif
-	raw = SDL_CreateRGBSurface( flags, w, h, 16, rmask, gmask, bmask, amask );
+	raw = SDL_DisplayFormat( SDL_CreateRGBSurface( flags, w, h, 16, rmask, gmask, bmask, amask ) );
 	halfW = w/2;
 	halfH = h/2;
 }
@@ -264,7 +268,7 @@ void Surface::blendAdd(Surface *target, int x, int y) {
 */
 }
 
-void Surface::write(ASFont *font, string text, int x, int y, const unsigned short halign, const unsigned short valign) {
+void Surface::write(SFontPlus *font, string text, int x, int y, const unsigned short halign, const unsigned short valign) {
 	font->write(this,text,x,y,halign,valign);
 }
 

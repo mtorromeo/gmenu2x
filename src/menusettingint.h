@@ -39,7 +39,7 @@ private:
 	void dec();
 
 public:
-	MenuSettingInt(GMenu2X *gmenu2x, string name, string description, int *value, int min, int max);
+	MenuSettingInt(GMenu2X *gmenu2x, string name, string description, int *value, int min, int max, int delta=1);
 	virtual ~MenuSettingInt() {};
 
 	virtual void draw(int y);
@@ -49,7 +49,7 @@ public:
 	virtual void drawSelected(int y);
 	virtual bool edited();
 
-	int min, max;
+	int min, max, delta;
 	virtual void setValue(int value);
 	int value();
 };

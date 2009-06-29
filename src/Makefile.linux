@@ -6,7 +6,7 @@ STRIP = strip
 
 CFLAGS = -I"/usr/include" -I"$(CHAINPREFIX)/include" `sdl-config --cflags` -DDEBUG -DTARGET_PANDORA -Wall -Wno-deprecated -Wno-unknown-pragmas -Wno-format -pg -O3 -DTIXML_USE_STL
 CXXFLAGS = $(CFLAGS)
-LDFLAGS = -L"/usr/lib" -L"$(CHAINPREFIX)/lib" `sdl-config --libs` -lfreetype -lSDL_image -lSDL_gfx -ljpeg -lpng12 -lz #-lpnd #-lSDL_gfx
+LDFLAGS = -L"/usr/lib" -L"$(CHAINPREFIX)/lib" `sdl-config --libs` -lfreetype -lSDL_image -lSDL_ttf -lSDL_gfx -ljpeg -lpng12 -lz #-lpnd #-lSDL_gfx
 
 TARGET = ../build/gmenu
 OBJDIR = ../objs/linux
@@ -43,58 +43,6 @@ depend:
 	makedepend -fMakefile.linux -p$(OBJDIR)/ -- $(CFLAGS) -- *.cpp
 # DO NOT DELETE
 
-../objs/linux/asfont.o: asfont.h /usr/include/SDL/SDL.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_main.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_stdinc.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_config.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_platform.h
-../objs/linux/asfont.o: /usr/include/sys/types.h /usr/include/features.h
-../objs/linux/asfont.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
-../objs/linux/asfont.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
-../objs/linux/asfont.o: /usr/include/bits/types.h
-../objs/linux/asfont.o: /usr/include/bits/typesizes.h /usr/include/time.h
-../objs/linux/asfont.o: /usr/include/endian.h /usr/include/bits/endian.h
-../objs/linux/asfont.o: /usr/include/sys/select.h /usr/include/bits/select.h
-../objs/linux/asfont.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
-../objs/linux/asfont.o: /usr/include/sys/sysmacros.h
-../objs/linux/asfont.o: /usr/include/bits/pthreadtypes.h /usr/include/stdio.h
-../objs/linux/asfont.o: /usr/include/libio.h /usr/include/_G_config.h
-../objs/linux/asfont.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
-../objs/linux/asfont.o: /usr/include/bits/sys_errlist.h /usr/include/stdlib.h
-../objs/linux/asfont.o: /usr/include/bits/waitflags.h
-../objs/linux/asfont.o: /usr/include/bits/waitstatus.h /usr/include/xlocale.h
-../objs/linux/asfont.o: /usr/include/alloca.h /usr/include/string.h
-../objs/linux/asfont.o: /usr/include/strings.h /usr/include/inttypes.h
-../objs/linux/asfont.o: /usr/include/stdint.h /usr/include/bits/wchar.h
-../objs/linux/asfont.o: /usr/include/ctype.h /usr/include/iconv.h
-../objs/linux/asfont.o: /usr/include/SDL/begin_code.h
-../objs/linux/asfont.o: /usr/include/SDL/close_code.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_audio.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_error.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_endian.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_mutex.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_thread.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_rwops.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_cdrom.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_cpuinfo.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_events.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_active.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_keyboard.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_keysym.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_mouse.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_video.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_joystick.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_quit.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_loadso.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_timer.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_version.h sfontplus.h surface.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_image.h utilities.h
-../objs/linux/asfont.o: /usr/include/SDL/SDL_gfxPrimitives.h
-../objs/linux/asfont.o: /usr/include/math.h /usr/include/bits/huge_val.h
-../objs/linux/asfont.o: /usr/include/bits/huge_valf.h
-../objs/linux/asfont.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
-../objs/linux/asfont.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
-../objs/linux/asfont.o: /usr/include/bits/mathcalls.h
 ../objs/linux/button.o: button.h /usr/include/SDL/SDL.h
 ../objs/linux/button.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/button.o: /usr/include/SDL/SDL_stdinc.h
@@ -106,6 +54,7 @@ depend:
 ../objs/linux/button.o: /usr/include/bits/types.h
 ../objs/linux/button.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/button.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/linux/button.o: /usr/include/bits/byteswap.h
 ../objs/linux/button.o: /usr/include/sys/select.h /usr/include/bits/select.h
 ../objs/linux/button.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
 ../objs/linux/button.o: /usr/include/sys/sysmacros.h
@@ -147,8 +96,8 @@ depend:
 ../objs/linux/button.o: /usr/include/assert.h
 ../objs/linux/button.o: /usr/include/google/type_traits.h surfacecollection.h
 ../objs/linux/button.o: /usr/include/google/dense_hash_map surface.h
-../objs/linux/button.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
-../objs/linux/button.o: utilities.h /usr/include/SDL/SDL_gfxPrimitives.h
+../objs/linux/button.o: /usr/include/SDL/SDL_image.h utilities.h
+../objs/linux/button.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/button.o: /usr/include/math.h /usr/include/bits/huge_val.h
 ../objs/linux/button.o: /usr/include/bits/huge_valf.h
 ../objs/linux/button.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
@@ -170,6 +119,7 @@ depend:
 ../objs/linux/dirdialog.o: /usr/include/bits/types.h
 ../objs/linux/dirdialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/dirdialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/linux/dirdialog.o: /usr/include/bits/byteswap.h
 ../objs/linux/dirdialog.o: /usr/include/sys/select.h
 ../objs/linux/dirdialog.o: /usr/include/bits/select.h
 ../objs/linux/dirdialog.o: /usr/include/bits/sigset.h
@@ -227,8 +177,8 @@ depend:
 ../objs/linux/dirdialog.o: /usr/include/google/type_traits.h
 ../objs/linux/dirdialog.o: surfacecollection.h
 ../objs/linux/dirdialog.o: /usr/include/google/dense_hash_map surface.h
-../objs/linux/dirdialog.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
-../objs/linux/dirdialog.o: utilities.h iconbutton.h button.h FastDelegate.h
+../objs/linux/dirdialog.o: /usr/include/SDL/SDL_image.h utilities.h
+../objs/linux/dirdialog.o: iconbutton.h button.h FastDelegate.h
 ../objs/linux/dirdialog.o: /usr/include/memory.h translator.h touchscreen.h
 ../objs/linux/dirdialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 ../objs/linux/dirdialog.o: /usr/include/bits/uio.h inputmanager.h
@@ -246,6 +196,7 @@ depend:
 ../objs/linux/filedialog.o: /usr/include/bits/types.h
 ../objs/linux/filedialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/filedialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/linux/filedialog.o: /usr/include/bits/byteswap.h
 ../objs/linux/filedialog.o: /usr/include/sys/select.h
 ../objs/linux/filedialog.o: /usr/include/bits/select.h
 ../objs/linux/filedialog.o: /usr/include/bits/sigset.h
@@ -305,8 +256,8 @@ depend:
 ../objs/linux/filedialog.o: /usr/include/google/type_traits.h
 ../objs/linux/filedialog.o: surfacecollection.h
 ../objs/linux/filedialog.o: /usr/include/google/dense_hash_map surface.h
-../objs/linux/filedialog.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
-../objs/linux/filedialog.o: utilities.h iconbutton.h button.h FastDelegate.h
+../objs/linux/filedialog.o: /usr/include/SDL/SDL_image.h utilities.h
+../objs/linux/filedialog.o: iconbutton.h button.h FastDelegate.h
 ../objs/linux/filedialog.o: /usr/include/memory.h translator.h touchscreen.h
 ../objs/linux/filedialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 ../objs/linux/filedialog.o: /usr/include/bits/uio.h inputmanager.h
@@ -319,6 +270,7 @@ depend:
 ../objs/linux/filelister.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/filelister.o: /usr/include/bits/stat.h /usr/include/sys/types.h
 ../objs/linux/filelister.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/linux/filelister.o: /usr/include/bits/byteswap.h
 ../objs/linux/filelister.o: /usr/include/sys/select.h
 ../objs/linux/filelister.o: /usr/include/bits/select.h
 ../objs/linux/filelister.o: /usr/include/bits/sigset.h
@@ -385,7 +337,8 @@ depend:
 ../objs/linux/gmenu2x.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 ../objs/linux/gmenu2x.o: /usr/include/bits/waitflags.h
 ../objs/linux/gmenu2x.o: /usr/include/bits/waitstatus.h /usr/include/endian.h
-../objs/linux/gmenu2x.o: /usr/include/bits/endian.h /usr/include/xlocale.h
+../objs/linux/gmenu2x.o: /usr/include/bits/endian.h
+../objs/linux/gmenu2x.o: /usr/include/bits/byteswap.h /usr/include/xlocale.h
 ../objs/linux/gmenu2x.o: /usr/include/sys/types.h /usr/include/bits/types.h
 ../objs/linux/gmenu2x.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/gmenu2x.o: /usr/include/sys/select.h /usr/include/bits/select.h
@@ -471,7 +424,7 @@ depend:
 ../objs/linux/gmenu2x.o: /usr/include/linux/ioctl.h
 ../objs/linux/gmenu2x.o: /usr/include/linux/patchkey.h linkapp.h link.h
 ../objs/linux/gmenu2x.o: button.h FastDelegate.h /usr/include/memory.h
-../objs/linux/gmenu2x.o: linkaction.h menu.h asfont.h sfontplus.h surface.h
+../objs/linux/gmenu2x.o: linkaction.h menu.h sfontplus.h surface.h
 ../objs/linux/gmenu2x.o: /usr/include/SDL/SDL_image.h filedialog.h
 ../objs/linux/gmenu2x.o: filelister.h gmenu2x.h
 ../objs/linux/gmenu2x.o: /usr/include/google/dense_hash_map
@@ -502,6 +455,7 @@ depend:
 ../objs/linux/iconbutton.o: /usr/include/bits/types.h
 ../objs/linux/iconbutton.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/iconbutton.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/linux/iconbutton.o: /usr/include/bits/byteswap.h
 ../objs/linux/iconbutton.o: /usr/include/sys/select.h
 ../objs/linux/iconbutton.o: /usr/include/bits/select.h
 ../objs/linux/iconbutton.o: /usr/include/bits/sigset.h
@@ -549,8 +503,8 @@ depend:
 ../objs/linux/iconbutton.o: /usr/include/google/type_traits.h
 ../objs/linux/iconbutton.o: surfacecollection.h
 ../objs/linux/iconbutton.o: /usr/include/google/dense_hash_map surface.h
-../objs/linux/iconbutton.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
-../objs/linux/iconbutton.o: utilities.h /usr/include/SDL/SDL_gfxPrimitives.h
+../objs/linux/iconbutton.o: /usr/include/SDL/SDL_image.h utilities.h
+../objs/linux/iconbutton.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/iconbutton.o: /usr/include/math.h /usr/include/bits/huge_val.h
 ../objs/linux/iconbutton.o: /usr/include/bits/huge_valf.h
 ../objs/linux/iconbutton.o: /usr/include/bits/huge_vall.h
@@ -575,6 +529,7 @@ depend:
 ../objs/linux/imagedialog.o: /usr/include/bits/typesizes.h
 ../objs/linux/imagedialog.o: /usr/include/time.h /usr/include/endian.h
 ../objs/linux/imagedialog.o: /usr/include/bits/endian.h
+../objs/linux/imagedialog.o: /usr/include/bits/byteswap.h
 ../objs/linux/imagedialog.o: /usr/include/sys/select.h
 ../objs/linux/imagedialog.o: /usr/include/bits/select.h
 ../objs/linux/imagedialog.o: /usr/include/bits/sigset.h
@@ -634,11 +589,10 @@ depend:
 ../objs/linux/imagedialog.o: /usr/include/google/type_traits.h
 ../objs/linux/imagedialog.o: surfacecollection.h
 ../objs/linux/imagedialog.o: /usr/include/google/dense_hash_map surface.h
-../objs/linux/imagedialog.o: /usr/include/SDL/SDL_image.h asfont.h
-../objs/linux/imagedialog.o: sfontplus.h utilities.h iconbutton.h button.h
-../objs/linux/imagedialog.o: FastDelegate.h /usr/include/memory.h
-../objs/linux/imagedialog.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/linux/imagedialog.o: /usr/include/bits/fcntl.h
+../objs/linux/imagedialog.o: /usr/include/SDL/SDL_image.h utilities.h
+../objs/linux/imagedialog.o: iconbutton.h button.h FastDelegate.h
+../objs/linux/imagedialog.o: /usr/include/memory.h translator.h touchscreen.h
+../objs/linux/imagedialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 ../objs/linux/imagedialog.o: /usr/include/bits/uio.h inputmanager.h
 ../objs/linux/inputdialog.o: /usr/include/SDL/SDL.h
 ../objs/linux/inputdialog.o: /usr/include/SDL/SDL_main.h
@@ -654,6 +608,7 @@ depend:
 ../objs/linux/inputdialog.o: /usr/include/bits/typesizes.h
 ../objs/linux/inputdialog.o: /usr/include/time.h /usr/include/endian.h
 ../objs/linux/inputdialog.o: /usr/include/bits/endian.h
+../objs/linux/inputdialog.o: /usr/include/bits/byteswap.h
 ../objs/linux/inputdialog.o: /usr/include/sys/select.h
 ../objs/linux/inputdialog.o: /usr/include/bits/select.h
 ../objs/linux/inputdialog.o: /usr/include/bits/sigset.h
@@ -707,11 +662,10 @@ depend:
 ../objs/linux/inputdialog.o: /usr/include/google/type_traits.h
 ../objs/linux/inputdialog.o: surfacecollection.h
 ../objs/linux/inputdialog.o: /usr/include/google/dense_hash_map surface.h
-../objs/linux/inputdialog.o: /usr/include/SDL/SDL_image.h asfont.h
-../objs/linux/inputdialog.o: sfontplus.h utilities.h iconbutton.h button.h
-../objs/linux/inputdialog.o: FastDelegate.h /usr/include/memory.h
-../objs/linux/inputdialog.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/linux/inputdialog.o: /usr/include/bits/fcntl.h
+../objs/linux/inputdialog.o: /usr/include/SDL/SDL_image.h utilities.h
+../objs/linux/inputdialog.o: iconbutton.h button.h FastDelegate.h
+../objs/linux/inputdialog.o: /usr/include/memory.h translator.h touchscreen.h
+../objs/linux/inputdialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 ../objs/linux/inputdialog.o: /usr/include/bits/uio.h /usr/include/sys/stat.h
 ../objs/linux/inputdialog.o: /usr/include/bits/stat.h inputmanager.h
 ../objs/linux/inputmanager.o: inputmanager.h /usr/include/SDL/SDL.h
@@ -729,6 +683,7 @@ depend:
 ../objs/linux/inputmanager.o: /usr/include/bits/typesizes.h
 ../objs/linux/inputmanager.o: /usr/include/time.h /usr/include/endian.h
 ../objs/linux/inputmanager.o: /usr/include/bits/endian.h
+../objs/linux/inputmanager.o: /usr/include/bits/byteswap.h
 ../objs/linux/inputmanager.o: /usr/include/sys/select.h
 ../objs/linux/inputmanager.o: /usr/include/bits/select.h
 ../objs/linux/inputmanager.o: /usr/include/bits/sigset.h
@@ -787,9 +742,10 @@ depend:
 ../objs/linux/link.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 ../objs/linux/link.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
 ../objs/linux/link.o: /usr/include/time.h /usr/include/endian.h
-../objs/linux/link.o: /usr/include/bits/endian.h /usr/include/sys/select.h
-../objs/linux/link.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
-../objs/linux/link.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+../objs/linux/link.o: /usr/include/bits/endian.h /usr/include/bits/byteswap.h
+../objs/linux/link.o: /usr/include/sys/select.h /usr/include/bits/select.h
+../objs/linux/link.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+../objs/linux/link.o: /usr/include/sys/sysmacros.h
 ../objs/linux/link.o: /usr/include/bits/pthreadtypes.h /usr/include/stdio.h
 ../objs/linux/link.o: /usr/include/libio.h /usr/include/_G_config.h
 ../objs/linux/link.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
@@ -827,8 +783,7 @@ depend:
 ../objs/linux/link.o: /usr/include/google/sparsehash/densehashtable.h
 ../objs/linux/link.o: /usr/include/assert.h /usr/include/google/type_traits.h
 ../objs/linux/link.o: surfacecollection.h /usr/include/google/dense_hash_map
-../objs/linux/link.o: surface.h /usr/include/SDL/SDL_image.h asfont.h
-../objs/linux/link.o: sfontplus.h utilities.h
+../objs/linux/link.o: surface.h /usr/include/SDL/SDL_image.h utilities.h
 ../objs/linux/link.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/link.o: /usr/include/math.h /usr/include/bits/huge_val.h
 ../objs/linux/link.o: /usr/include/bits/huge_valf.h
@@ -853,6 +808,7 @@ depend:
 ../objs/linux/linkaction.o: /usr/include/bits/types.h
 ../objs/linux/linkaction.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/linkaction.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/linux/linkaction.o: /usr/include/bits/byteswap.h
 ../objs/linux/linkaction.o: /usr/include/sys/select.h
 ../objs/linux/linkaction.o: /usr/include/bits/select.h
 ../objs/linux/linkaction.o: /usr/include/bits/sigset.h
@@ -899,6 +855,7 @@ depend:
 ../objs/linux/linkapp.o: /usr/include/bits/types.h
 ../objs/linux/linkapp.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/linkapp.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/linux/linkapp.o: /usr/include/bits/byteswap.h
 ../objs/linux/linkapp.o: /usr/include/sys/select.h /usr/include/bits/select.h
 ../objs/linux/linkapp.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
 ../objs/linux/linkapp.o: /usr/include/sys/sysmacros.h
@@ -950,8 +907,8 @@ depend:
 ../objs/linux/linkapp.o: /usr/include/google/type_traits.h
 ../objs/linux/linkapp.o: surfacecollection.h
 ../objs/linux/linkapp.o: /usr/include/google/dense_hash_map surface.h
-../objs/linux/linkapp.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
-../objs/linux/linkapp.o: utilities.h /usr/include/SDL/SDL_gfxPrimitives.h
+../objs/linux/linkapp.o: /usr/include/SDL/SDL_image.h utilities.h
+../objs/linux/linkapp.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/linkapp.o: /usr/include/math.h /usr/include/bits/huge_val.h
 ../objs/linux/linkapp.o: /usr/include/bits/huge_valf.h
 ../objs/linux/linkapp.o: /usr/include/bits/huge_vall.h
@@ -979,8 +936,9 @@ depend:
 ../objs/linux/listview.o: /usr/include/bits/waitflags.h
 ../objs/linux/listview.o: /usr/include/bits/waitstatus.h
 ../objs/linux/listview.o: /usr/include/endian.h /usr/include/bits/endian.h
-../objs/linux/listview.o: /usr/include/xlocale.h /usr/include/sys/types.h
-../objs/linux/listview.o: /usr/include/time.h /usr/include/sys/select.h
+../objs/linux/listview.o: /usr/include/bits/byteswap.h /usr/include/xlocale.h
+../objs/linux/listview.o: /usr/include/sys/types.h /usr/include/time.h
+../objs/linux/listview.o: /usr/include/sys/select.h
 ../objs/linux/listview.o: /usr/include/bits/select.h
 ../objs/linux/listview.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
 ../objs/linux/listview.o: /usr/include/sys/sysmacros.h
@@ -1017,8 +975,8 @@ depend:
 ../objs/linux/listview.o: /usr/include/SDL/SDL_loadso.h
 ../objs/linux/listview.o: /usr/include/SDL/SDL_timer.h
 ../objs/linux/listview.o: /usr/include/SDL/SDL_version.h
-../objs/linux/listview.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
-../objs/linux/listview.o: utilities.h /usr/include/SDL/SDL_gfxPrimitives.h
+../objs/linux/listview.o: /usr/include/SDL/SDL_image.h utilities.h
+../objs/linux/listview.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/listview.o: /usr/include/math.h /usr/include/bits/huge_val.h
 ../objs/linux/listview.o: /usr/include/bits/huge_valf.h
 ../objs/linux/listview.o: /usr/include/bits/huge_vall.h
@@ -1050,6 +1008,7 @@ depend:
 ../objs/linux/listviewitem.o: /usr/include/bits/waitstatus.h
 ../objs/linux/listviewitem.o: /usr/include/endian.h
 ../objs/linux/listviewitem.o: /usr/include/bits/endian.h
+../objs/linux/listviewitem.o: /usr/include/bits/byteswap.h
 ../objs/linux/listviewitem.o: /usr/include/xlocale.h /usr/include/sys/types.h
 ../objs/linux/listviewitem.o: /usr/include/time.h /usr/include/sys/select.h
 ../objs/linux/listviewitem.o: /usr/include/bits/select.h
@@ -1091,8 +1050,7 @@ depend:
 ../objs/linux/listviewitem.o: /usr/include/SDL/SDL_loadso.h
 ../objs/linux/listviewitem.o: /usr/include/SDL/SDL_timer.h
 ../objs/linux/listviewitem.o: /usr/include/SDL/SDL_version.h
-../objs/linux/listviewitem.o: /usr/include/SDL/SDL_image.h asfont.h
-../objs/linux/listviewitem.o: sfontplus.h utilities.h
+../objs/linux/listviewitem.o: /usr/include/SDL/SDL_image.h utilities.h
 ../objs/linux/listviewitem.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/listviewitem.o: /usr/include/math.h
 ../objs/linux/listviewitem.o: /usr/include/bits/huge_val.h
@@ -1113,9 +1071,10 @@ depend:
 ../objs/linux/menu.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
 ../objs/linux/menu.o: /usr/include/time.h /usr/include/bits/stat.h
 ../objs/linux/menu.o: /usr/include/sys/types.h /usr/include/endian.h
-../objs/linux/menu.o: /usr/include/bits/endian.h /usr/include/sys/select.h
-../objs/linux/menu.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
-../objs/linux/menu.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+../objs/linux/menu.o: /usr/include/bits/endian.h /usr/include/bits/byteswap.h
+../objs/linux/menu.o: /usr/include/sys/select.h /usr/include/bits/select.h
+../objs/linux/menu.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+../objs/linux/menu.o: /usr/include/sys/sysmacros.h
 ../objs/linux/menu.o: /usr/include/bits/pthreadtypes.h /usr/include/dirent.h
 ../objs/linux/menu.o: /usr/include/bits/dirent.h
 ../objs/linux/menu.o: /usr/include/bits/posix1_lim.h
@@ -1125,26 +1084,27 @@ depend:
 ../objs/linux/menu.o: /usr/include/bits/huge_valf.h
 ../objs/linux/menu.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
 ../objs/linux/menu.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
-../objs/linux/menu.o: /usr/include/bits/mathcalls.h tinyxml/tinyxml.h
-../objs/linux/menu.o: /usr/include/ctype.h /usr/include/xlocale.h
+../objs/linux/menu.o: /usr/include/bits/mathcalls.h gmenu2x.h
+../objs/linux/menu.o: /usr/include/google/dense_hash_map
+../objs/linux/menu.o: /usr/include/google/sparsehash/sparseconfig.h
 ../objs/linux/menu.o: /usr/include/stdio.h /usr/include/libio.h
 ../objs/linux/menu.o: /usr/include/_G_config.h /usr/include/wchar.h
 ../objs/linux/menu.o: /usr/include/bits/stdio_lim.h
-../objs/linux/menu.o: /usr/include/bits/sys_errlist.h /usr/include/stdlib.h
-../objs/linux/menu.o: /usr/include/bits/waitflags.h
-../objs/linux/menu.o: /usr/include/bits/waitstatus.h /usr/include/alloca.h
-../objs/linux/menu.o: /usr/include/string.h /usr/include/assert.h gmenu2x.h
-../objs/linux/menu.o: /usr/include/google/dense_hash_map
-../objs/linux/menu.o: /usr/include/google/sparsehash/sparseconfig.h
+../objs/linux/menu.o: /usr/include/bits/sys_errlist.h
 ../objs/linux/menu.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/linux/menu.o: /usr/include/google/type_traits.h surfacecollection.h
-../objs/linux/menu.o: /usr/include/google/dense_hash_map surface.h
-../objs/linux/menu.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
+../objs/linux/menu.o: /usr/include/assert.h /usr/include/stdlib.h
+../objs/linux/menu.o: /usr/include/bits/waitflags.h
+../objs/linux/menu.o: /usr/include/bits/waitstatus.h /usr/include/xlocale.h
+../objs/linux/menu.o: /usr/include/alloca.h /usr/include/google/type_traits.h
+../objs/linux/menu.o: surfacecollection.h /usr/include/google/dense_hash_map
+../objs/linux/menu.o: surface.h /usr/include/SDL/SDL.h
+../objs/linux/menu.o: /usr/include/SDL/SDL_main.h
 ../objs/linux/menu.o: /usr/include/SDL/SDL_stdinc.h
 ../objs/linux/menu.o: /usr/include/SDL/SDL_config.h
-../objs/linux/menu.o: /usr/include/SDL/SDL_platform.h /usr/include/strings.h
-../objs/linux/menu.o: /usr/include/inttypes.h /usr/include/stdint.h
-../objs/linux/menu.o: /usr/include/bits/wchar.h /usr/include/iconv.h
+../objs/linux/menu.o: /usr/include/SDL/SDL_platform.h /usr/include/string.h
+../objs/linux/menu.o: /usr/include/strings.h /usr/include/inttypes.h
+../objs/linux/menu.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+../objs/linux/menu.o: /usr/include/ctype.h /usr/include/iconv.h
 ../objs/linux/menu.o: /usr/include/SDL/begin_code.h
 ../objs/linux/menu.o: /usr/include/SDL/close_code.h
 ../objs/linux/menu.o: /usr/include/SDL/SDL_audio.h
@@ -1166,13 +1126,13 @@ depend:
 ../objs/linux/menu.o: /usr/include/SDL/SDL_loadso.h
 ../objs/linux/menu.o: /usr/include/SDL/SDL_timer.h
 ../objs/linux/menu.o: /usr/include/SDL/SDL_version.h
-../objs/linux/menu.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
-../objs/linux/menu.o: utilities.h /usr/include/SDL/SDL_gfxPrimitives.h
-../objs/linux/menu.o: iconbutton.h button.h FastDelegate.h
-../objs/linux/menu.o: /usr/include/memory.h translator.h touchscreen.h
-../objs/linux/menu.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
-../objs/linux/menu.o: /usr/include/bits/uio.h inputmanager.h linkapp.h link.h
-../objs/linux/menu.o: menu.h linkaction.h filelister.h
+../objs/linux/menu.o: /usr/include/SDL/SDL_image.h utilities.h
+../objs/linux/menu.o: /usr/include/SDL/SDL_gfxPrimitives.h iconbutton.h
+../objs/linux/menu.o: button.h FastDelegate.h /usr/include/memory.h
+../objs/linux/menu.o: translator.h touchscreen.h /usr/include/fcntl.h
+../objs/linux/menu.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
+../objs/linux/menu.o: inputmanager.h linkapp.h link.h menu.h linkaction.h
+../objs/linux/menu.o: filelister.h pxml.h
 ../objs/linux/menusetting.o: menusetting.h gmenu2x.h
 ../objs/linux/menusetting.o: /usr/include/google/dense_hash_map
 ../objs/linux/menusetting.o: /usr/include/google/sparsehash/sparseconfig.h
@@ -1192,6 +1152,7 @@ depend:
 ../objs/linux/menusetting.o: /usr/include/bits/waitflags.h
 ../objs/linux/menusetting.o: /usr/include/bits/waitstatus.h
 ../objs/linux/menusetting.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/linux/menusetting.o: /usr/include/bits/byteswap.h
 ../objs/linux/menusetting.o: /usr/include/xlocale.h /usr/include/sys/types.h
 ../objs/linux/menusetting.o: /usr/include/time.h /usr/include/sys/select.h
 ../objs/linux/menusetting.o: /usr/include/bits/select.h
@@ -1233,8 +1194,7 @@ depend:
 ../objs/linux/menusetting.o: /usr/include/SDL/SDL_loadso.h
 ../objs/linux/menusetting.o: /usr/include/SDL/SDL_timer.h
 ../objs/linux/menusetting.o: /usr/include/SDL/SDL_version.h
-../objs/linux/menusetting.o: /usr/include/SDL/SDL_image.h asfont.h
-../objs/linux/menusetting.o: sfontplus.h utilities.h
+../objs/linux/menusetting.o: /usr/include/SDL/SDL_image.h utilities.h
 ../objs/linux/menusetting.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/menusetting.o: /usr/include/math.h /usr/include/bits/huge_val.h
 ../objs/linux/menusetting.o: /usr/include/bits/huge_valf.h
@@ -1263,6 +1223,7 @@ depend:
 ../objs/linux/menusettingbool.o: /usr/include/bits/typesizes.h
 ../objs/linux/menusettingbool.o: /usr/include/time.h /usr/include/endian.h
 ../objs/linux/menusettingbool.o: /usr/include/bits/endian.h
+../objs/linux/menusettingbool.o: /usr/include/bits/byteswap.h
 ../objs/linux/menusettingbool.o: /usr/include/sys/select.h
 ../objs/linux/menusettingbool.o: /usr/include/bits/select.h
 ../objs/linux/menusettingbool.o: /usr/include/bits/sigset.h
@@ -1313,8 +1274,7 @@ depend:
 ../objs/linux/menusettingbool.o: /usr/include/google/type_traits.h
 ../objs/linux/menusettingbool.o: surfacecollection.h
 ../objs/linux/menusettingbool.o: /usr/include/google/dense_hash_map surface.h
-../objs/linux/menusettingbool.o: /usr/include/SDL/SDL_image.h asfont.h
-../objs/linux/menusettingbool.o: sfontplus.h utilities.h
+../objs/linux/menusettingbool.o: /usr/include/SDL/SDL_image.h utilities.h
 ../objs/linux/menusettingbool.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/menusettingbool.o: /usr/include/math.h
 ../objs/linux/menusettingbool.o: /usr/include/bits/huge_val.h
@@ -1349,6 +1309,7 @@ depend:
 ../objs/linux/menusettingdir.o: /usr/include/bits/waitstatus.h
 ../objs/linux/menusettingdir.o: /usr/include/endian.h
 ../objs/linux/menusettingdir.o: /usr/include/bits/endian.h
+../objs/linux/menusettingdir.o: /usr/include/bits/byteswap.h
 ../objs/linux/menusettingdir.o: /usr/include/xlocale.h
 ../objs/linux/menusettingdir.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/linux/menusettingdir.o: /usr/include/sys/select.h
@@ -1391,8 +1352,7 @@ depend:
 ../objs/linux/menusettingdir.o: /usr/include/SDL/SDL_loadso.h
 ../objs/linux/menusettingdir.o: /usr/include/SDL/SDL_timer.h
 ../objs/linux/menusettingdir.o: /usr/include/SDL/SDL_version.h
-../objs/linux/menusettingdir.o: /usr/include/SDL/SDL_image.h asfont.h
-../objs/linux/menusettingdir.o: sfontplus.h utilities.h
+../objs/linux/menusettingdir.o: /usr/include/SDL/SDL_image.h utilities.h
 ../objs/linux/menusettingdir.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/menusettingdir.o: /usr/include/math.h
 ../objs/linux/menusettingdir.o: /usr/include/bits/huge_val.h
@@ -1431,6 +1391,7 @@ depend:
 ../objs/linux/menusettingfile.o: /usr/include/bits/waitstatus.h
 ../objs/linux/menusettingfile.o: /usr/include/endian.h
 ../objs/linux/menusettingfile.o: /usr/include/bits/endian.h
+../objs/linux/menusettingfile.o: /usr/include/bits/byteswap.h
 ../objs/linux/menusettingfile.o: /usr/include/xlocale.h
 ../objs/linux/menusettingfile.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/linux/menusettingfile.o: /usr/include/sys/select.h
@@ -1474,8 +1435,7 @@ depend:
 ../objs/linux/menusettingfile.o: /usr/include/SDL/SDL_loadso.h
 ../objs/linux/menusettingfile.o: /usr/include/SDL/SDL_timer.h
 ../objs/linux/menusettingfile.o: /usr/include/SDL/SDL_version.h
-../objs/linux/menusettingfile.o: /usr/include/SDL/SDL_image.h asfont.h
-../objs/linux/menusettingfile.o: sfontplus.h utilities.h
+../objs/linux/menusettingfile.o: /usr/include/SDL/SDL_image.h utilities.h
 ../objs/linux/menusettingfile.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/menusettingfile.o: /usr/include/math.h
 ../objs/linux/menusettingfile.o: /usr/include/bits/huge_val.h
@@ -1515,6 +1475,7 @@ depend:
 ../objs/linux/menusettingimage.o: /usr/include/bits/waitstatus.h
 ../objs/linux/menusettingimage.o: /usr/include/endian.h
 ../objs/linux/menusettingimage.o: /usr/include/bits/endian.h
+../objs/linux/menusettingimage.o: /usr/include/bits/byteswap.h
 ../objs/linux/menusettingimage.o: /usr/include/xlocale.h
 ../objs/linux/menusettingimage.o: /usr/include/sys/types.h
 ../objs/linux/menusettingimage.o: /usr/include/time.h
@@ -1560,8 +1521,7 @@ depend:
 ../objs/linux/menusettingimage.o: /usr/include/SDL/SDL_loadso.h
 ../objs/linux/menusettingimage.o: /usr/include/SDL/SDL_timer.h
 ../objs/linux/menusettingimage.o: /usr/include/SDL/SDL_version.h
-../objs/linux/menusettingimage.o: /usr/include/SDL/SDL_image.h asfont.h
-../objs/linux/menusettingimage.o: sfontplus.h utilities.h
+../objs/linux/menusettingimage.o: /usr/include/SDL/SDL_image.h utilities.h
 ../objs/linux/menusettingimage.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/menusettingimage.o: /usr/include/math.h
 ../objs/linux/menusettingimage.o: /usr/include/bits/huge_val.h
@@ -1596,6 +1556,7 @@ depend:
 ../objs/linux/menusettingint.o: /usr/include/bits/typesizes.h
 ../objs/linux/menusettingint.o: /usr/include/time.h /usr/include/endian.h
 ../objs/linux/menusettingint.o: /usr/include/bits/endian.h
+../objs/linux/menusettingint.o: /usr/include/bits/byteswap.h
 ../objs/linux/menusettingint.o: /usr/include/sys/select.h
 ../objs/linux/menusettingint.o: /usr/include/bits/select.h
 ../objs/linux/menusettingint.o: /usr/include/bits/sigset.h
@@ -1643,8 +1604,7 @@ depend:
 ../objs/linux/menusettingint.o: /usr/include/google/type_traits.h
 ../objs/linux/menusettingint.o: surfacecollection.h
 ../objs/linux/menusettingint.o: /usr/include/google/dense_hash_map surface.h
-../objs/linux/menusettingint.o: /usr/include/SDL/SDL_image.h asfont.h
-../objs/linux/menusettingint.o: sfontplus.h utilities.h
+../objs/linux/menusettingint.o: /usr/include/SDL/SDL_image.h utilities.h
 ../objs/linux/menusettingint.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/menusettingint.o: /usr/include/math.h
 ../objs/linux/menusettingint.o: /usr/include/bits/huge_val.h
@@ -1682,6 +1642,7 @@ depend:
 ../objs/linux/menusettingmultistring.o: /usr/include/bits/waitstatus.h
 ../objs/linux/menusettingmultistring.o: /usr/include/endian.h
 ../objs/linux/menusettingmultistring.o: /usr/include/bits/endian.h
+../objs/linux/menusettingmultistring.o: /usr/include/bits/byteswap.h
 ../objs/linux/menusettingmultistring.o: /usr/include/xlocale.h
 ../objs/linux/menusettingmultistring.o: /usr/include/sys/types.h
 ../objs/linux/menusettingmultistring.o: /usr/include/time.h
@@ -1728,8 +1689,8 @@ depend:
 ../objs/linux/menusettingmultistring.o: /usr/include/SDL/SDL_loadso.h
 ../objs/linux/menusettingmultistring.o: /usr/include/SDL/SDL_timer.h
 ../objs/linux/menusettingmultistring.o: /usr/include/SDL/SDL_version.h
-../objs/linux/menusettingmultistring.o: /usr/include/SDL/SDL_image.h asfont.h
-../objs/linux/menusettingmultistring.o: sfontplus.h utilities.h
+../objs/linux/menusettingmultistring.o: /usr/include/SDL/SDL_image.h
+../objs/linux/menusettingmultistring.o: utilities.h
 ../objs/linux/menusettingmultistring.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/menusettingmultistring.o: /usr/include/math.h
 ../objs/linux/menusettingmultistring.o: /usr/include/bits/huge_val.h
@@ -1768,6 +1729,7 @@ depend:
 ../objs/linux/menusettingrgba.o: /usr/include/bits/waitstatus.h
 ../objs/linux/menusettingrgba.o: /usr/include/endian.h
 ../objs/linux/menusettingrgba.o: /usr/include/bits/endian.h
+../objs/linux/menusettingrgba.o: /usr/include/bits/byteswap.h
 ../objs/linux/menusettingrgba.o: /usr/include/xlocale.h
 ../objs/linux/menusettingrgba.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/linux/menusettingrgba.o: /usr/include/sys/select.h
@@ -1811,8 +1773,7 @@ depend:
 ../objs/linux/menusettingrgba.o: /usr/include/SDL/SDL_loadso.h
 ../objs/linux/menusettingrgba.o: /usr/include/SDL/SDL_timer.h
 ../objs/linux/menusettingrgba.o: /usr/include/SDL/SDL_version.h
-../objs/linux/menusettingrgba.o: /usr/include/SDL/SDL_image.h asfont.h
-../objs/linux/menusettingrgba.o: sfontplus.h utilities.h
+../objs/linux/menusettingrgba.o: /usr/include/SDL/SDL_image.h utilities.h
 ../objs/linux/menusettingrgba.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/menusettingrgba.o: /usr/include/math.h
 ../objs/linux/menusettingrgba.o: /usr/include/bits/huge_val.h
@@ -1853,6 +1814,7 @@ depend:
 ../objs/linux/menusettingstring.o: /usr/include/bits/waitstatus.h
 ../objs/linux/menusettingstring.o: /usr/include/endian.h
 ../objs/linux/menusettingstring.o: /usr/include/bits/endian.h
+../objs/linux/menusettingstring.o: /usr/include/bits/byteswap.h
 ../objs/linux/menusettingstring.o: /usr/include/xlocale.h
 ../objs/linux/menusettingstring.o: /usr/include/sys/types.h
 ../objs/linux/menusettingstring.o: /usr/include/time.h
@@ -1898,8 +1860,7 @@ depend:
 ../objs/linux/menusettingstring.o: /usr/include/SDL/SDL_loadso.h
 ../objs/linux/menusettingstring.o: /usr/include/SDL/SDL_timer.h
 ../objs/linux/menusettingstring.o: /usr/include/SDL/SDL_version.h
-../objs/linux/menusettingstring.o: /usr/include/SDL/SDL_image.h asfont.h
-../objs/linux/menusettingstring.o: sfontplus.h utilities.h
+../objs/linux/menusettingstring.o: /usr/include/SDL/SDL_image.h utilities.h
 ../objs/linux/menusettingstring.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/menusettingstring.o: /usr/include/math.h
 ../objs/linux/menusettingstring.o: /usr/include/bits/huge_val.h
@@ -1930,6 +1891,7 @@ depend:
 ../objs/linux/messagebox.o: /usr/include/bits/types.h
 ../objs/linux/messagebox.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/messagebox.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/linux/messagebox.o: /usr/include/bits/byteswap.h
 ../objs/linux/messagebox.o: /usr/include/sys/select.h
 ../objs/linux/messagebox.o: /usr/include/bits/select.h
 ../objs/linux/messagebox.o: /usr/include/bits/sigset.h
@@ -1983,12 +1945,29 @@ depend:
 ../objs/linux/messagebox.o: /usr/include/google/type_traits.h
 ../objs/linux/messagebox.o: surfacecollection.h
 ../objs/linux/messagebox.o: /usr/include/google/dense_hash_map surface.h
-../objs/linux/messagebox.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
-../objs/linux/messagebox.o: utilities.h iconbutton.h button.h FastDelegate.h
+../objs/linux/messagebox.o: /usr/include/SDL/SDL_image.h utilities.h
+../objs/linux/messagebox.o: iconbutton.h button.h FastDelegate.h
 ../objs/linux/messagebox.o: /usr/include/memory.h translator.h touchscreen.h
 ../objs/linux/messagebox.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 ../objs/linux/messagebox.o: /usr/include/bits/uio.h /usr/include/sys/stat.h
 ../objs/linux/messagebox.o: /usr/include/bits/stat.h inputmanager.h
+../objs/linux/pxml.o: pxml.h tinyxml/tinyxml.h /usr/include/ctype.h
+../objs/linux/pxml.o: /usr/include/features.h /usr/include/sys/cdefs.h
+../objs/linux/pxml.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
+../objs/linux/pxml.o: /usr/include/gnu/stubs-32.h /usr/include/bits/types.h
+../objs/linux/pxml.o: /usr/include/bits/typesizes.h /usr/include/endian.h
+../objs/linux/pxml.o: /usr/include/bits/endian.h /usr/include/bits/byteswap.h
+../objs/linux/pxml.o: /usr/include/xlocale.h /usr/include/stdio.h
+../objs/linux/pxml.o: /usr/include/libio.h /usr/include/_G_config.h
+../objs/linux/pxml.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
+../objs/linux/pxml.o: /usr/include/bits/sys_errlist.h /usr/include/stdlib.h
+../objs/linux/pxml.o: /usr/include/bits/waitflags.h
+../objs/linux/pxml.o: /usr/include/bits/waitstatus.h /usr/include/sys/types.h
+../objs/linux/pxml.o: /usr/include/time.h /usr/include/sys/select.h
+../objs/linux/pxml.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
+../objs/linux/pxml.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+../objs/linux/pxml.o: /usr/include/bits/pthreadtypes.h /usr/include/alloca.h
+../objs/linux/pxml.o: /usr/include/string.h /usr/include/assert.h
 ../objs/linux/selector.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
 ../objs/linux/selector.o: /usr/include/SDL/SDL_stdinc.h
 ../objs/linux/selector.o: /usr/include/SDL/SDL_config.h
@@ -2001,6 +1980,7 @@ depend:
 ../objs/linux/selector.o: /usr/include/bits/types.h
 ../objs/linux/selector.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/selector.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/linux/selector.o: /usr/include/bits/byteswap.h
 ../objs/linux/selector.o: /usr/include/sys/select.h
 ../objs/linux/selector.o: /usr/include/bits/select.h
 ../objs/linux/selector.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
@@ -2058,8 +2038,8 @@ depend:
 ../objs/linux/selector.o: /usr/include/google/type_traits.h
 ../objs/linux/selector.o: surfacecollection.h
 ../objs/linux/selector.o: /usr/include/google/dense_hash_map surface.h
-../objs/linux/selector.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
-../objs/linux/selector.o: utilities.h iconbutton.h translator.h touchscreen.h
+../objs/linux/selector.o: /usr/include/SDL/SDL_image.h utilities.h
+../objs/linux/selector.o: iconbutton.h translator.h touchscreen.h
 ../objs/linux/selector.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 ../objs/linux/selector.o: /usr/include/bits/uio.h inputmanager.h filelister.h
 ../objs/linux/selectordetector.o: selectordetector.h utilities.h
@@ -2078,6 +2058,7 @@ depend:
 ../objs/linux/selectordetector.o: /usr/include/bits/typesizes.h
 ../objs/linux/selectordetector.o: /usr/include/time.h /usr/include/endian.h
 ../objs/linux/selectordetector.o: /usr/include/bits/endian.h
+../objs/linux/selectordetector.o: /usr/include/bits/byteswap.h
 ../objs/linux/selectordetector.o: /usr/include/sys/select.h
 ../objs/linux/selectordetector.o: /usr/include/bits/select.h
 ../objs/linux/selectordetector.o: /usr/include/bits/sigset.h
@@ -2144,6 +2125,7 @@ depend:
 ../objs/linux/settingsdialog.o: /usr/include/bits/typesizes.h
 ../objs/linux/settingsdialog.o: /usr/include/time.h /usr/include/endian.h
 ../objs/linux/settingsdialog.o: /usr/include/bits/endian.h
+../objs/linux/settingsdialog.o: /usr/include/bits/byteswap.h
 ../objs/linux/settingsdialog.o: /usr/include/sys/select.h
 ../objs/linux/settingsdialog.o: /usr/include/bits/select.h
 ../objs/linux/settingsdialog.o: /usr/include/bits/sigset.h
@@ -2200,11 +2182,10 @@ depend:
 ../objs/linux/settingsdialog.o: /usr/include/google/type_traits.h
 ../objs/linux/settingsdialog.o: surfacecollection.h
 ../objs/linux/settingsdialog.o: /usr/include/google/dense_hash_map surface.h
-../objs/linux/settingsdialog.o: /usr/include/SDL/SDL_image.h asfont.h
-../objs/linux/settingsdialog.o: sfontplus.h utilities.h iconbutton.h button.h
-../objs/linux/settingsdialog.o: FastDelegate.h /usr/include/memory.h
-../objs/linux/settingsdialog.o: translator.h touchscreen.h
-../objs/linux/settingsdialog.o: /usr/include/fcntl.h
+../objs/linux/settingsdialog.o: /usr/include/SDL/SDL_image.h utilities.h
+../objs/linux/settingsdialog.o: iconbutton.h button.h FastDelegate.h
+../objs/linux/settingsdialog.o: /usr/include/memory.h translator.h
+../objs/linux/settingsdialog.o: touchscreen.h /usr/include/fcntl.h
 ../objs/linux/settingsdialog.o: /usr/include/bits/fcntl.h
 ../objs/linux/settingsdialog.o: /usr/include/bits/uio.h
 ../objs/linux/settingsdialog.o: /usr/include/sys/stat.h
@@ -2223,6 +2204,7 @@ depend:
 ../objs/linux/sfontplus.o: /usr/include/bits/types.h
 ../objs/linux/sfontplus.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/sfontplus.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/linux/sfontplus.o: /usr/include/bits/byteswap.h
 ../objs/linux/sfontplus.o: /usr/include/sys/select.h
 ../objs/linux/sfontplus.o: /usr/include/bits/select.h
 ../objs/linux/sfontplus.o: /usr/include/bits/sigset.h
@@ -2260,8 +2242,9 @@ depend:
 ../objs/linux/sfontplus.o: /usr/include/SDL/SDL_quit.h
 ../objs/linux/sfontplus.o: /usr/include/SDL/SDL_loadso.h
 ../objs/linux/sfontplus.o: /usr/include/SDL/SDL_timer.h
-../objs/linux/sfontplus.o: /usr/include/SDL/SDL_version.h
+../objs/linux/sfontplus.o: /usr/include/SDL/SDL_version.h surface.h
 ../objs/linux/sfontplus.o: /usr/include/SDL/SDL_image.h
+../objs/linux/sfontplus.o: /usr/include/SDL/SDL_ttf.h
 ../objs/linux/surface.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/surface.o: /usr/include/math.h /usr/include/features.h
 ../objs/linux/surface.o: /usr/include/sys/cdefs.h
@@ -2280,6 +2263,7 @@ depend:
 ../objs/linux/surface.o: /usr/include/sys/types.h /usr/include/bits/types.h
 ../objs/linux/surface.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/surface.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/linux/surface.o: /usr/include/bits/byteswap.h
 ../objs/linux/surface.o: /usr/include/sys/select.h /usr/include/bits/select.h
 ../objs/linux/surface.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
 ../objs/linux/surface.o: /usr/include/sys/sysmacros.h
@@ -2315,8 +2299,7 @@ depend:
 ../objs/linux/surface.o: /usr/include/SDL/SDL_loadso.h
 ../objs/linux/surface.o: /usr/include/SDL/SDL_timer.h
 ../objs/linux/surface.o: /usr/include/SDL/SDL_version.h surface.h
-../objs/linux/surface.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
-../objs/linux/surface.o: utilities.h
+../objs/linux/surface.o: /usr/include/SDL/SDL_image.h utilities.h
 ../objs/linux/surfacecollection.o: surfacecollection.h
 ../objs/linux/surfacecollection.o: /usr/include/google/dense_hash_map
 ../objs/linux/surfacecollection.o: surface.h /usr/include/SDL/SDL.h
@@ -2334,6 +2317,7 @@ depend:
 ../objs/linux/surfacecollection.o: /usr/include/bits/typesizes.h
 ../objs/linux/surfacecollection.o: /usr/include/time.h /usr/include/endian.h
 ../objs/linux/surfacecollection.o: /usr/include/bits/endian.h
+../objs/linux/surfacecollection.o: /usr/include/bits/byteswap.h
 ../objs/linux/surfacecollection.o: /usr/include/sys/select.h
 ../objs/linux/surfacecollection.o: /usr/include/bits/select.h
 ../objs/linux/surfacecollection.o: /usr/include/bits/sigset.h
@@ -2377,8 +2361,7 @@ depend:
 ../objs/linux/surfacecollection.o: /usr/include/SDL/SDL_loadso.h
 ../objs/linux/surfacecollection.o: /usr/include/SDL/SDL_timer.h
 ../objs/linux/surfacecollection.o: /usr/include/SDL/SDL_version.h
-../objs/linux/surfacecollection.o: /usr/include/SDL/SDL_image.h asfont.h
-../objs/linux/surfacecollection.o: sfontplus.h utilities.h
+../objs/linux/surfacecollection.o: /usr/include/SDL/SDL_image.h utilities.h
 ../objs/linux/surfacecollection.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/surfacecollection.o: /usr/include/math.h
 ../objs/linux/surfacecollection.o: /usr/include/bits/huge_val.h
@@ -2407,6 +2390,7 @@ depend:
 ../objs/linux/textdialog.o: /usr/include/bits/waitflags.h
 ../objs/linux/textdialog.o: /usr/include/bits/waitstatus.h
 ../objs/linux/textdialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/linux/textdialog.o: /usr/include/bits/byteswap.h
 ../objs/linux/textdialog.o: /usr/include/xlocale.h /usr/include/sys/types.h
 ../objs/linux/textdialog.o: /usr/include/time.h /usr/include/sys/select.h
 ../objs/linux/textdialog.o: /usr/include/bits/select.h
@@ -2448,8 +2432,8 @@ depend:
 ../objs/linux/textdialog.o: /usr/include/SDL/SDL_loadso.h
 ../objs/linux/textdialog.o: /usr/include/SDL/SDL_timer.h
 ../objs/linux/textdialog.o: /usr/include/SDL/SDL_version.h
-../objs/linux/textdialog.o: /usr/include/SDL/SDL_image.h asfont.h sfontplus.h
-../objs/linux/textdialog.o: utilities.h /usr/include/SDL/SDL_gfxPrimitives.h
+../objs/linux/textdialog.o: /usr/include/SDL/SDL_image.h utilities.h
+../objs/linux/textdialog.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/textdialog.o: /usr/include/math.h /usr/include/bits/huge_val.h
 ../objs/linux/textdialog.o: /usr/include/bits/huge_valf.h
 ../objs/linux/textdialog.o: /usr/include/bits/huge_vall.h
@@ -2483,6 +2467,7 @@ depend:
 ../objs/linux/textmanualdialog.o: /usr/include/bits/waitstatus.h
 ../objs/linux/textmanualdialog.o: /usr/include/endian.h
 ../objs/linux/textmanualdialog.o: /usr/include/bits/endian.h
+../objs/linux/textmanualdialog.o: /usr/include/bits/byteswap.h
 ../objs/linux/textmanualdialog.o: /usr/include/xlocale.h
 ../objs/linux/textmanualdialog.o: /usr/include/sys/types.h
 ../objs/linux/textmanualdialog.o: /usr/include/time.h
@@ -2528,8 +2513,7 @@ depend:
 ../objs/linux/textmanualdialog.o: /usr/include/SDL/SDL_loadso.h
 ../objs/linux/textmanualdialog.o: /usr/include/SDL/SDL_timer.h
 ../objs/linux/textmanualdialog.o: /usr/include/SDL/SDL_version.h
-../objs/linux/textmanualdialog.o: /usr/include/SDL/SDL_image.h asfont.h
-../objs/linux/textmanualdialog.o: sfontplus.h utilities.h
+../objs/linux/textmanualdialog.o: /usr/include/SDL/SDL_image.h utilities.h
 ../objs/linux/textmanualdialog.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/textmanualdialog.o: /usr/include/math.h
 ../objs/linux/textmanualdialog.o: /usr/include/bits/huge_val.h
@@ -2564,6 +2548,7 @@ depend:
 ../objs/linux/touchscreen.o: /usr/include/SDL/SDL_platform.h
 ../objs/linux/touchscreen.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/linux/touchscreen.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/linux/touchscreen.o: /usr/include/bits/byteswap.h
 ../objs/linux/touchscreen.o: /usr/include/sys/select.h
 ../objs/linux/touchscreen.o: /usr/include/bits/select.h
 ../objs/linux/touchscreen.o: /usr/include/bits/sigset.h
@@ -2619,6 +2604,7 @@ depend:
 ../objs/linux/translator.o: /usr/include/bits/types.h
 ../objs/linux/translator.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/translator.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/linux/translator.o: /usr/include/bits/byteswap.h
 ../objs/linux/translator.o: /usr/include/sys/select.h
 ../objs/linux/translator.o: /usr/include/bits/select.h
 ../objs/linux/translator.o: /usr/include/bits/sigset.h
@@ -2674,6 +2660,7 @@ depend:
 ../objs/linux/utilities.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/linux/utilities.o: /usr/include/bits/stat.h /usr/include/sys/types.h
 ../objs/linux/utilities.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/linux/utilities.o: /usr/include/bits/byteswap.h
 ../objs/linux/utilities.o: /usr/include/sys/select.h
 ../objs/linux/utilities.o: /usr/include/bits/select.h
 ../objs/linux/utilities.o: /usr/include/bits/sigset.h
@@ -2748,6 +2735,7 @@ depend:
 ../objs/linux/wallpaperdialog.o: /usr/include/bits/waitstatus.h
 ../objs/linux/wallpaperdialog.o: /usr/include/endian.h
 ../objs/linux/wallpaperdialog.o: /usr/include/bits/endian.h
+../objs/linux/wallpaperdialog.o: /usr/include/bits/byteswap.h
 ../objs/linux/wallpaperdialog.o: /usr/include/xlocale.h
 ../objs/linux/wallpaperdialog.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/linux/wallpaperdialog.o: /usr/include/sys/select.h
@@ -2791,8 +2779,7 @@ depend:
 ../objs/linux/wallpaperdialog.o: /usr/include/SDL/SDL_loadso.h
 ../objs/linux/wallpaperdialog.o: /usr/include/SDL/SDL_timer.h
 ../objs/linux/wallpaperdialog.o: /usr/include/SDL/SDL_version.h
-../objs/linux/wallpaperdialog.o: /usr/include/SDL/SDL_image.h asfont.h
-../objs/linux/wallpaperdialog.o: sfontplus.h utilities.h
+../objs/linux/wallpaperdialog.o: /usr/include/SDL/SDL_image.h utilities.h
 ../objs/linux/wallpaperdialog.o: /usr/include/SDL/SDL_gfxPrimitives.h
 ../objs/linux/wallpaperdialog.o: /usr/include/math.h
 ../objs/linux/wallpaperdialog.o: /usr/include/bits/huge_val.h

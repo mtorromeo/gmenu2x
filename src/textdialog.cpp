@@ -40,13 +40,13 @@ void TextDialog::preProcess() {
 		row = trim(text->at(i));
 
 		//check if this row is not too long
-		if (gmenu2x->font->getTextWidth(row)>(int)gmenu2x->resX-15) {
+		if (gmenu2x->font->getTextWidth(row)>gmenu2x->resX-15) {
 			vector<string> words;
 			split(words, row, " ");
 
 			uint numWords = words.size();
 			//find the maximum number of rows that can be printed on screen
-			while (gmenu2x->font->getTextWidth(row)>(int)gmenu2x->resX-15 && numWords>0) {
+			while (gmenu2x->font->getTextWidth(row)>gmenu2x->resX-15 && numWords>0) {
 				numWords--;
 				row = "";
 				for (uint x=0; x<numWords; x++)

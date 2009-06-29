@@ -121,6 +121,13 @@ private:
 	volatile unsigned short *MEM_REG;
 	int cx25874; //tv-out
 #endif
+#ifdef TARGET_WIZ
+	#define PLLSETREG0		(wiz_memregs[0xF004>>2])
+	#define PWRMODE			(wiz_memregs[0xF07C>>2])
+	#define SYS_CLK_FREQ 27
+	int wiz_mem;
+	volatile uint32_t *wiz_memregs;
+#endif
 	void gp2x_tvout_on(bool pal);
 	void gp2x_tvout_off();
 	void gp2x_init();
@@ -175,7 +182,7 @@ public:
 	SurfaceCollection sc;
 	Translator tr;
 	Surface *s, *bg;
-	ASFont *font;
+	SFontPlus *font;
 
 	//Status functions
 	int main();

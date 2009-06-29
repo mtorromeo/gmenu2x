@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <fstream>
 #include <stdlib.h>
@@ -46,7 +47,6 @@
 #include "linkapp.h"
 #include "linkaction.h"
 #include "menu.h"
-#include "asfont.h"
 #include "sfontplus.h"
 #include "surface.h"
 #include "filedialog.h"
@@ -101,6 +101,24 @@ void GMenu2X::gp2x_init() {
 		f200 = ts.init();
 	}
 #endif
+#ifdef TARGET_WIZ
+	/* open /dev/mem to access registers */
+	wiz_mem = open("/dev/mem", O_RDWR);
+	if (wiz_mem < 0) {
+		printf("Could not open /dev/mem!\n");
+	}
+	/* get access to the registers */
+	else {
+		wiz_memregs = (volatile uint32_t*)mmap(0, 0x20000, PROT_READ|PROT_WRITE, MAP_SHARED, wiz_mem, 0xC0000000);
+		if(wiz_memregs == (volatile uint32_t*)0xFFFFFFFF) {
+			printf("Could not mmap hardware registers!\n");
+			close(wiz_mem);
+		}
+	}
+	/* get access to battery device */	
+	batteryHandle = open("/dev/pollux_batt", O_RDONLY);
+	printf( "System Init Done!\n" );
+#endif
 }
 
 void GMenu2X::gp2x_deinit() {
@@ -110,8 +128,14 @@ void GMenu2X::gp2x_deinit() {
 		gp2x_memregs[0x290C>>1]=640;
 		close(gp2x_mem);
 	}
-	if (batteryHandle!=0) close(batteryHandle);
 	if (f200) ts.deinit();
+#endif
+#ifdef TARGET_WIZ
+	wiz_memregs = NULL;
+	close(wiz_mem);
+#endif
+#if defined(TARGET_GP2X) || defined(TARGET_WIZ)
+	if (batteryHandle!=0) close(batteryHandle);
 #endif
 }
 
@@ -207,13 +231,18 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	path = "";
 	getExePath();
 
-#ifdef TARGET_GP2X
+#ifdef TARGET_WIZ
+	wiz_mem = 0;
+#elif TARGET_GP2X
 	gp2x_mem = 0;
 	cx25874 = 0;
+#endif
+#if defined(TARGET_GP2X) || defined(TARGET_WIZ)
 	batteryHandle = 0;
-
 	gp2x_init();
+#endif
 
+#ifdef TARGET_GP2X
 	//Fix tv-out
 	if (gp2x_mem!=0) {
 		if (gp2x_memregs[0x2800>>1]&0x100) {
@@ -232,7 +261,7 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	}
 
 	s = new Surface();
-#ifdef TARGET_GP2X
+#if defined(TARGET_GP2X) || defined(TARGET_WIZ)
 	{
 		//I use a tmp variable to hide the cursor as soon as possible (and create the double buffer surface only after that)
 		//I'm forced to use SW surfaces since with HW there are issuse with changing the clock frequency
@@ -371,13 +400,18 @@ void GMenu2X::initFont() {
 		font = NULL;
 	}
 
-	string fontFile = sc.getSkinFilePath("imgs/font.png");
+	bool ttf = false;
+	string fontFile = sc.getSkinFilePath("font.png");
 	if (fontFile.empty()) {
-		cout << "Font png not found!" << endl;
+		fontFile = sc.getSkinFilePath("font.ttf");
+		ttf = true;
+	}
+	if (fontFile.empty()) {
+		cout << "Font not found!" << endl;
 		quit();
 		exit(-1);
 	}
-	font = new ASFont(fontFile);
+	font = new SFontPlus(fontFile, ttf, rgbatosdl(skinConfColors["fontColor"]), rgbatosdl(skinConfColors["fontOutlineColor"]));
 }
 
 void GMenu2X::initMenu() {
@@ -413,9 +447,9 @@ void GMenu2X::initMenu() {
 	menu->setLinkIndex(confInt["link"]);
 
 	menu->loadIcons();
-	
+
 	//DEBUG
-	menu->addLink( "/mnt/sd/development/gmenu2x/", "sample.pxml", "applications" );
+	//menu->addLink( "/mnt/sd/development/gmenu2x/", "sample.pxml", "applications" );
 }
 
 void GMenu2X::about() {
@@ -423,6 +457,8 @@ void GMenu2X::about() {
 	split(text,"GMenu2X is developed by Massimiliano \"Ryo\" Torromeo, and is released under the GPL-v2 license.\n\
 Website: http://gmenu2x.sourceforge.net\n\
 E-Mail & PayPal account: massimiliano.torromeo@gmail.com\n\
+\n\
+Wiz version by Pickle\n\
 \n\
 Thanks goes to...\n\
 \n\
@@ -522,7 +558,12 @@ void GMenu2X::readConfig() {
 	if (confStr["skin"].empty() || !fileExists("skins/"+confStr["skin"])) confStr["skin"] = "Default";
 
 	evalIntConf( &confInt["outputLogs"], 0, 0,1 );
+#ifdef TARGET_GP2X
 	evalIntConf( &confInt["maxClock"], 300, 200,300 );
+#endif
+#ifdef TARGET_WIZ
+	evalIntConf( &confInt["maxClock"], 550, 200,900 );
+#endif
 	evalIntConf( &confInt["menuClock"], f200 ? 136 : 100, 50,300 );
 	evalIntConf( &confInt["globalVolume"], 67, 0,100 );
 	evalIntConf( &confInt["gamma"], 1, 1,100 );
@@ -617,7 +658,12 @@ void GMenu2X::writeSkinConfig() {
 
 		ConfRGBAHash::iterator endC = skinConfColors.end();
 		for(ConfRGBAHash::iterator curr = skinConfColors.begin(); curr != endC; curr++)
-			inf << curr->first << "=#" << hex << curr->second.r << hex << curr->second.g << hex << curr->second.b << hex << curr->second.a << endl;
+			inf << curr->first << "=#"
+				<< hex << setw(2) << setfill('0') << right << curr->second.r
+				<< hex << setw(2) << setfill('0') << right << curr->second.g
+				<< hex << setw(2) << setfill('0') << right << curr->second.b
+				<< hex << setw(2) << setfill('0') << right << curr->second.a << endl;
+
 
 		inf.close();
 		sync();
@@ -757,7 +803,7 @@ int GMenu2X::main() {
 
 		//Background
 		sc["bgmain"]->blit(s,0,0);
-
+		
 		//Sections
 		sectionsCoordX = halfX - (constrain((uint)menu->sections.size(), 0 , linkColumns) * skinConfInt["linkWidth"]) / 2;
 		if (menu->firstDispSection()>0)
@@ -861,6 +907,23 @@ int GMenu2X::main() {
 		s->write( font, fps+" FPS", resX-1,1 ,SFontHAlignRight );
 #endif
 
+
+
+/*
+	if (!TTF_WasInit()) TTF_Init();
+	TTF_Font *font = TTF_OpenFont("/usr/share/fonts/webcore-vista/CALIBRII.TTF", 12);
+	if (font != NULL) {
+		cout << "TTF init" << endl;
+		SDL_Surface *tmpSurface = TTF_RenderUTF8_Blended(font, "Hello world", (SDL_Color){0,0,0,255});
+		SDL_BlitSurface(tmpSurface, NULL, s->raw, NULL);
+		SDL_FreeSurface(tmpSurface);
+		TTF_CloseFont(font);
+		sleep(10);
+	}
+*/
+
+
+
 		s->flip();
 
 		//touchscreen
@@ -925,10 +988,15 @@ int GMenu2X::main() {
 				if ( input.isActive(ACTION_VOLUP) && input.isActive(ACTION_VOLDOWN) ) menu->selLinkApp()->setVolume(-1);
 			} else {
 				// CLOCK
+#if defined(TARGET_WIZ)
+				int inc = 10;
+#else
+				int inc = 1;
+#endif
 				if ( input[ACTION_VOLDOWN] && !input.isActive(ACTION_VOLUP) )
-					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-1,50,confInt["maxClock"]) );
+					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-inc,50,confInt["maxClock"]) );
 				if ( input[ACTION_VOLUP] && !input.isActive(ACTION_VOLDOWN) )
-					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+1,50,confInt["maxClock"]) );
+					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+inc,50,confInt["maxClock"]) );
 				if ( input.isActive(ACTION_VOLUP) && input.isActive(ACTION_VOLDOWN) ) menu->selLinkApp()->setClock(200);
 			}
 		}
@@ -945,7 +1013,7 @@ int GMenu2X::main() {
 				offset = menu->sectionLinks()->size()>linksPerPage ? 2 : 6;
 			}
 		}
-		
+
 		usleep(LOOP_DELAY);
 	}
 
@@ -994,8 +1062,14 @@ void GMenu2X::options() {
 	SettingsDialog sd(this,tr["Settings"]);
 	sd.addSetting(new MenuSettingMultiString(this,tr["Language"],tr["Set the language used by GMenu2X"],&lang,&fl_tr.files));
 	sd.addSetting(new MenuSettingBool(this,tr["Save last selection"],tr["Save the last selected link and section on exit"],&confInt["saveSelection"]));
+#ifdef TARGET_GP2X
 	sd.addSetting(new MenuSettingInt(this,tr["Clock for GMenu2X"],tr["Set the cpu working frequency when running GMenu2X"],&confInt["menuClock"],50,325));
 	sd.addSetting(new MenuSettingInt(this,tr["Maximum overclock"],tr["Set the maximum overclock for launching links"],&confInt["maxClock"],50,325));
+#endif
+#ifdef TARGET_WIZ
+	sd.addSetting(new MenuSettingInt(this,tr["Clock for GMenu2X"],tr["Set the cpu working frequency when running GMenu2X"],&confInt["menuClock"],50,900,10));
+	sd.addSetting(new MenuSettingInt(this,tr["Maximum overclock"],tr["Set the maximum overclock for launching links"],&confInt["maxClock"],50,900,10));
+#endif
 	sd.addSetting(new MenuSettingInt(this,tr["Global Volume"],tr["Set the default volume for the gp2x soundcard"],&confInt["globalVolume"],0,100));
 	sd.addSetting(new MenuSettingBool(this,tr["Output logs"],tr["Logs the output of the links. Use the Log Viewer to read them."],&confInt["outputLogs"]));
 	//G
@@ -1028,7 +1102,7 @@ void GMenu2X::settingsOpen2x() {
 	sd.addSetting(new MenuSettingBool(this,tr["USB host on boot"],tr["Allow USB host to be started at boot time"],&o2x_usb_host_on_boot));
 	sd.addSetting(new MenuSettingBool(this,tr["USB HID on boot"],tr["Allow USB HID to be started at boot time"],&o2x_usb_hid_on_boot));
 	sd.addSetting(new MenuSettingBool(this,tr["USB storage on boot"],tr["Allow USB storage to be started at boot time"],&o2x_usb_storage_on_boot));
-	//sd.addSetting(new MenuSettingInt(this,tr["Speaker Mode on boot"],tr["Set Speaker mode. 0 = Mute, 1 = Phones, 2 = Speaker"],&volumeMode,0,2));
+	//sd.addSetting(new MenuSettingInt(this,tr["Speaker Mode on boot"],tr["Set Speaker mode. 0 = Mute, 1 = Phones, 2 = Speaker"],&volumeMode,0,2,1));
 	sd.addSetting(new MenuSettingInt(this,tr["Speaker Scaler"],tr["Set the Speaker Mode scaling 0-150\% (default is 100\%)"],&volumeScalerNormal,0,150));
 	sd.addSetting(new MenuSettingInt(this,tr["Headphones Scaler"],tr["Set the Headphones Mode scaling 0-100\% (default is 65\%)"],&volumeScalerPhones,0,100));
 
@@ -1057,6 +1131,8 @@ void GMenu2X::skinMenu() {
 	sd.addSetting(new MenuSettingRGBA(this,tr["Message Box Color"],tr["Background color of the message box"],&skinConfColors["messageBoxBg"]));
 	sd.addSetting(new MenuSettingRGBA(this,tr["Message Box Border Color"],tr["Border color of the message box"],&skinConfColors["messageBoxBorder"]));
 	sd.addSetting(new MenuSettingRGBA(this,tr["Message Box Selection Color"],tr["Color of the selection of the message box"],&skinConfColors["messageBoxSelection"]));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Font Color"],tr["Color of the font"],&skinConfColors["fontColor"]));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Font Outline Color"],tr["Color of the font's outline"],&skinConfColors["fontOutlineColor"]));
 
 	if (sd.exec() && sd.edited()) {
 		if (curSkin != confStr["skin"]) {
@@ -1096,6 +1172,8 @@ void GMenu2X::setSkin(string skin, bool setWallpaper) {
 	skinConfColors["messageBoxBg"] = (RGBAColor){255,255,255,255};
 	skinConfColors["messageBoxBorder"] = (RGBAColor){80,80,80,255};
 	skinConfColors["messageBoxSelection"] = (RGBAColor){160,160,160,255};
+	skinConfColors["fontColor"] = (RGBAColor){255,255,255,255};
+	skinConfColors["fontOutlineColor"] = (RGBAColor){0,0,0,130};
 
 	//load skin settings
 	string skinconfname = "skins/"+skin+"/skin.conf";
@@ -1242,7 +1320,7 @@ void GMenu2X::contextMenu() {
 
 		selbox.y = box.y+4+(h+2)*sel;
 		bg.blit(s,0,0);
-		
+
 		if (fadeAlpha<200) fadeAlpha = intTransition(0,200,tickStart,500,tickNow);
 		s->box(0, 0, resX, resY, 0,0,0,fadeAlpha);
 		s->box(box.x, box.y, box.w, box.h, skinConfColors["messageBoxBg"]);
@@ -1361,7 +1439,12 @@ void GMenu2X::editLink() {
 	sd.addSetting(new MenuSettingMultiString(this,tr["Section"],tr["The section this link belongs to"],&newSection,&menu->sections));
 	sd.addSetting(new MenuSettingImage(this,tr["Icon"],tr.translate("Select an icon for the link: $1",linkTitle.c_str(),NULL),&linkIcon,".png,.bmp,.jpg,.jpeg"));
 	sd.addSetting(new MenuSettingFile(this,tr["Manual"],tr["Select a graphic/textual manual or a readme"],&linkManual,".man.png,.txt"));
+#ifdef TARGET_GP2X
 	sd.addSetting(new MenuSettingInt(this,tr["Clock (default: 200)"],tr["Cpu clock frequency to set when launching this link"],&linkClock,50,confInt["maxClock"]));
+#endif
+#ifdef TARGET_WIZ
+	sd.addSetting(new MenuSettingInt(this,tr["Clock (default: 550)"],tr["Cpu clock frequency to set when launching this link"],&linkClock,50,confInt["maxClock"],10));
+#endif
 	sd.addSetting(new MenuSettingBool(this,tr["Tweak RAM Timings"],tr["This usually speeds up the application at the cost of stability"],&linkUseRamTimings));
 	sd.addSetting(new MenuSettingInt(this,tr["Volume (default: -1)"],tr["Volume to set for this link"],&linkVolume,-1,100));
 	sd.addSetting(new MenuSettingString(this,tr["Parameters"],tr["Parameters to pass to the application"],&linkParams, diagTitle,diagIcon));
@@ -1605,7 +1688,7 @@ void GMenu2X::scanPath(string path, vector<string> *files) {
 			scanPath(filepath, files);
 		if (statRet != -1) {
 			ext = filepath.substr(filepath.length()-4,4);
-#ifdef TARGET_GP2X
+#if defined(TARGET_GP2X) || defined(TARGET_WIZ)
 			if (ext==".gpu" || ext==".gpe")
 #else
 			if (ext==".pxml")
@@ -1618,7 +1701,7 @@ void GMenu2X::scanPath(string path, vector<string> *files) {
 }
 
 unsigned short GMenu2X::getBatteryLevel() {
-#ifdef TARGET_GP2X
+#if defined(TARGET_GP2X) || defined(TARGET_WIZ)
 	if (batteryHandle<=0) return 0;
 
 	if (f200) {
@@ -1708,6 +1791,19 @@ void GMenu2X::setClock(unsigned mhz) {
 		scale&=3;
 		v=mdiv | pdiv | scale;
 		MEM_REG[0x910>>1]=v;
+	}
+#endif
+#ifdef TARGET_WIZ
+	unsigned  long v;
+	unsigned mdiv, pdiv=9, sdiv=0;
+	if (wiz_mem!=0) {  
+		printf( "Setting clockspeed to %d\n", mhz );
+		mdiv= (mhz * pdiv) / SYS_CLK_FREQ;
+		mdiv &= 0x3FF;
+		v= pdiv<<18 | mdiv<<8 | sdiv;
+
+		PLLSETREG0 = v;
+		PWRMODE |= 0x8000;
 	}
 #endif
 }

@@ -271,8 +271,8 @@ bool Menu::addLink(string path, string file, string section) {
 	}
 	
 	//Reduce title lenght to fit the link width
-	if (gmenu2x->font->getTextWidth(shorttitle)>gmenu2x->skinConfInt["linkWidth"]) {
-		while (gmenu2x->font->getTextWidth(shorttitle+"..")>gmenu2x->skinConfInt["linkWidth"])
+	if ((int)gmenu2x->font->getTextWidth(shorttitle)>gmenu2x->skinConfInt["linkWidth"]) {
+		while ((int)gmenu2x->font->getTextWidth(shorttitle+"..")>gmenu2x->skinConfInt["linkWidth"])
 			shorttitle = shorttitle.substr(0,shorttitle.length()-1);
 		shorttitle += "..";
 	}
@@ -292,7 +292,20 @@ bool Menu::addLink(string path, string file, string section) {
 #ifdef DEBUG
 			cout << "\033[0;34mGMENU2X:\033[0m Section: " << sections[isection] << "(" << isection << ")" << endl;
 #endif
-			links[isection].push_back( new LinkApp(gmenu2x, linkpath.c_str()) );
+ 
+			//senquack - fixing bug where adding a new link does not allow the new link
+			//					to be displayed correctly until menu is reloaded:
+			//senquack - orig. line:
+//			links[isection].push_back( new LinkApp(gmenu2x, linkpath.c_str()) );
+ 
+			//senquack - new code (pulled from Menu::readLinks())
+			LinkApp *link = new LinkApp(gmenu2x, linkpath.c_str());
+			link->setSize(gmenu2x->skinConfInt["linkWidth"],gmenu2x->skinConfInt["linkHeight"]);
+			if (link->targetExists())
+				links[isection].push_back( link );
+			else
+				free(link);
+ 
 		}
 	} else {
 #ifdef DEBUG
