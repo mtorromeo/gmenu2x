@@ -66,7 +66,7 @@ void FileLister::browse() {
 		}
 
 		vector<string> vfilter;
-		split(vfilter,getFilter(),",");
+		split(vfilter, getFilter(), ",");
 
 		string filepath, file;
 		struct stat st;
@@ -93,17 +93,20 @@ void FileLister::browse() {
 					directories.push_back(file);
 			} else {
 				if (!showFiles) continue;
-				bool filterOk = false;
-				for (uint i = 0; i<vfilter.size() && !filterOk; i++)
-					if (vfilter[i].length()<=file.length())
-						filterOk = file.substr(file.length()-vfilter[i].length(),vfilter[i].length())==vfilter[i];
-				if (filterOk) files.push_back(file);
+				for (vector<string>::iterator it = vfilter.begin(); it != vfilter.end(); ++it) {
+					if (it->length() <= file.length()) {
+						if (file.compare(file.length() - it->length(), it->length(), *it) == 0) {
+							files.push_back(file);
+							break;
+						}
+					}
+				}
 			}
 		}
 
 		closedir(dirp);
-		sort(files.begin(),files.end(),case_less());
-		sort(directories.begin(),directories.end(),case_less());
+		sort(files.begin(), files.end(), case_less());
+		sort(directories.begin(), directories.end(), case_less());
 	}
 }
 
@@ -129,9 +132,9 @@ string FileLister::at(uint x) {
 }
 
 bool FileLister::isFile(uint x) {
-	return x>=directories.size() && x<size();
+	return x >= directories.size() && x < size();
 }
 
 bool FileLister::isDirectory(uint x) {
-	return x<directories.size();
+	return x < directories.size();
 }
