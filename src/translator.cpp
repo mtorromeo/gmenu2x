@@ -26,7 +26,7 @@
 
 using namespace std;
 
-Translator::Translator(string lang) {
+Translator::Translator(const string &lang) {
 	_lang = "";
 	if (!lang.empty())
 		setLang(lang);
@@ -34,11 +34,11 @@ Translator::Translator(string lang) {
 
 Translator::~Translator() {}
 
-bool Translator::exists(string term) {
+bool Translator::exists(const string &term) {
 	return translations.find(term) != translations.end();
 }
 
-void Translator::setLang(string lang) {
+void Translator::setLang(const string &lang) {
 	translations.clear();
 
 	string line;
@@ -57,7 +57,7 @@ void Translator::setLang(string lang) {
 	}
 }
 
-string Translator::translate(string term,const char *replacestr,...) {
+string Translator::translate(const string &term,const char *replacestr,...) {
 	string result = term;
 
 	if (!_lang.empty()) {
@@ -87,7 +87,7 @@ string Translator::translate(string term,const char *replacestr,...) {
 	return result;
 }
 
-string Translator::operator[](string term) {
+string Translator::operator[](const string &term) {
 	return translate(term);
 }
 

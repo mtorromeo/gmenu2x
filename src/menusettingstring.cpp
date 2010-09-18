@@ -24,7 +24,7 @@
 using namespace std;
 using namespace fastdelegate;
 
-MenuSettingString::MenuSettingString(GMenu2X *gmenu2x, string name, string description, string *value, string diagTitle, string diagIcon)
+MenuSettingString::MenuSettingString(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &diagTitle, const string &diagIcon)
 	: MenuSetting(gmenu2x,name,description) {
 	this->gmenu2x = gmenu2x;
 	_value = value;
@@ -53,11 +53,11 @@ void MenuSettingString::manageInput() {
 	if ( gmenu2x->input[ACTION_B] ) edit();
 }
 
-void MenuSettingString::setValue(string value) {
+void MenuSettingString::setValue(const string &value) {
 	*_value = value;
 }
 
-string MenuSettingString::value() {
+const string &MenuSettingString::value() {
 	return *_value;
 }
 

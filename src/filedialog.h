@@ -51,11 +51,11 @@ protected:
 
 public:
 	string file;
-	FileDialog(GMenu2X *gmenu2x, string text, string filter="", string file="");
+	FileDialog(GMenu2X *gmenu2x, const string &text, const string &filter="", const string &file="");
 	virtual ~FileDialog() {};
 
-	virtual string path() { return path_v; };
-	virtual void setPath(string path);
+	virtual const string &path() { return path_v; };
+	virtual void setPath(const string &path);
 
 	inline virtual void beforeFileList();
 	inline virtual void onChangeDir();

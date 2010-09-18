@@ -1,7 +1,7 @@
 #include "listview.h"
 #include "listviewitem.h"
 
-ListViewItem::ListViewItem(ListView * parent, string text) {
+ListViewItem::ListViewItem(ListView * parent, const string &text) {
 	this->parent = parent;
 	rect.h = 16;
 	rect.w = parent->getWidth();

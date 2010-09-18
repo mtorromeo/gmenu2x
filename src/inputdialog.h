@@ -67,7 +67,7 @@ private:
 	void setKeyboard(int);
 
 public:
-	InputDialog(GMenu2X *gmenu2x, string text, string startvalue="", string title="", string icon="");
+	InputDialog(GMenu2X *gmenu2x, const string &text, const string &startvalue="", const string &title="", const string &icon="");
 
 	string input;
 	bool exec();

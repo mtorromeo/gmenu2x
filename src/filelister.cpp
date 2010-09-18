@@ -30,26 +30,27 @@
 
 using namespace std;
 
-FileLister::FileLister(string startPath, bool showDirectories, bool showFiles) {
+FileLister::FileLister(const string &startPath, bool showDirectories, bool showFiles) {
 	this->showDirectories = showDirectories;
 	this->showFiles = showFiles;
 	setPath(startPath,false);
 }
 
-string FileLister::getPath() {
+const string &FileLister::getPath() {
 	return path;
 }
-void FileLister::setPath(string path, bool doBrowse) {
-	if (path[path.length()-1]!='/') path += "/";
+void FileLister::setPath(const string &path, bool doBrowse) {
 	this->path = path;
+	if (this->path[path.length()-1]!='/')
+		this->path += "/";
 	if (doBrowse)
 		browse();
 }
 
-string FileLister::getFilter() {
+const string &FileLister::getFilter() {
 	return filter;
 }
-void FileLister::setFilter(string filter) {
+void FileLister::setFilter(const string &filter) {
 	this->filter = filter;
 }
 

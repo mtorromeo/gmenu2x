@@ -24,7 +24,7 @@
 using namespace std;
 using namespace fastdelegate;
 
-MenuSettingDir::MenuSettingDir(GMenu2X *gmenu2x, string name, string description, string *value)
+MenuSettingDir::MenuSettingDir(GMenu2X *gmenu2x, const string &name, const string &description, string *value)
 	: MenuSetting(gmenu2x,name,description) {
 	this->gmenu2x = gmenu2x;
 	_value = value;
@@ -61,11 +61,11 @@ void MenuSettingDir::select() {
 	if (dd.exec()) setValue( dd.path );
 }
 
-void MenuSettingDir::setValue(string value) {
+void MenuSettingDir::setValue(const string &value) {
 	*_value = value;
 }
 
-string MenuSettingDir::value() {
+const string &MenuSettingDir::value() {
 	return *_value;
 }
 

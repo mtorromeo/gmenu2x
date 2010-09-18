@@ -58,15 +58,15 @@ public:
 	void setSize(int w, int h);
 	void setPosition(int x, int y);
 
-	string getTitle();
-	void setTitle(string title);
-	string getDescription();
-	void setDescription(string description);
-	string getIcon();
-	void setIcon(string icon);
-	virtual string searchIcon();
-	string getIconPath();
-	void setIconPath(string icon);
+	const string &getTitle();
+	void setTitle(const string &title);
+	const string &getDescription();
+	void setDescription(const string &description);
+	const string &getIcon();
+	void setIcon(const string &icon);
+	virtual const string &searchIcon();
+	const string &getIconPath();
+	void setIconPath(const string &icon);
 
 	virtual void run();
 };

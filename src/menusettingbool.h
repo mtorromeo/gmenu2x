@@ -38,8 +38,8 @@ private:
 	void toggle();
 
 public:
-	MenuSettingBool(GMenu2X *gmenu2x, string name, string description, bool *value);
-	MenuSettingBool(GMenu2X *gmenu2x, string name, string description, int *value);
+	MenuSettingBool(GMenu2X *gmenu2x, const string &name, const string &description, bool *value);
+	MenuSettingBool(GMenu2X *gmenu2x, const string &name, const string &description, int *value);
 	virtual ~MenuSettingBool() {};
 
 	virtual void draw(int y);

@@ -41,19 +41,19 @@ public:
 	Surface *surface;
 	SFontPlus();
 	SFontPlus(SDL_Surface *font);
-	SFontPlus(string font, bool ttf = false, SDL_Color textColor = (SDL_Color){255,255,255}, SDL_Color outlineColor = (SDL_Color){5,5,5});
+	SFontPlus(const string &font, bool ttf = false, SDL_Color textColor = (SDL_Color){255,255,255}, SDL_Color outlineColor = (SDL_Color){5,5,5});
 	~SFontPlus();
 
 	bool utf8Code(unsigned char c);
 
-	void initTTF(string fontfile, Uint32 flags = SDL_HWSURFACE|SDL_SRCALPHA, SDL_Color textColor = (SDL_Color){255,255,255}, SDL_Color outlineColor = (SDL_Color){5,5,5}, string characters = SFONTPLUS_CHARSET);
-	void initFont(SDL_Surface *font, string characters = SFONTPLUS_CHARSET);
-	void initFont(string font, string characters = SFONTPLUS_CHARSET);
+	void initTTF(const string &fontfile, Uint32 flags = SDL_HWSURFACE|SDL_SRCALPHA, SDL_Color textColor = (SDL_Color){255,255,255}, SDL_Color outlineColor = (SDL_Color){5,5,5}, const string &characters = SFONTPLUS_CHARSET);
+	void initFont(SDL_Surface *font, const string &characters = SFONTPLUS_CHARSET);
+	void initFont(const string &font, const string &characters = SFONTPLUS_CHARSET);
 	void freeFont();
 	
 	bool isTTF();
 
-	void write(SDL_Surface *s, string text, int x, int y);
+	void write(SDL_Surface *s, const string &text, int x, int y);
 	void write(SDL_Surface* surface, const string& text, int x, int y, const unsigned short halign, const unsigned short valign = 0);
 	void write(SDL_Surface* surface, vector<string> *text, int x, int y, const unsigned short halign=0, const unsigned short valign = 0);
 	void write(Surface* surface, const string& text, int x, int y, const unsigned short halign=0, const unsigned short valign = 0);

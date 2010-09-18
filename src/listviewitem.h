@@ -32,7 +32,7 @@ protected:
 	SDL_Rect rect;
 
 public:
-	ListViewItem(ListView *parent, string text);
+	ListViewItem(ListView *parent, const string &text);
 	virtual ~ListViewItem();
 
 	string text;

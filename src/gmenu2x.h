@@ -83,7 +83,7 @@ private:
 	*/
 	unsigned short getBatteryLevel();
 	int batteryHandle;
-	void browsePath(string path, vector<string>* directories, vector<string>* files);
+	void browsePath(const string &path, vector<string>* directories, vector<string>* files);
 	/*!
 	Starts the scanning of the nand and sd filesystems, searching for gpe and gpu files and creating the links in 2 dedicated sections.
 	*/
@@ -151,7 +151,7 @@ public:
 	@see path
 	@return String containing the parent directory
 	*/
-	string getExePath();
+	const string &getExePath();
 
 	InputManager input;
 	Touchscreen ts;
@@ -163,7 +163,7 @@ public:
 
 	//Configuration settings
 	bool useSelectionPng;
-	void setSkin(string skin, bool setWallpaper = true);
+	void setSkin(const string &skin, bool setWallpaper = true);
 	//firmware type and version
 	string fwType, fwVersion;
 	//gp2x type
@@ -214,7 +214,7 @@ public:
 	void writeConfig();
 	void writeConfigOpen2x();
 	void writeSkinConfig();
-	void writeTmp(int selelem=-1, string selectordir="");
+	void writeTmp(int selelem=-1, const string &selectordir="");
 
 	void ledOn();
 	void ledOff();
@@ -228,13 +228,13 @@ public:
 
 	void initBG();
 	int drawButton(IconButton *btn, int x=5, int y=-10);
-	int drawButton(Surface *s, string btn, string text, int x=5, int y=-10);
-	int drawButtonRight(Surface *s, string btn, string text, int x=5, int y=-10);
+	int drawButton(Surface *s, const string &btn, const string &text, int x=5, int y=-10);
+	int drawButtonRight(Surface *s, const string &btn, const string &text, int x=5, int y=-10);
 	void drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height);
 
-	void drawTitleIcon(string icon, bool skinRes=true, Surface *s=NULL);
-	void writeTitle(string title, Surface *s=NULL);
-	void writeSubTitle(string subtitle, Surface *s=NULL);
+	void drawTitleIcon(const string &icon, bool skinRes=true, Surface *s=NULL);
+	void writeTitle(const string &title, Surface *s=NULL);
+	void writeSubTitle(const string &subtitle, Surface *s=NULL);
 	void drawTopBar(Surface *s=NULL);
 	void drawBottomBar(Surface *s=NULL);
 

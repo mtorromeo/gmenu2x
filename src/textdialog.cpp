@@ -22,7 +22,7 @@
 
 using namespace std;
 
-TextDialog::TextDialog(GMenu2X *gmenu2x, string title, string description, string icon, vector<string> *text) {
+TextDialog::TextDialog(GMenu2X *gmenu2x, const string &title, const string &description, const string &icon, vector<string> *text) {
 	this->gmenu2x = gmenu2x;
 	this->text = text;
 	this->title = title;

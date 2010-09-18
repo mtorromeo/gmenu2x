@@ -39,7 +39,7 @@ private:
 	void setSel(int);
 
 public:
-	MenuSettingMultiString(GMenu2X *gmenu2x, string name, string description, string *value, vector<string> *choices);
+	MenuSettingMultiString(GMenu2X *gmenu2x, const string &name, const string &description, string *value, vector<string> *choices);
 	virtual ~MenuSettingMultiString() {};
 
 	virtual void draw(int y);

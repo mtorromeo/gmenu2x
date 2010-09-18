@@ -33,7 +33,7 @@
 
 using namespace std;
 
-Selector::Selector(GMenu2X *gmenu2x, LinkApp *link, string selectorDir) {
+Selector::Selector(GMenu2X *gmenu2x, LinkApp *link, const string &selectorDir) {
 	this->gmenu2x = gmenu2x;
 	this->link = link;
 	loadAliases();
@@ -235,7 +235,7 @@ void Selector::loadAliases() {
 	}
 }
 
-string Selector::getAlias(string key) {
+string Selector::getAlias(const string &key) {
 	hash_map<string, string>::iterator i = aliases.find(key);
 	if (i == aliases.end())
 		return "";

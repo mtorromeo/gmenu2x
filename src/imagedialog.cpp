@@ -31,20 +31,19 @@
 
 using namespace std;
 
-ImageDialog::ImageDialog(GMenu2X *gmenu2x, string text, string filter, string file) : FileDialog(gmenu2x, text, filter, file) {
+ImageDialog::ImageDialog(GMenu2X *gmenu2x, const string &text, const string &filter, const string &file) : FileDialog(gmenu2x, text, filter, file) {
 	this->gmenu2x = gmenu2x;
 	this->text = text;
 	this->filter = filter;
-	this->file = "";
 	setPath("/mnt");
 	title = "Image Browser";
 	if (!file.empty()) {
-		file = strreplace(file,"skin:",gmenu2x->getExePath()+"skins/"+gmenu2x->confStr["skin"]+"/");
-		string::size_type pos = file.rfind("/");
+		this->file = strreplace(file,"skin:",gmenu2x->getExePath()+"skins/"+gmenu2x->confStr["skin"]+"/");
+		string::size_type pos = this->file.rfind("/");
 		if (pos != string::npos) {
 			setPath( file.substr(0, pos) );
 			cout << "ib: " << path() << endl;
-			this->file = file.substr(pos+1,file.length());
+			this->file = this->file.substr(pos+1,this->file.length());
 		}
 	}
 	selRow = 0;

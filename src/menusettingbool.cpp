@@ -24,7 +24,7 @@
 using namespace std;
 using namespace fastdelegate;
 
-MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, string name, string description, int *value)
+MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, const string &name, const string &description, int *value)
 	: MenuSetting(gmenu2x,name,description) {
 	this->gmenu2x = gmenu2x;
 	_ivalue = value;
@@ -36,7 +36,7 @@ MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, string name, string descripti
 	btnToggle->setAction(MakeDelegate(this, &MenuSettingBool::toggle));
 }
 
-MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, string name, string description, bool *value)
+MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, const string &name, const string &description, bool *value)
 	: MenuSetting(gmenu2x,name,description) {
 	this->gmenu2x = gmenu2x;
 	_value = value;

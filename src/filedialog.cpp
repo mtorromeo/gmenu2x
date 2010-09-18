@@ -30,7 +30,7 @@
 
 using namespace std;
 
-FileDialog::FileDialog(GMenu2X *gmenu2x, string text, string filter, string file) {
+FileDialog::FileDialog(GMenu2X *gmenu2x, const string &text, const string &filter, const string &file) {
 	this->gmenu2x = gmenu2x;
 	this->text = text;
 	this->filter = filter;
@@ -176,7 +176,7 @@ bool FileDialog::exec() {
 	return result;
 }
 
-void FileDialog::setPath(string path) {
+void FileDialog::setPath(const string &path) {
 	path_v = path;
 	fl.setPath(path);
 	selected = 0;

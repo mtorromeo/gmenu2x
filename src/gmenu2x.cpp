@@ -732,7 +732,7 @@ void GMenu2X::readTmp() {
 	}
 }
 
-void GMenu2X::writeTmp(int selelem, string selectordir) {
+void GMenu2X::writeTmp(int selelem, const string &selectordir) {
 	string conffile = "/tmp/gmenu2x.tmp";
 	ofstream inf(conffile.c_str());
 	if (inf.is_open()) {
@@ -1150,7 +1150,7 @@ void GMenu2X::toggleTvOut() {
 #endif
 }
 
-void GMenu2X::setSkin(string skin, bool setWallpaper) {
+void GMenu2X::setSkin(const string &skin, bool setWallpaper) {
 	confStr["skin"] = skin;
 
 	//Clear previous skin settings
@@ -1862,7 +1862,7 @@ int GMenu2X::getVolumeScaler() {
 	return currentscalefactor;
 }
 
-string GMenu2X::getExePath() {
+const string &GMenu2X::getExePath() {
 	if (path.empty()) {
 		char buf[255];
 		int l = readlink("/proc/self/exe",buf,255);
@@ -1900,7 +1900,7 @@ int GMenu2X::drawButton(IconButton *btn, int x, int y) {
 	return x+btn->getRect().w+6;
 }
 
-int GMenu2X::drawButton(Surface *s, string btn, string text, int x, int y) {
+int GMenu2X::drawButton(Surface *s, const string &btn, const string &text, int x, int y) {
 	if (y<0) y = resY+y;
 	SDL_Rect re = {x, y-7, 0, 16};
 	if (sc.skinRes("imgs/buttons/"+btn+".png") != NULL) {
@@ -1912,7 +1912,7 @@ int GMenu2X::drawButton(Surface *s, string btn, string text, int x, int y) {
 	return x+re.w+6;
 }
 
-int GMenu2X::drawButtonRight(Surface *s, string btn, string text, int x, int y) {
+int GMenu2X::drawButtonRight(Surface *s, const string &btn, const string &text, int x, int y) {
 	if (y<0) y = resY+y;
 	if (sc.skinRes("imgs/buttons/"+btn+".png") != NULL) {
 		x -= 16;
@@ -1941,7 +1941,7 @@ void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint to
 	s->box(resX-6, by, 3, bs, skinConfColors["selectionBg"]);
 }
 
-void GMenu2X::drawTitleIcon(string icon, bool skinRes, Surface *s) {
+void GMenu2X::drawTitleIcon(const string &icon, bool skinRes, Surface *s) {
 	if (s==NULL) s = this->s;
 
 	Surface *i = NULL;
@@ -1958,12 +1958,12 @@ void GMenu2X::drawTitleIcon(string icon, bool skinRes, Surface *s) {
 	i->blit(s,4,(skinConfInt["topBarHeight"]-32)/2);
 }
 
-void GMenu2X::writeTitle(string title, Surface *s) {
+void GMenu2X::writeTitle(const string &title, Surface *s) {
 	if (s==NULL) s = this->s;
 	s->write(font,title,40, skinConfInt["topBarHeight"]/4, SFontHAlignLeft, SFontVAlignMiddle);
 }
 
-void GMenu2X::writeSubTitle(string subtitle, Surface *s) {
+void GMenu2X::writeSubTitle(const string &subtitle, Surface *s) {
 	if (s==NULL) s = this->s;
 	s->write(font,subtitle,40, skinConfInt["topBarHeight"]/4*3, SFontHAlignLeft, SFontVAlignMiddle);
 }

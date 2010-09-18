@@ -4,7 +4,7 @@
 using namespace std;
 using namespace fastdelegate;
 
-IconButton::IconButton(GMenu2X *gmenu2x, string icon, string label) : Button(gmenu2x) {
+IconButton::IconButton(GMenu2X *gmenu2x, const string &icon, const string &label) : Button(gmenu2x) {
 	this->gmenu2x = gmenu2x;
 	this->icon = icon;
 	labelPosition = IconButton::DISP_RIGHT;
@@ -93,11 +93,11 @@ void IconButton::recalcSize() {
 	setSize(w, h);
 }
 
-string IconButton::getLabel() {
+const string &IconButton::getLabel() {
 	return label;
 }
 
-void IconButton::setLabel(string label) {
+void IconButton::setLabel(const string &label) {
 	this->label = label;
 }
 
@@ -107,11 +107,11 @@ void IconButton::setLabelPosition(int pos, int margin) {
 	recalcSize();
 }
 
-string IconButton::getIcon() {
+const string &IconButton::getIcon() {
 	return icon;
 }
 
-void IconButton::setIcon(string icon) {
+void IconButton::setIcon(const string &icon) {
 	this->icon = icon;
 	recalcSize();
 }

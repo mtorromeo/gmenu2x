@@ -22,7 +22,7 @@ public:
 	static const int DISP_TOP = 2;
 	static const int DISP_BOTTOM = 3;
 
-	IconButton(GMenu2X *gmenu2x, string icon, string label="");
+	IconButton(GMenu2X *gmenu2x, const string &icon, const string &label="");
 	virtual ~IconButton() {};
 
 	virtual void paint();
@@ -30,12 +30,12 @@ public:
 
 	void setPosition(int x, int y);
 
-	string getLabel();
-	void setLabel(string label);
+	const string &getLabel();
+	void setLabel(const string &label);
 	void setLabelPosition(int pos, int margin);
 
-	string getIcon();
-	void setIcon(string icon);
+	const string &getIcon();
+	void setIcon(const string &icon);
 
 	void setAction(ButtonAction action);
 };

@@ -24,7 +24,7 @@
 using namespace std;
 using namespace fastdelegate;
 
-MenuSettingFile::MenuSettingFile(GMenu2X *gmenu2x, string name, string description, string *value, string filter)
+MenuSettingFile::MenuSettingFile(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &filter)
 	: MenuSetting(gmenu2x,name,description) {
 	this->gmenu2x = gmenu2x;
 	this->filter = filter;
@@ -62,11 +62,11 @@ void MenuSettingFile::select() {
 	if (fd.exec()) setValue( fd.path()+"/"+fd.file );
 }
 
-void MenuSettingFile::setValue(string value) {
+void MenuSettingFile::setValue(const string &value) {
 	*_value = value;
 }
 
-string MenuSettingFile::value() {
+const string &MenuSettingFile::value() {
 	return *_value;
 }
 

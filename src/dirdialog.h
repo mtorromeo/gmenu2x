@@ -56,7 +56,7 @@ private:
 
 public:
 	string path;
-	DirDialog(GMenu2X *gmenu2x, string text, string dir="");
+	DirDialog(GMenu2X *gmenu2x, const string &text, const string &dir="");
 
 	bool exec();
 };

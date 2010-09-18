@@ -33,7 +33,7 @@ private:
 	bool showDirectories, showFiles;
 
 public:
-	FileLister(string startPath = "/mnt/sd", bool showDirectories = true, bool showFiles = true);
+	FileLister(const string &startPath = "/mnt/sd", bool showDirectories = true, bool showFiles = true);
 	void browse();
 
 	vector<string> directories, files, exclude;
@@ -45,10 +45,10 @@ public:
 	bool isFile(uint);
 	bool isDirectory(uint);
 
-	string getPath();
-	void setPath(string path, bool doBrowse=true);
-	string getFilter();
-	void setFilter(string filter);
+	const string &getPath();
+	void setPath(const string &path, bool doBrowse=true);
+	const string &getFilter();
+	void setFilter(const string &filter);
 };
 
 #endif /*FILELISTER_H_*/

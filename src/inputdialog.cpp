@@ -26,7 +26,7 @@
 using namespace std;
 using namespace fastdelegate;
 
-InputDialog::InputDialog(GMenu2X *gmenu2x, string text, string startvalue, string title, string icon) {
+InputDialog::InputDialog(GMenu2X *gmenu2x, const string &text, const string &startvalue, const string &title, const string &icon) {
 	this->gmenu2x = gmenu2x;
 	if (title=="") {
 		this->title = text;

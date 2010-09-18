@@ -37,7 +37,7 @@ protected:
 	void clear();
 
 public:
-	MenuSettingFile(GMenu2X *gmenu2x, string name, string description, string *value, string filter="");
+	MenuSettingFile(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &filter="");
 	virtual ~MenuSettingFile() {};
 
 	virtual void draw(int y);
@@ -47,8 +47,8 @@ public:
 	virtual void drawSelected(int y);
 	virtual bool edited();
 
-	virtual void setValue(string value);
-	string value();
+	virtual void setValue(const string &value);
+	const string &value();
 };
 
 #endif

@@ -23,7 +23,7 @@
 
 using namespace std;
 
-TextManualDialog::TextManualDialog(GMenu2X *gmenu2x, string title, string icon, vector<string> *text)
+TextManualDialog::TextManualDialog(GMenu2X *gmenu2x, const string &title, const string &icon, vector<string> *text)
 	: TextDialog(gmenu2x,title,"",icon,text) {
 	this->gmenu2x = gmenu2x;
 

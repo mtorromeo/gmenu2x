@@ -20,7 +20,7 @@ SFontPlus::SFontPlus(SDL_Surface* font) {
 	initFont(font);
 }
 
-SFontPlus::SFontPlus(string font, bool ttf, SDL_Color textColor, SDL_Color outlineColor) {
+SFontPlus::SFontPlus(const string &font, bool ttf, SDL_Color textColor, SDL_Color outlineColor) {
 	surface = NULL;
 	this->ttf = false;
 	if (ttf)
@@ -37,7 +37,7 @@ bool SFontPlus::utf8Code(unsigned char c) {
 	return (c>=194 && c<=198) || c==208 || c==209;
 }
 
-void SFontPlus::initTTF(string fontfile, Uint32 flags,  SDL_Color textColor, SDL_Color outlineColor, string characters) {
+void SFontPlus::initTTF(const string &fontfile, Uint32 flags,  SDL_Color textColor, SDL_Color outlineColor, const string &characters) {
 	if (!TTF_WasInit()) TTF_Init();
 	TTF_Font *font = TTF_OpenFont(fontfile.c_str(), FONTSIZE);
 	if (font != NULL) {
@@ -102,7 +102,7 @@ void SFontPlus::initTTF(string fontfile, Uint32 flags,  SDL_Color textColor, SDL
 	postInit();
 }
 
-void SFontPlus::initFont(string font, string characters) {
+void SFontPlus::initFont(const string &font, const string &characters) {
 	SDL_Surface *buf = IMG_Load(font.c_str());
 	if (!buf) {
 		//assume ttf file
@@ -113,7 +113,7 @@ void SFontPlus::initFont(string font, string characters) {
 	}
 }
 
-void SFontPlus::initFont(SDL_Surface *font, string characters) {
+void SFontPlus::initFont(SDL_Surface *font, const string &characters) {
 	freeFont();
 	this->characters = characters;
 	if (font==NULL) return;
@@ -181,7 +181,7 @@ void SFontPlus::freeFont() {
 	}
 }
 
-void SFontPlus::write(SDL_Surface *s, string text, int x, int y) {
+void SFontPlus::write(SDL_Surface *s, const string &text, int x, int y) {
 	if (text.empty()) return;
 
 	string::size_type pos;

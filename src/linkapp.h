@@ -50,42 +50,42 @@ private:
 
 public:
 	LinkApp(GMenu2X *gmenu2x, const char* linkfile);
-	virtual string searchIcon();
+	virtual const string &searchIcon();
 
-	string getExec();
-	void setExec(string exec);
-	string getParams();
-	void setParams(string params);
-	string getWorkdir();
-	void setWorkdir(string workdir);
-	string getManual();
-	void setManual(string manual);
-	string getSelectorDir();
-	void setSelectorDir(string selectordir);
+	const string &getExec();
+	void setExec(const string &exec);
+	const string &getParams();
+	void setParams(const string &params);
+	const string &getWorkdir();
+	void setWorkdir(const string &workdir);
+	const string &getManual();
+	void setManual(const string &manual);
+	const string &getSelectorDir();
+	void setSelectorDir(const string &selectordir);
 	bool getSelectorBrowser();
 	void setSelectorBrowser(bool value);
 	bool getUseRamTimings();
 	void setUseRamTimings(bool value);
-	string getSelectorScreens();
-	void setSelectorScreens(string selectorscreens);
-	string getSelectorFilter();
-	void setSelectorFilter(string selectorfilter);
-	string getAliasFile();
-	void setAliasFile(string aliasfile);
+	const string &getSelectorScreens();
+	void setSelectorScreens(const string &selectorscreens);
+	const string &getSelectorFilter();
+	void setSelectorFilter(const string &selectorfilter);
+	const string &getAliasFile();
+	void setAliasFile(const string &aliasfile);
 
 	string file;
 
 	int clock();
-	string clockStr(int maxClock);
+	const string &clockStr(int maxClock);
 	void setClock(int mhz);
 
 	int volume();
-	string volumeStr();
+	const string &volumeStr();
 	void setVolume(int vol);
 
 //G
 	int gamma();
-	string gammaStr();
+	const string &gammaStr();
 	void setGamma(int gamma);
 // /G
 
@@ -95,8 +95,8 @@ public:
 	bool save();
 	void run();
 	void showManual();
-	void selector(int startSelection=0, string selectorDir="");
-	void launch(string selectedFile="", string selectedDir="");
+	void selector(int startSelection=0, const string &selectorDir="");
+	void launch(const string &selectedFile="", const string &selectedDir="");
 	bool targetExists();
 };
 

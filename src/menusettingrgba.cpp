@@ -23,7 +23,7 @@
 using namespace std;
 using namespace fastdelegate;
 
-MenuSettingRGBA::MenuSettingRGBA(GMenu2X *gmenu2x, string name, string description, RGBAColor *value)
+MenuSettingRGBA::MenuSettingRGBA(GMenu2X *gmenu2x, const string &name, const string &description, RGBAColor *value)
 	: MenuSetting(gmenu2x,name,description) {
 	selPart = 0;
 	this->gmenu2x = gmenu2x;
