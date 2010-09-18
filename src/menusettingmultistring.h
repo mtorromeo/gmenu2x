@@ -22,7 +22,7 @@
 
 #include "menusettingstringbase.h"
 
-using std::string;
+#include <vector>
 
 class MenuSettingMultiString : public MenuSettingStringBase {
 private:
@@ -30,8 +30,8 @@ private:
 		/* never called because manageInput() is overridden */
 	}
 
-	const vector<string> *choices;
-	uint selected;
+	const std::vector<std::string> *choices;
+	int selected;
 
 	void incSel();
 	void decSel();
@@ -39,9 +39,9 @@ private:
 
 public:
 	MenuSettingMultiString(
-			GMenu2X *gmenu2x, const string &name,
-			const string &description, string *value,
-			const vector<string> *choices);
+			GMenu2X *gmenu2x, const std::string &name,
+			const std::string &description, std::string *value,
+			const std::vector<std::string> *choices);
 	virtual ~MenuSettingMultiString() {};
 
 	virtual void manageInput();

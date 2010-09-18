@@ -21,12 +21,11 @@
 #define SURFACECOLLECTION_H
 
 #include <google/dense_hash_map>
+#include <string>
 
-#include "surface.h"
-#include "utilities.h"
+class Surface;
 
-using google::dense_hash_map;
-typedef dense_hash_map<string, Surface *> SurfaceHash;
+typedef google::dense_hash_map<std::string, Surface *> SurfaceHash;
 
 /**
 Hash Map of surfaces that loads surfaces not already loaded and reuses already loaded ones.
@@ -36,28 +35,29 @@ Hash Map of surfaces that loads surfaces not already loaded and reuses already l
 class SurfaceCollection {
 private:
 	SurfaceHash surfaces;
-	string skin;
+	std::string skin;
 
 public:
-	SurfaceCollection(bool defaultAlpha=true, const string &skin="default");
+	SurfaceCollection(
+			bool defaultAlpha = true, const std::string &skin = "default");
 	~SurfaceCollection();
 
-	void setSkin(const string &skin);
-	string getSkinFilePath(const string &file);
+	void setSkin(const std::string &skin);
+	std::string getSkinFilePath(const std::string &file);
 
 	bool defaultAlpha;
 	void debug();
 
-	Surface *add(Surface *s, const string &path);
-	Surface *add(const string &path, bool alpha=true);
-	Surface *addSkinRes(const string &path, bool alpha=true);
-	void     del(const string &path);
+	Surface *add(Surface *s, const std::string &path);
+	Surface *add(const std::string &path, bool alpha=true);
+	Surface *addSkinRes(const std::string &path, bool alpha=true);
+	void     del(const std::string &path);
 	void     clear();
-	void     move(const string &from, const string &to);
-	bool     exists(const string &path);
+	void     move(const std::string &from, const std::string &to);
+	bool     exists(const std::string &path);
 
-	Surface *operator[](const string &);
-	Surface *skinRes(const string &);
+	Surface *operator[](const std::string &);
+	Surface *skinRes(const std::string &);
 };
 
 #endif

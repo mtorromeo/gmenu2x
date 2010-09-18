@@ -20,14 +20,9 @@
 #ifndef MENUSETTING_H
 #define MENUSETTING_H
 
-#if defined(TARGET_GP2X) || defined(TARGET_WIZ)
-#include "inputmanager.h"
-#endif
-
-#include "gmenu2x.h"
 #include "buttonbox.h"
 
-using std::string;
+#include <string>
 
 /**
 Base class for different kind of option
@@ -40,10 +35,10 @@ protected:
 
 	ButtonBox buttonBox;
 
-	string name, description;
+	std::string name, description;
 
 public:
-	MenuSetting(GMenu2X *gmenu2x, const string &name, const string &description);
+	MenuSetting(GMenu2X *gmenu2x, const std::string &name, const std::string &description);
 	virtual ~MenuSetting();
 
 	virtual void draw(int y);
@@ -54,7 +49,7 @@ public:
 	virtual void drawSelected(int y);
 	virtual bool edited() = 0;
 
-	const string &getDescription() { return description; }
+	const std::string &getDescription() { return description; }
 };
 
 #endif

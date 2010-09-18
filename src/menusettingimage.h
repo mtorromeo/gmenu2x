@@ -22,19 +22,17 @@
 
 #include "menusettingfile.h"
 
-using std::string;
-
 class MenuSettingImage : public MenuSettingFile {
 protected:
 	virtual void edit();
 
 public:
-	MenuSettingImage(GMenu2X *gmenu2x, const string &name,
-					 const string &description, string *value,
-					 const string &filter = "");
+	MenuSettingImage(GMenu2X *gmenu2x, const std::string &name,
+					 const std::string &description, std::string *value,
+					 const std::string &filter = "");
 	virtual ~MenuSettingImage() {}
 
-	virtual void setValue(const string &value);
+	virtual void setValue(const std::string &value);
 };
 
 #endif

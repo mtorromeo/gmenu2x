@@ -18,9 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "menusettingmultistring.h"
+#include "gmenu2x.h"
+#include "iconbutton.h"
+#include "FastDelegate.h"
 
-using namespace std;
-using namespace fastdelegate;
+using std::string;
+using std::vector;
+using fastdelegate::MakeDelegate;
 
 MenuSettingMultiString::MenuSettingMultiString(
 		GMenu2X *gmenu2x, const string &name,
