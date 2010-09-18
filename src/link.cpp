@@ -26,7 +26,10 @@
 using namespace std;
 using namespace fastdelegate;
 
-Link::Link(GMenu2X *gmenu2x) : Button(gmenu2x, true) {
+Link::Link(GMenu2X *gmenu2x_)
+	: Button(gmenu2x_->ts, true)
+	, gmenu2x(gmenu2x_)
+{
 	action = MakeDelegate(this, &Link::run);
 	edited = false;
 	iconPath = gmenu2x->sc.getSkinFilePath("icons/generic.png");

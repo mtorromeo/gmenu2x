@@ -28,6 +28,7 @@
 using std::string;
 
 class GMenu2X;
+class InputManager;
 
 /**
 Parses links files.
@@ -36,6 +37,7 @@ Parses links files.
 */
 class LinkApp : public Link {
 private:
+	InputManager &inputMgr;
 	string sclock, svolume;
 	int iclock, ivolume;
 	//G
@@ -53,7 +55,7 @@ private:
 	bool dontleave;
 
 public:
-	LinkApp(GMenu2X *gmenu2x, const char* linkfile);
+	LinkApp(GMenu2X *gmenu2x, InputManager &inputMgr, const char* linkfile);
 	virtual const string &searchIcon();
 
 	const string &getExec();

@@ -26,9 +26,12 @@
 using namespace std;
 using namespace fastdelegate;
 
-InputDialog::InputDialog(GMenu2X *gmenu2x, const string &text,
-	const string &startvalue, const string &title, const string &icon) :
-	Dialog(gmenu2x)
+InputDialog::InputDialog(GMenu2X *gmenu2x, InputManager &inputMgr_,
+		Touchscreen &ts_, const string &text,
+		const string &startvalue, const string &title, const string &icon)
+	: Dialog(gmenu2x)
+	, inputMgr(inputMgr_)
+	, ts(ts_)
 {
 	if (title=="") {
 		this->title = text;
@@ -157,20 +160,20 @@ bool InputDialog::exec() {
 
 		if (caretOn) gmenu2x->s->box(box.x+box.w-12, box.y+3, 8, box.h-6, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
-		if (gmenu2x->f200) gmenu2x->ts.poll();
+		if (gmenu2x->f200) ts.poll();
 		action = drawVirtualKeyboard();
 		gmenu2x->s->flip();
 
-		gmenu2x->input.update();
-		if ( gmenu2x->input[ACTION_START] ) action = ID_ACTION_CLOSE;
-		if ( gmenu2x->input[ACTION_UP   ] ) action = ID_ACTION_UP;
-		if ( gmenu2x->input[ACTION_DOWN ] ) action = ID_ACTION_DOWN;
-		if ( gmenu2x->input[ACTION_LEFT ] ) action = ID_ACTION_LEFT;
-		if ( gmenu2x->input[ACTION_RIGHT] ) action = ID_ACTION_RIGHT;
-		if ( gmenu2x->input[ACTION_B]     ) action = ID_ACTION_SELECT;
-		if ( gmenu2x->input[ACTION_Y]     ) action = ID_ACTION_KB_CHANGE;
-		if ( gmenu2x->input[ACTION_X] || gmenu2x->input[ACTION_L] ) action = ID_ACTION_BACKSPACE;
-		if ( gmenu2x->input[ACTION_R    ] ) action = ID_ACTION_SPACE;
+		inputMgr.update();
+		if ( inputMgr[ACTION_START] ) action = ID_ACTION_CLOSE;
+		if ( inputMgr[ACTION_UP   ] ) action = ID_ACTION_UP;
+		if ( inputMgr[ACTION_DOWN ] ) action = ID_ACTION_DOWN;
+		if ( inputMgr[ACTION_LEFT ] ) action = ID_ACTION_LEFT;
+		if ( inputMgr[ACTION_RIGHT] ) action = ID_ACTION_RIGHT;
+		if ( inputMgr[ACTION_B]     ) action = ID_ACTION_SELECT;
+		if ( inputMgr[ACTION_Y]     ) action = ID_ACTION_KB_CHANGE;
+		if ( inputMgr[ACTION_X] || inputMgr[ACTION_L] ) action = ID_ACTION_BACKSPACE;
+		if ( inputMgr[ACTION_R    ] ) action = ID_ACTION_SPACE;
 
 		switch (action) {
 			case ID_ACTION_CLOSE: {
@@ -270,7 +273,7 @@ int InputDialog::drawVirtualKeyboard() {
 			SDL_Rect re = {kbLeft+xc*KEY_WIDTH-1, KB_TOP+l*KEY_HEIGHT, KEY_WIDTH-1, KEY_HEIGHT-2};
 
 			//if ts on rect, change selection
-			if (gmenu2x->f200 && gmenu2x->ts.pressed() && gmenu2x->ts.inRect(re)) {
+			if (gmenu2x->f200 && ts.pressed() && ts.inRect(re)) {
 				selCol = xc;
 				selRow = l;
 			}
@@ -284,7 +287,7 @@ int InputDialog::drawVirtualKeyboard() {
 	//Ok/Cancel
 	SDL_Rect re = {kbLeft-1, KB_TOP+kb->size()*KEY_HEIGHT, kbLength*KEY_WIDTH/2-1, KEY_HEIGHT-1};
 	gmenu2x->s->rectangle(re, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
-	if (gmenu2x->f200 && gmenu2x->ts.pressed() && gmenu2x->ts.inRect(re)) {
+	if (gmenu2x->f200 && ts.pressed() && ts.inRect(re)) {
 		selCol = 0;
 		selRow = kb->size();
 	}
@@ -292,14 +295,14 @@ int InputDialog::drawVirtualKeyboard() {
 
 	re.x = kbLeft+kbLength*KEY_WIDTH/2-1;
 	gmenu2x->s->rectangle(re, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
-	if (gmenu2x->f200 && gmenu2x->ts.pressed() && gmenu2x->ts.inRect(re)) {
+	if (gmenu2x->f200 && ts.pressed() && ts.inRect(re)) {
 		selCol = 1;
 		selRow = kb->size();
 	}
 	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["OK"], (int)(160+kbLength*KEY_WIDTH/4), KB_TOP+kb->size()*KEY_HEIGHT+KEY_HEIGHT/2, SFontHAlignCenter, SFontVAlignMiddle);
 
 	//if ts released
-	if (gmenu2x->f200 && gmenu2x->ts.released() && gmenu2x->ts.inRect(kbRect)) {
+	if (gmenu2x->f200 && ts.released() && ts.inRect(kbRect)) {
 		action = ID_ACTION_SELECT;
 	}
 

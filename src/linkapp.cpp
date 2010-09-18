@@ -30,8 +30,11 @@
 
 using namespace std;
 
-LinkApp::LinkApp(GMenu2X *gmenu2x, const char* linkfile)
-	: Link(gmenu2x) {
+LinkApp::LinkApp(GMenu2X *gmenu2x_, InputManager &inputMgr_,
+				 const char* linkfile)
+	: Link(gmenu2x_)
+	, inputMgr(inputMgr_)
+{
 	manual = "";
 	file = linkfile;
 	wrapper = false;
@@ -313,10 +316,10 @@ void LinkApp::showManual() {
 				repaint = false;
 			}
 
-			gmenu2x->input.update();
-			if ( gmenu2x->input[ACTION_Y] || gmenu2x->input[ACTION_X] || gmenu2x->input[ACTION_START] ) close = true;
-			if ( gmenu2x->input[ACTION_LEFT] && page>0 ) { page--; repaint=true; }
-			if ( gmenu2x->input[ACTION_RIGHT] && page<pagecount-1 ) { page++; repaint=true; }
+			inputMgr.update();
+			if ( inputMgr[ACTION_Y] || inputMgr[ACTION_X] || inputMgr[ACTION_START] ) close = true;
+			if ( inputMgr[ACTION_LEFT] && page>0 ) { page--; repaint=true; }
+			if ( inputMgr[ACTION_RIGHT] && page<pagecount-1 ) { page++; repaint=true; }
 		}
 		return;
 	}

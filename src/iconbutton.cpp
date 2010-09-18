@@ -5,7 +5,11 @@
 using namespace std;
 using namespace fastdelegate;
 
-IconButton::IconButton(GMenu2X *gmenu2x, const string &icon, const string &label) : Button(gmenu2x) {
+IconButton::IconButton(GMenu2X *gmenu2x_, const string &icon,
+					   const string &label)
+	: Button(gmenu2x_->ts)
+	, gmenu2x(gmenu2x_)
+{
 	this->icon = icon;
 	labelPosition = IconButton::DISP_RIGHT;
 	labelMargin = 2;

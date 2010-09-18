@@ -25,11 +25,14 @@
 
 using namespace std;
 
-SettingsDialog::SettingsDialog(GMenu2X *gmenu2x, const string &text, const string &icon)
-	: Dialog(gmenu2x)
+SettingsDialog::SettingsDialog(
+		GMenu2X *gmenu2x_, InputManager &inputMgr_, Touchscreen &ts_,
+		const string &text_, const string &icon)
+	: Dialog(gmenu2x_)
+	, inputMgr(inputMgr_)
+	, ts(ts_)
+	, text(text_)
 {
-	this->text = text;
-
 	if (icon!="" && gmenu2x->sc[icon] != NULL)
 		this->icon = icon;
 	else
@@ -56,7 +59,7 @@ bool SettingsDialog::exec() {
 
 	while (!close) {
 		action = SD_NO_ACTION;
-		if (gmenu2x->f200) gmenu2x->ts.poll();
+		if (gmenu2x->f200) ts.poll();
 
 		bg.blit(gmenu2x->s,0,0);
 
@@ -82,12 +85,12 @@ bool SettingsDialog::exec() {
 		voices[sel]->drawSelected(iY);
 
 		gmenu2x->s->setClipRect(clipRect);
-		if (ts_pressed && !gmenu2x->ts.pressed()) ts_pressed = false;
-		if (gmenu2x->f200 && gmenu2x->ts.pressed() && !gmenu2x->ts.inRect(touchRect)) ts_pressed = false;
+		if (ts_pressed && !ts.pressed()) ts_pressed = false;
+		if (gmenu2x->f200 && ts.pressed() && !ts.inRect(touchRect)) ts_pressed = false;
 		for (i=firstElement; i<voices.size() && i<firstElement+numRows; i++) {
 			iY = i-firstElement;
 			voices[i]->draw(iY*rowHeight+gmenu2x->skinConfInt["topBarHeight"]+2);
-			if (gmenu2x->f200 && gmenu2x->ts.pressed() && gmenu2x->ts.inRect(touchRect.x, touchRect.y+(iY*rowHeight), touchRect.w, rowHeight)) {
+			if (gmenu2x->f200 && ts.pressed() && ts.inRect(touchRect.x, touchRect.y+(iY*rowHeight), touchRect.w, rowHeight)) {
 				ts_pressed = true;
 				sel = i;
 			}
@@ -102,10 +105,10 @@ bool SettingsDialog::exec() {
 		gmenu2x->s->flip();
 		voices[sel]->handleTS();
 
-		gmenu2x->input.update();
-		if ( gmenu2x->input[ACTION_START] ) action = SD_ACTION_CLOSE;
-		if ( gmenu2x->input[ACTION_UP   ] ) action = SD_ACTION_UP;
-		if ( gmenu2x->input[ACTION_DOWN ] ) action = SD_ACTION_DOWN;
+		inputMgr.update();
+		if ( inputMgr[ACTION_START] ) action = SD_ACTION_CLOSE;
+		if ( inputMgr[ACTION_UP   ] ) action = SD_ACTION_UP;
+		if ( inputMgr[ACTION_DOWN ] ) action = SD_ACTION_DOWN;
 		voices[sel]->manageInput();
 
 		switch (action) {

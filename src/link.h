@@ -40,6 +40,7 @@ private:
 	uint iconX, padding;
 
 protected:
+	GMenu2X *gmenu2x;
 	bool edited;
 	string title, description, icon, iconPath;
 

@@ -268,14 +268,8 @@ bool Menu::addLink(string path, string file, string section) {
 #ifdef DEBUG
 			cout << "\033[0;34mGMENU2X:\033[0m Section: " << sections[isection] << "(" << isection << ")" << endl;
 #endif
- 
-			//senquack - fixing bug where adding a new link does not allow the new link
-			//					to be displayed correctly until menu is reloaded:
-			//senquack - orig. line:
-//			links[isection].push_back( new LinkApp(gmenu2x, linkpath.c_str()) );
- 
-			//senquack - new code (pulled from Menu::readLinks())
-			LinkApp *link = new LinkApp(gmenu2x, linkpath.c_str());
+
+			LinkApp *link = new LinkApp(gmenu2x, gmenu2x->input, linkpath.c_str());
 			link->setSize(gmenu2x->skinConfInt["linkWidth"],gmenu2x->skinConfInt["linkHeight"]);
 			if (link->targetExists())
 				links[isection].push_back( link );
@@ -431,7 +425,7 @@ void Menu::readLinks() {
 
 		sort(linkfiles.begin(), linkfiles.end(),case_less());
 		for (uint x=0; x<linkfiles.size(); x++) {
-			LinkApp *link = new LinkApp(gmenu2x, linkfiles[x].c_str());
+			LinkApp *link = new LinkApp(gmenu2x, gmenu2x->input, linkfiles[x].c_str());
 			link->setSize(gmenu2x->skinConfInt["linkWidth"],gmenu2x->skinConfInt["linkHeight"]);
 			if (link->targetExists())
 				links[i].push_back( link );
