@@ -45,3 +45,12 @@ FileDialog::FileDialog(GMenu2X *gmenu2x, const string &text, const string &filte
 FileDialog::~FileDialog() {
 	delete fl;
 }
+
+bool FileDialog::exec() {
+	bool ret = BrowseDialog::exec();
+	if (ret && fl->isDirectory(selected)) {
+		// FileDialog must only pick regular files.
+		ret = false;
+	}
+	return ret;
+}

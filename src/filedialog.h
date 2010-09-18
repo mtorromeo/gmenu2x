@@ -33,6 +33,7 @@ public:
 	FileDialog(GMenu2X *gmenu2x, const string &text, const string &filter="",
 		const string &file="", const string &title = "File Dialog");
 	virtual ~FileDialog();
+	bool exec();
 };
 
 #endif /*INPUTDIALOG_H_*/
