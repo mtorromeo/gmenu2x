@@ -5,7 +5,7 @@ CC= $(CROSS_COMPILE)gcc
 CXX = $(CROSS_COMPILE)g++
 STRIP = $(CROSS_COMPILE)strip
 
-CFLAGS = -I"$(CHAINPREFIX)/include" `$(CHAINPREFIX)/bin/sdl-config --cflags` -DTARGET_GP2X -DTIXML_USE_STL -O3 -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops -Wall -Wno-unknown-pragmas -Wno-format
+CFLAGS = -I"$(CHAINPREFIX)/include" `$(CHAINPREFIX)/bin/sdl-config --cflags` -DTARGET_GP2X -DTIXML_USE_STL -O3 -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops -fno-exceptions -Wall -Wno-unknown-pragmas -Wno-format
 CXXFLAGS = $(CFLAGS)
 LDFLAGS = -L$(CHAINPREFIX)/lib `$(CHAINPREFIX)/bin/sdl-config --libs` -lfreetype -lSDL_image -lSDL_ttf -lSDL_gfx -ljpeg -lpng12 -lSDL -lz -ldl
 
@@ -41,173 +41,109 @@ depend:
 # DO NOT DELETE
 
 ../objs/gp2x/browsedialog.o: browsedialog.h filelister.h gmenu2x.h
-../objs/gp2x/browsedialog.o: /usr/include/google/dense_hash_map
-../objs/gp2x/browsedialog.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/browsedialog.o: /usr/include/stdio.h /usr/include/features.h
-../objs/gp2x/browsedialog.o: /usr/include/sys/cdefs.h
+../objs/gp2x/browsedialog.o: surfacecollection.h iconbutton.h button.h
+../objs/gp2x/browsedialog.o: FastDelegate.h /usr/include/memory.h
+../objs/gp2x/browsedialog.o: /usr/include/features.h /usr/include/sys/cdefs.h
 ../objs/gp2x/browsedialog.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/browsedialog.o: /usr/include/gnu/stubs.h
 ../objs/gp2x/browsedialog.o: /usr/include/gnu/stubs-64.h
+../objs/gp2x/browsedialog.o: /usr/include/string.h /usr/include/xlocale.h
+../objs/gp2x/browsedialog.o: translator.h utilities.h touchscreen.h
+../objs/gp2x/browsedialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+../objs/gp2x/browsedialog.o: /usr/include/sys/types.h
 ../objs/gp2x/browsedialog.o: /usr/include/bits/types.h
 ../objs/gp2x/browsedialog.o: /usr/include/bits/typesizes.h
-../objs/gp2x/browsedialog.o: /usr/include/libio.h /usr/include/_G_config.h
-../objs/gp2x/browsedialog.o: /usr/include/wchar.h
-../objs/gp2x/browsedialog.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/browsedialog.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/browsedialog.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/browsedialog.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/browsedialog.o: /usr/include/bits/waitflags.h
-../objs/gp2x/browsedialog.o: /usr/include/bits/waitstatus.h
-../objs/gp2x/browsedialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/browsedialog.o: /usr/include/time.h /usr/include/endian.h
+../objs/gp2x/browsedialog.o: /usr/include/bits/endian.h
 ../objs/gp2x/browsedialog.o: /usr/include/bits/byteswap.h
-../objs/gp2x/browsedialog.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/browsedialog.o: /usr/include/sys/select.h
 ../objs/gp2x/browsedialog.o: /usr/include/bits/select.h
 ../objs/gp2x/browsedialog.o: /usr/include/bits/sigset.h
 ../objs/gp2x/browsedialog.o: /usr/include/bits/time.h
 ../objs/gp2x/browsedialog.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/browsedialog.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/browsedialog.o: /usr/include/alloca.h
-../objs/gp2x/browsedialog.o: /usr/include/google/type_traits.h
-../objs/gp2x/browsedialog.o: surfacecollection.h
-../objs/gp2x/browsedialog.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/browsedialog.o: sfontplus.h utilities.h iconbutton.h button.h
-../objs/gp2x/browsedialog.o: FastDelegate.h /usr/include/memory.h
-../objs/gp2x/browsedialog.o: /usr/include/string.h /usr/include/xlocale.h
-../objs/gp2x/browsedialog.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/browsedialog.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/browsedialog.o: /usr/include/bits/stat.h /usr/include/stdint.h
 ../objs/gp2x/browsedialog.o: /usr/include/bits/wchar.h inputmanager.h
-../objs/gp2x/browsedialog.o: buttonbox.h dialog.h
+../objs/gp2x/browsedialog.o: surface.h sfontplus.h buttonbox.h dialog.h
 ../objs/gp2x/buttonbox.o: button.h FastDelegate.h /usr/include/memory.h
 ../objs/gp2x/buttonbox.o: /usr/include/features.h /usr/include/sys/cdefs.h
 ../objs/gp2x/buttonbox.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/buttonbox.o: /usr/include/gnu/stubs.h
 ../objs/gp2x/buttonbox.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
 ../objs/gp2x/buttonbox.o: /usr/include/xlocale.h gmenu2x.h
-../objs/gp2x/buttonbox.o: /usr/include/google/dense_hash_map
-../objs/gp2x/buttonbox.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/buttonbox.o: /usr/include/stdio.h /usr/include/bits/types.h
-../objs/gp2x/buttonbox.o: /usr/include/bits/typesizes.h /usr/include/libio.h
-../objs/gp2x/buttonbox.o: /usr/include/_G_config.h /usr/include/wchar.h
-../objs/gp2x/buttonbox.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/buttonbox.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/buttonbox.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/buttonbox.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/buttonbox.o: /usr/include/bits/waitflags.h
-../objs/gp2x/buttonbox.o: /usr/include/bits/waitstatus.h
+../objs/gp2x/buttonbox.o: surfacecollection.h iconbutton.h translator.h
+../objs/gp2x/buttonbox.o: utilities.h touchscreen.h /usr/include/fcntl.h
+../objs/gp2x/buttonbox.o: /usr/include/bits/fcntl.h /usr/include/sys/types.h
+../objs/gp2x/buttonbox.o: /usr/include/bits/types.h
+../objs/gp2x/buttonbox.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/buttonbox.o: /usr/include/endian.h /usr/include/bits/endian.h
 ../objs/gp2x/buttonbox.o: /usr/include/bits/byteswap.h
-../objs/gp2x/buttonbox.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/buttonbox.o: /usr/include/sys/select.h
 ../objs/gp2x/buttonbox.o: /usr/include/bits/select.h
 ../objs/gp2x/buttonbox.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
 ../objs/gp2x/buttonbox.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/buttonbox.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/buttonbox.o: /usr/include/alloca.h
-../objs/gp2x/buttonbox.o: /usr/include/google/type_traits.h
-../objs/gp2x/buttonbox.o: surfacecollection.h
-../objs/gp2x/buttonbox.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/buttonbox.o: sfontplus.h utilities.h iconbutton.h translator.h
-../objs/gp2x/buttonbox.o: touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/buttonbox.o: /usr/include/bits/fcntl.h /usr/include/bits/stat.h
-../objs/gp2x/buttonbox.o: /usr/include/stdint.h /usr/include/bits/wchar.h
-../objs/gp2x/buttonbox.o: inputmanager.h buttonbox.h
+../objs/gp2x/buttonbox.o: /usr/include/bits/stat.h /usr/include/stdint.h
+../objs/gp2x/buttonbox.o: /usr/include/bits/wchar.h inputmanager.h surface.h
+../objs/gp2x/buttonbox.o: sfontplus.h buttonbox.h
 ../objs/gp2x/button.o: button.h FastDelegate.h /usr/include/memory.h
 ../objs/gp2x/button.o: /usr/include/features.h /usr/include/sys/cdefs.h
 ../objs/gp2x/button.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
 ../objs/gp2x/button.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
-../objs/gp2x/button.o: /usr/include/xlocale.h gmenu2x.h
-../objs/gp2x/button.o: /usr/include/google/dense_hash_map
-../objs/gp2x/button.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/button.o: /usr/include/stdio.h /usr/include/bits/types.h
-../objs/gp2x/button.o: /usr/include/bits/typesizes.h /usr/include/libio.h
-../objs/gp2x/button.o: /usr/include/_G_config.h /usr/include/wchar.h
-../objs/gp2x/button.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/button.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/button.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/button.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/button.o: /usr/include/bits/waitflags.h
-../objs/gp2x/button.o: /usr/include/bits/waitstatus.h /usr/include/endian.h
-../objs/gp2x/button.o: /usr/include/bits/endian.h
-../objs/gp2x/button.o: /usr/include/bits/byteswap.h /usr/include/sys/types.h
-../objs/gp2x/button.o: /usr/include/time.h /usr/include/sys/select.h
+../objs/gp2x/button.o: /usr/include/xlocale.h gmenu2x.h surfacecollection.h
+../objs/gp2x/button.o: iconbutton.h translator.h utilities.h touchscreen.h
+../objs/gp2x/button.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+../objs/gp2x/button.o: /usr/include/sys/types.h /usr/include/bits/types.h
+../objs/gp2x/button.o: /usr/include/bits/typesizes.h /usr/include/time.h
+../objs/gp2x/button.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/button.o: /usr/include/bits/byteswap.h /usr/include/sys/select.h
 ../objs/gp2x/button.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
 ../objs/gp2x/button.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
-../objs/gp2x/button.o: /usr/include/bits/pthreadtypes.h /usr/include/alloca.h
-../objs/gp2x/button.o: /usr/include/google/type_traits.h surfacecollection.h
-../objs/gp2x/button.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/button.o: sfontplus.h utilities.h iconbutton.h translator.h
-../objs/gp2x/button.o: touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/button.o: /usr/include/bits/fcntl.h /usr/include/bits/stat.h
-../objs/gp2x/button.o: /usr/include/stdint.h /usr/include/bits/wchar.h
-../objs/gp2x/button.o: inputmanager.h
-../objs/gp2x/dialog.o: dialog.h gmenu2x.h /usr/include/google/dense_hash_map
-../objs/gp2x/dialog.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/dialog.o: /usr/include/stdio.h /usr/include/features.h
-../objs/gp2x/dialog.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
-../objs/gp2x/dialog.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+../objs/gp2x/button.o: /usr/include/bits/pthreadtypes.h
+../objs/gp2x/button.o: /usr/include/bits/stat.h /usr/include/stdint.h
+../objs/gp2x/button.o: /usr/include/bits/wchar.h inputmanager.h surface.h
+../objs/gp2x/button.o: sfontplus.h
+../objs/gp2x/dialog.o: dialog.h gmenu2x.h surfacecollection.h iconbutton.h
+../objs/gp2x/dialog.o: button.h FastDelegate.h /usr/include/memory.h
+../objs/gp2x/dialog.o: /usr/include/features.h /usr/include/sys/cdefs.h
+../objs/gp2x/dialog.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
+../objs/gp2x/dialog.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
+../objs/gp2x/dialog.o: /usr/include/xlocale.h translator.h utilities.h
+../objs/gp2x/dialog.o: touchscreen.h /usr/include/fcntl.h
+../objs/gp2x/dialog.o: /usr/include/bits/fcntl.h /usr/include/sys/types.h
 ../objs/gp2x/dialog.o: /usr/include/bits/types.h
-../objs/gp2x/dialog.o: /usr/include/bits/typesizes.h /usr/include/libio.h
-../objs/gp2x/dialog.o: /usr/include/_G_config.h /usr/include/wchar.h
-../objs/gp2x/dialog.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/dialog.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/dialog.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/dialog.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/dialog.o: /usr/include/bits/waitflags.h
-../objs/gp2x/dialog.o: /usr/include/bits/waitstatus.h /usr/include/endian.h
-../objs/gp2x/dialog.o: /usr/include/bits/endian.h
-../objs/gp2x/dialog.o: /usr/include/bits/byteswap.h /usr/include/sys/types.h
-../objs/gp2x/dialog.o: /usr/include/time.h /usr/include/sys/select.h
+../objs/gp2x/dialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
+../objs/gp2x/dialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/dialog.o: /usr/include/bits/byteswap.h /usr/include/sys/select.h
 ../objs/gp2x/dialog.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
 ../objs/gp2x/dialog.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
-../objs/gp2x/dialog.o: /usr/include/bits/pthreadtypes.h /usr/include/alloca.h
-../objs/gp2x/dialog.o: /usr/include/google/type_traits.h surfacecollection.h
-../objs/gp2x/dialog.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/dialog.o: sfontplus.h utilities.h iconbutton.h button.h
-../objs/gp2x/dialog.o: FastDelegate.h /usr/include/memory.h
-../objs/gp2x/dialog.o: /usr/include/string.h /usr/include/xlocale.h
-../objs/gp2x/dialog.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/dialog.o: /usr/include/bits/fcntl.h /usr/include/bits/stat.h
-../objs/gp2x/dialog.o: /usr/include/stdint.h /usr/include/bits/wchar.h
-../objs/gp2x/dialog.o: inputmanager.h
-../objs/gp2x/dirdialog.o: dirdialog.h gmenu2x.h
-../objs/gp2x/dirdialog.o: /usr/include/google/dense_hash_map
-../objs/gp2x/dirdialog.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/dirdialog.o: /usr/include/stdio.h /usr/include/features.h
+../objs/gp2x/dialog.o: /usr/include/bits/pthreadtypes.h
+../objs/gp2x/dialog.o: /usr/include/bits/stat.h /usr/include/stdint.h
+../objs/gp2x/dialog.o: /usr/include/bits/wchar.h inputmanager.h surface.h
+../objs/gp2x/dialog.o: sfontplus.h
+../objs/gp2x/dirdialog.o: dirdialog.h gmenu2x.h surfacecollection.h
+../objs/gp2x/dirdialog.o: iconbutton.h button.h FastDelegate.h
+../objs/gp2x/dirdialog.o: /usr/include/memory.h /usr/include/features.h
 ../objs/gp2x/dirdialog.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/dirdialog.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/dirdialog.o: /usr/include/gnu/stubs.h
-../objs/gp2x/dirdialog.o: /usr/include/gnu/stubs-64.h
+../objs/gp2x/dirdialog.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
+../objs/gp2x/dirdialog.o: /usr/include/xlocale.h translator.h utilities.h
+../objs/gp2x/dirdialog.o: touchscreen.h /usr/include/fcntl.h
+../objs/gp2x/dirdialog.o: /usr/include/bits/fcntl.h /usr/include/sys/types.h
 ../objs/gp2x/dirdialog.o: /usr/include/bits/types.h
-../objs/gp2x/dirdialog.o: /usr/include/bits/typesizes.h /usr/include/libio.h
-../objs/gp2x/dirdialog.o: /usr/include/_G_config.h /usr/include/wchar.h
-../objs/gp2x/dirdialog.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/dirdialog.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/dirdialog.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/dirdialog.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/dirdialog.o: /usr/include/bits/waitflags.h
-../objs/gp2x/dirdialog.o: /usr/include/bits/waitstatus.h
+../objs/gp2x/dirdialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/dirdialog.o: /usr/include/endian.h /usr/include/bits/endian.h
 ../objs/gp2x/dirdialog.o: /usr/include/bits/byteswap.h
-../objs/gp2x/dirdialog.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/dirdialog.o: /usr/include/sys/select.h
 ../objs/gp2x/dirdialog.o: /usr/include/bits/select.h
 ../objs/gp2x/dirdialog.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
 ../objs/gp2x/dirdialog.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/dirdialog.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/dirdialog.o: /usr/include/alloca.h
-../objs/gp2x/dirdialog.o: /usr/include/google/type_traits.h
-../objs/gp2x/dirdialog.o: surfacecollection.h
-../objs/gp2x/dirdialog.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/dirdialog.o: sfontplus.h utilities.h iconbutton.h button.h
-../objs/gp2x/dirdialog.o: FastDelegate.h /usr/include/memory.h
-../objs/gp2x/dirdialog.o: /usr/include/string.h /usr/include/xlocale.h
-../objs/gp2x/dirdialog.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/dirdialog.o: /usr/include/bits/fcntl.h /usr/include/bits/stat.h
-../objs/gp2x/dirdialog.o: /usr/include/stdint.h /usr/include/bits/wchar.h
-../objs/gp2x/dirdialog.o: inputmanager.h browsedialog.h filelister.h
-../objs/gp2x/dirdialog.o: buttonbox.h dialog.h
+../objs/gp2x/dirdialog.o: /usr/include/bits/stat.h /usr/include/stdint.h
+../objs/gp2x/dirdialog.o: /usr/include/bits/wchar.h inputmanager.h surface.h
+../objs/gp2x/dirdialog.o: sfontplus.h browsedialog.h filelister.h buttonbox.h
+../objs/gp2x/dirdialog.o: dialog.h
 ../objs/gp2x/filedialog.o: /usr/include/sys/stat.h /usr/include/features.h
 ../objs/gp2x/filedialog.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/filedialog.o: /usr/include/bits/wordsize.h
@@ -229,27 +165,14 @@ depend:
 ../objs/gp2x/filedialog.o: /usr/include/bits/local_lim.h
 ../objs/gp2x/filedialog.o: /usr/include/linux/limits.h filedialog.h
 ../objs/gp2x/filedialog.o: browsedialog.h filelister.h gmenu2x.h
-../objs/gp2x/filedialog.o: /usr/include/google/dense_hash_map
-../objs/gp2x/filedialog.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/filedialog.o: /usr/include/stdio.h /usr/include/libio.h
-../objs/gp2x/filedialog.o: /usr/include/_G_config.h /usr/include/wchar.h
-../objs/gp2x/filedialog.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/filedialog.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/filedialog.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/filedialog.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/filedialog.o: /usr/include/bits/waitflags.h
-../objs/gp2x/filedialog.o: /usr/include/bits/waitstatus.h
-../objs/gp2x/filedialog.o: /usr/include/alloca.h
-../objs/gp2x/filedialog.o: /usr/include/google/type_traits.h
-../objs/gp2x/filedialog.o: surfacecollection.h
-../objs/gp2x/filedialog.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/filedialog.o: sfontplus.h utilities.h iconbutton.h button.h
+../objs/gp2x/filedialog.o: surfacecollection.h iconbutton.h button.h
 ../objs/gp2x/filedialog.o: FastDelegate.h /usr/include/memory.h
 ../objs/gp2x/filedialog.o: /usr/include/string.h /usr/include/xlocale.h
-../objs/gp2x/filedialog.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/filedialog.o: /usr/include/bits/fcntl.h /usr/include/stdint.h
-../objs/gp2x/filedialog.o: /usr/include/bits/wchar.h inputmanager.h
-../objs/gp2x/filedialog.o: buttonbox.h dialog.h
+../objs/gp2x/filedialog.o: translator.h utilities.h touchscreen.h
+../objs/gp2x/filedialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+../objs/gp2x/filedialog.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+../objs/gp2x/filedialog.o: inputmanager.h surface.h sfontplus.h buttonbox.h
+../objs/gp2x/filedialog.o: dialog.h
 ../objs/gp2x/filelister.o: /usr/include/sys/stat.h /usr/include/features.h
 ../objs/gp2x/filelister.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/filelister.o: /usr/include/bits/wordsize.h
@@ -339,22 +262,12 @@ depend:
 ../objs/gp2x/gmenu2x.o: /usr/include/string.h /usr/include/xlocale.h
 ../objs/gp2x/gmenu2x.o: surface.h sfontplus.h linkaction.h menu.h
 ../objs/gp2x/gmenu2x.o: filedialog.h browsedialog.h filelister.h gmenu2x.h
-../objs/gp2x/gmenu2x.o: /usr/include/google/dense_hash_map
-../objs/gp2x/gmenu2x.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/gmenu2x.o: /usr/include/stdio.h /usr/include/libio.h
-../objs/gp2x/gmenu2x.o: /usr/include/_G_config.h /usr/include/wchar.h
-../objs/gp2x/gmenu2x.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/gmenu2x.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/gmenu2x.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/gmenu2x.o: /usr/include/assert.h
-../objs/gp2x/gmenu2x.o: /usr/include/google/type_traits.h surfacecollection.h
-../objs/gp2x/gmenu2x.o: /usr/include/google/dense_hash_map utilities.h
-../objs/gp2x/gmenu2x.o: iconbutton.h translator.h touchscreen.h
-../objs/gp2x/gmenu2x.o: /usr/include/stdint.h /usr/include/bits/wchar.h
-../objs/gp2x/gmenu2x.o: inputmanager.h buttonbox.h dialog.h messagebox.h
-../objs/gp2x/gmenu2x.o: inputdialog.h settingsdialog.h menusetting.h
-../objs/gp2x/gmenu2x.o: wallpaperdialog.h textdialog.h menusettingint.h
-../objs/gp2x/gmenu2x.o: menusettingbool.h menusettingrgba.h
+../objs/gp2x/gmenu2x.o: surfacecollection.h iconbutton.h translator.h
+../objs/gp2x/gmenu2x.o: utilities.h touchscreen.h /usr/include/stdint.h
+../objs/gp2x/gmenu2x.o: /usr/include/bits/wchar.h inputmanager.h buttonbox.h
+../objs/gp2x/gmenu2x.o: dialog.h messagebox.h inputdialog.h settingsdialog.h
+../objs/gp2x/gmenu2x.o: menusetting.h wallpaperdialog.h textdialog.h
+../objs/gp2x/gmenu2x.o: menusettingint.h menusettingbool.h menusettingrgba.h
 ../objs/gp2x/gmenu2x.o: menusettingstring.h menusettingstringbase.h
 ../objs/gp2x/gmenu2x.o: menusettingmultistring.h menusettingfile.h
 ../objs/gp2x/gmenu2x.o: menusettingimage.h menusettingdir.h
@@ -366,34 +279,22 @@ depend:
 ../objs/gp2x/iconbutton.o: /usr/include/gnu/stubs.h
 ../objs/gp2x/iconbutton.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
 ../objs/gp2x/iconbutton.o: /usr/include/xlocale.h gmenu2x.h
-../objs/gp2x/iconbutton.o: /usr/include/google/dense_hash_map
-../objs/gp2x/iconbutton.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/iconbutton.o: /usr/include/stdio.h /usr/include/bits/types.h
-../objs/gp2x/iconbutton.o: /usr/include/bits/typesizes.h /usr/include/libio.h
-../objs/gp2x/iconbutton.o: /usr/include/_G_config.h /usr/include/wchar.h
-../objs/gp2x/iconbutton.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/iconbutton.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/iconbutton.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/iconbutton.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/iconbutton.o: /usr/include/bits/waitflags.h
-../objs/gp2x/iconbutton.o: /usr/include/bits/waitstatus.h
+../objs/gp2x/iconbutton.o: surfacecollection.h translator.h utilities.h
+../objs/gp2x/iconbutton.o: touchscreen.h /usr/include/fcntl.h
+../objs/gp2x/iconbutton.o: /usr/include/bits/fcntl.h /usr/include/sys/types.h
+../objs/gp2x/iconbutton.o: /usr/include/bits/types.h
+../objs/gp2x/iconbutton.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/iconbutton.o: /usr/include/endian.h /usr/include/bits/endian.h
 ../objs/gp2x/iconbutton.o: /usr/include/bits/byteswap.h
-../objs/gp2x/iconbutton.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/iconbutton.o: /usr/include/sys/select.h
 ../objs/gp2x/iconbutton.o: /usr/include/bits/select.h
 ../objs/gp2x/iconbutton.o: /usr/include/bits/sigset.h
 ../objs/gp2x/iconbutton.o: /usr/include/bits/time.h
 ../objs/gp2x/iconbutton.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/iconbutton.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/iconbutton.o: /usr/include/alloca.h
-../objs/gp2x/iconbutton.o: /usr/include/google/type_traits.h
-../objs/gp2x/iconbutton.o: surfacecollection.h
-../objs/gp2x/iconbutton.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/iconbutton.o: sfontplus.h utilities.h translator.h touchscreen.h
-../objs/gp2x/iconbutton.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 ../objs/gp2x/iconbutton.o: /usr/include/bits/stat.h /usr/include/stdint.h
-../objs/gp2x/iconbutton.o: /usr/include/bits/wchar.h inputmanager.h
+../objs/gp2x/iconbutton.o: /usr/include/bits/wchar.h inputmanager.h surface.h
+../objs/gp2x/iconbutton.o: sfontplus.h
 ../objs/gp2x/imagedialog.o: /usr/include/sys/stat.h /usr/include/features.h
 ../objs/gp2x/imagedialog.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/imagedialog.o: /usr/include/bits/wordsize.h
@@ -415,65 +316,38 @@ depend:
 ../objs/gp2x/imagedialog.o: /usr/include/bits/local_lim.h
 ../objs/gp2x/imagedialog.o: /usr/include/linux/limits.h imagedialog.h
 ../objs/gp2x/imagedialog.o: filedialog.h browsedialog.h filelister.h
-../objs/gp2x/imagedialog.o: gmenu2x.h /usr/include/google/dense_hash_map
-../objs/gp2x/imagedialog.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/imagedialog.o: /usr/include/stdio.h /usr/include/libio.h
-../objs/gp2x/imagedialog.o: /usr/include/_G_config.h /usr/include/wchar.h
-../objs/gp2x/imagedialog.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/imagedialog.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/imagedialog.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/imagedialog.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/imagedialog.o: /usr/include/bits/waitflags.h
-../objs/gp2x/imagedialog.o: /usr/include/bits/waitstatus.h
-../objs/gp2x/imagedialog.o: /usr/include/alloca.h
-../objs/gp2x/imagedialog.o: /usr/include/google/type_traits.h
-../objs/gp2x/imagedialog.o: surfacecollection.h
-../objs/gp2x/imagedialog.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/imagedialog.o: sfontplus.h utilities.h iconbutton.h button.h
-../objs/gp2x/imagedialog.o: FastDelegate.h /usr/include/memory.h
+../objs/gp2x/imagedialog.o: gmenu2x.h surfacecollection.h iconbutton.h
+../objs/gp2x/imagedialog.o: button.h FastDelegate.h /usr/include/memory.h
 ../objs/gp2x/imagedialog.o: /usr/include/string.h /usr/include/xlocale.h
-../objs/gp2x/imagedialog.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/imagedialog.o: /usr/include/bits/fcntl.h /usr/include/stdint.h
-../objs/gp2x/imagedialog.o: /usr/include/bits/wchar.h inputmanager.h
-../objs/gp2x/imagedialog.o: buttonbox.h dialog.h
-../objs/gp2x/inputdialog.o: inputdialog.h gmenu2x.h
-../objs/gp2x/inputdialog.o: /usr/include/google/dense_hash_map
-../objs/gp2x/inputdialog.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/inputdialog.o: /usr/include/stdio.h /usr/include/features.h
+../objs/gp2x/imagedialog.o: translator.h utilities.h touchscreen.h
+../objs/gp2x/imagedialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+../objs/gp2x/imagedialog.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+../objs/gp2x/imagedialog.o: inputmanager.h surface.h sfontplus.h buttonbox.h
+../objs/gp2x/imagedialog.o: dialog.h
+../objs/gp2x/inputdialog.o: inputdialog.h gmenu2x.h surfacecollection.h
+../objs/gp2x/inputdialog.o: iconbutton.h button.h FastDelegate.h
+../objs/gp2x/inputdialog.o: /usr/include/memory.h /usr/include/features.h
 ../objs/gp2x/inputdialog.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/inputdialog.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/inputdialog.o: /usr/include/gnu/stubs.h
-../objs/gp2x/inputdialog.o: /usr/include/gnu/stubs-64.h
+../objs/gp2x/inputdialog.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
+../objs/gp2x/inputdialog.o: /usr/include/xlocale.h translator.h utilities.h
+../objs/gp2x/inputdialog.o: touchscreen.h /usr/include/fcntl.h
+../objs/gp2x/inputdialog.o: /usr/include/bits/fcntl.h
+../objs/gp2x/inputdialog.o: /usr/include/sys/types.h
 ../objs/gp2x/inputdialog.o: /usr/include/bits/types.h
-../objs/gp2x/inputdialog.o: /usr/include/bits/typesizes.h
-../objs/gp2x/inputdialog.o: /usr/include/libio.h /usr/include/_G_config.h
-../objs/gp2x/inputdialog.o: /usr/include/wchar.h
-../objs/gp2x/inputdialog.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/inputdialog.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/inputdialog.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/inputdialog.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/inputdialog.o: /usr/include/bits/waitflags.h
-../objs/gp2x/inputdialog.o: /usr/include/bits/waitstatus.h
+../objs/gp2x/inputdialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/inputdialog.o: /usr/include/endian.h /usr/include/bits/endian.h
 ../objs/gp2x/inputdialog.o: /usr/include/bits/byteswap.h
-../objs/gp2x/inputdialog.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/inputdialog.o: /usr/include/sys/select.h
 ../objs/gp2x/inputdialog.o: /usr/include/bits/select.h
 ../objs/gp2x/inputdialog.o: /usr/include/bits/sigset.h
 ../objs/gp2x/inputdialog.o: /usr/include/bits/time.h
 ../objs/gp2x/inputdialog.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/inputdialog.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/inputdialog.o: /usr/include/alloca.h
-../objs/gp2x/inputdialog.o: /usr/include/google/type_traits.h
-../objs/gp2x/inputdialog.o: surfacecollection.h
-../objs/gp2x/inputdialog.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/inputdialog.o: sfontplus.h utilities.h iconbutton.h button.h
-../objs/gp2x/inputdialog.o: FastDelegate.h /usr/include/memory.h
-../objs/gp2x/inputdialog.o: /usr/include/string.h /usr/include/xlocale.h
-../objs/gp2x/inputdialog.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/inputdialog.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/inputdialog.o: /usr/include/bits/stat.h /usr/include/stdint.h
-../objs/gp2x/inputdialog.o: /usr/include/bits/wchar.h inputmanager.h dialog.h
+../objs/gp2x/inputdialog.o: /usr/include/bits/wchar.h inputmanager.h
+../objs/gp2x/inputdialog.o: surface.h sfontplus.h dialog.h
 ../objs/gp2x/inputmanager.o: inputmanager.h utilities.h
 ../objs/gp2x/linkaction.o: linkaction.h FastDelegate.h /usr/include/memory.h
 ../objs/gp2x/linkaction.o: /usr/include/features.h /usr/include/sys/cdefs.h
@@ -500,20 +374,8 @@ depend:
 ../objs/gp2x/linkapp.o: linkapp.h link.h button.h FastDelegate.h
 ../objs/gp2x/linkapp.o: /usr/include/memory.h /usr/include/string.h
 ../objs/gp2x/linkapp.o: /usr/include/xlocale.h surface.h sfontplus.h menu.h
-../objs/gp2x/linkapp.o: linkaction.h selector.h gmenu2x.h
-../objs/gp2x/linkapp.o: /usr/include/google/dense_hash_map
-../objs/gp2x/linkapp.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/linkapp.o: /usr/include/stdio.h /usr/include/libio.h
-../objs/gp2x/linkapp.o: /usr/include/_G_config.h /usr/include/wchar.h
-../objs/gp2x/linkapp.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/linkapp.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/linkapp.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/linkapp.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/linkapp.o: /usr/include/bits/waitflags.h
-../objs/gp2x/linkapp.o: /usr/include/bits/waitstatus.h /usr/include/alloca.h
-../objs/gp2x/linkapp.o: /usr/include/google/type_traits.h surfacecollection.h
-../objs/gp2x/linkapp.o: /usr/include/google/dense_hash_map utilities.h
-../objs/gp2x/linkapp.o: iconbutton.h translator.h touchscreen.h
+../objs/gp2x/linkapp.o: linkaction.h selector.h gmenu2x.h surfacecollection.h
+../objs/gp2x/linkapp.o: iconbutton.h translator.h utilities.h touchscreen.h
 ../objs/gp2x/linkapp.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 ../objs/gp2x/linkapp.o: /usr/include/stdint.h /usr/include/bits/wchar.h
 ../objs/gp2x/linkapp.o: inputmanager.h dialog.h textmanualdialog.h
@@ -523,103 +385,63 @@ depend:
 ../objs/gp2x/link.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
 ../objs/gp2x/link.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
 ../objs/gp2x/link.o: /usr/include/xlocale.h surface.h sfontplus.h menu.h
-../objs/gp2x/link.o: linkaction.h selector.h gmenu2x.h
-../objs/gp2x/link.o: /usr/include/google/dense_hash_map
-../objs/gp2x/link.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/link.o: /usr/include/stdio.h /usr/include/bits/types.h
-../objs/gp2x/link.o: /usr/include/bits/typesizes.h /usr/include/libio.h
-../objs/gp2x/link.o: /usr/include/_G_config.h /usr/include/wchar.h
-../objs/gp2x/link.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/link.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/link.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/link.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/link.o: /usr/include/bits/waitflags.h
-../objs/gp2x/link.o: /usr/include/bits/waitstatus.h /usr/include/endian.h
-../objs/gp2x/link.o: /usr/include/bits/endian.h /usr/include/bits/byteswap.h
-../objs/gp2x/link.o: /usr/include/sys/types.h /usr/include/time.h
-../objs/gp2x/link.o: /usr/include/sys/select.h /usr/include/bits/select.h
-../objs/gp2x/link.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
-../objs/gp2x/link.o: /usr/include/sys/sysmacros.h
-../objs/gp2x/link.o: /usr/include/bits/pthreadtypes.h /usr/include/alloca.h
-../objs/gp2x/link.o: /usr/include/google/type_traits.h surfacecollection.h
-../objs/gp2x/link.o: /usr/include/google/dense_hash_map utilities.h
-../objs/gp2x/link.o: iconbutton.h translator.h touchscreen.h
+../objs/gp2x/link.o: linkaction.h selector.h gmenu2x.h surfacecollection.h
+../objs/gp2x/link.o: iconbutton.h translator.h utilities.h touchscreen.h
 ../objs/gp2x/link.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+../objs/gp2x/link.o: /usr/include/sys/types.h /usr/include/bits/types.h
+../objs/gp2x/link.o: /usr/include/bits/typesizes.h /usr/include/time.h
+../objs/gp2x/link.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/link.o: /usr/include/bits/byteswap.h /usr/include/sys/select.h
+../objs/gp2x/link.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
+../objs/gp2x/link.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+../objs/gp2x/link.o: /usr/include/bits/pthreadtypes.h
 ../objs/gp2x/link.o: /usr/include/bits/stat.h /usr/include/stdint.h
 ../objs/gp2x/link.o: /usr/include/bits/wchar.h inputmanager.h dialog.h
-../objs/gp2x/listview.o: listview.h gmenu2x.h
-../objs/gp2x/listview.o: /usr/include/google/dense_hash_map
-../objs/gp2x/listview.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/listview.o: /usr/include/stdio.h /usr/include/features.h
+../objs/gp2x/listview.o: listview.h gmenu2x.h surfacecollection.h
+../objs/gp2x/listview.o: iconbutton.h button.h FastDelegate.h
+../objs/gp2x/listview.o: /usr/include/memory.h /usr/include/features.h
 ../objs/gp2x/listview.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/listview.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/listview.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
-../objs/gp2x/listview.o: /usr/include/bits/types.h
-../objs/gp2x/listview.o: /usr/include/bits/typesizes.h /usr/include/libio.h
-../objs/gp2x/listview.o: /usr/include/_G_config.h /usr/include/wchar.h
-../objs/gp2x/listview.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/listview.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/listview.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/listview.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/listview.o: /usr/include/bits/waitflags.h
-../objs/gp2x/listview.o: /usr/include/bits/waitstatus.h /usr/include/endian.h
-../objs/gp2x/listview.o: /usr/include/bits/endian.h
+../objs/gp2x/listview.o: /usr/include/string.h /usr/include/xlocale.h
+../objs/gp2x/listview.o: translator.h utilities.h touchscreen.h
+../objs/gp2x/listview.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+../objs/gp2x/listview.o: /usr/include/sys/types.h /usr/include/bits/types.h
+../objs/gp2x/listview.o: /usr/include/bits/typesizes.h /usr/include/time.h
+../objs/gp2x/listview.o: /usr/include/endian.h /usr/include/bits/endian.h
 ../objs/gp2x/listview.o: /usr/include/bits/byteswap.h
-../objs/gp2x/listview.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/listview.o: /usr/include/sys/select.h /usr/include/bits/select.h
 ../objs/gp2x/listview.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
 ../objs/gp2x/listview.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/listview.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/listview.o: /usr/include/alloca.h
-../objs/gp2x/listview.o: /usr/include/google/type_traits.h
-../objs/gp2x/listview.o: surfacecollection.h
-../objs/gp2x/listview.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/listview.o: sfontplus.h utilities.h iconbutton.h button.h
-../objs/gp2x/listview.o: FastDelegate.h /usr/include/memory.h
-../objs/gp2x/listview.o: /usr/include/string.h /usr/include/xlocale.h
-../objs/gp2x/listview.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/listview.o: /usr/include/bits/fcntl.h /usr/include/bits/stat.h
-../objs/gp2x/listview.o: /usr/include/stdint.h /usr/include/bits/wchar.h
-../objs/gp2x/listview.o: inputmanager.h listviewitem.h
-../objs/gp2x/listviewitem.o: listview.h gmenu2x.h
-../objs/gp2x/listviewitem.o: /usr/include/google/dense_hash_map
-../objs/gp2x/listviewitem.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/listviewitem.o: /usr/include/stdio.h /usr/include/features.h
+../objs/gp2x/listview.o: /usr/include/bits/stat.h /usr/include/stdint.h
+../objs/gp2x/listview.o: /usr/include/bits/wchar.h inputmanager.h surface.h
+../objs/gp2x/listview.o: sfontplus.h listviewitem.h
+../objs/gp2x/listviewitem.o: listview.h gmenu2x.h surfacecollection.h
+../objs/gp2x/listviewitem.o: iconbutton.h button.h FastDelegate.h
+../objs/gp2x/listviewitem.o: /usr/include/memory.h /usr/include/features.h
 ../objs/gp2x/listviewitem.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/listviewitem.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/listviewitem.o: /usr/include/gnu/stubs.h
 ../objs/gp2x/listviewitem.o: /usr/include/gnu/stubs-64.h
+../objs/gp2x/listviewitem.o: /usr/include/string.h /usr/include/xlocale.h
+../objs/gp2x/listviewitem.o: translator.h utilities.h touchscreen.h
+../objs/gp2x/listviewitem.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+../objs/gp2x/listviewitem.o: /usr/include/sys/types.h
 ../objs/gp2x/listviewitem.o: /usr/include/bits/types.h
 ../objs/gp2x/listviewitem.o: /usr/include/bits/typesizes.h
-../objs/gp2x/listviewitem.o: /usr/include/libio.h /usr/include/_G_config.h
-../objs/gp2x/listviewitem.o: /usr/include/wchar.h
-../objs/gp2x/listviewitem.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/listviewitem.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/listviewitem.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/listviewitem.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/listviewitem.o: /usr/include/bits/waitflags.h
-../objs/gp2x/listviewitem.o: /usr/include/bits/waitstatus.h
-../objs/gp2x/listviewitem.o: /usr/include/endian.h /usr/include/bits/endian.h
+../objs/gp2x/listviewitem.o: /usr/include/time.h /usr/include/endian.h
+../objs/gp2x/listviewitem.o: /usr/include/bits/endian.h
 ../objs/gp2x/listviewitem.o: /usr/include/bits/byteswap.h
-../objs/gp2x/listviewitem.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/listviewitem.o: /usr/include/sys/select.h
 ../objs/gp2x/listviewitem.o: /usr/include/bits/select.h
 ../objs/gp2x/listviewitem.o: /usr/include/bits/sigset.h
 ../objs/gp2x/listviewitem.o: /usr/include/bits/time.h
 ../objs/gp2x/listviewitem.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/listviewitem.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/listviewitem.o: /usr/include/alloca.h
-../objs/gp2x/listviewitem.o: /usr/include/google/type_traits.h
-../objs/gp2x/listviewitem.o: surfacecollection.h
-../objs/gp2x/listviewitem.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/listviewitem.o: sfontplus.h utilities.h iconbutton.h button.h
-../objs/gp2x/listviewitem.o: FastDelegate.h /usr/include/memory.h
-../objs/gp2x/listviewitem.o: /usr/include/string.h /usr/include/xlocale.h
-../objs/gp2x/listviewitem.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/listviewitem.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/listviewitem.o: /usr/include/bits/stat.h /usr/include/stdint.h
 ../objs/gp2x/listviewitem.o: /usr/include/bits/wchar.h inputmanager.h
-../objs/gp2x/listviewitem.o: listviewitem.h
+../objs/gp2x/listviewitem.o: surface.h sfontplus.h listviewitem.h
 ../objs/gp2x/menu.o: /usr/include/sys/stat.h /usr/include/features.h
 ../objs/gp2x/menu.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
 ../objs/gp2x/menu.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
@@ -640,497 +462,328 @@ depend:
 ../objs/gp2x/menu.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
 ../objs/gp2x/menu.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
 ../objs/gp2x/menu.o: /usr/include/bits/mathcalls.h gmenu2x.h
-../objs/gp2x/menu.o: /usr/include/google/dense_hash_map
-../objs/gp2x/menu.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/menu.o: /usr/include/stdio.h /usr/include/libio.h
-../objs/gp2x/menu.o: /usr/include/_G_config.h /usr/include/wchar.h
-../objs/gp2x/menu.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/menu.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/menu.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/menu.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/menu.o: /usr/include/bits/waitflags.h
-../objs/gp2x/menu.o: /usr/include/bits/waitstatus.h /usr/include/alloca.h
-../objs/gp2x/menu.o: /usr/include/google/type_traits.h surfacecollection.h
-../objs/gp2x/menu.o: /usr/include/google/dense_hash_map surface.h sfontplus.h
-../objs/gp2x/menu.o: utilities.h iconbutton.h button.h FastDelegate.h
+../objs/gp2x/menu.o: surfacecollection.h iconbutton.h button.h FastDelegate.h
 ../objs/gp2x/menu.o: /usr/include/memory.h /usr/include/string.h
-../objs/gp2x/menu.o: /usr/include/xlocale.h translator.h touchscreen.h
-../objs/gp2x/menu.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
-../objs/gp2x/menu.o: /usr/include/stdint.h /usr/include/bits/wchar.h
-../objs/gp2x/menu.o: inputmanager.h linkapp.h link.h menu.h linkaction.h
+../objs/gp2x/menu.o: /usr/include/xlocale.h translator.h utilities.h
+../objs/gp2x/menu.o: touchscreen.h /usr/include/fcntl.h
+../objs/gp2x/menu.o: /usr/include/bits/fcntl.h /usr/include/stdint.h
+../objs/gp2x/menu.o: /usr/include/bits/wchar.h inputmanager.h surface.h
+../objs/gp2x/menu.o: sfontplus.h linkapp.h link.h menu.h linkaction.h
 ../objs/gp2x/menu.o: filelister.h
-../objs/gp2x/menusettingbool.o: menusettingbool.h iconbutton.h button.h
-../objs/gp2x/menusettingbool.o: FastDelegate.h /usr/include/memory.h
+../objs/gp2x/menusettingbool.o: menusettingbool.h menusetting.h buttonbox.h
+../objs/gp2x/menusettingbool.o: gmenu2x.h surfacecollection.h iconbutton.h
+../objs/gp2x/menusettingbool.o: button.h FastDelegate.h /usr/include/memory.h
 ../objs/gp2x/menusettingbool.o: /usr/include/features.h
 ../objs/gp2x/menusettingbool.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/menusettingbool.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/menusettingbool.o: /usr/include/gnu/stubs.h
 ../objs/gp2x/menusettingbool.o: /usr/include/gnu/stubs-64.h
 ../objs/gp2x/menusettingbool.o: /usr/include/string.h /usr/include/xlocale.h
-../objs/gp2x/menusettingbool.o: menusetting.h inputmanager.h gmenu2x.h
-../objs/gp2x/menusettingbool.o: /usr/include/google/dense_hash_map
-../objs/gp2x/menusettingbool.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/menusettingbool.o: /usr/include/stdio.h
+../objs/gp2x/menusettingbool.o: translator.h utilities.h touchscreen.h
+../objs/gp2x/menusettingbool.o: /usr/include/fcntl.h
+../objs/gp2x/menusettingbool.o: /usr/include/bits/fcntl.h
+../objs/gp2x/menusettingbool.o: /usr/include/sys/types.h
 ../objs/gp2x/menusettingbool.o: /usr/include/bits/types.h
 ../objs/gp2x/menusettingbool.o: /usr/include/bits/typesizes.h
-../objs/gp2x/menusettingbool.o: /usr/include/libio.h /usr/include/_G_config.h
-../objs/gp2x/menusettingbool.o: /usr/include/wchar.h
-../objs/gp2x/menusettingbool.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/menusettingbool.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/menusettingbool.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/menusettingbool.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/menusettingbool.o: /usr/include/bits/waitflags.h
-../objs/gp2x/menusettingbool.o: /usr/include/bits/waitstatus.h
-../objs/gp2x/menusettingbool.o: /usr/include/endian.h
+../objs/gp2x/menusettingbool.o: /usr/include/time.h /usr/include/endian.h
 ../objs/gp2x/menusettingbool.o: /usr/include/bits/endian.h
 ../objs/gp2x/menusettingbool.o: /usr/include/bits/byteswap.h
-../objs/gp2x/menusettingbool.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/menusettingbool.o: /usr/include/sys/select.h
 ../objs/gp2x/menusettingbool.o: /usr/include/bits/select.h
 ../objs/gp2x/menusettingbool.o: /usr/include/bits/sigset.h
 ../objs/gp2x/menusettingbool.o: /usr/include/bits/time.h
 ../objs/gp2x/menusettingbool.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/menusettingbool.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/menusettingbool.o: /usr/include/alloca.h
-../objs/gp2x/menusettingbool.o: /usr/include/google/type_traits.h
-../objs/gp2x/menusettingbool.o: surfacecollection.h
-../objs/gp2x/menusettingbool.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/menusettingbool.o: sfontplus.h utilities.h translator.h
-../objs/gp2x/menusettingbool.o: touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/menusettingbool.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingbool.o: /usr/include/bits/stat.h
 ../objs/gp2x/menusettingbool.o: /usr/include/stdint.h
-../objs/gp2x/menusettingbool.o: /usr/include/bits/wchar.h buttonbox.h
-../objs/gp2x/menusetting.o: menusetting.h inputmanager.h gmenu2x.h
-../objs/gp2x/menusetting.o: /usr/include/google/dense_hash_map
-../objs/gp2x/menusetting.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/menusetting.o: /usr/include/stdio.h /usr/include/features.h
-../objs/gp2x/menusetting.o: /usr/include/sys/cdefs.h
+../objs/gp2x/menusettingbool.o: /usr/include/bits/wchar.h inputmanager.h
+../objs/gp2x/menusettingbool.o: surface.h sfontplus.h
+../objs/gp2x/menusetting.o: menusetting.h buttonbox.h sfontplus.h gmenu2x.h
+../objs/gp2x/menusetting.o: surfacecollection.h iconbutton.h button.h
+../objs/gp2x/menusetting.o: FastDelegate.h /usr/include/memory.h
+../objs/gp2x/menusetting.o: /usr/include/features.h /usr/include/sys/cdefs.h
 ../objs/gp2x/menusetting.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/menusetting.o: /usr/include/gnu/stubs.h
-../objs/gp2x/menusetting.o: /usr/include/gnu/stubs-64.h
+../objs/gp2x/menusetting.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
+../objs/gp2x/menusetting.o: /usr/include/xlocale.h translator.h utilities.h
+../objs/gp2x/menusetting.o: touchscreen.h /usr/include/fcntl.h
+../objs/gp2x/menusetting.o: /usr/include/bits/fcntl.h
+../objs/gp2x/menusetting.o: /usr/include/sys/types.h
 ../objs/gp2x/menusetting.o: /usr/include/bits/types.h
-../objs/gp2x/menusetting.o: /usr/include/bits/typesizes.h
-../objs/gp2x/menusetting.o: /usr/include/libio.h /usr/include/_G_config.h
-../objs/gp2x/menusetting.o: /usr/include/wchar.h
-../objs/gp2x/menusetting.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/menusetting.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/menusetting.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/menusetting.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/menusetting.o: /usr/include/bits/waitflags.h
-../objs/gp2x/menusetting.o: /usr/include/bits/waitstatus.h
+../objs/gp2x/menusetting.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/menusetting.o: /usr/include/endian.h /usr/include/bits/endian.h
 ../objs/gp2x/menusetting.o: /usr/include/bits/byteswap.h
-../objs/gp2x/menusetting.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/menusetting.o: /usr/include/sys/select.h
 ../objs/gp2x/menusetting.o: /usr/include/bits/select.h
 ../objs/gp2x/menusetting.o: /usr/include/bits/sigset.h
 ../objs/gp2x/menusetting.o: /usr/include/bits/time.h
 ../objs/gp2x/menusetting.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/menusetting.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/menusetting.o: /usr/include/alloca.h
-../objs/gp2x/menusetting.o: /usr/include/google/type_traits.h
-../objs/gp2x/menusetting.o: surfacecollection.h
-../objs/gp2x/menusetting.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/menusetting.o: sfontplus.h utilities.h iconbutton.h button.h
-../objs/gp2x/menusetting.o: FastDelegate.h /usr/include/memory.h
-../objs/gp2x/menusetting.o: /usr/include/string.h /usr/include/xlocale.h
-../objs/gp2x/menusetting.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/menusetting.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/menusetting.o: /usr/include/bits/stat.h /usr/include/stdint.h
-../objs/gp2x/menusetting.o: /usr/include/bits/wchar.h buttonbox.h
+../objs/gp2x/menusetting.o: /usr/include/bits/wchar.h inputmanager.h
+../objs/gp2x/menusetting.o: surface.h
 ../objs/gp2x/menusettingdir.o: menusettingdir.h menusettingstringbase.h
-../objs/gp2x/menusettingdir.o: menusetting.h inputmanager.h gmenu2x.h
-../objs/gp2x/menusettingdir.o: /usr/include/google/dense_hash_map
-../objs/gp2x/menusettingdir.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/menusettingdir.o: /usr/include/stdio.h /usr/include/features.h
+../objs/gp2x/menusettingdir.o: menusetting.h buttonbox.h iconbutton.h
+../objs/gp2x/menusettingdir.o: button.h FastDelegate.h /usr/include/memory.h
+../objs/gp2x/menusettingdir.o: /usr/include/features.h
 ../objs/gp2x/menusettingdir.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/menusettingdir.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/menusettingdir.o: /usr/include/gnu/stubs.h
 ../objs/gp2x/menusettingdir.o: /usr/include/gnu/stubs-64.h
+../objs/gp2x/menusettingdir.o: /usr/include/string.h /usr/include/xlocale.h
+../objs/gp2x/menusettingdir.o: dirdialog.h gmenu2x.h surfacecollection.h
+../objs/gp2x/menusettingdir.o: translator.h utilities.h touchscreen.h
+../objs/gp2x/menusettingdir.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+../objs/gp2x/menusettingdir.o: /usr/include/sys/types.h
 ../objs/gp2x/menusettingdir.o: /usr/include/bits/types.h
 ../objs/gp2x/menusettingdir.o: /usr/include/bits/typesizes.h
-../objs/gp2x/menusettingdir.o: /usr/include/libio.h /usr/include/_G_config.h
-../objs/gp2x/menusettingdir.o: /usr/include/wchar.h
-../objs/gp2x/menusettingdir.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/menusettingdir.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/menusettingdir.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/menusettingdir.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/menusettingdir.o: /usr/include/bits/waitflags.h
-../objs/gp2x/menusettingdir.o: /usr/include/bits/waitstatus.h
-../objs/gp2x/menusettingdir.o: /usr/include/endian.h
+../objs/gp2x/menusettingdir.o: /usr/include/time.h /usr/include/endian.h
 ../objs/gp2x/menusettingdir.o: /usr/include/bits/endian.h
 ../objs/gp2x/menusettingdir.o: /usr/include/bits/byteswap.h
-../objs/gp2x/menusettingdir.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/menusettingdir.o: /usr/include/sys/select.h
 ../objs/gp2x/menusettingdir.o: /usr/include/bits/select.h
 ../objs/gp2x/menusettingdir.o: /usr/include/bits/sigset.h
 ../objs/gp2x/menusettingdir.o: /usr/include/bits/time.h
 ../objs/gp2x/menusettingdir.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/menusettingdir.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/menusettingdir.o: /usr/include/alloca.h
-../objs/gp2x/menusettingdir.o: /usr/include/google/type_traits.h
-../objs/gp2x/menusettingdir.o: surfacecollection.h
-../objs/gp2x/menusettingdir.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/menusettingdir.o: sfontplus.h utilities.h iconbutton.h button.h
-../objs/gp2x/menusettingdir.o: FastDelegate.h /usr/include/memory.h
-../objs/gp2x/menusettingdir.o: /usr/include/string.h /usr/include/xlocale.h
-../objs/gp2x/menusettingdir.o: translator.h touchscreen.h
-../objs/gp2x/menusettingdir.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingdir.o: /usr/include/bits/stat.h /usr/include/stdint.h
-../objs/gp2x/menusettingdir.o: /usr/include/bits/wchar.h buttonbox.h
-../objs/gp2x/menusettingdir.o: dirdialog.h browsedialog.h filelister.h
-../objs/gp2x/menusettingdir.o: dialog.h
+../objs/gp2x/menusettingdir.o: /usr/include/bits/wchar.h inputmanager.h
+../objs/gp2x/menusettingdir.o: surface.h sfontplus.h browsedialog.h
+../objs/gp2x/menusettingdir.o: filelister.h dialog.h
 ../objs/gp2x/menusettingfile.o: menusettingfile.h menusettingstringbase.h
-../objs/gp2x/menusettingfile.o: menusetting.h inputmanager.h gmenu2x.h
-../objs/gp2x/menusettingfile.o: /usr/include/google/dense_hash_map
-../objs/gp2x/menusettingfile.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/menusettingfile.o: /usr/include/stdio.h /usr/include/features.h
+../objs/gp2x/menusettingfile.o: menusetting.h buttonbox.h iconbutton.h
+../objs/gp2x/menusettingfile.o: button.h FastDelegate.h /usr/include/memory.h
+../objs/gp2x/menusettingfile.o: /usr/include/features.h
 ../objs/gp2x/menusettingfile.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/menusettingfile.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/menusettingfile.o: /usr/include/gnu/stubs.h
 ../objs/gp2x/menusettingfile.o: /usr/include/gnu/stubs-64.h
+../objs/gp2x/menusettingfile.o: /usr/include/string.h /usr/include/xlocale.h
+../objs/gp2x/menusettingfile.o: filedialog.h browsedialog.h filelister.h
+../objs/gp2x/menusettingfile.o: gmenu2x.h surfacecollection.h translator.h
+../objs/gp2x/menusettingfile.o: utilities.h touchscreen.h
+../objs/gp2x/menusettingfile.o: /usr/include/fcntl.h
+../objs/gp2x/menusettingfile.o: /usr/include/bits/fcntl.h
+../objs/gp2x/menusettingfile.o: /usr/include/sys/types.h
 ../objs/gp2x/menusettingfile.o: /usr/include/bits/types.h
 ../objs/gp2x/menusettingfile.o: /usr/include/bits/typesizes.h
-../objs/gp2x/menusettingfile.o: /usr/include/libio.h /usr/include/_G_config.h
-../objs/gp2x/menusettingfile.o: /usr/include/wchar.h
-../objs/gp2x/menusettingfile.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/menusettingfile.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/menusettingfile.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/menusettingfile.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/menusettingfile.o: /usr/include/bits/waitflags.h
-../objs/gp2x/menusettingfile.o: /usr/include/bits/waitstatus.h
-../objs/gp2x/menusettingfile.o: /usr/include/endian.h
+../objs/gp2x/menusettingfile.o: /usr/include/time.h /usr/include/endian.h
 ../objs/gp2x/menusettingfile.o: /usr/include/bits/endian.h
 ../objs/gp2x/menusettingfile.o: /usr/include/bits/byteswap.h
-../objs/gp2x/menusettingfile.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/menusettingfile.o: /usr/include/sys/select.h
 ../objs/gp2x/menusettingfile.o: /usr/include/bits/select.h
 ../objs/gp2x/menusettingfile.o: /usr/include/bits/sigset.h
 ../objs/gp2x/menusettingfile.o: /usr/include/bits/time.h
 ../objs/gp2x/menusettingfile.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/menusettingfile.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/menusettingfile.o: /usr/include/alloca.h
-../objs/gp2x/menusettingfile.o: /usr/include/google/type_traits.h
-../objs/gp2x/menusettingfile.o: surfacecollection.h
-../objs/gp2x/menusettingfile.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/menusettingfile.o: sfontplus.h utilities.h iconbutton.h button.h
-../objs/gp2x/menusettingfile.o: FastDelegate.h /usr/include/memory.h
-../objs/gp2x/menusettingfile.o: /usr/include/string.h /usr/include/xlocale.h
-../objs/gp2x/menusettingfile.o: translator.h touchscreen.h
-../objs/gp2x/menusettingfile.o: /usr/include/fcntl.h
-../objs/gp2x/menusettingfile.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingfile.o: /usr/include/bits/stat.h
 ../objs/gp2x/menusettingfile.o: /usr/include/stdint.h
-../objs/gp2x/menusettingfile.o: /usr/include/bits/wchar.h buttonbox.h
-../objs/gp2x/menusettingfile.o: filedialog.h browsedialog.h filelister.h
-../objs/gp2x/menusettingfile.o: dialog.h
+../objs/gp2x/menusettingfile.o: /usr/include/bits/wchar.h inputmanager.h
+../objs/gp2x/menusettingfile.o: surface.h sfontplus.h dialog.h
 ../objs/gp2x/menusettingimage.o: menusettingimage.h menusettingfile.h
 ../objs/gp2x/menusettingimage.o: menusettingstringbase.h menusetting.h
-../objs/gp2x/menusettingimage.o: inputmanager.h gmenu2x.h
-../objs/gp2x/menusettingimage.o: /usr/include/google/dense_hash_map
-../objs/gp2x/menusettingimage.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/menusettingimage.o: /usr/include/stdio.h /usr/include/features.h
+../objs/gp2x/menusettingimage.o: buttonbox.h imagedialog.h filedialog.h
+../objs/gp2x/menusettingimage.o: browsedialog.h filelister.h gmenu2x.h
+../objs/gp2x/menusettingimage.o: surfacecollection.h iconbutton.h button.h
+../objs/gp2x/menusettingimage.o: FastDelegate.h /usr/include/memory.h
+../objs/gp2x/menusettingimage.o: /usr/include/features.h
 ../objs/gp2x/menusettingimage.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/menusettingimage.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/menusettingimage.o: /usr/include/gnu/stubs.h
 ../objs/gp2x/menusettingimage.o: /usr/include/gnu/stubs-64.h
+../objs/gp2x/menusettingimage.o: /usr/include/string.h /usr/include/xlocale.h
+../objs/gp2x/menusettingimage.o: translator.h utilities.h touchscreen.h
+../objs/gp2x/menusettingimage.o: /usr/include/fcntl.h
+../objs/gp2x/menusettingimage.o: /usr/include/bits/fcntl.h
+../objs/gp2x/menusettingimage.o: /usr/include/sys/types.h
 ../objs/gp2x/menusettingimage.o: /usr/include/bits/types.h
 ../objs/gp2x/menusettingimage.o: /usr/include/bits/typesizes.h
-../objs/gp2x/menusettingimage.o: /usr/include/libio.h
-../objs/gp2x/menusettingimage.o: /usr/include/_G_config.h
-../objs/gp2x/menusettingimage.o: /usr/include/wchar.h
-../objs/gp2x/menusettingimage.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/menusettingimage.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/menusettingimage.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/menusettingimage.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/menusettingimage.o: /usr/include/bits/waitflags.h
-../objs/gp2x/menusettingimage.o: /usr/include/bits/waitstatus.h
-../objs/gp2x/menusettingimage.o: /usr/include/endian.h
+../objs/gp2x/menusettingimage.o: /usr/include/time.h /usr/include/endian.h
 ../objs/gp2x/menusettingimage.o: /usr/include/bits/endian.h
 ../objs/gp2x/menusettingimage.o: /usr/include/bits/byteswap.h
-../objs/gp2x/menusettingimage.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/menusettingimage.o: /usr/include/sys/select.h
 ../objs/gp2x/menusettingimage.o: /usr/include/bits/select.h
 ../objs/gp2x/menusettingimage.o: /usr/include/bits/sigset.h
 ../objs/gp2x/menusettingimage.o: /usr/include/bits/time.h
 ../objs/gp2x/menusettingimage.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/menusettingimage.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/menusettingimage.o: /usr/include/alloca.h
-../objs/gp2x/menusettingimage.o: /usr/include/google/type_traits.h
-../objs/gp2x/menusettingimage.o: surfacecollection.h
-../objs/gp2x/menusettingimage.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/menusettingimage.o: sfontplus.h utilities.h iconbutton.h
-../objs/gp2x/menusettingimage.o: button.h FastDelegate.h
-../objs/gp2x/menusettingimage.o: /usr/include/memory.h /usr/include/string.h
-../objs/gp2x/menusettingimage.o: /usr/include/xlocale.h translator.h
-../objs/gp2x/menusettingimage.o: touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/menusettingimage.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingimage.o: /usr/include/bits/stat.h
 ../objs/gp2x/menusettingimage.o: /usr/include/stdint.h
-../objs/gp2x/menusettingimage.o: /usr/include/bits/wchar.h buttonbox.h
-../objs/gp2x/menusettingimage.o: imagedialog.h filedialog.h browsedialog.h
-../objs/gp2x/menusettingimage.o: filelister.h dialog.h
-../objs/gp2x/menusettingint.o: menusettingint.h iconbutton.h button.h
-../objs/gp2x/menusettingint.o: FastDelegate.h /usr/include/memory.h
+../objs/gp2x/menusettingimage.o: /usr/include/bits/wchar.h inputmanager.h
+../objs/gp2x/menusettingimage.o: surface.h sfontplus.h dialog.h
+../objs/gp2x/menusettingint.o: menusettingint.h menusetting.h buttonbox.h
+../objs/gp2x/menusettingint.o: gmenu2x.h surfacecollection.h iconbutton.h
+../objs/gp2x/menusettingint.o: button.h FastDelegate.h /usr/include/memory.h
 ../objs/gp2x/menusettingint.o: /usr/include/features.h
 ../objs/gp2x/menusettingint.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/menusettingint.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/menusettingint.o: /usr/include/gnu/stubs.h
 ../objs/gp2x/menusettingint.o: /usr/include/gnu/stubs-64.h
 ../objs/gp2x/menusettingint.o: /usr/include/string.h /usr/include/xlocale.h
-../objs/gp2x/menusettingint.o: menusetting.h inputmanager.h gmenu2x.h
-../objs/gp2x/menusettingint.o: /usr/include/google/dense_hash_map
-../objs/gp2x/menusettingint.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/menusettingint.o: /usr/include/stdio.h /usr/include/bits/types.h
+../objs/gp2x/menusettingint.o: translator.h utilities.h touchscreen.h
+../objs/gp2x/menusettingint.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+../objs/gp2x/menusettingint.o: /usr/include/sys/types.h
+../objs/gp2x/menusettingint.o: /usr/include/bits/types.h
 ../objs/gp2x/menusettingint.o: /usr/include/bits/typesizes.h
-../objs/gp2x/menusettingint.o: /usr/include/libio.h /usr/include/_G_config.h
-../objs/gp2x/menusettingint.o: /usr/include/wchar.h
-../objs/gp2x/menusettingint.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/menusettingint.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/menusettingint.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/menusettingint.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/menusettingint.o: /usr/include/bits/waitflags.h
-../objs/gp2x/menusettingint.o: /usr/include/bits/waitstatus.h
-../objs/gp2x/menusettingint.o: /usr/include/endian.h
+../objs/gp2x/menusettingint.o: /usr/include/time.h /usr/include/endian.h
 ../objs/gp2x/menusettingint.o: /usr/include/bits/endian.h
 ../objs/gp2x/menusettingint.o: /usr/include/bits/byteswap.h
-../objs/gp2x/menusettingint.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/menusettingint.o: /usr/include/sys/select.h
 ../objs/gp2x/menusettingint.o: /usr/include/bits/select.h
 ../objs/gp2x/menusettingint.o: /usr/include/bits/sigset.h
 ../objs/gp2x/menusettingint.o: /usr/include/bits/time.h
 ../objs/gp2x/menusettingint.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/menusettingint.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/menusettingint.o: /usr/include/alloca.h
-../objs/gp2x/menusettingint.o: /usr/include/google/type_traits.h
-../objs/gp2x/menusettingint.o: surfacecollection.h
-../objs/gp2x/menusettingint.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/menusettingint.o: sfontplus.h utilities.h translator.h
-../objs/gp2x/menusettingint.o: touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/menusettingint.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingint.o: /usr/include/bits/stat.h /usr/include/stdint.h
-../objs/gp2x/menusettingint.o: /usr/include/bits/wchar.h buttonbox.h
-../objs/gp2x/menusettingmultistring.o: menusettingmultistring.h gmenu2x.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/google/dense_hash_map
-../objs/gp2x/menusettingmultistring.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/stdio.h
+../objs/gp2x/menusettingint.o: /usr/include/bits/wchar.h inputmanager.h
+../objs/gp2x/menusettingint.o: surface.h sfontplus.h
+../objs/gp2x/menusettingmultistring.o: menusettingmultistring.h
+../objs/gp2x/menusettingmultistring.o: menusettingstringbase.h menusetting.h
+../objs/gp2x/menusettingmultistring.o: buttonbox.h gmenu2x.h
+../objs/gp2x/menusettingmultistring.o: surfacecollection.h iconbutton.h
+../objs/gp2x/menusettingmultistring.o: button.h FastDelegate.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/memory.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/features.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/gnu/stubs.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/gnu/stubs-64.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/string.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/xlocale.h translator.h
+../objs/gp2x/menusettingmultistring.o: utilities.h touchscreen.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/fcntl.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/bits/fcntl.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/sys/types.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/types.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/typesizes.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/libio.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/_G_config.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/wchar.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/assert.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/stdlib.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/bits/waitflags.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/bits/waitstatus.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/time.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/endian.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/endian.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/byteswap.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/sys/types.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/time.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/sys/select.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/select.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/sigset.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/time.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/alloca.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/google/type_traits.h
-../objs/gp2x/menusettingmultistring.o: surfacecollection.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/google/dense_hash_map
-../objs/gp2x/menusettingmultistring.o: surface.h sfontplus.h utilities.h
-../objs/gp2x/menusettingmultistring.o: iconbutton.h button.h FastDelegate.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/memory.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/string.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/xlocale.h translator.h
-../objs/gp2x/menusettingmultistring.o: touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/stat.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/stdint.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/wchar.h
-../objs/gp2x/menusettingmultistring.o: inputmanager.h menusetting.h
-../objs/gp2x/menusettingmultistring.o: buttonbox.h
-../objs/gp2x/menusettingrgba.o: menusettingrgba.h gmenu2x.h
-../objs/gp2x/menusettingrgba.o: /usr/include/google/dense_hash_map
-../objs/gp2x/menusettingrgba.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/menusettingrgba.o: /usr/include/stdio.h /usr/include/features.h
+../objs/gp2x/menusettingmultistring.o: inputmanager.h surface.h sfontplus.h
+../objs/gp2x/menusettingrgba.o: menusettingrgba.h menusetting.h buttonbox.h
+../objs/gp2x/menusettingrgba.o: surface.h sfontplus.h gmenu2x.h
+../objs/gp2x/menusettingrgba.o: surfacecollection.h iconbutton.h button.h
+../objs/gp2x/menusettingrgba.o: FastDelegate.h /usr/include/memory.h
+../objs/gp2x/menusettingrgba.o: /usr/include/features.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/gnu/stubs.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/gnu/stubs-64.h
+../objs/gp2x/menusettingrgba.o: /usr/include/string.h /usr/include/xlocale.h
+../objs/gp2x/menusettingrgba.o: translator.h utilities.h touchscreen.h
+../objs/gp2x/menusettingrgba.o: /usr/include/fcntl.h
+../objs/gp2x/menusettingrgba.o: /usr/include/bits/fcntl.h
+../objs/gp2x/menusettingrgba.o: /usr/include/sys/types.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/bits/types.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/bits/typesizes.h
-../objs/gp2x/menusettingrgba.o: /usr/include/libio.h /usr/include/_G_config.h
-../objs/gp2x/menusettingrgba.o: /usr/include/wchar.h
-../objs/gp2x/menusettingrgba.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/menusettingrgba.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/menusettingrgba.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/menusettingrgba.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/menusettingrgba.o: /usr/include/bits/waitflags.h
-../objs/gp2x/menusettingrgba.o: /usr/include/bits/waitstatus.h
-../objs/gp2x/menusettingrgba.o: /usr/include/endian.h
+../objs/gp2x/menusettingrgba.o: /usr/include/time.h /usr/include/endian.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/bits/endian.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/bits/byteswap.h
-../objs/gp2x/menusettingrgba.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/sys/select.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/bits/select.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/bits/sigset.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/bits/time.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/menusettingrgba.o: /usr/include/alloca.h
-../objs/gp2x/menusettingrgba.o: /usr/include/google/type_traits.h
-../objs/gp2x/menusettingrgba.o: surfacecollection.h
-../objs/gp2x/menusettingrgba.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/menusettingrgba.o: sfontplus.h utilities.h iconbutton.h button.h
-../objs/gp2x/menusettingrgba.o: FastDelegate.h /usr/include/memory.h
-../objs/gp2x/menusettingrgba.o: /usr/include/string.h /usr/include/xlocale.h
-../objs/gp2x/menusettingrgba.o: translator.h touchscreen.h
-../objs/gp2x/menusettingrgba.o: /usr/include/fcntl.h
-../objs/gp2x/menusettingrgba.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/bits/stat.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/stdint.h
 ../objs/gp2x/menusettingrgba.o: /usr/include/bits/wchar.h inputmanager.h
-../objs/gp2x/menusettingrgba.o: menusetting.h buttonbox.h
 ../objs/gp2x/menusettingstringbase.o: menusettingstringbase.h menusetting.h
-../objs/gp2x/menusettingstringbase.o: inputmanager.h gmenu2x.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/google/dense_hash_map
-../objs/gp2x/menusettingstringbase.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/stdio.h
+../objs/gp2x/menusettingstringbase.o: buttonbox.h gmenu2x.h
+../objs/gp2x/menusettingstringbase.o: surfacecollection.h iconbutton.h
+../objs/gp2x/menusettingstringbase.o: button.h FastDelegate.h
+../objs/gp2x/menusettingstringbase.o: /usr/include/memory.h
 ../objs/gp2x/menusettingstringbase.o: /usr/include/features.h
 ../objs/gp2x/menusettingstringbase.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/menusettingstringbase.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/menusettingstringbase.o: /usr/include/gnu/stubs.h
 ../objs/gp2x/menusettingstringbase.o: /usr/include/gnu/stubs-64.h
+../objs/gp2x/menusettingstringbase.o: /usr/include/string.h
+../objs/gp2x/menusettingstringbase.o: /usr/include/xlocale.h translator.h
+../objs/gp2x/menusettingstringbase.o: utilities.h touchscreen.h
+../objs/gp2x/menusettingstringbase.o: /usr/include/fcntl.h
+../objs/gp2x/menusettingstringbase.o: /usr/include/bits/fcntl.h
+../objs/gp2x/menusettingstringbase.o: /usr/include/sys/types.h
 ../objs/gp2x/menusettingstringbase.o: /usr/include/bits/types.h
 ../objs/gp2x/menusettingstringbase.o: /usr/include/bits/typesizes.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/libio.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/_G_config.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/wchar.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/assert.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/stdlib.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/bits/waitflags.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/bits/waitstatus.h
+../objs/gp2x/menusettingstringbase.o: /usr/include/time.h
 ../objs/gp2x/menusettingstringbase.o: /usr/include/endian.h
 ../objs/gp2x/menusettingstringbase.o: /usr/include/bits/endian.h
 ../objs/gp2x/menusettingstringbase.o: /usr/include/bits/byteswap.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/sys/types.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/time.h
 ../objs/gp2x/menusettingstringbase.o: /usr/include/sys/select.h
 ../objs/gp2x/menusettingstringbase.o: /usr/include/bits/select.h
 ../objs/gp2x/menusettingstringbase.o: /usr/include/bits/sigset.h
 ../objs/gp2x/menusettingstringbase.o: /usr/include/bits/time.h
 ../objs/gp2x/menusettingstringbase.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/menusettingstringbase.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/alloca.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/google/type_traits.h
-../objs/gp2x/menusettingstringbase.o: surfacecollection.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/google/dense_hash_map
-../objs/gp2x/menusettingstringbase.o: surface.h sfontplus.h utilities.h
-../objs/gp2x/menusettingstringbase.o: iconbutton.h button.h FastDelegate.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/memory.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/string.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/xlocale.h translator.h
-../objs/gp2x/menusettingstringbase.o: touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingstringbase.o: /usr/include/bits/stat.h
 ../objs/gp2x/menusettingstringbase.o: /usr/include/stdint.h
-../objs/gp2x/menusettingstringbase.o: /usr/include/bits/wchar.h buttonbox.h
+../objs/gp2x/menusettingstringbase.o: /usr/include/bits/wchar.h
+../objs/gp2x/menusettingstringbase.o: inputmanager.h surface.h sfontplus.h
 ../objs/gp2x/menusettingstring.o: menusettingstring.h menusettingstringbase.h
-../objs/gp2x/menusettingstring.o: menusetting.h inputmanager.h gmenu2x.h
-../objs/gp2x/menusettingstring.o: /usr/include/google/dense_hash_map
-../objs/gp2x/menusettingstring.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/menusettingstring.o: /usr/include/stdio.h
+../objs/gp2x/menusettingstring.o: menusetting.h buttonbox.h iconbutton.h
+../objs/gp2x/menusettingstring.o: button.h FastDelegate.h
+../objs/gp2x/menusettingstring.o: /usr/include/memory.h
 ../objs/gp2x/menusettingstring.o: /usr/include/features.h
 ../objs/gp2x/menusettingstring.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/menusettingstring.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/menusettingstring.o: /usr/include/gnu/stubs.h
 ../objs/gp2x/menusettingstring.o: /usr/include/gnu/stubs-64.h
+../objs/gp2x/menusettingstring.o: /usr/include/string.h
+../objs/gp2x/menusettingstring.o: /usr/include/xlocale.h inputdialog.h
+../objs/gp2x/menusettingstring.o: gmenu2x.h surfacecollection.h translator.h
+../objs/gp2x/menusettingstring.o: utilities.h touchscreen.h
+../objs/gp2x/menusettingstring.o: /usr/include/fcntl.h
+../objs/gp2x/menusettingstring.o: /usr/include/bits/fcntl.h
+../objs/gp2x/menusettingstring.o: /usr/include/sys/types.h
 ../objs/gp2x/menusettingstring.o: /usr/include/bits/types.h
 ../objs/gp2x/menusettingstring.o: /usr/include/bits/typesizes.h
-../objs/gp2x/menusettingstring.o: /usr/include/libio.h
-../objs/gp2x/menusettingstring.o: /usr/include/_G_config.h
-../objs/gp2x/menusettingstring.o: /usr/include/wchar.h
-../objs/gp2x/menusettingstring.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/menusettingstring.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/menusettingstring.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/menusettingstring.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/menusettingstring.o: /usr/include/bits/waitflags.h
-../objs/gp2x/menusettingstring.o: /usr/include/bits/waitstatus.h
-../objs/gp2x/menusettingstring.o: /usr/include/endian.h
+../objs/gp2x/menusettingstring.o: /usr/include/time.h /usr/include/endian.h
 ../objs/gp2x/menusettingstring.o: /usr/include/bits/endian.h
 ../objs/gp2x/menusettingstring.o: /usr/include/bits/byteswap.h
-../objs/gp2x/menusettingstring.o: /usr/include/sys/types.h
-../objs/gp2x/menusettingstring.o: /usr/include/time.h
 ../objs/gp2x/menusettingstring.o: /usr/include/sys/select.h
 ../objs/gp2x/menusettingstring.o: /usr/include/bits/select.h
 ../objs/gp2x/menusettingstring.o: /usr/include/bits/sigset.h
 ../objs/gp2x/menusettingstring.o: /usr/include/bits/time.h
 ../objs/gp2x/menusettingstring.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/menusettingstring.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/menusettingstring.o: /usr/include/alloca.h
-../objs/gp2x/menusettingstring.o: /usr/include/google/type_traits.h
-../objs/gp2x/menusettingstring.o: surfacecollection.h
-../objs/gp2x/menusettingstring.o: /usr/include/google/dense_hash_map
-../objs/gp2x/menusettingstring.o: surface.h sfontplus.h utilities.h
-../objs/gp2x/menusettingstring.o: iconbutton.h button.h FastDelegate.h
-../objs/gp2x/menusettingstring.o: /usr/include/memory.h /usr/include/string.h
-../objs/gp2x/menusettingstring.o: /usr/include/xlocale.h translator.h
-../objs/gp2x/menusettingstring.o: touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/menusettingstring.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingstring.o: /usr/include/bits/stat.h
 ../objs/gp2x/menusettingstring.o: /usr/include/stdint.h
-../objs/gp2x/menusettingstring.o: /usr/include/bits/wchar.h buttonbox.h
-../objs/gp2x/menusettingstring.o: inputdialog.h dialog.h
-../objs/gp2x/messagebox.o: messagebox.h gmenu2x.h
-../objs/gp2x/messagebox.o: /usr/include/google/dense_hash_map
-../objs/gp2x/messagebox.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/messagebox.o: /usr/include/stdio.h /usr/include/features.h
+../objs/gp2x/menusettingstring.o: /usr/include/bits/wchar.h inputmanager.h
+../objs/gp2x/menusettingstring.o: surface.h sfontplus.h dialog.h
+../objs/gp2x/messagebox.o: messagebox.h gmenu2x.h surfacecollection.h
+../objs/gp2x/messagebox.o: iconbutton.h button.h FastDelegate.h
+../objs/gp2x/messagebox.o: /usr/include/memory.h /usr/include/features.h
 ../objs/gp2x/messagebox.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/messagebox.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/messagebox.o: /usr/include/gnu/stubs.h
-../objs/gp2x/messagebox.o: /usr/include/gnu/stubs-64.h
+../objs/gp2x/messagebox.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
+../objs/gp2x/messagebox.o: /usr/include/xlocale.h translator.h utilities.h
+../objs/gp2x/messagebox.o: touchscreen.h /usr/include/fcntl.h
+../objs/gp2x/messagebox.o: /usr/include/bits/fcntl.h /usr/include/sys/types.h
 ../objs/gp2x/messagebox.o: /usr/include/bits/types.h
-../objs/gp2x/messagebox.o: /usr/include/bits/typesizes.h /usr/include/libio.h
-../objs/gp2x/messagebox.o: /usr/include/_G_config.h /usr/include/wchar.h
-../objs/gp2x/messagebox.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/messagebox.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/messagebox.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/messagebox.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/messagebox.o: /usr/include/bits/waitflags.h
-../objs/gp2x/messagebox.o: /usr/include/bits/waitstatus.h
+../objs/gp2x/messagebox.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/messagebox.o: /usr/include/endian.h /usr/include/bits/endian.h
 ../objs/gp2x/messagebox.o: /usr/include/bits/byteswap.h
-../objs/gp2x/messagebox.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/messagebox.o: /usr/include/sys/select.h
 ../objs/gp2x/messagebox.o: /usr/include/bits/select.h
 ../objs/gp2x/messagebox.o: /usr/include/bits/sigset.h
 ../objs/gp2x/messagebox.o: /usr/include/bits/time.h
 ../objs/gp2x/messagebox.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/messagebox.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/messagebox.o: /usr/include/alloca.h
-../objs/gp2x/messagebox.o: /usr/include/google/type_traits.h
-../objs/gp2x/messagebox.o: surfacecollection.h
-../objs/gp2x/messagebox.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/messagebox.o: sfontplus.h utilities.h iconbutton.h button.h
-../objs/gp2x/messagebox.o: FastDelegate.h /usr/include/memory.h
-../objs/gp2x/messagebox.o: /usr/include/string.h /usr/include/xlocale.h
-../objs/gp2x/messagebox.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/messagebox.o: /usr/include/bits/fcntl.h /usr/include/bits/stat.h
-../objs/gp2x/messagebox.o: /usr/include/stdint.h /usr/include/bits/wchar.h
-../objs/gp2x/messagebox.o: inputmanager.h
+../objs/gp2x/messagebox.o: /usr/include/bits/stat.h /usr/include/stdint.h
+../objs/gp2x/messagebox.o: /usr/include/bits/wchar.h inputmanager.h surface.h
+../objs/gp2x/messagebox.o: sfontplus.h
 ../objs/gp2x/selector.o: /usr/include/sys/stat.h /usr/include/features.h
 ../objs/gp2x/selector.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/selector.o: /usr/include/bits/wordsize.h
@@ -1151,148 +804,92 @@ depend:
 ../objs/gp2x/selector.o: FastDelegate.h /usr/include/memory.h
 ../objs/gp2x/selector.o: /usr/include/string.h /usr/include/xlocale.h link.h
 ../objs/gp2x/selector.o: button.h surface.h sfontplus.h linkapp.h selector.h
-../objs/gp2x/selector.o: gmenu2x.h /usr/include/google/dense_hash_map
-../objs/gp2x/selector.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/selector.o: /usr/include/stdio.h /usr/include/libio.h
-../objs/gp2x/selector.o: /usr/include/_G_config.h /usr/include/wchar.h
-../objs/gp2x/selector.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/selector.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/selector.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/selector.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/selector.o: /usr/include/bits/waitflags.h
-../objs/gp2x/selector.o: /usr/include/bits/waitstatus.h /usr/include/alloca.h
-../objs/gp2x/selector.o: /usr/include/google/type_traits.h
-../objs/gp2x/selector.o: surfacecollection.h
-../objs/gp2x/selector.o: /usr/include/google/dense_hash_map utilities.h
-../objs/gp2x/selector.o: iconbutton.h translator.h touchscreen.h
+../objs/gp2x/selector.o: gmenu2x.h surfacecollection.h iconbutton.h
+../objs/gp2x/selector.o: translator.h utilities.h touchscreen.h
 ../objs/gp2x/selector.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 ../objs/gp2x/selector.o: /usr/include/stdint.h /usr/include/bits/wchar.h
 ../objs/gp2x/selector.o: inputmanager.h dialog.h filelister.h
-../objs/gp2x/settingsdialog.o: settingsdialog.h gmenu2x.h
-../objs/gp2x/settingsdialog.o: /usr/include/google/dense_hash_map
-../objs/gp2x/settingsdialog.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/settingsdialog.o: /usr/include/stdio.h /usr/include/features.h
+../objs/gp2x/settingsdialog.o: settingsdialog.h gmenu2x.h surfacecollection.h
+../objs/gp2x/settingsdialog.o: iconbutton.h button.h FastDelegate.h
+../objs/gp2x/settingsdialog.o: /usr/include/memory.h /usr/include/features.h
 ../objs/gp2x/settingsdialog.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/settingsdialog.o: /usr/include/gnu/stubs.h
 ../objs/gp2x/settingsdialog.o: /usr/include/gnu/stubs-64.h
+../objs/gp2x/settingsdialog.o: /usr/include/string.h /usr/include/xlocale.h
+../objs/gp2x/settingsdialog.o: translator.h utilities.h touchscreen.h
+../objs/gp2x/settingsdialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+../objs/gp2x/settingsdialog.o: /usr/include/sys/types.h
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/types.h
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/typesizes.h
-../objs/gp2x/settingsdialog.o: /usr/include/libio.h /usr/include/_G_config.h
-../objs/gp2x/settingsdialog.o: /usr/include/wchar.h
-../objs/gp2x/settingsdialog.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/settingsdialog.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/settingsdialog.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/settingsdialog.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/settingsdialog.o: /usr/include/bits/waitflags.h
-../objs/gp2x/settingsdialog.o: /usr/include/bits/waitstatus.h
-../objs/gp2x/settingsdialog.o: /usr/include/endian.h
+../objs/gp2x/settingsdialog.o: /usr/include/time.h /usr/include/endian.h
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/endian.h
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/byteswap.h
-../objs/gp2x/settingsdialog.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/settingsdialog.o: /usr/include/sys/select.h
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/select.h
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/sigset.h
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/time.h
 ../objs/gp2x/settingsdialog.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/settingsdialog.o: /usr/include/alloca.h
-../objs/gp2x/settingsdialog.o: /usr/include/google/type_traits.h
-../objs/gp2x/settingsdialog.o: surfacecollection.h
-../objs/gp2x/settingsdialog.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/settingsdialog.o: sfontplus.h utilities.h iconbutton.h button.h
-../objs/gp2x/settingsdialog.o: FastDelegate.h /usr/include/memory.h
-../objs/gp2x/settingsdialog.o: /usr/include/string.h /usr/include/xlocale.h
-../objs/gp2x/settingsdialog.o: translator.h touchscreen.h
-../objs/gp2x/settingsdialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/stat.h /usr/include/stdint.h
 ../objs/gp2x/settingsdialog.o: /usr/include/bits/wchar.h inputmanager.h
-../objs/gp2x/settingsdialog.o: menusetting.h buttonbox.h dialog.h
+../objs/gp2x/settingsdialog.o: surface.h sfontplus.h menusetting.h
+../objs/gp2x/settingsdialog.o: buttonbox.h dialog.h
 ../objs/gp2x/sfontplus.o: sfontplus.h surface.h utilities.h
-../objs/gp2x/surfacecollection.o: surfacecollection.h
-../objs/gp2x/surfacecollection.o: /usr/include/google/dense_hash_map
-../objs/gp2x/surfacecollection.o: surface.h sfontplus.h utilities.h
+../objs/gp2x/surfacecollection.o: surfacecollection.h surface.h sfontplus.h
+../objs/gp2x/surfacecollection.o: utilities.h
 ../objs/gp2x/surface.o: surface.h sfontplus.h utilities.h
-../objs/gp2x/textdialog.o: textdialog.h gmenu2x.h
-../objs/gp2x/textdialog.o: /usr/include/google/dense_hash_map
-../objs/gp2x/textdialog.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/textdialog.o: /usr/include/stdio.h /usr/include/features.h
+../objs/gp2x/textdialog.o: textdialog.h gmenu2x.h surfacecollection.h
+../objs/gp2x/textdialog.o: iconbutton.h button.h FastDelegate.h
+../objs/gp2x/textdialog.o: /usr/include/memory.h /usr/include/features.h
 ../objs/gp2x/textdialog.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/textdialog.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/textdialog.o: /usr/include/gnu/stubs.h
-../objs/gp2x/textdialog.o: /usr/include/gnu/stubs-64.h
+../objs/gp2x/textdialog.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
+../objs/gp2x/textdialog.o: /usr/include/xlocale.h translator.h utilities.h
+../objs/gp2x/textdialog.o: touchscreen.h /usr/include/fcntl.h
+../objs/gp2x/textdialog.o: /usr/include/bits/fcntl.h /usr/include/sys/types.h
 ../objs/gp2x/textdialog.o: /usr/include/bits/types.h
-../objs/gp2x/textdialog.o: /usr/include/bits/typesizes.h /usr/include/libio.h
-../objs/gp2x/textdialog.o: /usr/include/_G_config.h /usr/include/wchar.h
-../objs/gp2x/textdialog.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/textdialog.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/textdialog.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/textdialog.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/textdialog.o: /usr/include/bits/waitflags.h
-../objs/gp2x/textdialog.o: /usr/include/bits/waitstatus.h
+../objs/gp2x/textdialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
 ../objs/gp2x/textdialog.o: /usr/include/endian.h /usr/include/bits/endian.h
 ../objs/gp2x/textdialog.o: /usr/include/bits/byteswap.h
-../objs/gp2x/textdialog.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/textdialog.o: /usr/include/sys/select.h
 ../objs/gp2x/textdialog.o: /usr/include/bits/select.h
 ../objs/gp2x/textdialog.o: /usr/include/bits/sigset.h
 ../objs/gp2x/textdialog.o: /usr/include/bits/time.h
 ../objs/gp2x/textdialog.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/textdialog.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/textdialog.o: /usr/include/alloca.h
-../objs/gp2x/textdialog.o: /usr/include/google/type_traits.h
-../objs/gp2x/textdialog.o: surfacecollection.h
-../objs/gp2x/textdialog.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/textdialog.o: sfontplus.h utilities.h iconbutton.h button.h
-../objs/gp2x/textdialog.o: FastDelegate.h /usr/include/memory.h
-../objs/gp2x/textdialog.o: /usr/include/string.h /usr/include/xlocale.h
-../objs/gp2x/textdialog.o: translator.h touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/textdialog.o: /usr/include/bits/fcntl.h /usr/include/bits/stat.h
-../objs/gp2x/textdialog.o: /usr/include/stdint.h /usr/include/bits/wchar.h
-../objs/gp2x/textdialog.o: inputmanager.h dialog.h
+../objs/gp2x/textdialog.o: /usr/include/bits/stat.h /usr/include/stdint.h
+../objs/gp2x/textdialog.o: /usr/include/bits/wchar.h inputmanager.h surface.h
+../objs/gp2x/textdialog.o: sfontplus.h dialog.h
 ../objs/gp2x/textmanualdialog.o: textmanualdialog.h textdialog.h gmenu2x.h
-../objs/gp2x/textmanualdialog.o: /usr/include/google/dense_hash_map
-../objs/gp2x/textmanualdialog.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/textmanualdialog.o: /usr/include/stdio.h /usr/include/features.h
+../objs/gp2x/textmanualdialog.o: surfacecollection.h iconbutton.h button.h
+../objs/gp2x/textmanualdialog.o: FastDelegate.h /usr/include/memory.h
+../objs/gp2x/textmanualdialog.o: /usr/include/features.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/gnu/stubs.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/gnu/stubs-64.h
+../objs/gp2x/textmanualdialog.o: /usr/include/string.h /usr/include/xlocale.h
+../objs/gp2x/textmanualdialog.o: translator.h utilities.h touchscreen.h
+../objs/gp2x/textmanualdialog.o: /usr/include/fcntl.h
+../objs/gp2x/textmanualdialog.o: /usr/include/bits/fcntl.h
+../objs/gp2x/textmanualdialog.o: /usr/include/sys/types.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/bits/types.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/bits/typesizes.h
-../objs/gp2x/textmanualdialog.o: /usr/include/libio.h
-../objs/gp2x/textmanualdialog.o: /usr/include/_G_config.h
-../objs/gp2x/textmanualdialog.o: /usr/include/wchar.h
-../objs/gp2x/textmanualdialog.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/textmanualdialog.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/textmanualdialog.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/textmanualdialog.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/textmanualdialog.o: /usr/include/bits/waitflags.h
-../objs/gp2x/textmanualdialog.o: /usr/include/bits/waitstatus.h
-../objs/gp2x/textmanualdialog.o: /usr/include/endian.h
+../objs/gp2x/textmanualdialog.o: /usr/include/time.h /usr/include/endian.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/bits/endian.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/bits/byteswap.h
-../objs/gp2x/textmanualdialog.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/sys/select.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/bits/select.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/bits/sigset.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/bits/time.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/textmanualdialog.o: /usr/include/alloca.h
-../objs/gp2x/textmanualdialog.o: /usr/include/google/type_traits.h
-../objs/gp2x/textmanualdialog.o: surfacecollection.h
-../objs/gp2x/textmanualdialog.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/textmanualdialog.o: sfontplus.h utilities.h iconbutton.h
-../objs/gp2x/textmanualdialog.o: button.h FastDelegate.h
-../objs/gp2x/textmanualdialog.o: /usr/include/memory.h /usr/include/string.h
-../objs/gp2x/textmanualdialog.o: /usr/include/xlocale.h translator.h
-../objs/gp2x/textmanualdialog.o: touchscreen.h /usr/include/fcntl.h
-../objs/gp2x/textmanualdialog.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/bits/stat.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/stdint.h
 ../objs/gp2x/textmanualdialog.o: /usr/include/bits/wchar.h inputmanager.h
-../objs/gp2x/textmanualdialog.o: dialog.h
+../objs/gp2x/textmanualdialog.o: surface.h sfontplus.h dialog.h
 ../objs/gp2x/touchscreen.o: /usr/include/unistd.h /usr/include/features.h
 ../objs/gp2x/touchscreen.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/touchscreen.o: /usr/include/bits/wordsize.h
@@ -1344,44 +941,30 @@ depend:
 ../objs/gp2x/utilities.o: /usr/include/bits/mathdef.h
 ../objs/gp2x/utilities.o: /usr/include/bits/mathcalls.h utilities.h
 ../objs/gp2x/wallpaperdialog.o: wallpaperdialog.h gmenu2x.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/google/dense_hash_map
-../objs/gp2x/wallpaperdialog.o: /usr/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/stdio.h /usr/include/features.h
+../objs/gp2x/wallpaperdialog.o: surfacecollection.h iconbutton.h button.h
+../objs/gp2x/wallpaperdialog.o: FastDelegate.h /usr/include/memory.h
+../objs/gp2x/wallpaperdialog.o: /usr/include/features.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/bits/wordsize.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/gnu/stubs.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/gnu/stubs-64.h
+../objs/gp2x/wallpaperdialog.o: /usr/include/string.h /usr/include/xlocale.h
+../objs/gp2x/wallpaperdialog.o: translator.h utilities.h touchscreen.h
+../objs/gp2x/wallpaperdialog.o: /usr/include/fcntl.h
+../objs/gp2x/wallpaperdialog.o: /usr/include/bits/fcntl.h
+../objs/gp2x/wallpaperdialog.o: /usr/include/sys/types.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/bits/types.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/bits/typesizes.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/libio.h /usr/include/_G_config.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/wchar.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/google/sparsehash/densehashtable.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/assert.h /usr/include/stdlib.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/bits/waitflags.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/bits/waitstatus.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/endian.h
+../objs/gp2x/wallpaperdialog.o: /usr/include/time.h /usr/include/endian.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/bits/endian.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/bits/byteswap.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/sys/types.h /usr/include/time.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/sys/select.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/bits/select.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/bits/sigset.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/bits/time.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/bits/pthreadtypes.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/alloca.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/google/type_traits.h
-../objs/gp2x/wallpaperdialog.o: surfacecollection.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/google/dense_hash_map surface.h
-../objs/gp2x/wallpaperdialog.o: sfontplus.h utilities.h iconbutton.h button.h
-../objs/gp2x/wallpaperdialog.o: FastDelegate.h /usr/include/memory.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/string.h /usr/include/xlocale.h
-../objs/gp2x/wallpaperdialog.o: translator.h touchscreen.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/fcntl.h
-../objs/gp2x/wallpaperdialog.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/bits/stat.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/stdint.h
 ../objs/gp2x/wallpaperdialog.o: /usr/include/bits/wchar.h inputmanager.h
-../objs/gp2x/wallpaperdialog.o: dialog.h filelister.h
+../objs/gp2x/wallpaperdialog.o: surface.h sfontplus.h dialog.h filelister.h
