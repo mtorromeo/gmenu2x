@@ -157,11 +157,11 @@ void SFontPlus::initFont(SDL_Surface *font, const string &characters) {
 
 	string::size_type pos = characters.find("0")*2;
 	SDL_Rect srcrect = {charpos[pos], 1, charpos[pos+2] - charpos[pos], surface->raw->h-1};
-	uint y = srcrect.h+1;
+	uint y = srcrect.h;
 	bool nonKeyFound = false;
-	while (y-->0 && !nonKeyFound) {
-		uint x = srcrect.w+1;
-		while (x-->0 && !nonKeyFound)
+	while (y-- > 0 && !nonKeyFound) {
+		uint x = srcrect.w;
+		while (x-- > 0 && !nonKeyFound)
 			nonKeyFound = surface->pixel(x+srcrect.x,y+srcrect.y) != colKey;
 	}
 	lineHeight = y+1;
