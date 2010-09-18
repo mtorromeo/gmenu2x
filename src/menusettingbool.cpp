@@ -25,31 +25,29 @@ using namespace std;
 using namespace fastdelegate;
 
 MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, const string &name, const string &description, int *value)
-	: MenuSetting(gmenu2x,name,description)
+	: MenuSetting(gmenu2x, name, description)
 {
-	IconButton *btn;
-
 	_ivalue = value;
 	_value = NULL;
 	originalValue = *value != 0;
 	setValue(this->value());
-
-	btn = new IconButton(gmenu2x, "skin:imgs/buttons/b.png", gmenu2x->tr["Switch"]);
-	btn->setAction(MakeDelegate(this, &MenuSettingBool::toggle));
-	buttonBox.add(btn);
+	initButton();
 }
 
 MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, const string &name, const string &description, bool *value)
-	: MenuSetting(gmenu2x,name,description)
+	: MenuSetting(gmenu2x, name, description)
 {
-	IconButton *btn;
-
 	_value = value;
 	_ivalue = NULL;
 	originalValue = *value;
 	setValue(this->value());
+	initButton();
+}
 
-	btn = new IconButton(gmenu2x, "skin:imgs/buttons/b.png", gmenu2x->tr["Switch"]);
+void MenuSettingBool::initButton()
+{
+	IconButton *btn = new IconButton(gmenu2x, "skin:imgs/buttons/b.png",
+									 gmenu2x->tr["Switch"]);
 	btn->setAction(MakeDelegate(this, &MenuSettingBool::toggle));
 	buttonBox.add(btn);
 }

@@ -28,12 +28,13 @@ class GMenu2X;
 
 class MenuSettingBool : public MenuSetting {
 private:
+	void initButton();
+	void toggle();
+
 	bool originalValue;
 	bool *_value;
 	int *_ivalue;
 	string strvalue;
-
-	void toggle();
 
 public:
 	MenuSettingBool(GMenu2X *gmenu2x, const string &name, const string &description, bool *value);
