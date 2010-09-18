@@ -155,7 +155,7 @@ bool FileDialog::exec() {
 			} break;
 			case FD_ACTION_GOUP: {
 				string::size_type p = path().rfind("/");
-				if (p==string::npos || path().substr(0,4)!="/mnt" || p<4)
+				if (p==string::npos || path().compare(0,4,"/mnt")!=0 || p<4)
 					return false;
 				else
 					setPath( path().substr(0,p) );
