@@ -33,6 +33,8 @@ void MenuSetting::handleTS() {
 	buttonBox.handleTS();
 }
 
+void MenuSetting::adjustInput() {}
+
 void MenuSetting::drawSelected(int /*y*/) {
 	buttonBox.paint(5);
 }

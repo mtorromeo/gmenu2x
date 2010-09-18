@@ -91,8 +91,6 @@ bool MenuSettingBool::value()
 		return *_value;
 }
 
-void MenuSettingBool::adjustInput() {}
-
 bool MenuSettingBool::edited()
 {
 	return originalValue != value();
