@@ -25,6 +25,7 @@ using namespace std;
 
 #include "surface.h"
 #include "utilities.h"
+#include "debug.h"
 
 RGBAColor strtorgba(const string &strColor) {
 	RGBAColor c = {0,0,0,255};
@@ -135,14 +136,14 @@ void Surface::load(const string &img, bool alpha, const string &skin) {
 			raw = SDL_DisplayFormat(buf);
 		SDL_FreeSurface(buf);
 	} else {
-		cout << "Couldn't load surface " << img << endl;
+		ERROR("Couldn't load surface '%s'\n", img.c_str());
 	}
 }
 
 void Surface::lock() {
 	if ( SDL_MUSTLOCK(raw) && !locked ) {
 		if ( SDL_LockSurface(raw) < 0 ) {
-			fprintf(stderr, "Can't lock surface: %s\n", SDL_GetError());
+			ERROR("Can't lock surface: '%s'\n", SDL_GetError());
 			SDL_Quit();
 		}
 		locked = true;

@@ -29,6 +29,8 @@
 
 #include "filelister.h"
 #include "utilities.h"
+#include "gmenu2x.h"
+#include "debug.h"
 
 using namespace std;
 
@@ -62,7 +64,7 @@ void FileLister::browse() {
 	if (showDirectories || showFiles) {
 		DIR *dirp;
 		if ((dirp = opendir(path.c_str())) == NULL) {
-			cout << "Error: opendir(" << path << ")" << endl;
+			ERROR("Error: opendir(%s)\n", path.c_str());
 			return;
 		}
 
@@ -79,7 +81,7 @@ void FileLister::browse() {
 			filepath = path+file;
 			int statRet = stat(filepath.c_str(), &st);
 			if (statRet == -1) {
-				cout << "\033[0;34mGMENU2X:\033[0;31m stat failed on '" << filepath << "' with error '" << strerror(errno) << "'\033[0m" << endl;
+				ERROR("Stat failed on '%s' with error '%s'\n", filepath.c_str(), strerror(errno));
 				continue;
 			}
 			if (find(excludes.begin(), excludes.end(), file) != excludes.end())

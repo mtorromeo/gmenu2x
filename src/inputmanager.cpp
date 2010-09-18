@@ -21,8 +21,10 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+
 #include "inputmanager.h"
 #include "utilities.h"
+#include "debug.h"
 
 using namespace std;
 
@@ -41,14 +43,13 @@ void InputManager::init(const string &conffile) {
 	for (int x=0; x<numJoy; x++) {
 		SDL_Joystick *joy = SDL_JoystickOpen(x);
 		if (joy) {
-#ifdef DEBUG
-			cout << "Initialized joystick: " << SDL_JoystickName(x) << endl;
-#endif
+
+			INFO("Initialized joystick: '%s'\n", SDL_JoystickName(x));
+
 			joysticks.push_back(joy);
 		}
-#ifdef DEBUG
-		else cout << "Failed to initialize joystick: " << x << endl;
-#endif
+
+		else WARNING("Failed to initialize joystick: %i\n", x);
 	}
 
 	setActionsCount(14);

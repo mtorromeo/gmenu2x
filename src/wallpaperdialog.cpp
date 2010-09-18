@@ -18,8 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <iostream>
+
 #include "wallpaperdialog.h"
 #include "filelister.h"
+#include "debug.h"
 
 using namespace std;
 
@@ -42,9 +45,8 @@ bool WallpaperDialog::exec()
 		for (uint i=0; i<fl.getFiles().size(); i++)
 			wallpapers.push_back(fl.getFiles()[i]);
 	}
-#ifdef DEBUG
-	cout << "Wallpapers: " << wallpapers.size() << endl;
-#endif
+
+	DEBUG("Wallpapers: %i\n", wallpapers.size());
 
 	uint i, selected = 0, firstElement = 0, iY;
 	while (!close) {

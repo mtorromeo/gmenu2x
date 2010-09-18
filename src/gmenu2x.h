@@ -47,6 +47,9 @@ const int BATTERY_READS = 10;
 
 const int LOOP_DELAY=30000;
 
+extern const char *CARD_ROOT;
+extern const int CARD_ROOT_LEN;
+
 // Note: Keep this in sync with colorNames!
 enum color {
 	COLOR_TOP_BAR_BG,

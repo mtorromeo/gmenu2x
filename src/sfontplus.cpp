@@ -121,11 +121,11 @@ void SFontPlus::initFont(SDL_Surface *font, const string &characters) {
 	surface = new Surface(font);
 	Uint32 pink = SDL_MapRGB(surface->format(), 255,0,255);
 
-#ifdef _DEBUG
+#ifdef DEBUG
 	bool utf8 = false;
 	for (uint x=0; x<characters.length(); x++) {
 		if (!utf8) utf8 = (unsigned char)characters[x]>128;
-		if (utf8) printf("%d\n", (unsigned char)characters[x]);
+		if (utf8) DEBUG("%d\n", (unsigned char)characters[x]);
 	}
 #endif
 

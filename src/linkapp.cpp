@@ -23,10 +23,12 @@
 
 #include <fstream>
 #include <sstream>
+
 #include "linkapp.h"
 #include "menu.h"
 #include "selector.h"
 #include "textmanualdialog.h"
+#include "debug.h"
 
 using namespace std;
 
@@ -102,7 +104,7 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, InputManager &inputMgr_,
 		} else if (name == "selectoraliases") {
 			setAliasFile( value );
 		} else {
-			cout << "Unrecognized option: " << name << endl;
+			WARNING("Unrecognized option: '%s'\n", name.c_str());
 			break;
 		}
 	}
@@ -237,7 +239,7 @@ bool LinkApp::save() {
 		f.close();
 		return true;
 	} else
-		cout << "\033[0;34mGMENU2X:\033[0;31m Error while opening the file '" << file << "' for write\033[0m" << endl;
+		ERROR("Error while opening the file '%s' for write.\n", file.c_str());
 	return false;
 }
 
@@ -421,9 +423,7 @@ void LinkApp::launch(const string &selectedFile, const string &selectedDir) {
 	if (volume()>=0)
 		gmenu2x->setVolume(volume());
 
-#ifdef DEBUG
-	cout << "\033[0;34mGMENU2X:\033[0m Executing '" << title << "' (" << exec << " " << params << ")" << endl;
-#endif
+	INFO("Executing '%s' (%s %s)\n", title.c_str(), exec.c_str(), params.c_str());
 
 	//check if we have to quit
 	string command = cmdclean(exec);
