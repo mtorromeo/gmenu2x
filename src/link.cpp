@@ -33,12 +33,14 @@ Link::Link(GMenu2X *gmenu2x) : Button(gmenu2x, true) {
 	iconPath = gmenu2x->sc.getSkinFilePath("icons/generic.png");
 	iconX = 0;
 	padding = 0;
+
+	updateSurfaces();
 }
 
 void Link::run() {}
 
 void Link::paint() {
-	gmenu2x->sc[getIconPath()]->blit(gmenu2x->s, iconX, rect.y+padding, 32,32);
+	iconSurface->blit(gmenu2x->s, iconX, rect.y+padding, 32,32);
 	gmenu2x->s->write( gmenu2x->font, getTitle(), iconX+16, rect.y+gmenu2x->skinConfInt["linkHeight"]-padding, SFontHAlignCenter, SFontVAlignBottom );
 }
 
@@ -48,6 +50,10 @@ bool Link::paintHover() {
 	else
 		gmenu2x->s->box(rect.x, rect.y, rect.w, rect.h, gmenu2x->skinConfColors["selectionBg"]);
 	return true;
+}
+
+void Link::updateSurfaces() {
+	iconSurface = gmenu2x->sc[getIconPath()];
 }
 
 string Link::getTitle() {
@@ -89,6 +95,7 @@ void Link::setIcon(string icon) {
 
 	this->icon = icon;
 	edited = true;
+	updateSurfaces();
 }
 
 string Link::searchIcon() {
@@ -106,6 +113,7 @@ void Link::setIconPath(string icon) {
 		iconPath = icon;
 	else
 		iconPath = gmenu2x->sc.getSkinFilePath("icons/generic.png");
+	updateSurfaces();
 }
 
 void Link::setSize(int w, int h) {
