@@ -88,7 +88,7 @@ void FileLister::browse() {
 			if (S_ISDIR(st.st_mode)) {
 				if (!showDirectories) continue;
 #if defined(TARGET_GP2X) || defined(TARGET_WIZ)
-				if (!(path=="/mnt/" && (file!="sd" && file!="ext" && file!="nand")))
+				if (!(path==CARD_ROOT && (file!="sd" && file!="ext" && file!="nand")))
 #endif
 					directories.push_back(file);
 			} else {
