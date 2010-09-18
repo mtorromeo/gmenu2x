@@ -53,7 +53,7 @@ void ListView::paint() {
 	int iY = selectedItem-firstDisplayItem;
 	iY = rect.y+(iY*16);
 	if (selectedItem<(int)items.size())
-		gmenu2x->s->box(1, iY, 309, 14, gmenu2x->skinConfColors["selectionBg"]);
+		gmenu2x->s->box(1, iY, 309, 14,	gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
 	//Items
 	iY = rect.y;

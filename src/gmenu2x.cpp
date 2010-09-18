@@ -189,8 +189,6 @@ GMenu2X::GMenu2X(int argc, char *argv[]) {
 	skinConfInt.set_deleted_key("");
 	skinConfStr.set_empty_key(" ");
 	skinConfStr.set_deleted_key("");
-	skinConfColors.set_empty_key(" ");
-	skinConfColors.set_deleted_key("");
 
 	//open2x
 	savedVolumeMode = 0;
@@ -411,7 +409,7 @@ void GMenu2X::initFont() {
 		quit();
 		exit(-1);
 	}
-	font = new SFontPlus(fontFile, ttf, rgbatosdl(skinConfColors["fontColor"]), rgbatosdl(skinConfColors["fontOutlineColor"]));
+	font = new SFontPlus(fontFile, ttf, rgbatosdl(skinConfColors[COLOR_FONT]), rgbatosdl(skinConfColors[COLOR_FONT_OUTLINE]));
 }
 
 void GMenu2X::initMenu() {
@@ -653,13 +651,13 @@ void GMenu2X::writeSkinConfig() {
 		for(ConfIntHash::iterator curr = skinConfInt.begin(); curr != endI; curr++)
 			inf << curr->first << "=" << curr->second << endl;
 
-		ConfRGBAHash::iterator endC = skinConfColors.end();
-		for(ConfRGBAHash::iterator curr = skinConfColors.begin(); curr != endC; curr++)
-			inf << curr->first << "=#"
-				<< hex << setw(2) << setfill('0') << right << curr->second.r
-				<< hex << setw(2) << setfill('0') << right << curr->second.g
-				<< hex << setw(2) << setfill('0') << right << curr->second.b
-				<< hex << setw(2) << setfill('0') << right << curr->second.a << endl;
+		for (int i = 0; i < NUM_COLORS; ++i) {
+			inf << colorToString((enum color)i) << "=#"
+				<< hex << setw(2) << setfill('0') << right << skinConfColors[i].r
+				<< hex << setw(2) << setfill('0') << right << skinConfColors[i].g
+				<< hex << setw(2) << setfill('0') << right << skinConfColors[i].b
+				<< hex << setw(2) << setfill('0') << right << skinConfColors[i].a << endl;
+		}
 
 
 		inf.close();
@@ -815,7 +813,8 @@ int GMenu2X::main() {
 			string sectionIcon = "skin:sections/"+menu->sections[i]+".png";
 			x = (i-menu->firstDispSection())*skinConfInt["linkWidth"]+sectionsCoordX;
 			if (menu->selSectionIndex()==(int)i)
-				s->box(x, 0, skinConfInt["linkWidth"], skinConfInt["topBarHeight"], skinConfColors["selectionBg"]);
+				s->box(x, 0, skinConfInt["linkWidth"],
+				skinConfInt["topBarHeight"], skinConfColors[COLOR_SELECTION_BG]);
 			x += skinConfInt["linkWidth"]/2;
 			if (sc.exists(sectionIcon))
 				sc[sectionIcon]->blit(s,x-16,sectionLinkPadding,32,32);
@@ -878,8 +877,8 @@ int GMenu2X::main() {
 
 		//On Screen Help
 		if (input[ACTION_A]) {
-			s->box(10,50,300,143, skinConfColors["messageBoxBg"]);
-			s->rectangle( 12,52,296,helpBoxHeight, skinConfColors["messageBoxBorder"] );
+			s->box(10,50,300,143, skinConfColors[COLOR_MESSAGE_BOX_BG]);
+			s->rectangle( 12,52,296,helpBoxHeight, skinConfColors[COLOR_MESSAGE_BOX_BORDER] );
 			s->write( font, tr["CONTROLS"], 20, 60 );
 			s->write( font, tr["B, Stick press: Launch link / Confirm action"], 20, 80 );
 			s->write( font, tr["L, R: Change section"], 20, 95 );
@@ -1122,14 +1121,14 @@ void GMenu2X::skinMenu() {
 
 	SettingsDialog sd(this,tr["Skin"]);
 	sd.addSetting(new MenuSettingMultiString(this,tr["Skin"],tr["Set the skin used by GMenu2X"],&confStr["skin"],&fl_sk.directories));
-	sd.addSetting(new MenuSettingRGBA(this,tr["Top Bar Color"],tr["Color of the top bar"],&skinConfColors["topBarBg"]));
-	sd.addSetting(new MenuSettingRGBA(this,tr["Bottom Bar Color"],tr["Color of the bottom bar"],&skinConfColors["bottomBarBg"]));
-	sd.addSetting(new MenuSettingRGBA(this,tr["Selection Color"],tr["Color of the selection and other interface details"],&skinConfColors["selectionBg"]));
-	sd.addSetting(new MenuSettingRGBA(this,tr["Message Box Color"],tr["Background color of the message box"],&skinConfColors["messageBoxBg"]));
-	sd.addSetting(new MenuSettingRGBA(this,tr["Message Box Border Color"],tr["Border color of the message box"],&skinConfColors["messageBoxBorder"]));
-	sd.addSetting(new MenuSettingRGBA(this,tr["Message Box Selection Color"],tr["Color of the selection of the message box"],&skinConfColors["messageBoxSelection"]));
-	sd.addSetting(new MenuSettingRGBA(this,tr["Font Color"],tr["Color of the font"],&skinConfColors["fontColor"]));
-	sd.addSetting(new MenuSettingRGBA(this,tr["Font Outline Color"],tr["Color of the font's outline"],&skinConfColors["fontOutlineColor"]));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Top Bar Color"],tr["Color of the top bar"],&skinConfColors[COLOR_TOP_BAR_BG]));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Bottom Bar Color"],tr["Color of the bottom bar"],&skinConfColors[COLOR_BOTTOM_BAR_BG]));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Selection Color"],tr["Color of the selection and other interface details"],&skinConfColors[COLOR_SELECTION_BG]));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Message Box Color"],tr["Background color of the message box"],&skinConfColors[COLOR_MESSAGE_BOX_BG]));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Message Box Border Color"],tr["Border color of the message box"],&skinConfColors[COLOR_MESSAGE_BOX_BORDER]));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Message Box Selection Color"],tr["Color of the selection of the message box"],&skinConfColors[COLOR_MESSAGE_BOX_SELECTION]));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Font Color"],tr["Color of the font"],&skinConfColors[COLOR_FONT]));
+	sd.addSetting(new MenuSettingRGBA(this,tr["Font Outline Color"],tr["Color of the font's outline"],&skinConfColors[COLOR_FONT_OUTLINE]));
 
 	if (sd.exec() && sd.edited()) {
 		if (curSkin != confStr["skin"]) {
@@ -1140,6 +1139,51 @@ void GMenu2X::skinMenu() {
 		initBG();
 	}
 }
+
+enum color GMenu2X::stringToColor(const string &name)
+{
+	if (name == "topBarBg")
+		return COLOR_TOP_BAR_BG;
+	else if (name == "bottomBarBg")
+		return COLOR_BOTTOM_BAR_BG;
+	else if (name == "selectionBg")
+		return COLOR_SELECTION_BG;
+	else if (name == "messageBoxBg")
+		return COLOR_MESSAGE_BOX_BG;
+	else if (name == "messageBoxBorder")
+		return COLOR_MESSAGE_BOX_BORDER;
+	else if (name == "messageBoxSelection")
+		return COLOR_MESSAGE_BOX_SELECTION;
+	else if (name == "font")
+		return COLOR_FONT;
+	else if (name == "fontOutline")
+		return COLOR_FONT_OUTLINE;
+	else
+		return (enum color)-1;
+}
+
+
+
+const string &GMenu2X::colorToString(enum color c)
+{
+	static const std::string colorNames[NUM_COLORS + 1] = {
+		"topBarBg",
+		"bottomBarBg",
+		"selectionBg",
+		"messageBoxBg",
+		"messageBoxBorder",
+		"messageBoxSelection",
+		"font",
+		"fontOutline",
+		"unknown",
+	};
+
+	if (c < NUM_COLORS)
+		return colorNames[c];
+	else
+		return colorNames[NUM_COLORS];
+}
+
 
 void GMenu2X::toggleTvOut() {
 #ifdef TARGET_GP2X
@@ -1154,7 +1198,6 @@ void GMenu2X::setSkin(const string &skin, bool setWallpaper) {
 	confStr["skin"] = skin;
 
 	//Clear previous skin settings
-	skinConfColors.clear();
 	skinConfStr.clear();
 	skinConfInt.clear();
 
@@ -1163,14 +1206,14 @@ void GMenu2X::setSkin(const string &skin, bool setWallpaper) {
 	sc.setSkin(skin);
 
 	//reset colors to the default values
-	skinConfColors["topBarBg"] = (RGBAColor){255,255,255,130};
-	skinConfColors["bottomBarBg"] = (RGBAColor){255,255,255,130};
-	skinConfColors["selectionBg"] = (RGBAColor){255,255,255,130};
-	skinConfColors["messageBoxBg"] = (RGBAColor){255,255,255,255};
-	skinConfColors["messageBoxBorder"] = (RGBAColor){80,80,80,255};
-	skinConfColors["messageBoxSelection"] = (RGBAColor){160,160,160,255};
-	skinConfColors["fontColor"] = (RGBAColor){255,255,255,255};
-	skinConfColors["fontOutlineColor"] = (RGBAColor){0,0,0,130};
+	skinConfColors[COLOR_TOP_BAR_BG] = (RGBAColor){255,255,255,130};
+	skinConfColors[COLOR_BOTTOM_BAR_BG] = (RGBAColor){255,255,255,130};
+	skinConfColors[COLOR_SELECTION_BG] = (RGBAColor){255,255,255,130};
+	skinConfColors[COLOR_MESSAGE_BOX_BG] = (RGBAColor){255,255,255,255};
+	skinConfColors[COLOR_MESSAGE_BOX_BORDER] = (RGBAColor){80,80,80,255};
+	skinConfColors[COLOR_MESSAGE_BOX_SELECTION] = (RGBAColor){160,160,160,255};
+	skinConfColors[COLOR_FONT] = (RGBAColor){255,255,255,255};
+	skinConfColors[COLOR_FONT_OUTLINE] = (RGBAColor){0,0,0,130};
 
 	//load skin settings
 	string skinconfname = "skins/"+skin+"/skin.conf";
@@ -1189,7 +1232,7 @@ void GMenu2X::setSkin(const string &skin, bool setWallpaper) {
 					if (value.length()>1 && value.at(0)=='"' && value.at(value.length()-1)=='"')
 						skinConfStr[name] = value.substr(1,value.length()-2);
 					else if (value.at(0) == '#')
-						skinConfColors[name] = strtorgba( value.substr(1,value.length()) );
+						skinConfColors[stringToColor(name)] = strtorgba( value.substr(1,value.length()) );
 					else
 						skinConfInt[name] = atoi(value.c_str());
 				}
@@ -1310,8 +1353,8 @@ void GMenu2X::contextMenu() {
 	Surface bg(s);
 	/*//Darken background
 	bg.box(0, 0, resX, resY, 0,0,0,150);
-	bg.box(box.x, box.y, box.w, box.h, skinConfColors["messageBoxBg"]);
-	bg.rectangle( box.x+2, box.y+2, box.w-4, box.h-4, skinConfColors["messageBoxBorder"] );*/
+	bg.box(box.x, box.y, box.w, box.h, skinConfColors[COLOR_MESSAGE_BOX_BG]);
+	bg.rectangle( box.x+2, box.y+2, box.w-4, box.h-4, skinConfColors[COLOR_MESSAGE_BOX_BORDER] );*/
 	while (!close) {
 		tickNow = SDL_GetTicks();
 
@@ -1320,12 +1363,12 @@ void GMenu2X::contextMenu() {
 
 		if (fadeAlpha<200) fadeAlpha = intTransition(0,200,tickStart,500,tickNow);
 		s->box(0, 0, resX, resY, 0,0,0,fadeAlpha);
-		s->box(box.x, box.y, box.w, box.h, skinConfColors["messageBoxBg"]);
-		s->rectangle( box.x+2, box.y+2, box.w-4, box.h-4, skinConfColors["messageBoxBorder"] );
+		s->box(box.x, box.y, box.w, box.h, skinConfColors[COLOR_MESSAGE_BOX_BG]);
+		s->rectangle( box.x+2, box.y+2, box.w-4, box.h-4, skinConfColors[COLOR_MESSAGE_BOX_BORDER] );
 
 
 		//draw selection rect
-		s->box( selbox.x, selbox.y, selbox.w, selbox.h, skinConfColors["messageBoxSelection"] );
+		s->box( selbox.x, selbox.y, selbox.w, selbox.h, skinConfColors[COLOR_MESSAGE_BOX_SELECTION] );
 		for (i=0; i<voices.size(); i++)
 			s->write( font, voices[i].text, box.x+12, box.y+h2+5+(h+2)*i, SFontHAlignLeft, SFontVAlignMiddle );
 		s->flip();
@@ -1927,7 +1970,7 @@ int GMenu2X::drawButtonRight(Surface *s, const string &btn, const string &text, 
 void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height) {
 	if (totalsize<=pagesize) return;
 
-	s->rectangle(resX-8, top, 7, height, skinConfColors["selectionBg"]);
+	s->rectangle(resX-8, top, 7, height, skinConfColors[COLOR_SELECTION_BG]);
 
 	//internal bar total height = height-2
 	//bar size
@@ -1938,7 +1981,7 @@ void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint to
 	if (by+bs>top+height-2) by = top+height-2-bs;
 
 
-	s->box(resX-6, by, 3, bs, skinConfColors["selectionBg"]);
+	s->box(resX-6, by, 3, bs, skinConfColors[COLOR_SELECTION_BG]);
 }
 
 void GMenu2X::drawTitleIcon(const string &icon, bool skinRes, Surface *s) {
@@ -1975,7 +2018,8 @@ void GMenu2X::drawTopBar(Surface *s) {
 	if (bar != NULL)
 		bar->blit(s, 0, 0);
 	else
-		s->box(0, 0, resX, skinConfInt["topBarHeight"], skinConfColors["topBarBg"]);
+		s->box(0, 0, resX, skinConfInt["topBarHeight"],
+		skinConfColors[COLOR_TOP_BAR_BG]);
 }
 
 void GMenu2X::drawBottomBar(Surface *s) {
@@ -1985,5 +2029,5 @@ void GMenu2X::drawBottomBar(Surface *s) {
 	if (bar != NULL)
 		bar->blit(s, 0, resY-bar->raw->h);
 	else
-		s->box(0, resY-20, resX, 20, skinConfColors["bottomBarBg"]);
+		s->box(0, resY-20, resX, 20, skinConfColors[COLOR_BOTTOM_BAR_BG]);
 }
