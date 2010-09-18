@@ -85,7 +85,11 @@ int main(int /*argc*/, char */*argv*/[]) {
 	cout << "----" << endl;
 
 	signal(SIGINT,&exit);
-	GMenu2X app();
+	GMenu2X app;
+#ifdef DEBUG
+	cout << "Starting main()" << endl;
+#endif
+	app.main();
 	return 0;
 }
 
@@ -304,19 +308,14 @@ GMenu2X::GMenu2X() {
 	readTmp();
 	if (lastSelectorElement>-1 && menu->selLinkApp()!=NULL && (!menu->selLinkApp()->getSelectorDir().empty() || !lastSelectorDir.empty()))
 		menu->selLinkApp()->selector(lastSelectorElement,lastSelectorDir);
+}
 
-#ifdef DEBUG
-	cout << "Starting main()" << endl;
-#endif
-	main();
+GMenu2X::~GMenu2X() {
 	writeConfig();
 	if (fwType=="open2x") writeConfigOpen2x();
 
 	quit();
-	exit(0);
-}
 
-GMenu2X::~GMenu2X() {
 	free(menu);
 	free(s);
 	free(font);
@@ -767,7 +766,7 @@ void GMenu2X::ledOff() {
 #endif
 }
 
-int GMenu2X::main() {
+void GMenu2X::main() {
 	uint linksPerPage = linkColumns*linkRows;
 	int linkSpacingX = (resX-10 - linkColumns*skinConfInt["linkWidth"])/linkColumns;
 	int linkSpacingY = (resY-35 - skinConfInt["topBarHeight"] - linkRows*skinConfInt["linkHeight"])/linkRows;
@@ -1012,8 +1011,6 @@ int GMenu2X::main() {
 
 		usleep(LOOP_DELAY);
 	}
-
-	return -1;
 }
 
 void GMenu2X::explorer() {
