@@ -34,6 +34,9 @@ Touchscreen::Touchscreen() {
 	y = 0;
 	startX = 0;
 	startY = 0;
+	event.x = 0;
+	event.y = 0;
+	event.pressure = 0;
 }
 
 Touchscreen::~Touchscreen() {
