@@ -38,7 +38,7 @@ private:
 	vector<ManualPage> pages;
 
 public:
-	TextManualDialog(GMenu2X *gmenu2x, string title, string icon, vector<string> *text);
+	TextManualDialog(GMenu2X *gmenu2x, const string &title, const string &icon, vector<string> *text);
 	void exec();
 };
 

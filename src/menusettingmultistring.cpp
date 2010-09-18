@@ -23,7 +23,7 @@
 using namespace std;
 using namespace fastdelegate;
 
-MenuSettingMultiString::MenuSettingMultiString(GMenu2X *gmenu2x, string name, string description, string *value, vector<string> *choices)
+MenuSettingMultiString::MenuSettingMultiString(GMenu2X *gmenu2x, const string &name, const string &description, string *value, vector<string> *choices)
 	: MenuSetting(gmenu2x,name,description) {
 	this->gmenu2x = gmenu2x;
 	this->choices = choices;

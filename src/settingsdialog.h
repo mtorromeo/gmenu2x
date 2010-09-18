@@ -40,7 +40,7 @@ private:
 	GMenu2X *gmenu2x;
 
 public:
-	SettingsDialog(GMenu2X *gmenu2x, string text, string icon="skin:sections/settings.png");
+	SettingsDialog(GMenu2X *gmenu2x, const string &text, const string &icon="skin:sections/settings.png");
 	~SettingsDialog();
 
 	bool edited();

@@ -111,7 +111,7 @@ LinkApp::LinkApp(GMenu2X *gmenu2x, const char* linkfile)
 	edited = false;
 }
 
-string LinkApp::searchIcon() {
+const string &LinkApp::searchIcon() {
 	string execicon = exec;
 	string::size_type pos = exec.rfind(".");
 	if (pos != string::npos) execicon = exec.substr(0,pos);
@@ -135,7 +135,7 @@ int LinkApp::clock() {
 	return iclock;
 }
 
-string LinkApp::clockStr(int maxClock) {
+const string &LinkApp::clockStr(int maxClock) {
 	if (iclock>maxClock) setClock(maxClock);
 	return sclock;
 }
@@ -159,7 +159,7 @@ int LinkApp::volume() {
 	return ivolume;
 }
 
-string LinkApp::volumeStr() {
+const string &LinkApp::volumeStr() {
 	return svolume;
 }
 
@@ -181,7 +181,7 @@ int LinkApp::gamma() {
 	return igamma;
 }
 
-string LinkApp::gammaStr() {
+const string &LinkApp::gammaStr() {
 	return sgamma;
 }
 
@@ -357,7 +357,7 @@ void LinkApp::showManual() {
 	}
 }
 
-void LinkApp::selector(int startSelection, string selectorDir) {
+void LinkApp::selector(int startSelection, const string &selectorDir) {
 	//Run selector interface
 	Selector sel(gmenu2x, this, selectorDir);
 	int selection = sel.exec(startSelection);
@@ -367,7 +367,7 @@ void LinkApp::selector(int startSelection, string selectorDir) {
 	}
 }
 
-void LinkApp::launch(string selectedFile, string selectedDir) {
+void LinkApp::launch(const string &selectedFile, const string &selectedDir) {
 	drawRun();
 	save();
 #if !defined(TARGET_GP2X) && !defined(TARGET_WIZ)
@@ -390,23 +390,27 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 	//selectedFile
 	if (selectedFile!="") {
 		string selectedFileExtension;
+		string selectedFileName;
+		string dir;
 		string::size_type i = selectedFile.rfind(".");
 		if (i != string::npos) {
 			selectedFileExtension = selectedFile.substr(i,selectedFile.length());
-			selectedFile = selectedFile.substr(0,i);
+			selectedFileName = selectedFile.substr(0,i);
 		}
 
 		if (selectedDir=="")
-			selectedDir = getSelectorDir();
+			dir = getSelectorDir();
+		else
+			dir = selectedDir;
 		if (params=="") {
-			params = cmdclean(selectedDir+selectedFile+selectedFileExtension);
+			params = cmdclean(dir+selectedFile);
 		} else {
 			string origParams = params;
-			params = strreplace(params,"[selFullPath]",cmdclean(selectedDir+selectedFile+selectedFileExtension));
-			params = strreplace(params,"[selPath]",cmdclean(selectedDir));
-			params = strreplace(params,"[selFile]",cmdclean(selectedFile));
+			params = strreplace(params,"[selFullPath]",cmdclean(dir+selectedFile));
+			params = strreplace(params,"[selPath]",cmdclean(dir));
+			params = strreplace(params,"[selFile]",cmdclean(selectedFileName));
 			params = strreplace(params,"[selExt]",cmdclean(selectedFileExtension));
-			if (params == origParams) params += " " + cmdclean(selectedDir+selectedFile+selectedFileExtension);
+			if (params == origParams) params += " " + cmdclean(dir+selectedFile);
 		}
 	}
 
@@ -462,49 +466,49 @@ void LinkApp::launch(string selectedFile, string selectedDir) {
 	chdir(gmenu2x->getExePath().c_str());
 }
 
-string LinkApp::getExec() {
+const string &LinkApp::getExec() {
 	return exec;
 }
 
-void LinkApp::setExec(string exec) {
+void LinkApp::setExec(const string &exec) {
 	this->exec = exec;
 	edited = true;
 }
 
-string LinkApp::getParams() {
+const string &LinkApp::getParams() {
 	return params;
 }
 
-void LinkApp::setParams(string params) {
+void LinkApp::setParams(const string &params) {
 	this->params = params;
 	edited = true;
 }
 
-string LinkApp::getWorkdir() {
+const string &LinkApp::getWorkdir() {
 	return workdir;
 }
 
-void LinkApp::setWorkdir(string workdir) {
+void LinkApp::setWorkdir(const string &workdir) {
 	this->workdir = workdir;
 	edited = true;
 }
 
-string LinkApp::getManual() {
+const string &LinkApp::getManual() {
 	return manual;
 }
 
-void LinkApp::setManual(string manual) {
+void LinkApp::setManual(const string &manual) {
 	this->manual = manual;
 	edited = true;
 }
 
-string LinkApp::getSelectorDir() {
+const string &LinkApp::getSelectorDir() {
 	return selectordir;
 }
 
-void LinkApp::setSelectorDir(string selectordir) {
-	if (selectordir!="" && selectordir[selectordir.length()-1]!='/') selectordir += "/";
+void LinkApp::setSelectorDir(const string &selectordir) {
 	this->selectordir = selectordir;
+	if (this->selectordir!="" && this->selectordir[this->selectordir.length()-1]!='/') this->selectordir += "/";
 	edited = true;
 }
 
@@ -526,29 +530,29 @@ void LinkApp::setUseRamTimings(bool value) {
 	edited = true;
 }
 
-string LinkApp::getSelectorFilter() {
+const string &LinkApp::getSelectorFilter() {
 	return selectorfilter;
 }
 
-void LinkApp::setSelectorFilter(string selectorfilter) {
+void LinkApp::setSelectorFilter(const string &selectorfilter) {
 	this->selectorfilter = selectorfilter;
 	edited = true;
 }
 
-string LinkApp::getSelectorScreens() {
+const string &LinkApp::getSelectorScreens() {
 	return selectorscreens;
 }
 
-void LinkApp::setSelectorScreens(string selectorscreens) {
+void LinkApp::setSelectorScreens(const string &selectorscreens) {
 	this->selectorscreens = selectorscreens;
 	edited = true;
 }
 
-string LinkApp::getAliasFile() {
+const string &LinkApp::getAliasFile() {
 	return aliasfile;
 }
 
-void LinkApp::setAliasFile(string aliasfile) {
+void LinkApp::setAliasFile(const string &aliasfile) {
 	if (fileExists(aliasfile)) {
 		this->aliasfile = aliasfile;
 		edited = true;

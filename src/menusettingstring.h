@@ -36,7 +36,7 @@ private:
 	void clear();
 
 public:
-	MenuSettingString(GMenu2X *gmenu2x, string name, string description, string *value, string diagTitle="", string diagIcon="");
+	MenuSettingString(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &diagTitle="", const string &diagIcon="");
 	virtual ~MenuSettingString() {};
 
 	virtual void draw(int y);
@@ -46,8 +46,8 @@ public:
 	virtual void drawSelected(int y);
 	virtual bool edited();
 
-	void setValue(string value);
-	string value();
+	void setValue(const string &value);
+	const string &value();
 };
 
 #endif

@@ -23,7 +23,7 @@
 
 using namespace std;
 
-MenuSettingImage::MenuSettingImage(GMenu2X *gmenu2x, string name, string description, string *value, string filter)
+MenuSettingImage::MenuSettingImage(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &filter)
 	: MenuSettingFile(gmenu2x,name,description,value,filter) {
 	this->gmenu2x = gmenu2x;
 	this->filter = filter;
@@ -39,7 +39,7 @@ void MenuSettingImage::manageInput() {
 	}
 }
 
-void MenuSettingImage::setValue(string value) {
+void MenuSettingImage::setValue(const string &value) {
 	string skinpath = gmenu2x->getExePath()+"skins/"+gmenu2x->confStr["skin"];
 	bool inSkinDir = value.substr(0,skinpath.length()) == skinpath;
 	if (!inSkinDir && gmenu2x->confStr["skin"] != "Default") {
@@ -50,7 +50,10 @@ void MenuSettingImage::setValue(string value) {
 		string tempIcon = value.substr(skinpath.length(), value.length());
 		string::size_type pos = tempIcon.find("/");
 		if (pos != string::npos)
-			value = "skin:"+tempIcon.substr(pos+1,value.length());
+			*_value = "skin:"+tempIcon.substr(pos+1,value.length());
+		else
+			*_value = value;
+	} else {
+		*_value = value;
 	}
-	*_value = value;
 }

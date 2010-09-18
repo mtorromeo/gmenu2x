@@ -32,7 +32,7 @@ struct RGBAColor {
 	unsigned short r,g,b,a;
 };
 
-RGBAColor strtorgba(string strColor);
+RGBAColor strtorgba(const string &strColor);
 SDL_Color rgbatosdl(RGBAColor color);
 
 /**
@@ -47,8 +47,8 @@ private:
 
 public:
 	Surface();
-	Surface(string img, string skin="", bool alpha=true);
-	Surface(string img, bool alpha, string skin="");
+	Surface(const string &img, const string &skin="", bool alpha=true);
+	Surface(const string &img, bool alpha, const string &skin="");
 	Surface(SDL_Surface *s, SDL_PixelFormat *fmt = NULL, Uint32 flags = 0);
 	Surface(Surface *s);
 	Surface(int w, int h, Uint32 flags = SDL_HWSURFACE|SDL_SRCALPHA);
@@ -59,7 +59,7 @@ public:
 	SDL_Surface *raw;
 
 	void free();
-	void load(string img, bool alpha=true, string skin="");
+	void load(const string &img, bool alpha=true, const string &skin="");
 	void lock();
 	void unlock();
 	void flip();
@@ -84,7 +84,7 @@ public:
 	bool blitRight(Surface *destination, int x, int y, int w=0, int h=0, int a=-1);
 	bool blitRight(SDL_Surface *destination, int x, int y, int w=0, int h=0, int a=-1);
 
-	void write(SFontPlus *font, string text, int x, int y, const unsigned short halign=0, const unsigned short valign=0);
+	void write(SFontPlus *font, const string &text, int x, int y, const unsigned short halign=0, const unsigned short valign=0);
 
 	int box(Sint16, Sint16, Sint16, Sint16, Uint8, Uint8, Uint8, Uint8);
 	int box(Sint16, Sint16, Sint16, Sint16, Uint8, Uint8, Uint8);

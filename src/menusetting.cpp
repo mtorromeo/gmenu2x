@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "menusetting.h"
 
-MenuSetting::MenuSetting(GMenu2X *gmenu2x, string name, string description) {
+MenuSetting::MenuSetting(GMenu2X *gmenu2x, const string &name, const string &description) {
 	this->gmenu2x = gmenu2x;
 	this->name = name;
 	this->description = description;

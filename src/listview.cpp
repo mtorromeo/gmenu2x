@@ -13,7 +13,7 @@ ListViewItem * ListView::add(ListViewItem *item) {
 	return item;
 }
 
-ListViewItem * ListView::add(string text) {
+ListViewItem * ListView::add(const string &text) {
 	ListViewItem *item = new ListViewItem(this,text);
 	return add(item);
 }

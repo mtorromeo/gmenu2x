@@ -41,13 +41,13 @@ private:
 
 	hash_map<string, string> aliases;
 	void loadAliases();
-	string getAlias(string key);
+	string getAlias(const string &key);
 	void prepare(FileLister *fl, vector<string> *screens, vector<string> *titles);
 	void freeScreenshots(vector<string> *screens);
 	
 public:
 	string file, dir;
-	Selector(GMenu2X *gmenu2x, LinkApp *link, string selectorDir="");
+	Selector(GMenu2X *gmenu2x, LinkApp *link, const string &selectorDir="");
 	
 	int exec(int startSelection=0);
 };

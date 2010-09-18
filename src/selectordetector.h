@@ -37,10 +37,10 @@ class SelectorDetector
 {
     public:
         SelectorDetector();
-        SelectorDetector(string config);
+        SelectorDetector(const string &config);
         ~SelectorDetector();
 
-        bool readSelectorConfig(string config);
+        bool readSelectorConfig(const string &config);
 
         string getApplication(){return application;}
         string getFilePath(){return filePath;}
@@ -51,8 +51,8 @@ class SelectorDetector
         string application;
         string filePath;
         string filters;
-        //bool isSelectorGPE(string gpe);
-        //string getSelectorConfig(string gpe);       //  Looks in the GPE for the location of the selectorconfig
+        //bool isSelectorGPE(const string &gpe);
+        //string getSelectorConfig(const string &gpe);       //  Looks in the GPE for the location of the selectorconfig
 };
 
 #endif // SELECTORDETECTOR_H

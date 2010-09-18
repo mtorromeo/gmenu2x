@@ -26,7 +26,7 @@ using namespace std;
 #include "surface.h"
 #include "utilities.h"
 
-RGBAColor strtorgba(string strColor) {
+RGBAColor strtorgba(const string &strColor) {
 	RGBAColor c = {0,0,0,255};
 	c.r = constrain( strtol( strColor.substr(0,2).c_str(), NULL, 16 ), 0, 255 );
 	c.g = constrain( strtol( strColor.substr(2,2).c_str(), NULL, 16 ), 0, 255 );
@@ -44,7 +44,7 @@ Surface::Surface() {
 	dblbuffer = NULL;
 }
 
-Surface::Surface(string img, bool alpha, string skin) {
+Surface::Surface(const string &img, bool alpha, const string &skin) {
 	raw = NULL;
 	dblbuffer = NULL;
 	load(img, alpha, skin);
@@ -52,7 +52,7 @@ Surface::Surface(string img, bool alpha, string skin) {
 	halfH = raw->h/2;
 }
 
-Surface::Surface(string img, string skin, bool alpha) {
+Surface::Surface(const string &img, const string &skin, bool alpha) {
 	raw = NULL;
 	dblbuffer = NULL;
 	load(img, alpha, skin);
@@ -115,7 +115,7 @@ SDL_PixelFormat *Surface::format() {
 		return raw->format;
 }
 
-void Surface::load(string img, bool alpha, string skin) {
+void Surface::load(const string &img, bool alpha, const string &skin) {
 	free();
 
 	string skinpath;
@@ -123,10 +123,11 @@ void Surface::load(string img, bool alpha, string skin) {
 		skinpath = "skins/"+skin+"/"+img;
 		if (!fileExists(skinpath))
 			skinpath = "skins/Default/"+img;
-		img = skinpath;
+	} else {
+		skinpath = img;
 	}
 
-	SDL_Surface *buf = IMG_Load(img.c_str());
+	SDL_Surface *buf = IMG_Load(skinpath.c_str());
 	if (buf!=NULL) {
 		if (alpha)
 			raw = SDL_DisplayFormatAlpha(buf);
@@ -268,7 +269,7 @@ void Surface::blendAdd(Surface *target, int x, int y) {
 */
 }
 
-void Surface::write(SFontPlus *font, string text, int x, int y, const unsigned short halign, const unsigned short valign) {
+void Surface::write(SFontPlus *font, const string &text, int x, int y, const unsigned short halign, const unsigned short valign) {
 	font->write(this,text,x,y,halign,valign);
 }
 

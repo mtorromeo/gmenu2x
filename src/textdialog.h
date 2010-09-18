@@ -37,7 +37,7 @@ protected:
 	void drawText(vector<string> *text, uint firstRow, uint rowsPerPage);
 
 public:
-	TextDialog(GMenu2X *gmenu2x, string title, string description, string icon, vector<string> *text);
+	TextDialog(GMenu2X *gmenu2x, const string &title, const string &description, const string &icon, vector<string> *text);
 	void exec();
 };
 

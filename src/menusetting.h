@@ -38,7 +38,7 @@ private:
 	GMenu2X *gmenu2x;
 
 public:
-	MenuSetting(GMenu2X *gmenu2x, string name, string description);
+	MenuSetting(GMenu2X *gmenu2x, const string &name, const string &description);
 	virtual ~MenuSetting() {};
 
 	virtual void draw(int y);

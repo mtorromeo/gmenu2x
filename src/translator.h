@@ -33,14 +33,14 @@ private:
 	hash_map<string, string> translations;
 
 public:
-	Translator(string lang="");
+	Translator(const string &lang="");
 	~Translator();
 
 	string lang();
-	void setLang(string lang);
-	bool exists(string term);
-	string translate(string term,const char *replacestr=NULL,...);
-	string operator[](string term);
+	void setLang(const string &lang);
+	bool exists(const string &term);
+	string translate(const string &term,const char *replacestr=NULL,...);
+	string operator[](const string &term);
 };
 
 #endif

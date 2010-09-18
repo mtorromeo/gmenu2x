@@ -54,16 +54,16 @@ public:
 	linklist *sectionLinks(int i = -1);
 
 	int selSectionIndex();
-	string selSection();
+	const string &selSection();
 	void decSectionIndex();
 	void incSectionIndex();
 	void setSectionIndex(int i);
 	uint firstDispSection();
 	uint firstDispRow();
 
-	bool addActionLink(uint section, string title, LinkRunAction action, string description="", string icon="");
+	bool addActionLink(uint section, const string &title, const LinkRunAction &action, const string &description="", const string &icon="");
 	bool addLink(string path, string file, string section="");
-	bool addSection(string sectionName);
+	bool addSection(const string &sectionName);
 	void deleteSelectedLink();
 	void deleteSelectedSection();
 

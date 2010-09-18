@@ -72,7 +72,7 @@ public:
 
 	InputManager();
 	~InputManager();
-	void init(string conffile = "input.conf");
+	void init(const string &conffile = "input.conf");
 
 	vector <SDL_Joystick*> joysticks;
 	vector<bool> actions;

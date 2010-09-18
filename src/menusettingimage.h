@@ -27,11 +27,11 @@ using std::string;
 
 class MenuSettingImage : public MenuSettingFile {
 public:
-	MenuSettingImage(GMenu2X *gmenu2x, string name, string description, string *value, string filter="");
+	MenuSettingImage(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &filter="");
 	virtual ~MenuSettingImage() {};
 
 	virtual void manageInput();
-	virtual void setValue(string value);
+	virtual void setValue(const string &value);
 };
 
 #endif

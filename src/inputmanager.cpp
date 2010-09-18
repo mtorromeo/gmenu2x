@@ -34,7 +34,7 @@ InputManager::~InputManager() {
 			SDL_JoystickClose(joysticks[x]);
 }
 
-void InputManager::init(string conffile) {
+void InputManager::init(const string &conffile) {
 	SDL_JoystickEventState(SDL_IGNORE);
 
 	int numJoy = SDL_NumJoysticks();

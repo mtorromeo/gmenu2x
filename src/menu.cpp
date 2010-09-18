@@ -132,7 +132,7 @@ int Menu::selSectionIndex() {
 	return iSection;
 }
 
-string Menu::selSection() {
+const string &Menu::selSection() {
 	return sections[iSection];
 }
 
@@ -160,7 +160,7 @@ string Menu::sectionPath(int section) {
 /*====================================
    LINKS MANAGEMENT
   ====================================*/
-bool Menu::addActionLink(uint section, string title, LinkRunAction action, string description, string icon) {
+bool Menu::addActionLink(uint section, const string &title, const LinkRunAction &action, const string &description, const string &icon) {
 	if (section>=sections.size()) return false;
 
 	LinkAction *linkact = new LinkAction(gmenu2x,action);
@@ -182,7 +182,6 @@ bool Menu::addLink(string path, string file, string section) {
 		if (!addSection(section))
 			return false;
 	}
-	if (path[path.length()-1]!='/') path += "/";
 
 	//if the extension is not equal to gpu or gpe then enable the wrapper by default
 	bool wrapper = true;
@@ -211,6 +210,7 @@ bool Menu::addLink(string path, string file, string section) {
 	cout << "\033[0;34mGMENU2X:\033[0m Adding link: " << linkpath << endl;
 #endif
 
+	if (path[path.length()-1]!='/') path += "/";
 	//search for a manual
 	pos = file.rfind(".");
 	string exename = path+file.substr(0,pos);
@@ -292,7 +292,7 @@ bool Menu::addLink(string path, string file, string section) {
 	return true;
 }
 
-bool Menu::addSection(string sectionName) {
+bool Menu::addSection(const string &sectionName) {
 	string sectiondir = "sections/"+sectionName;
 	if (mkdir(sectiondir.c_str(),0777)==0) {
 		sections.push_back(sectionName);

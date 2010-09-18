@@ -49,17 +49,17 @@ struct eqstr {
 
 class case_less {
 public:
-	bool operator()(string const &left, string const &right) const;
+	bool operator()(const string &left, const string &right) const;
 };
 
 string trim(const string& s);
-string strreplace (string orig, string search, string replace);
+string strreplace (string orig, const string &search, const string &replace);
 string cmdclean (string cmdline);
 
-char *string_copy(string);
-void string_copy(string, char **);
+char *string_copy(const string &);
+void string_copy(const string &, char **);
 
-bool fileExists(string file);
+bool fileExists(const string &file);
 bool rmtree(string path);
 
 int max (int a, int b);
@@ -68,8 +68,8 @@ int constrain (int x, int imin, int imax);
 
 int evalIntConf (int val, int def, int imin, int imax);
 int evalIntConf (int *val, int def, int imin, int imax);
-string evalStrConf (string val, string def);
-string evalStrConf (string *val, string def);
+const string &evalStrConf (const string &val, const string &def);
+const string &evalStrConf (string *val, const string &def);
 
 float max (float a, float b);
 float min (float a, float b);

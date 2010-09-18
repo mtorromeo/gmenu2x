@@ -25,7 +25,7 @@
 
 using namespace std;
 
-MessageBox::MessageBox(GMenu2X *gmenu2x, string text, string icon) {
+MessageBox::MessageBox(GMenu2X *gmenu2x, const string &text, const string &icon) {
 	this->gmenu2x = gmenu2x;
 	this->text = text;
 	this->icon = icon;

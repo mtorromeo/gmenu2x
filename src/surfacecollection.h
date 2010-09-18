@@ -39,25 +39,25 @@ private:
 	string skin;
 
 public:
-	SurfaceCollection(bool defaultAlpha=true, string skin="default");
+	SurfaceCollection(bool defaultAlpha=true, const string &skin="default");
 	~SurfaceCollection();
 
-	void setSkin(string skin);
-	string getSkinFilePath(string file);
+	void setSkin(const string &skin);
+	string getSkinFilePath(const string &file);
 
 	bool defaultAlpha;
 	void debug();
 
-	Surface *add(Surface *s, string path);
-	Surface *add(string path, bool alpha=true);
-	Surface *addSkinRes(string path, bool alpha=true);
-	void     del(string path);
+	Surface *add(Surface *s, const string &path);
+	Surface *add(const string &path, bool alpha=true);
+	Surface *addSkinRes(const string &path, bool alpha=true);
+	void     del(const string &path);
 	void     clear();
-	void     move(string from, string to);
-	bool     exists(string path);
+	void     move(const string &from, const string &to);
+	bool     exists(const string &path);
 
-	Surface *operator[](string);
-	Surface *skinRes(string);
+	Surface *operator[](const string &);
+	Surface *skinRes(const string &);
 };
 
 #endif

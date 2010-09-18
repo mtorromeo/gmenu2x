@@ -38,7 +38,7 @@ private:
 	GMenu2X *gmenu2x;
 
 public:
-	MessageBox(GMenu2X *gmenu2x, string text, string icon="");
+	MessageBox(GMenu2X *gmenu2x, const string &text, const string &icon="");
 	vector<string> buttons;
 	vector<string> buttonLabels;
 	vector<SDL_Rect> buttonPositions;

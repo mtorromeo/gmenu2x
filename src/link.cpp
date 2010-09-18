@@ -56,59 +56,63 @@ void Link::updateSurfaces() {
 	iconSurface = gmenu2x->sc[getIconPath()];
 }
 
-string Link::getTitle() {
+const string &Link::getTitle() {
 	return title;
 }
 
-void Link::setTitle(string title) {
+void Link::setTitle(const string &title) {
 	this->title = title;
 	edited = true;
 }
 
-string Link::getDescription() {
+const string &Link::getDescription() {
 	return description;
 }
 
-void Link::setDescription(string description) {
+void Link::setDescription(const string &description) {
 	this->description = description;
 	edited = true;
 }
 
-string Link::getIcon() {
+const string &Link::getIcon() {
 	return icon;
 }
 
-void Link::setIcon(string icon) {
+void Link::setIcon(const string &icon) {
 	string skinpath = gmenu2x->getExePath()+"skins/"+gmenu2x->confStr["skin"];
+
 	if (icon.substr(0,skinpath.length()) == skinpath) {
 		string tempIcon = icon.substr(skinpath.length(), icon.length());
 		string::size_type pos = tempIcon.find("/");
 		if (pos != string::npos)
-			icon = "skin:"+tempIcon.substr(pos+1,icon.length());
+			this->icon = "skin:"+tempIcon.substr(pos+1,icon.length());
+		else
+			this->icon = icon;
+	} else {
+		this->icon = icon;
 	}
 
-	iconPath = strreplace(icon,"skin:",skinpath+"/");
+	iconPath = strreplace(this->icon,"skin:",skinpath+"/");
 	if (iconPath.empty() || !fileExists(iconPath)) {
-		iconPath = strreplace(icon,"skin:",gmenu2x->getExePath()+"skins/Default/");
+		iconPath = strreplace(this->icon,"skin:",gmenu2x->getExePath()+"skins/Default/");
 		if (!fileExists(iconPath)) searchIcon();
 	}
 
-	this->icon = icon;
 	edited = true;
 	updateSurfaces();
 }
 
-string Link::searchIcon() {
+const string &Link::searchIcon() {
 	iconPath = gmenu2x->sc.getSkinFilePath("icons/generic.png");
 	return iconPath;
 }
 
-string Link::getIconPath() {
+const string &Link::getIconPath() {
 	if (iconPath.empty()) searchIcon();
 	return iconPath;
 }
 
-void Link::setIconPath(string icon) {
+void Link::setIconPath(const string &icon) {
 	if (fileExists(icon))
 		iconPath = icon;
 	else

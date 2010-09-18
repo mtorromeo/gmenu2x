@@ -33,7 +33,7 @@
 using namespace std;
 using namespace fastdelegate;
 
-DirDialog::DirDialog(GMenu2X *gmenu2x, string text, string dir) {
+DirDialog::DirDialog(GMenu2X *gmenu2x, const string &text, const string &dir) {
 	this->gmenu2x = gmenu2x;
 	this->text = text;
 	selRow = 0;

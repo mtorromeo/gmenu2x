@@ -11,7 +11,7 @@ SelectorDetector::SelectorDetector() {
     useSelectorBackground = false;
 }
 
-SelectorDetector::SelectorDetector(string config) {
+SelectorDetector::SelectorDetector(const string &config) {
     useSelectorBackground = false;
     readSelectorConfig(config);
 }
@@ -20,7 +20,7 @@ SelectorDetector::~SelectorDetector() {
     //dtor
 }
 
-bool SelectorDetector::readSelectorConfig(string config) {
+bool SelectorDetector::readSelectorConfig(const string &config) {
 	if (fileExists(config)) {
 		ifstream inf(config.c_str(), ios_base::in);
 		if (inf.is_open()) {

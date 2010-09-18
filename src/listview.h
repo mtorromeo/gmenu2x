@@ -41,7 +41,7 @@ public:
 	GMenu2X *gmenu2x;
 
 	ListViewItem *add(ListViewItem *item);
-	ListViewItem *add(string text);
+	ListViewItem *add(const string &text);
 	void     del(ListViewItem *item);
 	void     del(int itemIndex);
 	void     clear();
