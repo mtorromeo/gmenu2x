@@ -1,5 +1,6 @@
 #include "iconbutton.h"
 #include "gmenu2x.h"
+#include "surface.h"
 
 using namespace std;
 using namespace fastdelegate;
@@ -10,6 +11,13 @@ IconButton::IconButton(GMenu2X *gmenu2x, const string &icon, const string &label
 	labelPosition = IconButton::DISP_RIGHT;
 	labelMargin = 2;
 	this->setLabel(label);
+	updateSurfaces();
+}
+
+void IconButton::updateSurfaces()
+{
+	iconSurface = gmenu2x->sc[icon];
+	recalcSize();
 }
 
 void IconButton::setPosition(int x, int y) {
@@ -21,10 +29,10 @@ void IconButton::setPosition(int x, int y) {
 
 void IconButton::paint() {
 	uint margin = labelMargin;
-	if (gmenu2x->sc[icon] == NULL || label == "")
+	if (iconSurface == NULL || label == "")
 		margin = 0;
-	if (gmenu2x->sc[icon] != NULL)
-		gmenu2x->sc[icon]->blit(gmenu2x->s,iconRect);
+	if (iconSurface != NULL)
+		iconSurface->blit(gmenu2x->s,iconRect);
 	if (label != "")
 		gmenu2x->s->write(gmenu2x->font, label, labelRect.x, labelRect.y, labelHAlign, labelVAlign);
 }
@@ -37,12 +45,12 @@ void IconButton::recalcSize() {
 	uint h = 0, w = 0;
 	uint margin = labelMargin;
 
-	if (gmenu2x->sc[icon] == NULL || label == "")
+	if (iconSurface == NULL || label == "")
 		margin = 0;
 
-	if (gmenu2x->sc[icon] != NULL) {
-		w += gmenu2x->sc[icon]->raw->w;
-		h += gmenu2x->sc[icon]->raw->h;
+	if (iconSurface != NULL) {
+		w += iconSurface->raw->w;
+		h += iconSurface->raw->h;
 		iconRect.w = w;
 		iconRect.h = h;
 		iconRect.x = rect.x;
@@ -113,7 +121,7 @@ const string &IconButton::getIcon() {
 
 void IconButton::setIcon(const string &icon) {
 	this->icon = icon;
-	recalcSize();
+	updateSurfaces();
 }
 
 void IconButton::setAction(ButtonAction action) {

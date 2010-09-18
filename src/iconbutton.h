@@ -7,6 +7,7 @@
 using std::string;
 
 class GMenu2X;
+class Surface;
 
 class IconButton : public Button {
 protected:
@@ -15,6 +16,10 @@ protected:
 	unsigned short labelHAlign, labelVAlign;
 	void recalcSize();
 	SDL_Rect iconRect, labelRect;
+
+	Surface *iconSurface;
+
+	void updateSurfaces();
 
 public:
 	static const int DISP_RIGHT = 0;
