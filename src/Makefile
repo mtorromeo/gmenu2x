@@ -5,7 +5,7 @@ CC= $(CROSS_COMPILE)gcc
 CXX = $(CROSS_COMPILE)g++
 STRIP = $(CROSS_COMPILE)strip
 
-CFLAGS = -I"$(CHAINPREFIX)/include" `$(CHAINPREFIX)/bin/sdl-config --cflags` -DTARGET_GP2X -DTIXML_USE_STL -O3 -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops -fno-exceptions -Wall -Wno-unknown-pragmas -Wno-format
+CFLAGS = -I"$(CHAINPREFIX)/include" `$(CHAINPREFIX)/bin/sdl-config --cflags` -DTARGET_GP2X -O3 -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops -fno-exceptions -Wall -Wno-unknown-pragmas -Wno-format
 CXXFLAGS = $(CFLAGS)
 LDFLAGS = -L$(CHAINPREFIX)/lib `$(CHAINPREFIX)/bin/sdl-config --libs` -lfreetype -lSDL_image -lSDL_ttf -lSDL_gfx -ljpeg -lpng12 -lSDL -lz -ldl
 
