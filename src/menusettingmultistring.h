@@ -31,7 +31,6 @@ private:
 	string *value;
 	string originalValue;
 	vector<string> *choices;
-	GMenu2X *gmenu2x;
 	IconButton *btnDec, *btnInc;
 
 	void incSel();

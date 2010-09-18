@@ -34,7 +34,7 @@ Base class for different kind of option
 	@author Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
 */
 class MenuSetting {
-private:
+protected:
 	GMenu2X *gmenu2x;
 
 public:

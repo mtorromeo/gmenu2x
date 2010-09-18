@@ -26,7 +26,6 @@ using namespace fastdelegate;
 
 MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, const string &name, const string &description, int *value)
 	: MenuSetting(gmenu2x,name,description) {
-	this->gmenu2x = gmenu2x;
 	_ivalue = value;
 	_value = NULL;
 	originalValue = *value != 0;
@@ -38,7 +37,6 @@ MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, const string &name, const str
 
 MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, const string &name, const string &description, bool *value)
 	: MenuSetting(gmenu2x,name,description) {
-	this->gmenu2x = gmenu2x;
 	_value = value;
 	_ivalue = NULL;
 	originalValue = *value;

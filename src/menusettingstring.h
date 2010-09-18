@@ -29,7 +29,6 @@ class MenuSettingString : public MenuSetting {
 private:
 	string originalValue, diagTitle, diagIcon;
 	string *_value;
-	GMenu2X *gmenu2x;
 	IconButton *btnClear, *btnEdit;
 
 	void edit();

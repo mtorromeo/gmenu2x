@@ -26,7 +26,6 @@ using namespace fastdelegate;
 
 MenuSettingFile::MenuSettingFile(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &filter)
 	: MenuSetting(gmenu2x,name,description) {
-	this->gmenu2x = gmenu2x;
 	this->filter = filter;
 	_value = value;
 	originalValue = *value;

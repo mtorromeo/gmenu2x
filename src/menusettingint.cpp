@@ -26,7 +26,6 @@ using namespace fastdelegate;
 
 MenuSettingInt::MenuSettingInt(GMenu2X *gmenu2x, const string &name, const string &description, int *value, int min, int max, int delta)
 	: MenuSetting(gmenu2x,name,description) {
-	this->gmenu2x = gmenu2x;
 	_value = value;
 	originalValue = *value;
 	this->min = min;

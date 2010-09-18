@@ -32,7 +32,6 @@ private:
 	bool *_value;
 	int *_ivalue;
 	string strvalue;
-	GMenu2X *gmenu2x;
 	IconButton *btnToggle;
 
 	void toggle();
