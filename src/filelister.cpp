@@ -25,6 +25,7 @@
 #include <errno.h>
 #include <iostream>
 #include <algorithm>
+#include <cstring>
 
 #include "filelister.h"
 #include "utilities.h"

@@ -21,9 +21,6 @@
 #ifndef UTILITIES_H
 #define UTILITIES_H
 
-#include <SDL.h>
-#include <SDL_gfxPrimitives.h>
-#include <fstream>
 #include <string>
 #include <vector>
 #include <tr1/unordered_map>

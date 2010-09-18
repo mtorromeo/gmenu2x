@@ -24,6 +24,7 @@
 #include <dirent.h>
 #include <algorithm>
 #include <math.h>
+#include <fstream>
 
 #include "gmenu2x.h"
 #include "linkapp.h"
