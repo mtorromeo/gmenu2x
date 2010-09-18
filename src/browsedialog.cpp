@@ -10,7 +10,7 @@ using namespace fastdelegate;
 using namespace std;
 
 BrowseDialog::BrowseDialog(GMenu2X *gmenu2x, const string &title, const string &subtitle)
-	: Dialog(gmenu2x), title(title), subtitle(subtitle), buttonBox(gmenu2x) {
+	: Dialog(gmenu2x), title(title), subtitle(subtitle), ts_pressed(false), buttonBox(gmenu2x) {
 	IconButton *btn;
 
 	btn = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Up one folder"]);
@@ -48,6 +48,7 @@ bool BrowseDialog::exec() {
 	touchRect = (SDL_Rect){2, gmenu2x->skinConfInt["topBarHeight"]+4, gmenu2x->resX-12, clipRect.h};
 
 	selected = 0;
+	close = false;
 	while (!close) {
 		if (gmenu2x->f200) gmenu2x->ts.poll();
 
