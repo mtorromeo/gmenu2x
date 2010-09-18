@@ -44,15 +44,15 @@ protected:
 
 public:
 	MenuSetting(GMenu2X *gmenu2x, const string &name, const string &description);
-	virtual ~MenuSetting() {};
+	virtual ~MenuSetting();
 
 	virtual void draw(int y);
 	virtual void handleTS();
 
-	virtual void manageInput() {};
-	virtual void adjustInput() {};
-	virtual void drawSelected(int);
-	virtual bool edited() { return true; };
+	virtual void manageInput() = 0;
+	virtual void adjustInput() = 0;
+	virtual void drawSelected(int y);
+	virtual bool edited() = 0;
 
 	const string &getDescription() { return description; }
 };

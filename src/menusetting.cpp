@@ -23,6 +23,8 @@ MenuSetting::MenuSetting(GMenu2X *gmenu2x, const string &name, const string &des
 	: gmenu2x(gmenu2x), buttonBox(gmenu2x), name(name), description(description) {
 }
 
+MenuSetting::~MenuSetting() {}
+
 void MenuSetting::draw(int y) {
 	gmenu2x->s->write( gmenu2x->font, name, 5, y+gmenu2x->font->getHalfHeight(), SFontHAlignLeft, SFontVAlignMiddle );
 }
@@ -31,6 +33,6 @@ void MenuSetting::handleTS() {
 	buttonBox.handleTS();
 }
 
-void MenuSetting::drawSelected(int) {
+void MenuSetting::drawSelected(int /*y*/) {
 	buttonBox.paint(5);
 }
