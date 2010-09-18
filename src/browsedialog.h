@@ -34,18 +34,6 @@ using std::vector;
 
 class BrowseDialog : protected Dialog {
 protected:
-	enum Action {
-		ACT_NONE,
-		ACT_SELECT,
-		ACT_CLOSE,
-		ACT_UP,
-		ACT_DOWN,
-		ACT_SCROLLUP,
-		ACT_SCROLLDOWN,
-		ACT_GOUP,
-		ACT_CONFIRM,
-	};
-
 	BrowseDialog(GMenu2X *gmenu2x, const string &title, const string &subtitle);
 
 	virtual void beforeFileList() {};
@@ -60,13 +48,22 @@ protected:
 	unsigned int selected;
 
 private:
-	int selRow;
+	enum Action {
+		ACT_NONE,
+		ACT_SELECT,
+		ACT_CLOSE,
+		ACT_UP,
+		ACT_DOWN,
+		ACT_SCROLLUP,
+		ACT_SCROLLDOWN,
+		ACT_GOUP,
+		ACT_CONFIRM,
+	};
+
 	bool close, result;
 
 	string title;
 	string subtitle;
-
-	IconButton *btnUp, *btnEnter, *btnConfirm;
 
 	SDL_Rect clipRect;
 	SDL_Rect touchRect;
@@ -92,7 +89,6 @@ private:
 	void confirm();
 
 public:
-
 	bool exec();
 
 	const std::string &getPath() {
