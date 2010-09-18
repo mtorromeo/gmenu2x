@@ -24,6 +24,7 @@
 #include <iostream>
 
 #include "button.h"
+#include "surface.h"
 
 using std::string;
 
@@ -42,7 +43,10 @@ protected:
 	bool edited;
 	string title, description, icon, iconPath;
 
+	Surface *iconSurface;
+
 	void recalcCoordinates();
+	void updateSurfaces();
 
 public:
 	Link(GMenu2X *gmenu2x);
