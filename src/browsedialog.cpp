@@ -30,6 +30,8 @@ BrowseDialog::BrowseDialog(GMenu2X *gmenu2x, const string &title, const string &
 	iconFile = gmenu2x->sc.skinRes("imgs/file.png");
 }
 
+BrowseDialog::~BrowseDialog() {}
+
 bool BrowseDialog::exec() {
 	if (!fl)
 		return false;
