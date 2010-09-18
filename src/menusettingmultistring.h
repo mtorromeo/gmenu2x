@@ -20,30 +20,31 @@
 #ifndef MENUSETTINGMULTISTRING_H
 #define MENUSETTINGMULTISTRING_H
 
-#include "gmenu2x.h"
-#include "menusetting.h"
+#include "menusettingstringbase.h"
 
 using std::string;
 
-class MenuSettingMultiString : public MenuSetting {
+class MenuSettingMultiString : public MenuSettingStringBase {
 private:
-	uint selected;
-	string *value;
-	string originalValue;
+	virtual void edit() {
+		/* never called because manageInput() is overridden */
+	}
+
 	const vector<string> *choices;
-	IconButton *btnDec, *btnInc;
+	uint selected;
 
 	void incSel();
 	void decSel();
-	void setSel(int);
+	void setSel(int sel);
 
 public:
-	MenuSettingMultiString(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const vector<string> *choices);
+	MenuSettingMultiString(
+			GMenu2X *gmenu2x, const string &name,
+			const string &description, string *value,
+			const vector<string> *choices);
 	virtual ~MenuSettingMultiString() {};
 
-	virtual void draw(int y);
 	virtual void manageInput();
-	virtual bool edited();
 };
 
 #endif

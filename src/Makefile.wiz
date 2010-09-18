@@ -1714,10 +1714,15 @@ depend:
 ../objs/gp2x/menusettingint.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingint.o: /usr/include/bits/uio.h
 ../objs/gp2x/menusettingint.o: /usr/include/bits/stat.h buttonbox.h
-../objs/gp2x/menusettingmultistring.o: menusettingmultistring.h gmenu2x.h
-../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/google/dense_hash_map
-../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/google/sparsehash/sparseconfig.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/stdio.h
+../objs/gp2x/menusettingmultistring.o: menusettingmultistring.h
+../objs/gp2x/menusettingmultistring.o: menusettingstringbase.h menusetting.h
+../objs/gp2x/menusettingmultistring.o: inputmanager.h
+../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/SDL/SDL.h
+../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/SDL/SDL_main.h
+../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/SDL/SDL_stdinc.h
+../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/SDL/SDL_config.h
+../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/SDL/SDL_platform.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/sys/types.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/features.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/sys/cdefs.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/wordsize.h
@@ -1725,38 +1730,27 @@ depend:
 ../objs/gp2x/menusettingmultistring.o: /usr/include/gnu/stubs-64.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/types.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/typesizes.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/libio.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/_G_config.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/wchar.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/bits/stdio_lim.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/bits/sys_errlist.h
-../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/google/sparsehash/densehashtable.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/assert.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/stdlib.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/bits/waitflags.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/bits/waitstatus.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/time.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/endian.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/endian.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/byteswap.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/xlocale.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/sys/types.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/time.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/sys/select.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/select.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/sigset.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/time.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/sys/sysmacros.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/pthreadtypes.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/stdio.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/libio.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/_G_config.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/wchar.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/bits/stdio_lim.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/bits/sys_errlist.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/stdlib.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/bits/waitflags.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/bits/waitstatus.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/xlocale.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/alloca.h
-../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/google/type_traits.h
-../objs/gp2x/menusettingmultistring.o: surfacecollection.h
-../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/google/dense_hash_map
-../objs/gp2x/menusettingmultistring.o: surface.h
-../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/SDL/SDL.h
-../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/SDL/SDL_main.h
-../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/SDL/SDL_stdinc.h
-../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/SDL/SDL_config.h
-../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/SDL/SDL_platform.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/string.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/strings.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/inttypes.h
@@ -1788,15 +1782,21 @@ depend:
 ../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/SDL/SDL_timer.h
 ../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/SDL/SDL_version.h
 ../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/SDL/SDL_image.h
-../objs/gp2x/menusettingmultistring.o: sfontplus.h utilities.h iconbutton.h
-../objs/gp2x/menusettingmultistring.o: button.h FastDelegate.h
+../objs/gp2x/menusettingmultistring.o: gmenu2x.h
+../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/google/dense_hash_map
+../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/google/sparsehash/sparseconfig.h
+../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/google/sparsehash/densehashtable.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/assert.h
+../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/google/type_traits.h
+../objs/gp2x/menusettingmultistring.o: surfacecollection.h
+../objs/gp2x/menusettingmultistring.o: /opt/openwiz/include/google/dense_hash_map
+../objs/gp2x/menusettingmultistring.o: surface.h sfontplus.h utilities.h
+../objs/gp2x/menusettingmultistring.o: iconbutton.h button.h FastDelegate.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/memory.h translator.h
 ../objs/gp2x/menusettingmultistring.o: touchscreen.h /usr/include/fcntl.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/fcntl.h
 ../objs/gp2x/menusettingmultistring.o: /usr/include/bits/uio.h
-../objs/gp2x/menusettingmultistring.o: /usr/include/bits/stat.h
-../objs/gp2x/menusettingmultistring.o: inputmanager.h menusetting.h
-../objs/gp2x/menusettingmultistring.o: buttonbox.h
+../objs/gp2x/menusettingmultistring.o: /usr/include/bits/stat.h buttonbox.h
 ../objs/gp2x/menusettingrgba.o: menusettingrgba.h gmenu2x.h
 ../objs/gp2x/menusettingrgba.o: /opt/openwiz/include/google/dense_hash_map
 ../objs/gp2x/menusettingrgba.o: /opt/openwiz/include/google/sparsehash/sparseconfig.h
