@@ -40,7 +40,6 @@ protected:
 	int lastTick;
 
 public:
-	string path;
 	Button(GMenu2X *gmenu2x, bool doubleClick = false);
 	virtual ~Button() {};
 
