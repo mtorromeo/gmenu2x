@@ -29,9 +29,6 @@ using std::string;
 using std::vector;
 
 class WallpaperDialog : protected Dialog {
-private:
-	int selRow;
-
 public:
 	WallpaperDialog(GMenu2X *gmenu2x);
 	string wallpaper;
