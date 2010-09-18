@@ -50,7 +50,7 @@ public:
 	virtual void handleTS();
 
 	virtual void manageInput() = 0;
-	virtual void adjustInput() = 0;
+	virtual void adjustInput();
 	virtual void drawSelected(int y);
 	virtual bool edited() = 0;
 

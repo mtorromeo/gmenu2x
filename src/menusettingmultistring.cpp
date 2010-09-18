@@ -76,8 +76,6 @@ void MenuSettingMultiString::setSel(int sel)
 	*value = (*choices)[sel];
 }
 
-void MenuSettingMultiString::adjustInput() {}
-
 bool MenuSettingMultiString::edited()
 {
 	return originalValue != *value;

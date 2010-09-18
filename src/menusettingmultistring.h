@@ -43,7 +43,6 @@ public:
 
 	virtual void draw(int y);
 	virtual void manageInput();
-	virtual void adjustInput();
 	virtual bool edited();
 };
 

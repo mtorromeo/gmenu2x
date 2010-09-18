@@ -50,10 +50,6 @@ void MenuSettingStringBase::manageInput()
 	if (gmenu2x->input[ACTION_B]) edit();
 }
 
-void MenuSettingStringBase::adjustInput()
-{
-}
-
 void MenuSettingStringBase::clear()
 {
 	setValue("");
