@@ -3,3 +3,4 @@ build/input.conf
 pandora/gmenu*
 pandora/input.conf
 objs
+*.patch
