@@ -76,6 +76,8 @@
 const char *CARD_ROOT = "/mnt/"; //Note: Add a trailing /!
 const int CARD_ROOT_LEN = 5;
 
+static GMenu2X *app;
+
 using namespace std;
 using namespace fastdelegate;
 
@@ -106,14 +108,21 @@ static const char *colorToString(enum color c)
 	return colorNames[c];
 }
 
+static void quit_all(int err) {
+    delete app;
+    exit(err);
+}
+
 int main(int /*argc*/, char * /*argv*/[]) {
 	INFO("----\nGMenu2X starting: If you read this message in the logs, check http://gmenu2x.sourceforge.net/page/Troubleshooting for a solution\n----\n");
 
-	signal(SIGINT,&exit);
-	GMenu2X app;
+	signal(SIGINT, &quit_all);
+	signal(SIGSEGV,&quit_all);
+	signal(SIGTERM,&quit_all);
 
+	app = new GMenu2X();
 	DEBUG("Starting main()\n");
-	app.main();
+	app->main();
 
 	return 0;
 }
