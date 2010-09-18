@@ -288,10 +288,10 @@ GMenu2X::GMenu2X() {
 		FileLister fl("skins/"+confStr["skin"]+"/wallpapers",false,true);
 		fl.setFilter(".png,.jpg,.jpeg,.bmp");
 		fl.browse();
-		if (fl.files.size()<=0 && confStr["skin"] != "Default")
+		if (fl.getFiles().size()<=0 && confStr["skin"] != "Default")
 			fl.setPath("skins/Default/wallpapers",true);
-		if (fl.files.size()>0)
-			confStr["wallpaper"] = fl.getPath()+fl.files[0];
+		if (fl.getFiles().size()>0)
+			confStr["wallpaper"] = fl.getPath()+fl.getFiles()[0];
 	}
 
 	initBG();
@@ -414,14 +414,14 @@ void GMenu2X::initFont() {
 void GMenu2X::initMenu() {
 	//Menu structure handler
 	menu = new Menu(this);
-	for (uint i=0; i<menu->sections.size(); i++) {
+	for (uint i=0; i<menu->getSections().size(); i++) {
 		//Add virtual links in the applications section
-		if (menu->sections[i]=="applications") {
+		if (menu->getSections()[i]=="applications") {
 			menu->addActionLink(i,"Explorer",MakeDelegate(this,&GMenu2X::explorer),tr["Launch an application"],"skin:icons/explorer.png");
 		}
 
 		//Add virtual links in the setting section
-		else if (menu->sections[i]=="settings") {
+		else if (menu->getSections()[i]=="settings") {
 			menu->addActionLink(i,"GMenu2X",MakeDelegate(this,&GMenu2X::options),tr["Configure GMenu2X's options"],"skin:icons/configure.png");
 			if (fwType=="open2x")
 				menu->addActionLink(i,"Open2x",MakeDelegate(this,&GMenu2X::settingsOpen2x),tr["Configure Open2x system settings"],"skin:icons/o2xconfigure.png");
@@ -514,8 +514,8 @@ void GMenu2X::viewLog() {
 			td.exec();
 
 			MessageBox mb(this, tr["Do you want to delete the log file?"], "icons/ebook.png");
-			mb.buttons[ACTION_B] = tr["Yes"];
-			mb.buttons[ACTION_X] = tr["No"];
+			mb.setButton(ACTION_B, tr["Yes"]);
+			mb.setButton(ACTION_X, tr["No"]);
 			if (mb.exec() == ACTION_B) {
 				ledOn();
 				unlink(logfile.c_str());
@@ -799,17 +799,17 @@ void GMenu2X::main() {
 		sc["bgmain"]->blit(s,0,0);
 		
 		//Sections
-		sectionsCoordX = halfX - (constrain((uint)menu->sections.size(), 0 , linkColumns) * skinConfInt["linkWidth"]) / 2;
+		sectionsCoordX = halfX - (constrain((uint)menu->getSections().size(), 0 , linkColumns) * skinConfInt["linkWidth"]) / 2;
 		if (menu->firstDispSection()>0)
 			sc.skinRes("imgs/l_enabled.png")->blit(s,0,0);
 		else
 			sc.skinRes("imgs/l_disabled.png")->blit(s,0,0);
-		if (menu->firstDispSection()+linkColumns<menu->sections.size())
+		if (menu->firstDispSection()+linkColumns<menu->getSections().size())
 			sc.skinRes("imgs/r_enabled.png")->blit(s,resX-10,0);
 		else
 			sc.skinRes("imgs/r_disabled.png")->blit(s,resX-10,0);
-		for (i=menu->firstDispSection(); i<menu->sections.size() && i<menu->firstDispSection()+linkColumns; i++) {
-			string sectionIcon = "skin:sections/"+menu->sections[i]+".png";
+		for (i=menu->firstDispSection(); i<menu->getSections().size() && i<menu->firstDispSection()+linkColumns; i++) {
+			string sectionIcon = "skin:sections/"+menu->getSections()[i]+".png";
 			x = (i-menu->firstDispSection())*skinConfInt["linkWidth"]+sectionsCoordX;
 			if (menu->selSectionIndex()==(int)i)
 				s->box(x, 0, skinConfInt["linkWidth"],
@@ -819,7 +819,7 @@ void GMenu2X::main() {
 				sc[sectionIcon]->blit(s,x-16,sectionLinkPadding,32,32);
 			else
 				sc.skinRes("icons/section.png")->blit(s,x,sectionLinkPadding);
-			s->write( font, menu->sections[i], x, skinConfInt["topBarHeight"]-sectionLinkPadding, SFontHAlignCenter, SFontVAlignBottom );
+			s->write( font, menu->getSections()[i], x, skinConfInt["topBarHeight"]-sectionLinkPadding, SFontHAlignCenter, SFontVAlignBottom );
 		}
 
 		//Links
@@ -928,8 +928,8 @@ void GMenu2X::main() {
 			re.x = 0; re.y = 0; re.h = skinConfInt["topBarHeight"]; re.w = resX;
 			if (ts.pressed() && ts.inRect(re)) {
 				re.w = skinConfInt["linkWidth"];
-				for (i=menu->firstDispSection(); !ts.handled() && i<menu->sections.size() && i<menu->firstDispSection()+linkColumns; i++) {
-					sectionsCoordX = halfX - (constrain((uint)(linkColumns-menu->sections.size()), 0 , linkColumns) * skinConfInt["linkWidth"]) / 2;
+				for (i=menu->firstDispSection(); !ts.handled() && i<menu->getSections().size() && i<menu->firstDispSection()+linkColumns; i++) {
+					sectionsCoordX = halfX - (constrain((uint)(linkColumns-menu->getSections().size()), 0 , linkColumns) * skinConfInt["linkWidth"]) / 2;
 					re.x = (i-menu->firstDispSection())*re.w+sectionsCoordX;
 
 					if (ts.inRect(re)) {
@@ -1044,7 +1044,7 @@ void GMenu2X::options() {
 
 	FileLister fl_tr("translations");
 	fl_tr.browse();
-	fl_tr.files.insert(fl_tr.files.begin(),"English");
+	fl_tr.insertFile("English");
 	string lang = tr.lang();
 
 	vector<string> encodings;
@@ -1052,7 +1052,7 @@ void GMenu2X::options() {
 	encodings.push_back("PAL");
 
 	SettingsDialog sd(this,tr["Settings"]);
-	sd.addSetting(new MenuSettingMultiString(this,tr["Language"],tr["Set the language used by GMenu2X"],&lang,&fl_tr.files));
+	sd.addSetting(new MenuSettingMultiString(this,tr["Language"],tr["Set the language used by GMenu2X"],&lang,&fl_tr.getFiles()));
 	sd.addSetting(new MenuSettingBool(this,tr["Save last selection"],tr["Save the last selected link and section on exit"],&confInt["saveSelection"]));
 #ifdef TARGET_GP2X
 	sd.addSetting(new MenuSettingInt(this,tr["Clock for GMenu2X"],tr["Set the cpu working frequency when running GMenu2X"],&confInt["menuClock"],50,325));
@@ -1111,12 +1111,12 @@ void GMenu2X::settingsOpen2x() {
 
 void GMenu2X::skinMenu() {
 	FileLister fl_sk("skins",true,false);
-	fl_sk.exclude.push_back("..");
+	fl_sk.addExclude("..");
 	fl_sk.browse();
 	string curSkin = confStr["skin"];
 
 	SettingsDialog sd(this,tr["Skin"]);
-	sd.addSetting(new MenuSettingMultiString(this,tr["Skin"],tr["Set the skin used by GMenu2X"],&confStr["skin"],&fl_sk.directories));
+	sd.addSetting(new MenuSettingMultiString(this,tr["Skin"],tr["Set the skin used by GMenu2X"],&confStr["skin"],&fl_sk.getDirectories()));
 	sd.addSetting(new MenuSettingRGBA(this,tr["Top Bar Color"],tr["Color of the top bar"],&skinConfColors[COLOR_TOP_BAR_BG]));
 	sd.addSetting(new MenuSettingRGBA(this,tr["Bottom Bar Color"],tr["Color of the bottom bar"],&skinConfColors[COLOR_BOTTOM_BAR_BG]));
 	sd.addSetting(new MenuSettingRGBA(this,tr["Selection Color"],tr["Color of the selection and other interface details"],&skinConfColors[COLOR_SELECTION_BG]));
@@ -1264,7 +1264,7 @@ void GMenu2X::activateSdUsb() {
 	} else {
 		system("scripts/usbon.sh sd");
 		MessageBox mb(this,tr["USB Enabled (SD)"],"icons/usb.png");
-		mb.buttons[ACTION_B] = tr["Turn off"];
+		mb.setButton(ACTION_B, tr["Turn off"]);
 		mb.exec();
 		system("scripts/usboff.sh sd");
 	}
@@ -1277,7 +1277,7 @@ void GMenu2X::activateNandUsb() {
 	} else {
 		system("scripts/usbon.sh nand");
 		MessageBox mb(this,tr["USB Enabled (Nand)"],"icons/usb.png");
-		mb.buttons[ACTION_B] = tr["Turn off"];
+		mb.setButton(ACTION_B, tr["Turn off"]);
 		mb.exec();
 		system("scripts/usboff.sh nand");
 	}
@@ -1290,7 +1290,7 @@ void GMenu2X::activateRootUsb() {
 	} else {
 		system("scripts/usbon.sh root");
 		MessageBox mb(this,tr["USB Enabled (Root)"],"icons/usb.png");
-		mb.buttons[ACTION_B] = tr["Turn off"];
+		mb.setButton(ACTION_B, tr["Turn off"]);
 		mb.exec();
 		system("scripts/usboff.sh root");
 	}
@@ -1375,10 +1375,12 @@ void GMenu2X::contextMenu() {
 			if (ts.released()) {
 				if (!ts.inRect(box))
 					close = true;
-				else if (ts.x>=selbox.x && ts.x<=selbox.x+selbox.w)
+				else if (ts.getX() >= selbox.x
+					  && ts.getX() <= selbox.x + selbox.w)
 					for (i=0; i<voices.size(); i++) {
 						selbox.y = box.y+4+(h+2)*i;
-						if (ts.y>=selbox.y && ts.y<=selbox.y+selbox.h) {
+						if (ts.getY() >= selbox.y
+						 && ts.getY() <= selbox.y + selbox.h) {
 							voices[i].action();
 							close = true;
 							i = voices.size();
@@ -1387,7 +1389,8 @@ void GMenu2X::contextMenu() {
 			} else if (ts.pressed() && ts.inRect(box)) {
 				for (i=0; i<voices.size(); i++) {
 					selbox.y = box.y+4+(h+2)*i;
-					if (ts.y>=selbox.y && ts.y<=selbox.y+selbox.h) {
+					if (ts.getY() >= selbox.y
+					 && ts.getY() <= selbox.y + selbox.h) {
 						sel = i;
 						i = voices.size();
 					}
@@ -1444,7 +1447,7 @@ void GMenu2X::editLink() {
 	if (menu->selLinkApp()==NULL) return;
 
 	vector<string> pathV;
-	split(pathV,menu->selLinkApp()->file,"/");
+	split(pathV,menu->selLinkApp()->getFile(),"/");
 	string oldSection = "";
 	if (pathV.size()>1)
 		oldSection = pathV[pathV.size()-2];
@@ -1472,7 +1475,7 @@ void GMenu2X::editLink() {
 	SettingsDialog sd(this,diagTitle,diagIcon);
 	sd.addSetting(new MenuSettingString(this,tr["Title"],tr["Link title"],&linkTitle, diagTitle,diagIcon));
 	sd.addSetting(new MenuSettingString(this,tr["Description"],tr["Link description"],&linkDescription, diagTitle,diagIcon));
-	sd.addSetting(new MenuSettingMultiString(this,tr["Section"],tr["The section this link belongs to"],&newSection,&menu->sections));
+	sd.addSetting(new MenuSettingMultiString(this,tr["Section"],tr["The section this link belongs to"],&newSection,&menu->getSections()));
 	sd.addSetting(new MenuSettingImage(this,tr["Icon"],tr.translate("Select an icon for the link: $1",linkTitle.c_str(),NULL),&linkIcon,".png,.bmp,.jpg,.jpeg"));
 	sd.addSetting(new MenuSettingFile(this,tr["Manual"],tr["Select a graphic/textual manual or a readme"],&linkManual,".man.png,.txt"));
 #ifdef TARGET_GP2X
@@ -1491,8 +1494,8 @@ void GMenu2X::editLink() {
 	sd.addSetting(new MenuSettingFile(this,tr["Selector Aliases"],tr["File containing a list of aliases for the selector"],&linkSelAliases));
 	//G
 	sd.addSetting(new MenuSettingInt(this,tr["Gamma (default: 0)"],tr["Gamma value to set when launching this link"],&linkGamma,0,100));
-	sd.addSetting(new MenuSettingBool(this,tr["Wrapper"],tr["Explicitly relaunch GMenu2X after this link's execution ends"],&menu->selLinkApp()->wrapper));
-	sd.addSetting(new MenuSettingBool(this,tr["Don't Leave"],tr["Don't quit GMenu2X when launching this link"],&menu->selLinkApp()->dontleave));
+	sd.addSetting(new MenuSettingBool(this,tr["Wrapper"],tr["Explicitly relaunch GMenu2X after this link's execution ends"],&menu->selLinkApp()->needsWrapperRef()));
+	sd.addSetting(new MenuSettingBool(this,tr["Don't Leave"],tr["Don't quit GMenu2X when launching this link"],&menu->selLinkApp()->runsInBackgroundRef()));
 
 	if (sd.exec() && sd.edited()) {
 		ledOn();
@@ -1518,8 +1521,8 @@ void GMenu2X::editLink() {
 #endif
 		//if section changed move file and update link->file
 		if (oldSection!=newSection) {
-			vector<string>::iterator newSectionIndex = find(menu->sections.begin(),menu->sections.end(),newSection);
-			if (newSectionIndex==menu->sections.end()) return;
+			vector<string>::const_iterator newSectionIndex = find(menu->getSections().begin(),menu->getSections().end(),newSection);
+			if (newSectionIndex==menu->getSections().end()) return;
 			string newFileName = "sections/"+newSection+"/"+linkTitle;
 			uint x=2;
 			while (fileExists(newFileName)) {
@@ -1528,12 +1531,12 @@ void GMenu2X::editLink() {
 				newFileName = "sections/"+newSection+"/"+linkTitle+id;
 				x++;
 			}
-			rename(menu->selLinkApp()->file.c_str(),newFileName.c_str());
-			menu->selLinkApp()->file = newFileName;
+			rename(menu->selLinkApp()->getFile().c_str(),newFileName.c_str());
+			menu->selLinkApp()->renameFile(newFileName);
 #ifdef DEBUG
-			cout << "New section index: " << newSectionIndex - menu->sections.begin() << endl;
+			cout << "New section index: " << newSectionIndex - menu->getSections().begin() << endl;
 #endif
-			menu->linkChangeSection(menu->selLinkIndex(), menu->selSectionIndex(), newSectionIndex - menu->sections.begin());
+			menu->linkChangeSection(menu->selLinkIndex(), menu->selSectionIndex(), newSectionIndex - menu->getSections().begin());
 		}
 		menu->selLinkApp()->save();
 		sync();
@@ -1545,8 +1548,8 @@ void GMenu2X::editLink() {
 void GMenu2X::deleteLink() {
 	if (menu->selLinkApp()!=NULL) {
 		MessageBox mb(this, tr.translate("Deleting $1",menu->selLink()->getTitle().c_str(),NULL)+"\n"+tr["Are you sure?"], menu->selLink()->getIconPath());
-		mb.buttons[ACTION_B] = tr["Yes"];
-		mb.buttons[ACTION_X] = tr["No"];
+		mb.setButton(ACTION_B, tr["Yes"]);
+		mb.setButton(ACTION_X, tr["No"]);
 		if (mb.exec() == ACTION_B) {
 			ledOn();
 			menu->deleteSelectedLink();
@@ -1560,11 +1563,12 @@ void GMenu2X::addSection() {
 	InputDialog id(this,tr["Insert a name for the new section"]);
 	if (id.exec()) {
 		//only if a section with the same name does not exist
-		if (find(menu->sections.begin(),menu->sections.end(),id.input)==menu->sections.end()) {
+		if (find(menu->getSections().begin(), menu->getSections().end(), id.getInput())
+				== menu->getSections().end()) {
 			//section directory doesn't exists
 			ledOn();
-			if (menu->addSection(id.input)) {
-				menu->setSectionIndex( menu->sections.size()-1 ); //switch to the new section
+			if (menu->addSection(id.getInput())) {
+				menu->setSectionIndex( menu->getSections().size()-1 ); //switch to the new section
 				sync();
 			}
 			ledOff();
@@ -1576,10 +1580,12 @@ void GMenu2X::renameSection() {
 	InputDialog id(this,tr["Insert a new name for this section"],menu->selSection());
 	if (id.exec()) {
 		//only if a section with the same name does not exist & !samename
-		if (menu->selSection()!=id.input && find(menu->sections.begin(),menu->sections.end(),id.input)==menu->sections.end()) {
+		if (menu->selSection() != id.getInput()
+		 && find(menu->getSections().begin(),menu->getSections().end(), id.getInput())
+				== menu->getSections().end()) {
 			//section directory doesn't exists
-			string newsectiondir = "sections/"+id.input;
-			string sectiondir = "sections/"+menu->selSection();
+			string newsectiondir = "sections/" + id.getInput();
+			string sectiondir = "sections/" + menu->selSection();
 			ledOn();
 			if (rename(sectiondir.c_str(), "tmpsection")==0 && rename("tmpsection", newsectiondir.c_str())==0) {
 				string oldpng = sectiondir+".png", newpng = newsectiondir+".png";
@@ -1594,7 +1600,7 @@ void GMenu2X::renameSection() {
 						sc.move("skin:"+oldpng, "skin:"+newpng);
 					}
 				}
-				menu->sections[menu->selSectionIndex()] = id.input;
+				menu->renameSection(menu->selSectionIndex(), id.getInput());
 				sync();
 			}
 			ledOff();
@@ -1604,8 +1610,8 @@ void GMenu2X::renameSection() {
 
 void GMenu2X::deleteSection() {
 	MessageBox mb(this,tr["You will lose all the links in this section."]+"\n"+tr["Are you sure?"]);
-	mb.buttons[ACTION_B] = tr["Yes"];
-	mb.buttons[ACTION_X] = tr["No"];
+	mb.setButton(ACTION_B, tr["Yes"]);
+	mb.setButton(ACTION_X, tr["No"]);
 	if (mb.exec() == ACTION_B) {
 		ledOn();
 		if (rmtree(path+"sections/"+menu->selSection())) {

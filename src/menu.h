@@ -42,6 +42,9 @@ private:
 	GMenu2X *gmenu2x;
 	int iSection, iLink;
 	uint iFirstDispSection, iFirstDispRow;
+	vector<string> sections;
+	vector<linklist> links;
+
 	void readLinks();
 	void freeLinks();
 
@@ -49,8 +52,6 @@ public:
 	Menu(GMenu2X *gmenu2x);
 	~Menu();
 
-	vector<string> sections;
-	vector<linklist> links;
 	linklist *sectionLinks(int i = -1);
 
 	int selSectionIndex();
@@ -80,6 +81,9 @@ public:
 	void setLinkIndex(int i);
 
 	string sectionPath(int section = -1);
+
+	const vector<string> &getSections() { return sections; }
+	void renameSection(int index, const string &name);
 };
 
 #endif

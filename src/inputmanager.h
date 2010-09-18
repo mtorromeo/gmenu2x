@@ -64,6 +64,10 @@ private:
 	vector<Uint32> interval;
 	SDLEventList events;
 
+	vector <SDL_Joystick*> joysticks;
+	vector<bool> actions;
+	vector<MappingList> mappings;
+
 public:
 	static const int MAPPING_TYPE_UNDEFINED = -1;
 	static const int MAPPING_TYPE_BUTTON = 0;
@@ -73,10 +77,6 @@ public:
 	InputManager();
 	~InputManager();
 	void init(const string &conffile = "input.conf");
-
-	vector <SDL_Joystick*> joysticks;
-	vector<bool> actions;
-	vector<MappingList> mappings;
 
 	bool update();
 	int count();

@@ -35,12 +35,12 @@ bool WallpaperDialog::exec()
 	vector<string> wallpapers;
 	if (fileExists("skins/"+gmenu2x->confStr["skin"]+"/wallpapers")) {
 		fl.browse();
-		wallpapers = fl.files;
+		wallpapers = fl.getFiles();
 	}
 	if (gmenu2x->confStr["skin"] != "Default") {
 		fl.setPath("skins/Default/wallpapers",true);
-		for (uint i=0; i<fl.files.size(); i++)
-			wallpapers.push_back(fl.files[i]);
+		for (uint i=0; i<fl.getFiles().size(); i++)
+			wallpapers.push_back(fl.getFiles()[i]);
 	}
 #ifdef DEBUG
 	cout << "Wallpapers: " << wallpapers.size() << endl;
@@ -52,7 +52,7 @@ bool WallpaperDialog::exec()
 		if (selected<firstElement) firstElement=selected;
 
 		//Wallpaper
-		if (selected<wallpapers.size()-fl.files.size())
+		if (selected<wallpapers.size()-fl.getFiles().size())
 			gmenu2x->sc["skins/"+gmenu2x->confStr["skin"]+"/wallpapers/"+wallpapers[selected]]->blit(gmenu2x->s,0,0);
 		else
 			gmenu2x->sc["skins/Default/wallpapers/"+wallpapers[selected]]->blit(gmenu2x->s,0,0);
@@ -118,7 +118,7 @@ bool WallpaperDialog::exec()
 		if ( gmenu2x->input[ACTION_B] ) {
 			close = true;
 			if (wallpapers.size()>0) {
-				if (selected<wallpapers.size()-fl.files.size())
+				if (selected<wallpapers.size()-fl.getFiles().size())
 					wallpaper = "skins/"+gmenu2x->confStr["skin"]+"/wallpapers/"+wallpapers[selected];
 				else
 					wallpaper = "skins/Default/wallpapers/"+wallpapers[selected];
@@ -127,7 +127,7 @@ bool WallpaperDialog::exec()
 	}
 
 	for (uint i=0; i<wallpapers.size(); i++)
-		if (i<wallpapers.size()-fl.files.size())
+		if (i<wallpapers.size()-fl.getFiles().size())
 			gmenu2x->sc.del("skins/"+gmenu2x->confStr["skin"]+"/wallpapers/"+wallpapers[i]);
 		else
 			gmenu2x->sc.del("skins/Default/wallpapers/"+wallpapers[i]);

@@ -97,7 +97,7 @@ bool SettingsDialog::exec() {
 		gmenu2x->drawScrollBar(numRows,voices.size(),firstElement,clipRect.y+1,clipRect.h);
 
 		//description
-		writeSubTitle(voices[sel]->description);
+		writeSubTitle(voices[sel]->getDescription());
 
 		gmenu2x->s->flip();
 		voices[sel]->handleTS();
