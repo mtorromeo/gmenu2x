@@ -31,6 +31,7 @@
 #include "menu.h"
 #include "filelister.h"
 #include "utilities.h"
+#include "debug.h"
 
 using namespace std;
 
@@ -207,9 +208,8 @@ bool Menu::addLink(string path, string file, string section) {
 		linkpath = "sections/"+section+"/"+title+linkpath;
 		x++;
 	}
-#ifdef DEBUG
-	cout << "\033[0;34mGMENU2X:\033[0m Adding link: " << linkpath << endl;
-#endif
+
+	INFO("Adding link: '%s'\n", linkpath.c_str());
 
 	if (path[path.length()-1]!='/') path += "/";
 	//search for a manual
@@ -241,11 +241,10 @@ bool Menu::addLink(string path, string file, string section) {
 			}
 		}
 	}
-#ifdef DEBUG
-	cout << "\033[0;34mGMENU2X:\033[0m Manual: " << manual << endl;
-#endif
 
-	string shorttitle = title, exec = path+file;
+	INFO("Manual: '%s'\n", manual.c_str());
+
+	string shorttitle = title, exec = path+file, icon="";
 	if (fileExists(exename+".png")) icon = exename+".png";
 	
 	//Reduce title length to fit the link width
@@ -259,15 +258,14 @@ bool Menu::addLink(string path, string file, string section) {
 	if (f.is_open()) {
 		f << "title=" << shorttitle << endl;
 		f << "exec=" << exec << endl;
+		if (!icon.empty()) f << "icon=" << icon << endl;
 		if (!manual.empty()) f << "manual=" << manual << endl;
 		if (wrapper) f << "wrapper=true" << endl;
 		f.close();
 
 		int isection = find(sections.begin(),sections.end(),section) - sections.begin();
 		if (isection>=0 && isection<(int)sections.size()) {
-#ifdef DEBUG
-			cout << "\033[0;34mGMENU2X:\033[0m Section: " << sections[isection] << "(" << isection << ")" << endl;
-#endif
+			INFO("Section: '%s(%i)'\n", sections[isection].c_str(), isection);
 
 			LinkApp *link = new LinkApp(gmenu2x, gmenu2x->input, linkpath.c_str());
 			link->setSize(gmenu2x->skinConfInt["linkWidth"],gmenu2x->skinConfInt["linkHeight"]);
@@ -278,9 +276,7 @@ bool Menu::addLink(string path, string file, string section) {
  
 		}
 	} else {
-#ifdef DEBUG
-		cout << "\033[0;34mGMENU2X:\033[0;31m Error while opening the file '" << linkpath << "' for write\033[0m" << endl;
-#endif
+		ERROR("Error while opening the file '%s' for write.\n", linkpath.c_str());
 		return false;
 	}
 
@@ -299,9 +295,8 @@ bool Menu::addSection(const string &sectionName) {
 }
 
 void Menu::deleteSelectedLink() {
-#ifdef DEBUG
-	cout << "\033[0;34mGMENU2X:\033[0m Deleting link " << selLink()->getTitle() << endl;
-#endif
+	INFO("Deleting link '%s'\n", selLink()->getTitle().c_str());
+
 	if (selLinkApp()!=NULL)
 		unlink(selLinkApp()->getFile().c_str());
 	gmenu2x->sc.del(selLink()->getIconPath());
@@ -310,9 +305,8 @@ void Menu::deleteSelectedLink() {
 }
 
 void Menu::deleteSelectedSection() {
-#ifdef DEBUG
-	cout << "\033[0;34mGMENU2X:\033[0m Deleting section " << selSection() << endl;
-#endif
+	INFO("Deleting section '%s'\n", selSection().c_str());
+
 	gmenu2x->sc.del("sections/"+selSection()+".png");
 	links.erase( links.begin()+selSectionIndex() );
 	sections.erase( sections.begin()+selSectionIndex() );

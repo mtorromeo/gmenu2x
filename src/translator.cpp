@@ -24,6 +24,7 @@
 #include <stdarg.h>
 
 #include "translator.h"
+#include "debug.h"
 
 using namespace std;
 
@@ -66,9 +67,8 @@ string Translator::translate(const string &term,const char *replacestr,...) {
 		if (i != translations.end()) {
 			result = i->second;
 		}
-	#ifdef DEBUG
-		else cout << "Untranslated string: " << term << endl;
-	#endif
+
+		else WARNING("Untranslated string: '%s'\n", term.c_str());
 	}
 
 	va_list arglist;

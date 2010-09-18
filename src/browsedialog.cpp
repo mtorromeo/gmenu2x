@@ -5,6 +5,7 @@
 
 #include "FastDelegate.h"
 #include "filelister.h"
+#include "gmenu2x.h"
 
 using namespace fastdelegate;
 using namespace std;

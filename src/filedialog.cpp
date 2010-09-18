@@ -27,6 +27,7 @@
 #include <dirent.h>
 
 #include "filedialog.h"
+#include "gmenu2x.h"
 
 using namespace std;
 

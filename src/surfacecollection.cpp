@@ -21,8 +21,8 @@
 #include "surfacecollection.h"
 #include "surface.h"
 #include "utilities.h"
+#include "debug.h"
 
-using std::cout;
 using std::endl;
 using std::string;
 
@@ -49,7 +49,7 @@ string SurfaceCollection::getSkinFilePath(const string &file) {
 void SurfaceCollection::debug() {
 	SurfaceHash::iterator end = surfaces.end();
 	for(SurfaceHash::iterator curr = surfaces.begin(); curr != end; curr++){
-		cout << "key: " << curr->first << endl;
+		DEBUG("key: %i\n", curr->first.c_str());
 	}
 }
 
@@ -64,9 +64,8 @@ Surface *SurfaceCollection::add(Surface *s, const string &path) {
 }
 
 Surface *SurfaceCollection::add(const string &path, bool alpha) {
-#ifdef DEBUG
-	cout << "Adding surface: " << path << endl;
-#endif
+	DEBUG("Adding surface: '%s'\n", path.c_str());
+
 	if (exists(path)) del(path);
 	string filePath = path;
 
@@ -82,9 +81,7 @@ Surface *SurfaceCollection::add(const string &path, bool alpha) {
 }
 
 Surface *SurfaceCollection::addSkinRes(const string &path, bool alpha) {
-#ifdef DEBUG
-	cout << "Adding skin surface: " << path << endl;
-#endif
+	DEBUG("Adding skin surface: '%s'\n", path.c_str());
 
 	if (path.empty()) return NULL;
 	if (exists(path)) del(path);

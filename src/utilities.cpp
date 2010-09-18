@@ -30,6 +30,7 @@
 #include <SDL.h>
 
 #include "utilities.h"
+#include "debug.h"
 
 using namespace std;
 
@@ -74,9 +75,7 @@ bool rmtree(string path) {
 	struct dirent *dptr;
 	string filepath;
 
-#ifdef DEBUG
-	cout << "RMTREE: " << path << endl;
-#endif
+	DEBUG("RMTREE: '%s'\n", path.c_str());
 
 	if ((dirp = opendir(path.c_str())) == NULL) return false;
 	if (path[path.length()-1]!='/') path += "/";
