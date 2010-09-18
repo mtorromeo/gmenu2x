@@ -3,4 +3,5 @@ description=Configure options from the original frontend
 icon=skin:icons/configure.png
 exec=/usr/gp2x/gp2xmenu
 params=--disable-autorun --enable-terminate --view-system
+clock=24435968
 wrapper=true

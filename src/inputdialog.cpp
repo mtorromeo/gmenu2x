@@ -26,8 +26,10 @@
 using namespace std;
 using namespace fastdelegate;
 
-InputDialog::InputDialog(GMenu2X *gmenu2x, const string &text, const string &startvalue, const string &title, const string &icon) {
-	this->gmenu2x = gmenu2x;
+InputDialog::InputDialog(GMenu2X *gmenu2x, const string &text,
+	const string &startvalue, const string &title, const string &icon) :
+	Dialog(gmenu2x)
+{
 	if (title=="") {
 		this->title = text;
 		this->text = "";
@@ -129,9 +131,9 @@ bool InputDialog::exec() {
 	ok = true;
 	while (!close) {
 		gmenu2x->bg->blit(gmenu2x->s,0,0);
-		gmenu2x->writeTitle(title);
-		gmenu2x->writeSubTitle(text);
-		gmenu2x->drawTitleIcon(icon);
+		writeTitle(title);
+		writeSubTitle(text);
+		drawTitleIcon(icon);
 
 		gmenu2x->drawButton(gmenu2x->s, "y", gmenu2x->tr["Change keys"],
 		gmenu2x->drawButton(gmenu2x->s, "b", gmenu2x->tr["Confirm"],

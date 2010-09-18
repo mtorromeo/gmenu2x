@@ -26,26 +26,12 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <ext/hash_map>
+#include <tr1/unordered_map>
 
-using __gnu_cxx::hash_map;
-using __gnu_cxx::hash;
+using std::tr1::unordered_map;
+using std::tr1::hash;
 using std::string;
 using std::vector;
-
-namespace __gnu_cxx {
-	template<> struct hash< std::string > {
-		size_t operator()( const std::string& x ) const {
-			return hash< const char* >()( x.c_str() );
-		}
-	};
-}
-
-struct eqstr {
-	bool operator()(const char* s1, const char* s2) const {
-		return (s1 == s2) || (s1 && s2 && strcmp(s1, s2) == 0);
-	}
-};
 
 class case_less {
 public:

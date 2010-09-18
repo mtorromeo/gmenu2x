@@ -29,15 +29,15 @@
 #include <string>
 #include "gmenu2x.h"
 #include "menusetting.h"
+#include "dialog.h"
 
 using std::string;
 using std::vector;
 
-class SettingsDialog {
+class SettingsDialog : protected Dialog {
 private:
 	vector<MenuSetting *> voices;
 	string text, icon;
-	GMenu2X *gmenu2x;
 
 public:
 	SettingsDialog(GMenu2X *gmenu2x, const string &text, const string &icon="skin:sections/settings.png");

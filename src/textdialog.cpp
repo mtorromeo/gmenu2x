@@ -22,8 +22,9 @@
 
 using namespace std;
 
-TextDialog::TextDialog(GMenu2X *gmenu2x, const string &title, const string &description, const string &icon, vector<string> *text) {
-	this->gmenu2x = gmenu2x;
+TextDialog::TextDialog(GMenu2X *gmenu2x, const string &title, const string &description, const string &icon, vector<string> *text)
+	: Dialog(gmenu2x)
+{
 	this->text = text;
 	this->title = title;
 	this->description = description;
@@ -99,11 +100,11 @@ void TextDialog::exec() {
 
 	//link icon
 	if (!fileExists(icon))
-		gmenu2x->drawTitleIcon("icons/ebook.png",true,&bg);
+		drawTitleIcon("icons/ebook.png",true,&bg);
 	else
-		gmenu2x->drawTitleIcon(icon,false,&bg);
-	gmenu2x->writeTitle(title,&bg);
-	gmenu2x->writeSubTitle(description,&bg);
+		drawTitleIcon(icon,false,&bg);
+	writeTitle(title,&bg);
+	writeSubTitle(description,&bg);
 
 	gmenu2x->drawButton(&bg, "x", gmenu2x->tr["Exit"],
 	gmenu2x->drawButton(&bg, "down", gmenu2x->tr["Scroll"],

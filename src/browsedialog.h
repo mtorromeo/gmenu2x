@@ -25,13 +25,14 @@
 #include "filelister.h"
 #include "gmenu2x.h"
 #include "buttonbox.h"
+#include "dialog.h"
 
 class FileLister;
 
 using std::string;
 using std::vector;
 
-class BrowseDialog {
+class BrowseDialog : protected Dialog {
 protected:
 	enum Action {
 		ACT_NONE,
@@ -57,7 +58,6 @@ protected:
 
 	FileLister *fl;
 	unsigned int selected;
-	GMenu2X *gmenu2x;
 
 private:
 	int selRow;

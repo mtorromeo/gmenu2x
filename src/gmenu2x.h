@@ -247,9 +247,6 @@ public:
 	int drawButtonRight(Surface *s, const string &btn, const string &text, int x=5, int y=-10);
 	void drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint top, uint height);
 
-	void drawTitleIcon(const string &icon, bool skinRes=true, Surface *s=NULL);
-	void writeTitle(const string &title, Surface *s=NULL);
-	void writeSubTitle(const string &subtitle, Surface *s=NULL);
 	void drawTopBar(Surface *s=NULL);
 	void drawBottomBar(Surface *s=NULL);
 

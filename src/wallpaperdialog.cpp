@@ -23,14 +23,15 @@
 
 using namespace std;
 
-WallpaperDialog::WallpaperDialog(GMenu2X *gmenu2x) {
-	this->gmenu2x = gmenu2x;
+WallpaperDialog::WallpaperDialog(GMenu2X *gmenu2x) : Dialog(gmenu2x)
+{
 	selRow = 0;
 }
 
-bool WallpaperDialog::exec() {
+bool WallpaperDialog::exec()
+{
 	bool close = false, result = true;
-
+	
 	FileLister fl("skins/"+gmenu2x->confStr["skin"]+"/wallpapers");
 	fl.setFilter(".png,.jpg,.jpeg,.bmp");
 	vector<string> wallpapers;
@@ -61,9 +62,9 @@ bool WallpaperDialog::exec() {
 		gmenu2x->drawTopBar(gmenu2x->s);
 		gmenu2x->drawBottomBar(gmenu2x->s);
 
-		gmenu2x->drawTitleIcon("icons/wallpaper.png",true);
-		gmenu2x->writeTitle("Wallpaper selection");
-		gmenu2x->writeSubTitle("Select an image from the list, to use as a wallpaper");
+		drawTitleIcon("icons/wallpaper.png",true);
+		writeTitle("Wallpaper selection");
+		writeSubTitle("Select an image from the list, to use as a wallpaper");
 
 		gmenu2x->drawButton(gmenu2x->s, "b", gmenu2x->tr["Select wallpaper"],5);
 
