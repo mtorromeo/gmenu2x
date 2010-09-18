@@ -28,7 +28,7 @@ MenuSettingImage::MenuSettingImage(GMenu2X *gmenu2x, const string &name, const s
 {
 }
 
-void MenuSettingImage::select() {
+void MenuSettingImage::edit() {
 		ImageDialog id(gmenu2x, description, filter, value());
 	if (id.exec()) setValue(id.getPath() + "/" + id.getFile());
 }

@@ -20,30 +20,22 @@
 #ifndef MENUSETTINGSTRING_H
 #define MENUSETTINGSTRING_H
 
-#include "gmenu2x.h"
-#include "menusetting.h"
+#include "menusettingstringbase.h"
 
 using std::string;
 
-class MenuSettingString : public MenuSetting {
-private:
-	string originalValue, diagTitle, diagIcon;
-	string *_value;
+class MenuSettingString : public MenuSettingStringBase {
+protected:
+	virtual void edit();
 
-	void edit();
-	void clear();
+	string diagTitle, diagIcon;
 
 public:
-	MenuSettingString(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &diagTitle="", const string &diagIcon="");
-	virtual ~MenuSettingString() {};
-
-	virtual void draw(int y);
-	virtual void manageInput();
-	virtual void adjustInput();
-	virtual bool edited();
-
-	void setValue(const string &value);
-	const string &value();
+	MenuSettingString(GMenu2X *gmenu2x, const string &name,
+					  const string &description, string *value,
+					  const string &diagTitle = "",
+					  const string &diagIcon = "");
+	virtual ~MenuSettingString() {}
 };
 
 #endif

@@ -17,30 +17,34 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "menusettingdir.h"
-#include "dirdialog.h"
+#ifndef MENUSETTINGSTRINGBASE_H
+#define MENUSETTINGSTRINGBASE_H
 
-using namespace std;
-using namespace fastdelegate;
+#include "menusetting.h"
 
-MenuSettingDir::MenuSettingDir(
-		GMenu2X *gmenu2x, const string &name,
-		const string &description, string *value)
-	: MenuSettingStringBase(gmenu2x, name, description, value)
-{
-	IconButton *btn;
+using std::string;
 
-	btn = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Clear"]);
-	btn->setAction(MakeDelegate(this, &MenuSettingDir::clear));
-	buttonBox.add(btn);
+class MenuSettingStringBase : public MenuSetting {
+protected:
+	string originalValue;
+	string *_value;
 
-	btn = new IconButton(gmenu2x, "skin:imgs/buttons/b.png", gmenu2x->tr["Select a directory"]);
-	btn->setAction(MakeDelegate(this, &MenuSettingDir::edit));
-	buttonBox.add(btn);
-}
+	virtual void edit() = 0;
+	void clear();
 
-void MenuSettingDir::edit()
-{
-	DirDialog dd(gmenu2x, description, value());
-	if (dd.exec()) setValue( dd.getPath() );
-}
+public:
+	MenuSettingStringBase(
+			GMenu2X *gmenu2x, const string &name,
+			const string &description, string *value);
+	virtual ~MenuSettingStringBase();
+
+	virtual void draw(int y);
+	virtual void manageInput();
+	virtual void adjustInput();
+	virtual bool edited();
+
+	void setValue(const string &value) { *_value = value; }
+	const string &value() { return *_value; }
+};
+
+#endif

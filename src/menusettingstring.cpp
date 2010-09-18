@@ -19,20 +19,19 @@
  ***************************************************************************/
 #include "menusettingstring.h"
 #include "inputdialog.h"
-#include "utilities.h"
 
 using namespace std;
 using namespace fastdelegate;
 
-MenuSettingString::MenuSettingString(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &diagTitle, const string &diagIcon)
-	: MenuSetting(gmenu2x, name, description)
+MenuSettingString::MenuSettingString(
+		GMenu2X *gmenu2x, const string &name,
+		const string &description, string *value,
+		const string &diagTitle_, const string &diagIcon_)
+	: MenuSettingStringBase(gmenu2x, name, description, value)
+	, diagTitle(diagTitle_)
+	, diagIcon(diagIcon_)
 {
 	IconButton *btn;
-
-	_value = value;
-	originalValue = *value;
-	this->diagTitle = diagTitle;
-	this->diagIcon = diagIcon;
 
 	btn = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Clear"]);
 	btn->setAction(MakeDelegate(this, &MenuSettingString::clear));
@@ -43,44 +42,10 @@ MenuSettingString::MenuSettingString(GMenu2X *gmenu2x, const string &name, const
 	buttonBox.add(btn);
 }
 
-void MenuSettingString::draw(int y)
-{
-	MenuSetting::draw(y);
-	gmenu2x->s->write(gmenu2x->font, value(), 155, y+gmenu2x->font->getHalfHeight(), SFontHAlignLeft, SFontVAlignMiddle);
-}
-
-void MenuSettingString::manageInput()
-{
-	if (gmenu2x->input[ACTION_X])
-		clear();
-	if (gmenu2x->input[ACTION_B])
-		edit();
-}
-
-void MenuSettingString::setValue(const string &value)
-{
-	*_value = value;
-}
-
-const string &MenuSettingString::value()
-{
-	return *_value;
-}
-
-void MenuSettingString::adjustInput() {}
-
-void MenuSettingString::clear()
-{
-	setValue("");
-}
-
 void MenuSettingString::edit()
 {
-	InputDialog id(gmenu2x, gmenu2x->input, gmenu2x->ts,
+	InputDialog id(
+			gmenu2x, gmenu2x->input, gmenu2x->ts,
 				   description, value(), diagTitle, diagIcon);
 	if (id.exec()) setValue(id.getInput());
-}
-
-bool MenuSettingString::edited() {
-	return originalValue != value();
 }
