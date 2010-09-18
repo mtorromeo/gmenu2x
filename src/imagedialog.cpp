@@ -32,7 +32,6 @@
 using namespace std;
 
 ImageDialog::ImageDialog(GMenu2X *gmenu2x, const string &text, const string &filter, const string &file) : FileDialog(gmenu2x, text, filter, file) {
-	this->gmenu2x = gmenu2x;
 	this->text = text;
 	this->filter = filter;
 	setPath("/mnt");

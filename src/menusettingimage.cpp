@@ -25,7 +25,6 @@ using namespace std;
 
 MenuSettingImage::MenuSettingImage(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &filter)
 	: MenuSettingFile(gmenu2x,name,description,value,filter) {
-	this->gmenu2x = gmenu2x;
 	this->filter = filter;
 	_value = value;
 	originalValue = *value;

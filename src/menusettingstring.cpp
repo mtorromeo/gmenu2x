@@ -26,7 +26,6 @@ using namespace fastdelegate;
 
 MenuSettingString::MenuSettingString(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &diagTitle, const string &diagIcon)
 	: MenuSetting(gmenu2x,name,description) {
-	this->gmenu2x = gmenu2x;
 	_value = value;
 	originalValue = *value;
 	this->diagTitle = diagTitle;

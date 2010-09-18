@@ -29,7 +29,6 @@ class MenuSettingDir : public MenuSetting {
 private:
 	string originalValue;
 	string *_value;
-	GMenu2X *gmenu2x;
 	IconButton *btnClear, *btnSelect;
 
 	void select();

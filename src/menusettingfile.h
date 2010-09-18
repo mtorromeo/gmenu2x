@@ -30,7 +30,6 @@ protected:
 	string originalValue;
 	string *_value;
 	string filter;
-	GMenu2X *gmenu2x;
 	IconButton *btnClear, *btnSelect;
 
 	void select();
