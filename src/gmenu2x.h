@@ -21,10 +21,6 @@
 #ifndef GMENU2X_H
 #define GMENU2X_H
 
-#include <string>
-#include <iostream>
-#include <google/dense_hash_map>
-
 #include "surfacecollection.h"
 #include "iconbutton.h"
 #include "translator.h"
@@ -33,6 +29,11 @@
 #include "touchscreen.h"
 #include "inputmanager.h"
 #include "surface.h"
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <tr1/unordered_map>
 
 const int MAX_VOLUME_SCALE_FACTOR = 200;
 // Default values - going to add settings adjustment, saving, loading and such
@@ -60,12 +61,12 @@ enum color {
 };
 
 using std::string;
+using std::vector;
 using fastdelegate::FastDelegate0;
-using google::dense_hash_map;
 
 typedef FastDelegate0<> MenuAction;
-typedef dense_hash_map<string, string, hash<string> > ConfStrHash;
-typedef dense_hash_map<string, int, hash<string> > ConfIntHash;
+typedef unordered_map<string, string, hash<string> > ConfStrHash;
+typedef unordered_map<string, int, hash<string> > ConfIntHash;
 
 typedef struct {
 	unsigned short batt;

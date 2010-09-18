@@ -22,6 +22,7 @@
 #include <iomanip>
 #include <sstream>
 #include <fstream>
+#include <algorithm>
 #include <stdlib.h>
 #include <unistd.h>
 #include <math.h>
@@ -184,15 +185,6 @@ GMenu2X::GMenu2X() {
 #else
 	f200 = true;
 #endif
-
-	confStr.set_empty_key(" ");
-	confStr.set_deleted_key("");
-	confInt.set_empty_key(" ");
-	confInt.set_deleted_key("");
-	skinConfInt.set_empty_key(" ");
-	skinConfInt.set_deleted_key("");
-	skinConfStr.set_empty_key(" ");
-	skinConfStr.set_deleted_key("");
 
 	//open2x
 	savedVolumeMode = 0;

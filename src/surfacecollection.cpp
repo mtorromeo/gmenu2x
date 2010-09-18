@@ -27,8 +27,6 @@ using std::endl;
 using std::string;
 
 SurfaceCollection::SurfaceCollection(bool defaultAlpha, const string &skin) {
-	surfaces.set_empty_key(" ");
-	surfaces.set_deleted_key("");
 	this->defaultAlpha = defaultAlpha;
 	setSkin(skin);
 }

@@ -20,12 +20,12 @@
 #ifndef SURFACECOLLECTION_H
 #define SURFACECOLLECTION_H
 
-#include <google/dense_hash_map>
 #include <string>
+#include <tr1/unordered_map>
 
 class Surface;
 
-typedef google::dense_hash_map<std::string, Surface *> SurfaceHash;
+typedef std::tr1::unordered_map<std::string, Surface *> SurfaceHash;
 
 /**
 Hash Map of surfaces that loads surfaces not already loaded and reuses already loaded ones.
