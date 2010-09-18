@@ -38,6 +38,7 @@ Link::Link(GMenu2X *gmenu2x) : Button(gmenu2x, true) {
 void Link::run() {}
 
 void Link::paint() {
+	cout << "x: " << iconX << ", y: " << rect.y << ", pad: " << padding << endl;
 	gmenu2x->sc[getIconPath()]->blit(gmenu2x->s, iconX, rect.y+padding, 32,32);
 	gmenu2x->s->write( gmenu2x->font, getTitle(), iconX+16, rect.y+gmenu2x->skinConfInt["linkHeight"]-padding, SFontHAlignCenter, SFontVAlignBottom );
 }
@@ -120,5 +121,5 @@ void Link::setPosition(int x, int y) {
 
 void Link::recalcCoordinates() {
 	iconX = rect.x+(rect.w-32)/2;
-	padding = (gmenu2x->skinConfInt["linkHeight"] - 32 - gmenu2x->font->getLineHeight()) / 3;
+	padding = max(gmenu2x->skinConfInt["linkHeight"] - 32 - gmenu2x->font->getLineHeight(), 0) / 3;
 }
