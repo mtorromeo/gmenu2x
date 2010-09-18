@@ -31,12 +31,14 @@ protected:
 	string *_value;
 	string filter;
 
-	void select();
+	virtual void select();
 	void clear();
 
 public:
-	MenuSettingFile(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &filter="");
-	virtual ~MenuSettingFile() {};
+	MenuSettingFile(GMenu2X *gmenu2x, const string &name,
+					const string &description, string *value,
+					const string &filter = "");
+	virtual ~MenuSettingFile() {}
 
 	virtual void draw(int y);
 	virtual void manageInput();

@@ -24,14 +24,13 @@
 using namespace std;
 using namespace fastdelegate;
 
-MenuSettingFile::MenuSettingFile(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &filter)
-	: MenuSetting(gmenu2x,name,description)
+MenuSettingFile::MenuSettingFile(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &filter_)
+	: MenuSetting(gmenu2x, name, description)
+	, originalValue(*value)
+	, _value(value)
+	, filter(filter_)
 {
 	IconButton *btn;
-
-	this->filter = filter;
-	_value = value;
-	originalValue = *value;
 
 	btn = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Clear"]);
 	btn->setAction(MakeDelegate(this, &MenuSettingFile::clear));
@@ -50,10 +49,8 @@ void MenuSettingFile::draw(int y)
 
 void MenuSettingFile::manageInput()
 {
-	if (gmenu2x->input[ACTION_X])
-		setValue("");
-	if (gmenu2x->input[ACTION_B])
-		select();
+	if (gmenu2x->input[ACTION_X]) clear();
+	if (gmenu2x->input[ACTION_B]) select();
 }
 
 void MenuSettingFile::clear()
@@ -64,8 +61,9 @@ void MenuSettingFile::clear()
 void MenuSettingFile::select()
 {
 	FileDialog fd(gmenu2x, description, filter, value());
-	if (fd.exec())
-		setValue(fd.getPath()+"/"+fd.getFile());
+	if (fd.exec()) {
+		setValue(fd.getPath() + "/" + fd.getFile());
+	}
 }
 
 void MenuSettingFile::setValue(const string &value)
