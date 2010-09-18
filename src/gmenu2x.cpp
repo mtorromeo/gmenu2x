@@ -1908,7 +1908,8 @@ int GMenu2X::getVolumeScaler() {
 const string &GMenu2X::getExePath() {
 	if (path.empty()) {
 		char buf[255];
-		int l = readlink("/proc/self/exe",buf,255);
+		memset(buf, 0, 255);
+		int l = readlink("/proc/self/exe", buf, 255);
 
 		path = buf;
 		path = path.substr(0,l);
