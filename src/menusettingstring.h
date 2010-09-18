@@ -22,19 +22,17 @@
 
 #include "menusettingstringbase.h"
 
-using std::string;
-
 class MenuSettingString : public MenuSettingStringBase {
 protected:
 	virtual void edit();
 
-	string diagTitle, diagIcon;
+	std::string diagTitle, diagIcon;
 
 public:
-	MenuSettingString(GMenu2X *gmenu2x, const string &name,
-					  const string &description, string *value,
-					  const string &diagTitle = "",
-					  const string &diagIcon = "");
+	MenuSettingString(GMenu2X *gmenu2x, const std::string &name,
+					  const std::string &description, std::string *value,
+					  const std::string &diagTitle = "",
+					  const std::string &diagIcon = "");
 	virtual ~MenuSettingString() {}
 };
 

@@ -18,10 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "menusettingfile.h"
+#include "iconbutton.h"
 #include "filedialog.h"
 
-using namespace std;
-using namespace fastdelegate;
+using std::string;
+using fastdelegate::MakeDelegate;
 
 MenuSettingFile::MenuSettingFile(
 		GMenu2X *gmenu2x, const string &name,

@@ -19,8 +19,12 @@
  ***************************************************************************/
 
 #include "surfacecollection.h"
+#include "surface.h"
+#include "utilities.h"
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::string;
 
 SurfaceCollection::SurfaceCollection(bool defaultAlpha, const string &skin) {
 	surfaces.set_empty_key(" ");

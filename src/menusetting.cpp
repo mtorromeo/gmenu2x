@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "menusetting.h"
+#include "sfontplus.h"
+#include "gmenu2x.h"
 
 MenuSetting::MenuSetting(GMenu2X *gmenu2x, const string &name, const string &description)
 	: gmenu2x(gmenu2x), buttonBox(gmenu2x), name(name), description(description) {

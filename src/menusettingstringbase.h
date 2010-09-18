@@ -22,28 +22,26 @@
 
 #include "menusetting.h"
 
-using std::string;
-
 class MenuSettingStringBase : public MenuSetting {
 protected:
-	string originalValue;
-	string *_value;
+	std::string originalValue;
+	std::string *_value;
 
 	virtual void edit() = 0;
 	void clear();
 
 public:
 	MenuSettingStringBase(
-			GMenu2X *gmenu2x, const string &name,
-			const string &description, string *value);
+			GMenu2X *gmenu2x, const std::string &name,
+			const std::string &description, std::string *value);
 	virtual ~MenuSettingStringBase();
 
 	virtual void draw(int y);
 	virtual void manageInput();
 	virtual bool edited();
 
-	void setValue(const string &value) { *_value = value; }
-	const string &value() { return *_value; }
+	void setValue(const std::string &value) { *_value = value; }
+	const std::string &value() { return *_value; }
 };
 
 #endif

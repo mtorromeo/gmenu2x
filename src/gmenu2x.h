@@ -32,6 +32,7 @@
 #include "utilities.h"
 #include "touchscreen.h"
 #include "inputmanager.h"
+#include "surface.h"
 
 const int MAX_VOLUME_SCALE_FACTOR = 200;
 // Default values - going to add settings adjustment, saving, loading and such

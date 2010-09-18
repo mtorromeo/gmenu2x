@@ -18,11 +18,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "menusettingint.h"
+#include "gmenu2x.h"
 #include "utilities.h"
+
 #include <sstream>
 
-using namespace std;
-using namespace fastdelegate;
+using std::string;
+using std::stringstream;
+using fastdelegate::MakeDelegate;
 
 MenuSettingInt::MenuSettingInt(GMenu2X *gmenu2x, const string &name, const string &description, int *value, int min, int max, int delta)
 	: MenuSetting(gmenu2x,name,description) {

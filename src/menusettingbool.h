@@ -20,10 +20,8 @@
 #ifndef MENUSETTINGBOOL_H
 #define MENUSETTINGBOOL_H
 
-#include "iconbutton.h"
 #include "menusetting.h"
 
-using std::string;
 class GMenu2X;
 
 class MenuSettingBool : public MenuSetting {
@@ -34,11 +32,11 @@ private:
 	bool originalValue;
 	bool *_value;
 	int *_ivalue;
-	string strvalue;
+	std::string strvalue;
 
 public:
-	MenuSettingBool(GMenu2X *gmenu2x, const string &name, const string &description, bool *value);
-	MenuSettingBool(GMenu2X *gmenu2x, const string &name, const string &description, int *value);
+	MenuSettingBool(GMenu2X *gmenu2x, const std::string &name, const std::string &description, bool *value);
+	MenuSettingBool(GMenu2X *gmenu2x, const std::string &name, const std::string &description, int *value);
 	virtual ~MenuSettingBool() {};
 
 	virtual void draw(int y);

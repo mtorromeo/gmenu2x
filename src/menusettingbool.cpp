@@ -18,11 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "menusettingbool.h"
+#include "gmenu2x.h"
 #include "utilities.h"
+
 #include <sstream>
 
-using namespace std;
-using namespace fastdelegate;
+using std::string;
+using fastdelegate::MakeDelegate;
 
 MenuSettingBool::MenuSettingBool(GMenu2X *gmenu2x, const string &name, const string &description, int *value)
 	: MenuSetting(gmenu2x, name, description)

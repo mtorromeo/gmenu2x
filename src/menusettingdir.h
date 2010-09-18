@@ -22,16 +22,14 @@
 
 #include "menusettingstringbase.h"
 
-using std::string;
-
 class MenuSettingDir : public MenuSettingStringBase {
 protected:
 	virtual void edit();
 
 public:
 	MenuSettingDir(
-			GMenu2X *gmenu2x, const string &name,
-			const string &description, string *value);
+			GMenu2X *gmenu2x, const std::string &name,
+			const std::string &description, std::string *value);
 	virtual ~MenuSettingDir() {}
 };
 
