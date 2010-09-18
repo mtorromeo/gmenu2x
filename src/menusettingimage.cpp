@@ -24,34 +24,30 @@
 using namespace std;
 
 MenuSettingImage::MenuSettingImage(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &filter)
-	: MenuSettingFile(gmenu2x,name,description,value,filter) {
-	this->filter = filter;
-	_value = value;
-	originalValue = *value;
+	: MenuSettingFile(gmenu2x, name, description, value, filter)
+{
 }
 
-void MenuSettingImage::manageInput() {
-	if ( gmenu2x->input[ACTION_X] ) setValue("");
-	if ( gmenu2x->input[ACTION_B] ) {
+void MenuSettingImage::select() {
 		ImageDialog id(gmenu2x, description, filter, value());
-		if (id.exec()) setValue( id.getPath()+"/"+id.getFile() );
-	}
+	if (id.exec()) setValue(id.getPath() + "/" + id.getFile());
 }
 
 void MenuSettingImage::setValue(const string &value) {
-	string skinpath = gmenu2x->getExePath()+"skins/"+gmenu2x->confStr["skin"];
-	bool inSkinDir = value.substr(0,skinpath.length()) == skinpath;
+	string skinpath(gmenu2x->getExePath() + "skins/" + gmenu2x->confStr["skin"]);
+	bool inSkinDir = value.substr(0, skinpath.length()) == skinpath;
 	if (!inSkinDir && gmenu2x->confStr["skin"] != "Default") {
-		skinpath = gmenu2x->getExePath()+"skins/Default";
-		inSkinDir = value.substr(0,skinpath.length()) == skinpath;
+		skinpath = gmenu2x->getExePath() + "skins/Default";
+		inSkinDir = value.substr(0, skinpath.length()) == skinpath;
 	}
 	if (inSkinDir) {
 		string tempIcon = value.substr(skinpath.length(), value.length());
 		string::size_type pos = tempIcon.find("/");
-		if (pos != string::npos)
-			*_value = "skin:"+tempIcon.substr(pos+1,value.length());
-		else
+		if (pos != string::npos) {
+			*_value = "skin:" + tempIcon.substr(pos + 1, value.length());
+		} else {
 			*_value = value;
+		}
 	} else {
 		*_value = value;
 	}

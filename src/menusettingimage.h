@@ -20,17 +20,20 @@
 #ifndef MENUSETTINGIMAGE_H
 #define MENUSETTINGIMAGE_H
 
-#include "gmenu2x.h"
 #include "menusettingfile.h"
 
 using std::string;
 
 class MenuSettingImage : public MenuSettingFile {
-public:
-	MenuSettingImage(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &filter="");
-	virtual ~MenuSettingImage() {};
+protected:
+	virtual void select();
 
-	virtual void manageInput();
+public:
+	MenuSettingImage(GMenu2X *gmenu2x, const string &name,
+					 const string &description, string *value,
+					 const string &filter = "");
+	virtual ~MenuSettingImage() {}
+
 	virtual void setValue(const string &value);
 };
 
