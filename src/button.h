@@ -29,18 +29,20 @@ using std::string;
 using fastdelegate::FastDelegate0;
 
 typedef FastDelegate0<> ButtonAction;
-class GMenu2X;
+class Touchscreen;
 
 class Button {
+private:
+	Touchscreen &ts;
+
 protected:
-	GMenu2X *gmenu2x;
 	ButtonAction action;
 	SDL_Rect rect;
 	bool doubleClick;
 	int lastTick;
 
 public:
-	Button(GMenu2X *gmenu2x, bool doubleClick = false);
+	Button(Touchscreen &ts, bool doubleClick = false);
 	virtual ~Button() {};
 
 	SDL_Rect getRect();

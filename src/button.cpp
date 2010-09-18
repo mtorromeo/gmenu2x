@@ -4,19 +4,17 @@
 using namespace std;
 using namespace fastdelegate;
 
-Button::Button(GMenu2X * gmenu2x, bool doubleClick) {
-	this->gmenu2x = gmenu2x;
-	this->doubleClick = doubleClick;
-	lastTick = 0;
-	action = MakeDelegate(this, &Button::voidAction);
-	rect.x = 0;
-	rect.y = 0;
-	rect.w = 0;
-	rect.h = 0;
+Button::Button(Touchscreen &ts_, bool doubleClick_)
+	: ts(ts_)
+	, action(MakeDelegate(this, &Button::voidAction))
+	, rect((SDL_Rect) { 0, 0, 0, 0 })
+	, doubleClick(doubleClick_)
+	, lastTick(0)
+{
 }
 
 void Button::paint() {
-	if (gmenu2x->ts.inRect(rect))
+	if (ts.inRect(rect))
 		if (!paintHover()) return;
 }
 
@@ -25,11 +23,11 @@ bool Button::paintHover() {
 }
 
 bool Button::isPressed() {
-	return gmenu2x->ts.pressed() && gmenu2x->ts.inRect(rect);
+	return ts.pressed() && ts.inRect(rect);
 }
 
 bool Button::isReleased() {
-	return gmenu2x->ts.released() && gmenu2x->ts.inRect(rect);
+	return ts.released() && ts.inRect(rect);
 }
 
 bool Button::handleTS() {
@@ -48,7 +46,7 @@ bool Button::handleTS() {
 }
 
 void Button::exec() {
-	gmenu2x->ts.setHandled();
+	ts.setHandled();
 	action();
 }
 

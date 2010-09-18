@@ -11,6 +11,7 @@ class Surface;
 
 class IconButton : public Button {
 protected:
+	GMenu2X *gmenu2x;
 	string icon, label;
 	int labelPosition, labelMargin;
 	unsigned short labelHAlign, labelVAlign;

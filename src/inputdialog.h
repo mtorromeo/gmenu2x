@@ -46,8 +46,13 @@ using std::vector;
 
 typedef vector<string> stringlist;
 
+class InputManager;
+class Touchscreen;
+
 class InputDialog : protected Dialog {
 private:
+	InputManager &inputMgr;
+	Touchscreen &ts;
 	int selRow, selCol;
 	bool close, ok;
 	string title, text, icon;
@@ -68,7 +73,7 @@ private:
 	void setKeyboard(int);
 
 public:
-	InputDialog(GMenu2X *gmenu2x, const string &text, const string &startvalue="", const string &title="", const string &icon="");
+	InputDialog(GMenu2X *gmenu2x, InputManager &inputMgr, Touchscreen &ts, const string &text, const string &startvalue="", const string &title="", const string &icon="");
 
 	bool exec();
 	const string &getInput() { return input; }

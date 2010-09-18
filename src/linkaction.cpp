@@ -25,7 +25,6 @@ using namespace std;
 
 LinkAction::LinkAction(GMenu2X *gmenu2x, LinkRunAction act)
 	: Link(gmenu2x) {
-	this->gmenu2x = gmenu2x;
 	this->action = act;
 }
 
