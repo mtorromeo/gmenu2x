@@ -170,8 +170,9 @@ bool InputManager::operator[](int action) {
 }
 
 bool InputManager::isActive(int action) {
-	for (uint x=0; x<mappings[action].size(); x++) {
-		InputMap map = mappings[action][x];
+	MappingList mapList = mappings[action];
+	for (MappingList::const_iterator it = mapList.begin(); it !=mapList.end(); ++it) {
+		InputMap map = *it;
 
 		switch (map.type) {
 			case InputManager::MAPPING_TYPE_BUTTON:
