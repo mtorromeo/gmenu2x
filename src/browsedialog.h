@@ -30,7 +30,6 @@
 class FileLister;
 
 using std::string;
-using std::vector;
 
 class BrowseDialog : protected Dialog {
 protected:

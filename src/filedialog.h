@@ -26,8 +26,6 @@
 #include "browsedialog.h"
 
 
-using std::vector;
-
 class FileDialog : public BrowseDialog {
 public:
 	FileDialog(GMenu2X *gmenu2x, const string &text, const string &filter="",
