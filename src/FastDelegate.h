@@ -47,7 +47,7 @@
 
 #ifndef FASTDELEGATE_H
 #define FASTDELEGATE_H
-#if _MSC_VER > 1000
+#if defined(_MSC_VER) && _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
@@ -80,7 +80,7 @@
 #if defined(_MSC_VER) && !defined(__MWERKS__) && !defined(__VECTOR_C) && !defined(__ICL) && !defined(__BORLANDC__)
 #define FASTDLGT_ISMSVC
 
-#if (_MSC_VER <1300) // Many workarounds are required for VC6.
+#if defined(_MSC_VER) && _MSC_VER < 1300 // Many workarounds are required for VC6.
 #define FASTDLGT_VC6
 #pragma warning(disable:4786) // disable this ridiculous warning
 #endif
@@ -720,7 +720,7 @@ public:
 	// We may need to convert the m_pthis pointers, so that
 	// they remain as self-references.
 	template< class DerivedClass >
-	inline void CopyFrom (DerivedClass *pParent, const DelegateMemento &x) {
+	inline void CopyFrom (DerivedClass */*pParent*/, const DelegateMemento &x) {
 		SetMementoFrom(x);
 		if (m_pStaticFunction!=0) {
 			// transform self references...

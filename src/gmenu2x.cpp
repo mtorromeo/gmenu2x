@@ -79,13 +79,13 @@
 using namespace std;
 using namespace fastdelegate;
 
-int main(int argc, char *argv[]) {
+int main(int /*argc*/, char */*argv*/[]) {
 	cout << "----" << endl;
 	cout << "GMenu2X starting: If you read this message in the logs, check http://gmenu2x.sourceforge.net/page/Troubleshooting for a solution" << endl;
 	cout << "----" << endl;
 
 	signal(SIGINT,&exit);
-	GMenu2X app(argc,argv);
+	GMenu2X app();
 	return 0;
 }
 
@@ -166,7 +166,7 @@ void GMenu2X::gp2x_tvout_off() {
 #endif
 }
 
-GMenu2X::GMenu2X(int argc, char *argv[]) {
+GMenu2X::GMenu2X() {
 	//Detect firmware version and type
 	if (fileExists("/etc/open2x")) {
 		fwType = "open2x";

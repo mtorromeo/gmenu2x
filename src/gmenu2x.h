@@ -150,7 +150,7 @@ private:
 	const string &colorToString(enum color);
 
 public:
-	GMenu2X(int argc, char *argv[]);
+	GMenu2X();
 	~GMenu2X();
 	void quit();
 
