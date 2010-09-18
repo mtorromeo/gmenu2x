@@ -35,6 +35,7 @@ using std::vector;
 class BrowseDialog : protected Dialog {
 protected:
 	BrowseDialog(GMenu2X *gmenu2x, const string &title, const string &subtitle);
+	virtual ~BrowseDialog();
 
 	virtual void beforeFileList() {};
 	virtual void onChangeDir() {};
