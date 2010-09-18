@@ -25,56 +25,60 @@ using namespace std;
 using namespace fastdelegate;
 
 MenuSettingFile::MenuSettingFile(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &filter)
-	: MenuSetting(gmenu2x,name,description) {
+	: MenuSetting(gmenu2x,name,description)
+{
+	IconButton *btn;
+
 	this->filter = filter;
 	_value = value;
 	originalValue = *value;
 
-	btnClear = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Clear"]);
-	btnClear->setAction(MakeDelegate(this, &MenuSettingFile::clear));
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Clear"]);
+	btn->setAction(MakeDelegate(this, &MenuSettingFile::clear));
+	buttonBox.add(btn);
 
-	btnSelect = new IconButton(gmenu2x, "skin:imgs/buttons/b.png", gmenu2x->tr["Select a file"]);
-	btnSelect->setAction(MakeDelegate(this, &MenuSettingFile::select));
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/b.png", gmenu2x->tr["Select a file"]);
+	btn->setAction(MakeDelegate(this, &MenuSettingFile::select));
+	buttonBox.add(btn);
 }
 
-void MenuSettingFile::draw(int y) {
+void MenuSettingFile::draw(int y)
+{
 	MenuSetting::draw(y);
 	gmenu2x->s->write( gmenu2x->font, value(), 155, y+gmenu2x->font->getHalfHeight(), SFontHAlignLeft, SFontVAlignMiddle );
 }
 
-void MenuSettingFile::handleTS() {
-	btnSelect->handleTS();
-	btnClear->handleTS();
+void MenuSettingFile::manageInput()
+{
+	if (gmenu2x->input[ACTION_X])
+		setValue("");
+	if (gmenu2x->input[ACTION_B])
+		select();
 }
 
-void MenuSettingFile::manageInput() {
-	if ( gmenu2x->input[ACTION_X] ) setValue("");
-	if ( gmenu2x->input[ACTION_B] ) select();
-}
-
-void MenuSettingFile::clear() {
+void MenuSettingFile::clear()
+{
 	setValue("");
 }
 
-void MenuSettingFile::select() {
+void MenuSettingFile::select()
+{
 	FileDialog fd(gmenu2x, description, filter, value());
-	if (fd.exec()) setValue( fd.getPath()+"/"+fd.getFile() );
+	if (fd.exec())
+		setValue(fd.getPath()+"/"+fd.getFile());
 }
 
-void MenuSettingFile::setValue(const string &value) {
+void MenuSettingFile::setValue(const string &value)
+{
 	*_value = value;
 }
 
-const string &MenuSettingFile::value() {
+const string &MenuSettingFile::value()
+{
 	return *_value;
 }
 
 void MenuSettingFile::adjustInput() {}
-
-void MenuSettingFile::drawSelected(int) {
-	gmenu2x->drawButton(btnClear,
-	gmenu2x->drawButton(btnSelect));
-}
 
 bool MenuSettingFile::edited() {
 	return originalValue != value();

@@ -9,19 +9,20 @@
 using namespace fastdelegate;
 
 BrowseDialog::BrowseDialog(GMenu2X *gmenu2x, const string &title, const string &subtitle)
-	: gmenu2x(gmenu2x), title(title), subtitle(subtitle) {
-	ButtonAction actionUp = MakeDelegate(this, &BrowseDialog::directoryUp);
-	ButtonAction actionEnter = MakeDelegate(this, &BrowseDialog::directoryEnter);
-	ButtonAction actionConfirm = MakeDelegate(this, &BrowseDialog::confirm);
+	: gmenu2x(gmenu2x), title(title), subtitle(subtitle), buttonBox(gmenu2x) {
+	IconButton *btn;
 
-	btnUp = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Up one folder"]);
-	btnUp->setAction(actionUp);
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Up one folder"]);
+	btn->setAction(MakeDelegate(this, &BrowseDialog::directoryUp));
+	buttonBox.add(btn);
 
-	btnEnter = new IconButton(gmenu2x, "skin:imgs/buttons/b.png", gmenu2x->tr["Enter folder"]);
-	btnEnter->setAction(actionEnter);
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/b.png", gmenu2x->tr["Enter folder"]);
+	btn->setAction(MakeDelegate(this, &BrowseDialog::directoryEnter));
+	buttonBox.add(btn);
 
-	btnConfirm = new IconButton(gmenu2x, "skin:imgs/buttons/start.png", gmenu2x->tr["Confirm"]);
-	btnConfirm->setAction(actionConfirm);
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/start.png", gmenu2x->tr["Confirm"]);
+	btn->setAction(MakeDelegate(this, &BrowseDialog::confirm));
+	buttonBox.add(btn);
 
 	iconGoUp = gmenu2x->sc.skinRes("imgs/go-up.png");
 	iconFolder = gmenu2x->sc.skinRes("imgs/folder.png");
@@ -139,9 +140,7 @@ void BrowseDialog::handleInput() {
 		break;
 	}
 
-	btnUp->handleTS();
-	btnEnter->handleTS();
-	btnConfirm->handleTS();
+	buttonBox.handleTS();
 }
 
 void BrowseDialog::directoryUp() {
@@ -183,9 +182,7 @@ void BrowseDialog::paint() {
 	gmenu2x->writeTitle(title);
 	gmenu2x->writeSubTitle(subtitle);
 
-	gmenu2x->drawButton(btnConfirm,
-	gmenu2x->drawButton(btnUp,
-	gmenu2x->drawButton(btnEnter, 5)));
+	buttonBox.paint(5);
 
 	if (selected>firstElement+numRows-1)
 		firstElement = selected-numRows+1;

@@ -24,56 +24,61 @@ using namespace std;
 using namespace fastdelegate;
 
 MenuSettingMultiString::MenuSettingMultiString(GMenu2X *gmenu2x, const string &name, const string &description, string *value, vector<string> *choices)
-	: MenuSetting(gmenu2x,name,description) {
+	: MenuSetting(gmenu2x,name,description)
+{
+	IconButton *btn;
+
 	this->choices = choices;
 	this->value = value;
 	originalValue = *value;
 	setSel( find(choices->begin(),choices->end(),*value)-choices->begin() );
 
-	btnDec = new IconButton(gmenu2x, "skin:imgs/buttons/left.png");
-	btnDec->setAction(MakeDelegate(this, &MenuSettingMultiString::decSel));
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/left.png");
+	btn->setAction(MakeDelegate(this, &MenuSettingMultiString::decSel));
+	buttonBox.add(btn);
 
-	btnInc = new IconButton(gmenu2x, "skin:imgs/buttons/right.png", gmenu2x->tr["Change value"]);
-	btnInc->setAction(MakeDelegate(this, &MenuSettingMultiString::incSel));
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/right.png", gmenu2x->tr["Change value"]);
+	btn->setAction(MakeDelegate(this, &MenuSettingMultiString::incSel));
+	buttonBox.add(btn);
 }
 
-void MenuSettingMultiString::draw(int y) {
+void MenuSettingMultiString::draw(int y)
+{
 	MenuSetting::draw(y);
 	gmenu2x->s->write( gmenu2x->font, *value, 155, y+gmenu2x->font->getHalfHeight(), SFontHAlignLeft, SFontVAlignMiddle );
 }
 
-void MenuSettingMultiString::handleTS() {
-	btnDec->handleTS();
-	btnInc->handleTS();
+void MenuSettingMultiString::manageInput()
+{
+	if (gmenu2x->input[ACTION_LEFT ])
+		decSel();
+	if (gmenu2x->input[ACTION_RIGHT])
+		incSel();
 }
 
-void MenuSettingMultiString::manageInput() {
-	if ( gmenu2x->input[ACTION_LEFT ] ) decSel();
-	if ( gmenu2x->input[ACTION_RIGHT] ) incSel();
-}
-
-void MenuSettingMultiString::incSel() {
+void MenuSettingMultiString::incSel()
+{
 	setSel(selected+1);
 }
 
-void MenuSettingMultiString::decSel() {
+void MenuSettingMultiString::decSel()
+{
 	setSel(selected-1);
 }
 
-void MenuSettingMultiString::setSel(int sel) {
-	if (sel<0) sel = choices->size()-1;
-	else if (sel>=(int)choices->size()) sel = 0;
+void MenuSettingMultiString::setSel(int sel)
+{
+	if (sel < 0)
+		sel = choices->size()-1;
+	else if (sel >= (int)choices->size())
+		sel = 0;
 	selected = sel;
 	*value = (*choices)[sel];
 }
 
 void MenuSettingMultiString::adjustInput() {}
 
-void MenuSettingMultiString::drawSelected(int) {
-	gmenu2x->drawButton(btnInc,
-	gmenu2x->drawButton(btnDec)-6);
-}
-
-bool MenuSettingMultiString::edited() {
+bool MenuSettingMultiString::edited()
+{
 	return originalValue != *value;
 }

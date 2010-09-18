@@ -24,6 +24,7 @@
 #include <string>
 #include "filelister.h"
 #include "gmenu2x.h"
+#include "buttonbox.h"
 
 class FileLister;
 
@@ -73,12 +74,13 @@ private:
 	unsigned int numRows;
 	unsigned int rowHeight;
 
-
 	bool ts_pressed;
 
 	Surface *iconGoUp;
 	Surface *iconFolder;
 	Surface *iconFile;
+
+	ButtonBox buttonBox;
 
 	Action getAction();
 	void handleInput();

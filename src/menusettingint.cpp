@@ -26,6 +26,8 @@ using namespace fastdelegate;
 
 MenuSettingInt::MenuSettingInt(GMenu2X *gmenu2x, const string &name, const string &description, int *value, int min, int max, int delta)
 	: MenuSetting(gmenu2x,name,description) {
+	IconButton *btn;
+	
 	_value = value;
 	originalValue = *value;
 	this->min = min;
@@ -37,29 +39,26 @@ MenuSettingInt::MenuSettingInt(GMenu2X *gmenu2x, const string &name, const strin
 	ButtonAction actionInc = MakeDelegate(this, &MenuSettingInt::inc);
 	ButtonAction actionDec = MakeDelegate(this, &MenuSettingInt::dec);
 
-	btnInc = new IconButton(gmenu2x, "skin:imgs/buttons/y.png", gmenu2x->tr["Increase value"]);
-	btnInc->setAction(actionInc);
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/left.png");
+	btn->setAction(actionDec);
+	buttonBox.add(btn);
 
-	btnDec = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Decrease value"]);
-	btnDec->setAction(actionDec);
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/y.png", gmenu2x->tr["Increase value"]);
+	btn->setAction(actionInc);
+	buttonBox.add(btn);
 
-	btnInc2 = new IconButton(gmenu2x, "skin:imgs/buttons/right.png");
-	btnInc2->setAction(actionInc);
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/right.png");
+	btn->setAction(actionInc);
+	buttonBox.add(btn);
 
-	btnDec2 = new IconButton(gmenu2x, "skin:imgs/buttons/left.png");
-	btnDec2->setAction(actionDec);
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Decrease value"]);
+	btn->setAction(actionDec);
+	buttonBox.add(btn);
 }
 
 void MenuSettingInt::draw(int y) {
 	MenuSetting::draw(y);
 	gmenu2x->s->write( gmenu2x->font, strvalue, 155, y+gmenu2x->font->getHalfHeight(), SFontHAlignLeft, SFontVAlignMiddle );
-}
-
-void MenuSettingInt::handleTS() {
-	btnInc->handleTS();
-	btnDec->handleTS();
-	btnInc2->handleTS();
-	btnDec2->handleTS();
 }
 
 void MenuSettingInt::manageInput() {
@@ -83,24 +82,20 @@ void MenuSettingInt::setValue(int value) {
 	ss >> strvalue;
 }
 
-int MenuSettingInt::value() {
+int MenuSettingInt::value()
+{
 	return *_value;
 }
 
-void MenuSettingInt::adjustInput() {
+void MenuSettingInt::adjustInput()
+{
 #ifdef TARGET_GP2X
 	gmenu2x->input.setInterval(30, ACTION_LEFT );
 	gmenu2x->input.setInterval(30, ACTION_RIGHT);
 #endif
 }
 
-void MenuSettingInt::drawSelected(int) {
-	gmenu2x->drawButton(btnInc,
-	gmenu2x->drawButton(btnInc2,
-	gmenu2x->drawButton(btnDec,
-	gmenu2x->drawButton(btnDec2)-10))-10);
-}
-
-bool MenuSettingInt::edited() {
+bool MenuSettingInt::edited()
+{
 	return originalValue != value();
 }

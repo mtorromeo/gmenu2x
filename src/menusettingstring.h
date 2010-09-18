@@ -29,7 +29,6 @@ class MenuSettingString : public MenuSetting {
 private:
 	string originalValue, diagTitle, diagIcon;
 	string *_value;
-	IconButton *btnClear, *btnEdit;
 
 	void edit();
 	void clear();
@@ -39,10 +38,8 @@ public:
 	virtual ~MenuSettingString() {};
 
 	virtual void draw(int y);
-	virtual void handleTS();
 	virtual void manageInput();
 	virtual void adjustInput();
-	virtual void drawSelected(int y);
 	virtual bool edited();
 
 	void setValue(const string &value);

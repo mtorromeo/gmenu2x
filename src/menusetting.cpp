@@ -19,18 +19,18 @@
  ***************************************************************************/
 #include "menusetting.h"
 
-MenuSetting::MenuSetting(GMenu2X *gmenu2x, const string &name, const string &description) {
-	this->gmenu2x = gmenu2x;
-	this->name = name;
-	this->description = description;
+MenuSetting::MenuSetting(GMenu2X *gmenu2x, const string &name, const string &description)
+	: gmenu2x(gmenu2x), buttonBox(gmenu2x), name(name), description(description) {
 }
 
 void MenuSetting::draw(int y) {
 	gmenu2x->s->write( gmenu2x->font, name, 5, y+gmenu2x->font->getHalfHeight(), SFontHAlignLeft, SFontVAlignMiddle );
 }
 
-void MenuSetting::handleTS() {}
-void MenuSetting::manageInput() {}
-void MenuSetting::adjustInput() {}
-void MenuSetting::drawSelected(int) {}
-bool MenuSetting::edited() { return true; }
+void MenuSetting::handleTS() {
+	buttonBox.handleTS();
+}
+
+void MenuSetting::drawSelected(int) {
+	buttonBox.paint(5);
+}
