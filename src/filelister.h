@@ -37,13 +37,13 @@ public:
 	void browse();
 
 	vector<string> directories, files, exclude;
-	uint size();
-	uint dirCount();
-	uint fileCount();
-	string operator[](uint);
-	string at(uint);
-	bool isFile(uint);
-	bool isDirectory(uint);
+	unsigned int size();
+	unsigned int dirCount();
+	unsigned int fileCount();
+	string operator[](unsigned int);
+	string at(unsigned int);
+	bool isFile(unsigned int);
+	bool isDirectory(unsigned int);
 
 	const string &getPath();
 	void setPath(const string &path, bool doBrowse=true);

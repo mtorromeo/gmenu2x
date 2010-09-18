@@ -1025,8 +1025,8 @@ void GMenu2X::explorer() {
 			writeConfigOpen2x();
 
 		//string command = cmdclean(fd.path()+"/"+fd.file) + "; sync & cd "+cmdclean(getExePath())+"; exec ./gmenu2x";
-		string command = cmdclean(fd.path()+"/"+fd.file);
-		chdir(fd.path().c_str());
+		string command = cmdclean(fd.getPath()+"/"+fd.getFile());
+		chdir(fd.getPath().c_str());
 		quit();
 		setClock(200);
 		execlp("/bin/sh","/bin/sh","-c",command.c_str(),NULL);
@@ -1438,7 +1438,7 @@ void GMenu2X::addLink() {
 	FileDialog fd(this,tr["Select an application"]);
 	if (fd.exec()) {
 		ledOn();
-		menu->addLink(fd.path(), fd.file);
+		menu->addLink(fd.getPath(), fd.getFile());
 		sync();
 		ledOff();
 	}

@@ -58,7 +58,7 @@ void MenuSettingFile::clear() {
 
 void MenuSettingFile::select() {
 	FileDialog fd(gmenu2x, description, filter, value());
-	if (fd.exec()) setValue( fd.path()+"/"+fd.file );
+	if (fd.exec()) setValue( fd.getPath()+"/"+fd.getFile() );
 }
 
 void MenuSettingFile::setValue(const string &value) {
