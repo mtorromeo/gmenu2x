@@ -26,54 +26,54 @@ using namespace fastdelegate;
 
 MenuSettingDir::MenuSettingDir(GMenu2X *gmenu2x, const string &name, const string &description, string *value)
 	: MenuSetting(gmenu2x,name,description) {
+	IconButton *btn;
+
 	_value = value;
 	originalValue = *value;
 
-	btnClear = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Clear"]);
-	btnClear->setAction(MakeDelegate(this, &MenuSettingDir::clear));
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Clear"]);
+	btn->setAction(MakeDelegate(this, &MenuSettingDir::clear));
+	buttonBox.add(btn);
 
-	btnSelect = new IconButton(gmenu2x, "skin:imgs/buttons/b.png", gmenu2x->tr["Select a directory"]);
-	btnSelect->setAction(MakeDelegate(this, &MenuSettingDir::select));
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/b.png", gmenu2x->tr["Select a directory"]);
+	btn->setAction(MakeDelegate(this, &MenuSettingDir::select));
+	buttonBox.add(btn);
 }
 
-void MenuSettingDir::draw(int y) {
+void MenuSettingDir::draw(int y)
+{
 	MenuSetting::draw(y);
 	gmenu2x->s->write( gmenu2x->font, value(), 155, y+gmenu2x->font->getHalfHeight(), SFontHAlignLeft, SFontVAlignMiddle );
 }
 
-void MenuSettingDir::handleTS() {
-	btnSelect->handleTS();
-	btnClear->handleTS();
+void MenuSettingDir::manageInput()
+{
+	if (gmenu2x->input[ACTION_X]) setValue("");
+	if (gmenu2x->input[ACTION_B]) select();
 }
 
-void MenuSettingDir::manageInput() {
-	if ( gmenu2x->input[ACTION_X] ) setValue("");
-	if ( gmenu2x->input[ACTION_B] ) select();
-}
-
-void MenuSettingDir::clear() {
+void MenuSettingDir::clear()
+{
 	setValue("");
 }
 
-void MenuSettingDir::select() {
+void MenuSettingDir::select()
+{
 	DirDialog dd(gmenu2x, description, value());
 	if (dd.exec()) setValue( dd.getPath() );
 }
 
-void MenuSettingDir::setValue(const string &value) {
+void MenuSettingDir::setValue(const string &value)
+{
 	*_value = value;
 }
 
-const string &MenuSettingDir::value() {
+const string &MenuSettingDir::value()
+{
 	return *_value;
 }
 
 void MenuSettingDir::adjustInput() {}
-
-void MenuSettingDir::drawSelected(int) {
-	gmenu2x->drawButton(btnClear,
-	gmenu2x->drawButton(btnSelect));
-}
 
 bool MenuSettingDir::edited() {
 	return originalValue != value();

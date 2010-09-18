@@ -32,7 +32,6 @@ private:
 	bool *_value;
 	int *_ivalue;
 	string strvalue;
-	IconButton *btnToggle;
 
 	void toggle();
 
@@ -42,10 +41,8 @@ public:
 	virtual ~MenuSettingBool() {};
 
 	virtual void draw(int y);
-	virtual void handleTS();
 	virtual void manageInput();
 	virtual void adjustInput();
-	virtual void drawSelected(int y);
 	virtual bool edited();
 
 	void setValue(int value);

@@ -46,7 +46,7 @@ public:
 
 	SDL_Rect getRect();
 	void setSize(int w, int h);
-	void setPosition(int x, int y);
+	virtual void setPosition(int x, int y);
 
 	virtual void paint();
 	virtual bool paintHover();
@@ -54,6 +54,7 @@ public:
 	bool isPressed();
 	bool isReleased();
 	bool handleTS();
+
 	void exec();
 	void voidAction() {};
 	void setAction(ButtonAction action);

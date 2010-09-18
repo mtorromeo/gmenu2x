@@ -25,55 +25,59 @@ using namespace std;
 using namespace fastdelegate;
 
 MenuSettingString::MenuSettingString(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &diagTitle, const string &diagIcon)
-	: MenuSetting(gmenu2x,name,description) {
+	: MenuSetting(gmenu2x, name, description)
+{
+	IconButton *btn;
+
 	_value = value;
 	originalValue = *value;
 	this->diagTitle = diagTitle;
 	this->diagIcon = diagIcon;
 
-	btnClear = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Clear"]);
-	btnClear->setAction(MakeDelegate(this, &MenuSettingString::clear));
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Clear"]);
+	btn->setAction(MakeDelegate(this, &MenuSettingString::clear));
+	buttonBox.add(btn);
 
-	btnEdit = new IconButton(gmenu2x, "skin:imgs/buttons/b.png", gmenu2x->tr["Edit"]);
-	btnEdit->setAction(MakeDelegate(this, &MenuSettingString::edit));
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/b.png", gmenu2x->tr["Edit"]);
+	btn->setAction(MakeDelegate(this, &MenuSettingString::edit));
+	buttonBox.add(btn);
 }
 
-void MenuSettingString::draw(int y) {
+void MenuSettingString::draw(int y)
+{
 	MenuSetting::draw(y);
-	gmenu2x->s->write( gmenu2x->font, value(), 155, y+gmenu2x->font->getHalfHeight(), SFontHAlignLeft, SFontVAlignMiddle );
+	gmenu2x->s->write(gmenu2x->font, value(), 155, y+gmenu2x->font->getHalfHeight(), SFontHAlignLeft, SFontVAlignMiddle);
 }
 
-void MenuSettingString::handleTS() {
-	btnEdit->handleTS();
+void MenuSettingString::manageInput()
+{
+	if (gmenu2x->input[ACTION_X])
+		clear();
+	if (gmenu2x->input[ACTION_B])
+		edit();
 }
 
-void MenuSettingString::manageInput() {
-	if ( gmenu2x->input[ACTION_X] ) clear();
-	if ( gmenu2x->input[ACTION_B] ) edit();
-}
-
-void MenuSettingString::setValue(const string &value) {
+void MenuSettingString::setValue(const string &value)
+{
 	*_value = value;
 }
 
-const string &MenuSettingString::value() {
+const string &MenuSettingString::value()
+{
 	return *_value;
 }
 
 void MenuSettingString::adjustInput() {}
 
-void MenuSettingString::clear() {
+void MenuSettingString::clear()
+{
 	setValue("");
 }
 
-void MenuSettingString::edit() {
+void MenuSettingString::edit()
+{
 	InputDialog id(gmenu2x,description,value(), diagTitle,diagIcon);
 	if (id.exec()) setValue(id.input);
-}
-
-void MenuSettingString::drawSelected(int) {
-	gmenu2x->drawButton(btnClear,
-	gmenu2x->drawButton(btnEdit));
 }
 
 bool MenuSettingString::edited() {

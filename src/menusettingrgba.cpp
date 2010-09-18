@@ -25,6 +25,8 @@ using namespace fastdelegate;
 
 MenuSettingRGBA::MenuSettingRGBA(GMenu2X *gmenu2x, const string &name, const string &description, RGBAColor *value)
 	: MenuSetting(gmenu2x,name,description) {
+	IconButton *btn;
+
 	selPart = 0;
 	_value = value;
 	originalValue = *value;
@@ -33,17 +35,21 @@ MenuSettingRGBA::MenuSettingRGBA(GMenu2X *gmenu2x, const string &name, const str
 	this->setB(this->value().b);
 	this->setA(this->value().a);
 
-	btnDec = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Decrease"]);
-	btnDec->setAction(MakeDelegate(this, &MenuSettingRGBA::dec));
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Decrease"]);
+	btn->setAction(MakeDelegate(this, &MenuSettingRGBA::dec));
+	buttonBox.add(btn);
 
-	btnInc = new IconButton(gmenu2x, "skin:imgs/buttons/y.png", gmenu2x->tr["Increase"]);
-	btnInc->setAction(MakeDelegate(this, &MenuSettingRGBA::inc));
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/y.png", gmenu2x->tr["Increase"]);
+	btn->setAction(MakeDelegate(this, &MenuSettingRGBA::inc));
+	buttonBox.add(btn);
 
-	btnLeftComponent = new IconButton(gmenu2x, "skin:imgs/buttons/left.png");
-	btnLeftComponent->setAction(MakeDelegate(this, &MenuSettingRGBA::leftComponent));
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/left.png");
+	btn->setAction(MakeDelegate(this, &MenuSettingRGBA::leftComponent));
+	buttonBox.add(btn);
 
-	btnRightComponent = new IconButton(gmenu2x, "skin:imgs/buttons/right.png", gmenu2x->tr["Change color component"]);
-	btnRightComponent->setAction(MakeDelegate(this, &MenuSettingRGBA::rightComponent));
+	btn = new IconButton(gmenu2x, "skin:imgs/buttons/right.png", gmenu2x->tr["Change color component"]);
+	btn->setAction(MakeDelegate(this, &MenuSettingRGBA::rightComponent));
+	buttonBox.add(btn);
 }
 
 void MenuSettingRGBA::draw(int y) {
@@ -58,71 +64,83 @@ void MenuSettingRGBA::draw(int y) {
 }
 
 void MenuSettingRGBA::handleTS() {
-	if (gmenu2x->ts.pressed())
-		for (int i=0; i<4; i++)
+	if (gmenu2x->ts.pressed()) {
+		for (int i=0; i<4; i++) {
 			if (i!=selPart && gmenu2x->ts.inRect(166+i*36,y,36,14)) {
 				selPart = i;
 				i = 4;
 			}
+		}
+	}
 
-	btnDec->handleTS();
-	btnInc->handleTS();
-	btnLeftComponent->handleTS();
-	btnRightComponent->handleTS();
+	MenuSetting::handleTS();
 }
 
 void MenuSettingRGBA::manageInput() {
-	if ( gmenu2x->input[ACTION_Y    ]) inc();
-	if ( gmenu2x->input[ACTION_X    ]) dec();
-	if ( gmenu2x->input[ACTION_LEFT ]) leftComponent();
-	if ( gmenu2x->input[ACTION_RIGHT]) rightComponent();
+	if (gmenu2x->input[ACTION_Y])
+		inc();
+	if (gmenu2x->input[ACTION_X])
+		dec();
+	if (gmenu2x->input[ACTION_LEFT])
+		leftComponent();
+	if (gmenu2x->input[ACTION_RIGHT])
+		rightComponent();
 }
 
-void MenuSettingRGBA::dec() {
-	setSelPart( constrain(getSelPart()-1,0,255) );
+void MenuSettingRGBA::dec()
+{
+	setSelPart(constrain(getSelPart()-1,0,255));
 }
 
-void MenuSettingRGBA::inc() {
-	setSelPart( constrain(getSelPart()+1,0,255) );
+void MenuSettingRGBA::inc()
+{
+	setSelPart(constrain(getSelPart()+1,0,255));
 }
 
-void MenuSettingRGBA::leftComponent() {
+void MenuSettingRGBA::leftComponent()
+{
 	selPart = constrain(selPart-1,0,3);
 }
 
-void MenuSettingRGBA::rightComponent() {
+void MenuSettingRGBA::rightComponent()
+{
 	selPart = constrain(selPart+1,0,3);
 }
 
-void MenuSettingRGBA::setR(unsigned short r) {
+void MenuSettingRGBA::setR(unsigned short r)
+{
 	_value->r = r;
 	stringstream ss;
 	ss << r;
 	ss >> strR;
 }
 
-void MenuSettingRGBA::setG(unsigned short g) {
+void MenuSettingRGBA::setG(unsigned short g)
+{
 	_value->g = g;
 	stringstream ss;
 	ss << g;
 	ss >> strG;
 }
 
-void MenuSettingRGBA::setB(unsigned short b) {
+void MenuSettingRGBA::setB(unsigned short b)
+{
 	_value->b = b;
 	stringstream ss;
 	ss << b;
 	ss >> strB;
 }
 
-void MenuSettingRGBA::setA(unsigned short a) {
+void MenuSettingRGBA::setA(unsigned short a)
+{
 	_value->a = a;
 	stringstream ss;
 	ss << a;
 	ss >> strA;
 }
 
-void MenuSettingRGBA::setSelPart(unsigned short value) {
+void MenuSettingRGBA::setSelPart(unsigned short value)
+{
 	switch (selPart) {
 		default: case 0: setR(value); break;
 		case 1: setG(value); break;
@@ -131,11 +149,13 @@ void MenuSettingRGBA::setSelPart(unsigned short value) {
 	}
 }
 
-RGBAColor MenuSettingRGBA::value() {
+RGBAColor MenuSettingRGBA::value()
+{
 	return *_value;
 }
 
-unsigned short MenuSettingRGBA::getSelPart() {
+unsigned short MenuSettingRGBA::getSelPart()
+{
 	switch (selPart) {
 		default: case 0: return value().r;
 		case 1: return value().g;
@@ -144,7 +164,8 @@ unsigned short MenuSettingRGBA::getSelPart() {
 	}
 }
 
-void MenuSettingRGBA::adjustInput() {
+void MenuSettingRGBA::adjustInput()
+{
 #ifdef TARGET_GP2X
 	gmenu2x->input.setInterval(30, ACTION_Y );
 	gmenu2x->input.setInterval(30, ACTION_X );
@@ -152,16 +173,15 @@ void MenuSettingRGBA::adjustInput() {
 #endif
 }
 
-void MenuSettingRGBA::drawSelected(int y) {
+void MenuSettingRGBA::drawSelected(int y)
+{
 	int x = 166+selPart*36;
 	gmenu2x->s->box( x, y, 36, 14, gmenu2x->skinConfColors[COLOR_SELECTION_BG] );
 
-	gmenu2x->drawButton(btnDec,
-	gmenu2x->drawButton(btnInc,
-	gmenu2x->drawButton(btnRightComponent,
-	gmenu2x->drawButton(btnLeftComponent)-6)));
+	MenuSetting::drawSelected(y);
 }
 
-bool MenuSettingRGBA::edited() {
+bool MenuSettingRGBA::edited()
+{
 	return originalValue.r != value().r || originalValue.g != value().g || originalValue.b != value().b || originalValue.a != value().a;
 }

@@ -25,6 +25,7 @@
 #endif
 
 #include "gmenu2x.h"
+#include "buttonbox.h"
 
 using std::string;
 
@@ -37,16 +38,19 @@ class MenuSetting {
 protected:
 	GMenu2X *gmenu2x;
 
+	ButtonBox buttonBox;
+
 public:
 	MenuSetting(GMenu2X *gmenu2x, const string &name, const string &description);
 	virtual ~MenuSetting() {};
 
 	virtual void draw(int y);
 	virtual void handleTS();
-	virtual void manageInput();
-	virtual void adjustInput();
-	virtual void drawSelected(int y);
-	virtual bool edited();
+
+	virtual void manageInput() {};
+	virtual void adjustInput() {};
+	virtual void drawSelected(int);
+	virtual bool edited() { return true; };
 
 	string name, description;
 };

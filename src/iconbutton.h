@@ -33,7 +33,7 @@ public:
 	virtual void paint();
 	virtual bool paintHover();
 
-	void setPosition(int x, int y);
+	virtual void setPosition(int x, int y);
 
 	const string &getLabel();
 	void setLabel(const string &label);

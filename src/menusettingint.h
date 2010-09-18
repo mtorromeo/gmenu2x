@@ -32,7 +32,6 @@ private:
 	int originalValue;
 	int *_value;
 	string strvalue;
-	IconButton *btnInc, *btnDec, *btnInc2, *btnDec2;
 
 	void inc();
 	void dec();
@@ -41,11 +40,9 @@ public:
 	MenuSettingInt(GMenu2X *gmenu2x, const string &name, const string &description, int *value, int min, int max, int delta=1);
 	virtual ~MenuSettingInt() {};
 
-	virtual void draw(int y);
-	virtual void handleTS();
 	virtual void manageInput();
 	virtual void adjustInput();
-	virtual void drawSelected(int y);
+	virtual void draw(int);
 	virtual bool edited();
 
 	int min, max, delta;

@@ -29,20 +29,16 @@ class MenuSettingDir : public MenuSetting {
 private:
 	string originalValue;
 	string *_value;
-	IconButton *btnClear, *btnSelect;
 
 	void select();
 	void clear();
-
 public:
 	MenuSettingDir(GMenu2X *gmenu2x, const string &name, const string &description, string *value);
 	virtual ~MenuSettingDir() {};
 
 	virtual void draw(int y);
-	virtual void handleTS();
 	virtual void manageInput();
 	virtual void adjustInput();
-	virtual void drawSelected(int y);
 	virtual bool edited();
 
 	void setValue(const string &value);

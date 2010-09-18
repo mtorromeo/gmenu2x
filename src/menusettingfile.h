@@ -30,7 +30,6 @@ protected:
 	string originalValue;
 	string *_value;
 	string filter;
-	IconButton *btnClear, *btnSelect;
 
 	void select();
 	void clear();
@@ -40,10 +39,8 @@ public:
 	virtual ~MenuSettingFile() {};
 
 	virtual void draw(int y);
-	virtual void handleTS();
 	virtual void manageInput();
 	virtual void adjustInput();
-	virtual void drawSelected(int y);
 	virtual bool edited();
 
 	virtual void setValue(const string &value);

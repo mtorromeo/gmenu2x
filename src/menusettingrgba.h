@@ -33,7 +33,6 @@ private:
 	string strR, strG, strB, strA;
 	RGBAColor originalValue;
 	RGBAColor *_value;
-	IconButton *btnDec, *btnInc, *btnLeftComponent, *btnRightComponent;
 
 	void dec();
 	void inc();
