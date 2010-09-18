@@ -25,7 +25,6 @@ using namespace std;
 
 TextManualDialog::TextManualDialog(GMenu2X *gmenu2x, const string &title, const string &icon, vector<string> *text)
 	: TextDialog(gmenu2x,title,"",icon,text) {
-	this->gmenu2x = gmenu2x;
 
 	//split the text in multiple pages
 	for (uint i=0; i<text->size(); i++) {
@@ -70,10 +69,10 @@ void TextManualDialog::exec() {
 
 	//link icon
 	if (!fileExists(icon))
-		gmenu2x->drawTitleIcon("icons/ebook.png",true,&bg);
+		drawTitleIcon("icons/ebook.png",true,&bg);
 	else
-		gmenu2x->drawTitleIcon(icon,false,&bg);
-	gmenu2x->writeTitle(title+(description.empty() ? "" : ": "+description),&bg);
+		drawTitleIcon(icon,false,&bg);
+	writeTitle(title+(description.empty() ? "" : ": "+description),&bg);
 
 	gmenu2x->drawButton(&bg, "x", gmenu2x->tr["Exit"],
 	gmenu2x->drawButton(&bg, "right", gmenu2x->tr["Change page"],
@@ -89,7 +88,7 @@ void TextManualDialog::exec() {
 	string pageStatus;
 	while (!close) {
 		bg.blit(gmenu2x->s,0,0);
-		gmenu2x->writeSubTitle(pages[page].title);
+		writeSubTitle(pages[page].title);
 		drawText(&pages[page].text, firstRow, rowsPerPage);
 
 		ss.clear();

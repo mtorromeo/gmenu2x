@@ -23,14 +23,14 @@
 
 #include <string>
 #include "gmenu2x.h"
+#include "dialog.h"
 
 using std::string;
 using std::vector;
 
-class WallpaperDialog {
+class WallpaperDialog : protected Dialog {
 private:
 	int selRow;
-	GMenu2X *gmenu2x;
 
 public:
 	WallpaperDialog(GMenu2X *gmenu2x);

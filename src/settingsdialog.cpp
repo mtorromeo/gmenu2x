@@ -25,8 +25,9 @@
 
 using namespace std;
 
-SettingsDialog::SettingsDialog(GMenu2X *gmenu2x, const string &text, const string &icon) {
-	this->gmenu2x = gmenu2x;
+SettingsDialog::SettingsDialog(GMenu2X *gmenu2x, const string &text, const string &icon)
+	: Dialog(gmenu2x)
+{
 	this->text = text;
 
 	if (icon!="" && gmenu2x->sc[icon] != NULL)
@@ -61,8 +62,9 @@ bool SettingsDialog::exec() {
 
 		gmenu2x->drawTopBar(gmenu2x->s);
 		//link icon
-		gmenu2x->drawTitleIcon(icon);
-		gmenu2x->writeTitle(text);
+		drawTitleIcon(icon);
+		writeTitle(text);
+
 		gmenu2x->drawBottomBar(gmenu2x->s);
 
 		if (sel>firstElement+numRows-1) firstElement=sel-numRows+1;
@@ -95,7 +97,7 @@ bool SettingsDialog::exec() {
 		gmenu2x->drawScrollBar(numRows,voices.size(),firstElement,clipRect.y+1,clipRect.h);
 
 		//description
-		gmenu2x->writeSubTitle(voices[sel]->description);
+		writeSubTitle(voices[sel]->description);
 
 		gmenu2x->s->flip();
 		voices[sel]->handleTS();

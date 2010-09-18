@@ -61,7 +61,7 @@ string Translator::translate(const string &term,const char *replacestr,...) {
 	string result = term;
 
 	if (!_lang.empty()) {
-		hash_map<string, string>::iterator i = translations.find(term);
+		unordered_map<string, string>::iterator i = translations.find(term);
 		if (i != translations.end()) {
 			result = i->second;
 		}

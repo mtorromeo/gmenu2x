@@ -7,9 +7,10 @@
 #include "filelister.h"
 
 using namespace fastdelegate;
+using namespace std;
 
 BrowseDialog::BrowseDialog(GMenu2X *gmenu2x, const string &title, const string &subtitle)
-	: gmenu2x(gmenu2x), title(title), subtitle(subtitle), buttonBox(gmenu2x) {
+	: Dialog(gmenu2x), title(title), subtitle(subtitle), buttonBox(gmenu2x) {
 	IconButton *btn;
 
 	btn = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Up one folder"]);
@@ -178,9 +179,9 @@ void BrowseDialog::paint() {
 	Surface *icon;
 
 	gmenu2x->bg->blit(gmenu2x->s, 0, 0);
-	gmenu2x->drawTitleIcon("icons/explorer.png", true);
-	gmenu2x->writeTitle(title);
-	gmenu2x->writeSubTitle(subtitle);
+	drawTitleIcon("icons/explorer.png", true);
+	writeTitle(title);
+	writeSubTitle(subtitle);
 
 	buttonBox.paint(5);
 

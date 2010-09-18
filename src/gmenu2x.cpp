@@ -1985,33 +1985,6 @@ void GMenu2X::drawScrollBar(uint pagesize, uint totalsize, uint pagepos, uint to
 	s->box(resX-6, by, 3, bs, skinConfColors[COLOR_SELECTION_BG]);
 }
 
-void GMenu2X::drawTitleIcon(const string &icon, bool skinRes, Surface *s) {
-	if (s==NULL) s = this->s;
-
-	Surface *i = NULL;
-	if (!icon.empty()) {
-		if (skinRes)
-			i = sc.skinRes(icon);
-		else
-			i = sc[icon];
-	}
-
-	if (i==NULL)
-		i = sc.skinRes("icons/generic.png");
-
-	i->blit(s,4,(skinConfInt["topBarHeight"]-32)/2);
-}
-
-void GMenu2X::writeTitle(const string &title, Surface *s) {
-	if (s==NULL) s = this->s;
-	s->write(font,title,40, skinConfInt["topBarHeight"]/4, SFontHAlignLeft, SFontVAlignMiddle);
-}
-
-void GMenu2X::writeSubTitle(const string &subtitle, Surface *s) {
-	if (s==NULL) s = this->s;
-	s->write(font,subtitle,40, skinConfInt["topBarHeight"]/4*3, SFontHAlignLeft, SFontVAlignMiddle);
-}
-
 void GMenu2X::drawTopBar(Surface *s) {
 	if (s==NULL) s = this->s;
 

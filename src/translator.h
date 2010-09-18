@@ -30,7 +30,7 @@ Hash Map of translation strings.
 class Translator {
 private:
 	string _lang;
-	hash_map<string, string> translations;
+	unordered_map<string, string> translations;
 
 public:
 	Translator(const string &lang="");

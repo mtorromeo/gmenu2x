@@ -39,18 +39,18 @@
 
 #include <string>
 #include "gmenu2x.h"
+#include "dialog.h"
 
 using std::string;
 using std::vector;
 
 typedef vector<string> stringlist;
 
-class InputDialog {
+class InputDialog : protected Dialog {
 private:
 	int selRow, selCol;
 	bool close, ok;
 	string title, text, icon;
-	GMenu2X *gmenu2x;
 	short curKeyboard;
 	vector<stringlist> keyboard;
 	stringlist *kb;
