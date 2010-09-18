@@ -57,7 +57,7 @@ void MenuSettingDir::clear() {
 
 void MenuSettingDir::select() {
 	DirDialog dd(gmenu2x, description, value());
-	if (dd.exec()) setValue( dd.path );
+	if (dd.exec()) setValue( dd.getPath() );
 }
 
 void MenuSettingDir::setValue(const string &value) {
