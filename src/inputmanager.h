@@ -78,7 +78,7 @@ public:
 	vector<bool> actions;
 	vector<MappingList> mappings;
 
-	void update();
+	bool update();
 	int count();
 	void setActionsCount(int count);
 	void setInterval(int ms, int action = -1);

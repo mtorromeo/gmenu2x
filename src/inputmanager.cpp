@@ -128,7 +128,8 @@ void InputManager::setActionsCount(int count) {
 	}
 }
 
-void InputManager::update() {
+bool InputManager::update() {
+	bool anyactions = false;
 	SDL_JoystickUpdate();
 	
 	events.clear();
@@ -145,11 +146,13 @@ void InputManager::update() {
 			if (tick-actionTick[x]>interval[x]) {
 				actions[x] = true;
 				actionTick[x] = tick;
+				anyactions = true;
 			}
 		} else {
 			actionTick[x] = 0;
 		}
 	}
+	return anyactions;
 }
 
 int InputManager::count() {

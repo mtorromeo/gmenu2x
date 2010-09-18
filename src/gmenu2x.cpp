@@ -950,7 +950,8 @@ void GMenu2X::main() {
 		}
 
 //#ifdef TARGET_GP2X
-		input.update();
+		while (!input.update())
+			usleep(LOOP_DELAY);
 		if ( input[ACTION_B] && menu->selLink()!=NULL ) menu->selLink()->run();
 		else if ( input[ACTION_START]  ) options();
 		else if ( input[ACTION_SELECT] ) contextMenu();
@@ -1008,8 +1009,6 @@ void GMenu2X::main() {
 				offset = menu->sectionLinks()->size()>linksPerPage ? 2 : 6;
 			}
 		}
-
-		usleep(LOOP_DELAY);
 	}
 }
 
