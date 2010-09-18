@@ -47,6 +47,7 @@ const int BATTERY_READS = 10;
 
 const int LOOP_DELAY=30000;
 
+// Note: Keep this in sync with colorNames!
 enum color {
 	COLOR_TOP_BAR_BG,
 	COLOR_BOTTOM_BAR_BG,
@@ -147,9 +148,6 @@ private:
 	void gp2x_init();
 	void gp2x_deinit();
 	void toggleTvOut();
-
-	enum color stringToColor(const string &name);
-	const string &colorToString(enum color);
 
 public:
 	GMenu2X();
