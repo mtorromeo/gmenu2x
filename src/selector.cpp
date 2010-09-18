@@ -149,7 +149,7 @@ int Selector::exec(int startSelection) {
 		if ( gmenu2x->input[ACTION_X] ) {
 			if (link->getSelectorBrowser()) {
 				string::size_type p = dir.rfind("/", dir.size()-2);
-				if (p==string::npos || dir.substr(0,4)!="/mnt" || p<4) {
+				if (p==string::npos || dir.compare(0,4,"/mnt")!=0 || p<4) {
 					close = true;
 					result = false;
 				} else {
