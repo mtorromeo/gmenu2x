@@ -26,7 +26,7 @@ using std::string;
 
 class MenuSettingImage : public MenuSettingFile {
 protected:
-	virtual void select();
+	virtual void edit();
 
 public:
 	MenuSettingImage(GMenu2X *gmenu2x, const string &name,

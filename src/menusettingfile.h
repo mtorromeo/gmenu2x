@@ -20,33 +20,22 @@
 #ifndef MENUSETTINGFILE_H
 #define MENUSETTINGFILE_H
 
-#include "gmenu2x.h"
-#include "menusetting.h"
+#include "menusettingstringbase.h"
 
 using std::string;
 
-class MenuSettingFile : public MenuSetting {
+class MenuSettingFile : public MenuSettingStringBase {
 protected:
-	string originalValue;
-	string *_value;
+	virtual void edit();
+
 	string filter;
 
-	virtual void select();
-	void clear();
-
 public:
-	MenuSettingFile(GMenu2X *gmenu2x, const string &name,
+	MenuSettingFile(
+			GMenu2X *gmenu2x, const string &name,
 					const string &description, string *value,
 					const string &filter = "");
 	virtual ~MenuSettingFile() {}
-
-	virtual void draw(int y);
-	virtual void manageInput();
-	virtual void adjustInput();
-	virtual bool edited();
-
-	virtual void setValue(const string &value);
-	const string &value();
 };
 
 #endif

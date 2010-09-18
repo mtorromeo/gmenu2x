@@ -17,30 +17,49 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "menusettingdir.h"
-#include "dirdialog.h"
+#include "menusettingstringbase.h"
 
 using namespace std;
 using namespace fastdelegate;
 
-MenuSettingDir::MenuSettingDir(
+MenuSettingStringBase::MenuSettingStringBase(
 		GMenu2X *gmenu2x, const string &name,
 		const string &description, string *value)
-	: MenuSettingStringBase(gmenu2x, name, description, value)
+	: MenuSetting(gmenu2x, name, description)
+	, originalValue(*value)
+	, _value(value)
 {
-	IconButton *btn;
-
-	btn = new IconButton(gmenu2x, "skin:imgs/buttons/x.png", gmenu2x->tr["Clear"]);
-	btn->setAction(MakeDelegate(this, &MenuSettingDir::clear));
-	buttonBox.add(btn);
-
-	btn = new IconButton(gmenu2x, "skin:imgs/buttons/b.png", gmenu2x->tr["Select a directory"]);
-	btn->setAction(MakeDelegate(this, &MenuSettingDir::edit));
-	buttonBox.add(btn);
 }
 
-void MenuSettingDir::edit()
+MenuSettingStringBase::~MenuSettingStringBase()
 {
-	DirDialog dd(gmenu2x, description, value());
-	if (dd.exec()) setValue( dd.getPath() );
+}
+
+void MenuSettingStringBase::draw(int y)
+{
+	MenuSetting::draw(y);
+	gmenu2x->s->write(
+			gmenu2x->font, value(),
+			155, y + gmenu2x->font->getHalfHeight(),
+			SFontHAlignLeft, SFontVAlignMiddle);
+}
+
+void MenuSettingStringBase::manageInput()
+{
+	if (gmenu2x->input[ACTION_X]) clear();
+	if (gmenu2x->input[ACTION_B]) edit();
+}
+
+void MenuSettingStringBase::adjustInput()
+{
+}
+
+void MenuSettingStringBase::clear()
+{
+	setValue("");
+}
+
+bool MenuSettingStringBase::edited()
+{
+	return originalValue != value();
 }
