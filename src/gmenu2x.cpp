@@ -805,13 +805,6 @@ void GMenu2X::main() {
 	uint sectionsCoordX = 24;
 	SDL_Rect re = {0,0,0,0};
 
-#ifdef DEBUG
-	//framerate
-	long tickFPS = SDL_GetTicks();
-	int drawn_frames = 0;
-	string fps = "";
-#endif
-
 	IconButton btnContextMenu(this,"skin:imgs/menu.png");
 	btnContextMenu.setPosition(resX-38, bottomBarIconY);
 	btnContextMenu.setAction(MakeDelegate(this, &GMenu2X::contextMenu));
@@ -912,21 +905,6 @@ void GMenu2X::main() {
 			s->write( font, tr["START: Show options menu"], 20, 170 );
 			if (fwType=="open2x") s->write( font, tr["X: Toggle speaker mode"], 20, 185 );
 		}
-
-#ifdef WITH_DEBUG
-		//framerate
-		drawn_frames++;
-		if (tickNow-tickFPS>=1000) {
-			ss.clear();
-			ss << drawn_frames*(tickNow-tickFPS+1)/1000;
-			ss >> fps;
-			tickFPS = tickNow;
-			drawn_frames = 0;
-		}
-		s->write( font, fps+" FPS", resX-1,1 ,SFontHAlignRight );
-#endif
-
-
 
 /*
 	if (!TTF_WasInit()) TTF_Init();
