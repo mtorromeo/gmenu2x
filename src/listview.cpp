@@ -1,5 +1,7 @@
 #include "listview.h"
 
+#include <algorithm>
+
 ListView::ListView(GMenu2X *gmenu2x) {
 	this->gmenu2x = gmenu2x;
 	firstDisplayItem = selectedItem = 0;

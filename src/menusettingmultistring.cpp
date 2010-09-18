@@ -22,6 +22,9 @@
 #include "iconbutton.h"
 #include "FastDelegate.h"
 
+#include <algorithm>
+
+using std::find;
 using std::string;
 using std::vector;
 using fastdelegate::MakeDelegate;
