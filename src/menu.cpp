@@ -245,10 +245,10 @@ bool Menu::addLink(string path, string file, string section) {
 	cout << "\033[0;34mGMENU2X:\033[0m Manual: " << manual << endl;
 #endif
 
-	string shorttitle = title;
-	string exec = path+file;
+	string shorttitle = title, exec = path+file;
+	if (fileExists(exename+".png")) icon = exename+".png";
 	
-	//Reduce title lenght to fit the link width
+	//Reduce title length to fit the link width
 	if ((int)gmenu2x->font->getTextWidth(shorttitle)>gmenu2x->skinConfInt["linkWidth"]) {
 		while ((int)gmenu2x->font->getTextWidth(shorttitle+"..")>gmenu2x->skinConfInt["linkWidth"])
 			shorttitle = shorttitle.substr(0,shorttitle.length()-1);
