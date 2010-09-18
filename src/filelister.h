@@ -31,12 +31,12 @@ class FileLister {
 private:
 	string path, filter;
 	bool showDirectories, showFiles;
+	vector<string> directories, files, excludes;
 
 public:
 	FileLister(const string &startPath = "/mnt/sd", bool showDirectories = true, bool showFiles = true);
 	void browse();
 
-	vector<string> directories, files, exclude;
 	unsigned int size();
 	unsigned int dirCount();
 	unsigned int fileCount();
@@ -49,6 +49,11 @@ public:
 	void setPath(const string &path, bool doBrowse=true);
 	const string &getFilter();
 	void setFilter(const string &filter);
+
+	const vector<string> &getDirectories() { return directories; }
+	const vector<string> &getFiles() { return files; }
+	void insertFile(const string &file);
+	void addExclude(const string &exclude);
 };
 
 #endif /*FILELISTER_H_*/

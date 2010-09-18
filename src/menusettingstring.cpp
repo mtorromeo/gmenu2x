@@ -77,7 +77,7 @@ void MenuSettingString::clear()
 void MenuSettingString::edit()
 {
 	InputDialog id(gmenu2x,description,value(), diagTitle,diagIcon);
-	if (id.exec()) setValue(id.input);
+	if (id.exec()) setValue(id.getInput());
 }
 
 bool MenuSettingString::edited() {

@@ -30,7 +30,7 @@ private:
 	uint selected;
 	string *value;
 	string originalValue;
-	vector<string> *choices;
+	const vector<string> *choices;
 	IconButton *btnDec, *btnInc;
 
 	void incSel();
@@ -38,7 +38,7 @@ private:
 	void setSel(int);
 
 public:
-	MenuSettingMultiString(GMenu2X *gmenu2x, const string &name, const string &description, string *value, vector<string> *choices);
+	MenuSettingMultiString(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const vector<string> *choices);
 	virtual ~MenuSettingMultiString() {};
 
 	virtual void draw(int y);

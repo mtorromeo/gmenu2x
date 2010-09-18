@@ -57,6 +57,7 @@ private:
 	int kbLength, kbWidth, kbHeight, kbLeft;
 	SDL_Rect kbRect;
 	IconButton *btnBackspaceX, *btnBackspaceL, *btnSpace, *btnConfirm, *btnChangeKeys;
+	string input;
 
 	void backspace();
 	void space();
@@ -69,8 +70,8 @@ private:
 public:
 	InputDialog(GMenu2X *gmenu2x, const string &text, const string &startvalue="", const string &title="", const string &icon="");
 
-	string input;
 	bool exec();
+	const string &getInput() { return input; }
 };
 
 #endif /*INPUTDIALOG_H_*/

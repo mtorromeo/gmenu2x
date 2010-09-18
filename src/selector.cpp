@@ -187,16 +187,16 @@ int Selector::exec(int startSelection) {
 void Selector::prepare(FileLister *fl, vector<string> *screens, vector<string> *titles) {
 	fl->setPath(dir);
 	freeScreenshots(screens);
-	screens->resize(fl->files.size());
-	titles->resize(fl->files.size());
+	screens->resize(fl->getFiles().size());
+	titles->resize(fl->getFiles().size());
 
 	string screendir = link->getSelectorScreens();
 	if (screendir != "" && screendir[screendir.length()-1]!='/') screendir += "/";
 
 	string noext;
 	string::size_type pos;
-	for (uint i=0; i<fl->files.size(); i++) {
-		noext = fl->files[i];
+	for (uint i=0; i<fl->getFiles().size(); i++) {
+		noext = fl->getFiles()[i];
 		pos = noext.rfind(".");
 		if (pos!=string::npos && pos>0)
 			noext = noext.substr(0, pos);

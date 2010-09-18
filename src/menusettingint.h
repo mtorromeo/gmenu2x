@@ -32,6 +32,7 @@ private:
 	int originalValue;
 	int *_value;
 	string strvalue;
+	int min, max, delta;
 
 	void inc();
 	void dec();
@@ -45,7 +46,6 @@ public:
 	virtual void draw(int);
 	virtual bool edited();
 
-	int min, max, delta;
 	virtual void setValue(int value);
 	int value();
 };

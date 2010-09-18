@@ -82,7 +82,7 @@ void FileLister::browse() {
 				cout << "\033[0;34mGMENU2X:\033[0;31m stat failed on '" << filepath << "' with error '" << strerror(errno) << "'\033[0m" << endl;
 				continue;
 			}
-			if (find(exclude.begin(), exclude.end(), file) != exclude.end())
+			if (find(excludes.begin(), excludes.end(), file) != excludes.end())
 				continue;
 
 			if (S_ISDIR(st.st_mode)) {
@@ -137,4 +137,12 @@ bool FileLister::isFile(uint x) {
 
 bool FileLister::isDirectory(uint x) {
 	return x < directories.size();
+}
+
+void FileLister::insertFile(const string &file) {
+	files.insert(files.begin(), file);
+}
+
+void FileLister::addExclude(const string &exclude) {
+	excludes.push_back(exclude);
 }

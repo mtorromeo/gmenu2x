@@ -299,8 +299,9 @@ int InputDialog::drawVirtualKeyboard() {
 	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["OK"], (int)(160+kbLength*KEY_WIDTH/4), KB_TOP+kb->size()*KEY_HEIGHT+KEY_HEIGHT/2, SFontHAlignCenter, SFontVAlignMiddle);
 
 	//if ts released
-	if (gmenu2x->f200 && gmenu2x->ts.wasPressed && !gmenu2x->ts.pressed() && gmenu2x->ts.inRect(kbRect))
+	if (gmenu2x->f200 && gmenu2x->ts.released() && gmenu2x->ts.inRect(kbRect)) {
 		action = ID_ACTION_SELECT;
+	}
 
 	return action;
 }

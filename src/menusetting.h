@@ -40,6 +40,8 @@ protected:
 
 	ButtonBox buttonBox;
 
+	string name, description;
+
 public:
 	MenuSetting(GMenu2X *gmenu2x, const string &name, const string &description);
 	virtual ~MenuSetting() {};
@@ -52,7 +54,7 @@ public:
 	virtual void drawSelected(int);
 	virtual bool edited() { return true; };
 
-	string name, description;
+	const string &getDescription() { return description; }
 };
 
 #endif

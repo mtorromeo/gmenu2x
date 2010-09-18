@@ -59,6 +59,10 @@ MessageBox::MessageBox(GMenu2X *gmenu2x, const string &text, const string &icon)
 	buttonLabels[ACTION_VOLDOWN] = "vol-";
 }
 
+void MessageBox::setButton(int action, const string &btn) {
+	buttons[action] = btn;
+}
+
 int MessageBox::exec() {
 	int result = -1;
 
