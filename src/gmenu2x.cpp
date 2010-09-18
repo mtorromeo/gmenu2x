@@ -447,9 +447,6 @@ void GMenu2X::initMenu() {
 	menu->setLinkIndex(confInt["link"]);
 
 	menu->loadIcons();
-
-	//DEBUG
-	//menu->addLink( "/mnt/sd/development/gmenu2x/", "sample.pxml", "applications" );
 }
 
 void GMenu2X::about() {
@@ -1690,8 +1687,6 @@ void GMenu2X::scanPath(string path, vector<string> *files) {
 			ext = filepath.substr(filepath.length()-4,4);
 #if defined(TARGET_GP2X) || defined(TARGET_WIZ)
 			if (ext==".gpu" || ext==".gpe")
-#else
-			if (ext==".pxml")
 #endif
 				files->push_back(filepath);
 		}

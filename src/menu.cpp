@@ -30,7 +30,6 @@
 #include "menu.h"
 #include "filelister.h"
 #include "utilities.h"
-#include "pxml.h"
 
 using namespace std;
 
@@ -185,8 +184,8 @@ bool Menu::addLink(string path, string file, string section) {
 	}
 	if (path[path.length()-1]!='/') path += "/";
 
-	//if the extension is not equal to gpu or gpe then enable the wrapepr by default
-	bool wrapper = true, pxml = false;
+	//if the extension is not equal to gpu or gpe then enable the wrapper by default
+	bool wrapper = true;
 
 	//strip the extension from the filename
 	string title = file;
@@ -195,7 +194,6 @@ bool Menu::addLink(string path, string file, string section) {
 		string ext = title.substr(pos, title.length());
 		transform(ext.begin(), ext.end(), ext.begin(), (int(*)(int)) tolower);
 		if (ext == ".gpu" || ext == ".gpe") wrapper = false;
-		else if (ext == ".pxml") pxml = true;
 		title = title.substr(0, pos);
 	}
 
@@ -246,29 +244,8 @@ bool Menu::addLink(string path, string file, string section) {
 	cout << "\033[0;34mGMENU2X:\033[0m Manual: " << manual << endl;
 #endif
 
-	// Read pxml
-	string shorttitle="", description="", exec="", icon="";
-	if (pxml) {
-		PXml pxmlDoc(path+file);
-		if (pxmlDoc.isValid()) {
-			shorttitle = pxmlDoc.getTitle();
-			description = pxmlDoc.getDescription();
-			exec = pxmlDoc.getExec();
-			if (!exec.empty() && exec[0]!='/')
-				exec = path+exec;
-			icon = pxmlDoc.getIcon();
-			if (!icon.empty() && icon[0]!='/')
-				icon = path+icon;
-		} else {
-#ifdef DEBUG
-			cout << "\033[0;34mGMENU2X:\033[0m Error loading pxml " << file << ": " << pxmlDoc.getError() << endl;
-#endif
-			return false;
-		}
-	} else {
-		shorttitle = title;
-		exec = path+file;
-	}
+	string shorttitle = title;
+	string exec = path+file;
 	
 	//Reduce title lenght to fit the link width
 	if ((int)gmenu2x->font->getTextWidth(shorttitle)>gmenu2x->skinConfInt["linkWidth"]) {
@@ -281,8 +258,6 @@ bool Menu::addLink(string path, string file, string section) {
 	if (f.is_open()) {
 		f << "title=" << shorttitle << endl;
 		f << "exec=" << exec << endl;
-		if (!description.empty()) f << "description=" << description << endl;
-		if (!icon.empty()) f << "icon=" << icon << endl;
 		if (!manual.empty()) f << "manual=" << manual << endl;
 		if (wrapper) f << "wrapper=true" << endl;
 		f.close();
