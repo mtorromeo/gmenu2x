@@ -71,15 +71,11 @@
 
 #include <sys/mman.h>
 
-#ifdef TARGET_PANDORA
-//#include <pnd_container.h>
-//#include <pnd_conf.h>
-//#include <pnd_discovery.h>
-#endif
+const char *CARD_ROOT = "/mnt/"; //Note: Add a trailing /!
+const int CARD_ROOT_LEN = 5;
 
 using namespace std;
 using namespace fastdelegate;
-
 
 // Note: Keep this in sync with the enum!
 static const char *colorNames[NUM_COLORS] = {
