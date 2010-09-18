@@ -73,9 +73,10 @@ int MessageBox::exec() {
 	box.y = gmenu2x->halfY - box.h/2 -2;
 
 	//outer box
-	bg.box(box, gmenu2x->skinConfColors["messageBoxBg"]);
+	bg.box(box, gmenu2x->skinConfColors[COLOR_MESSAGE_BOX_BG]);
 	//draw inner rectangle
-	bg.rectangle(box.x+2, box.y+2, box.w-4, box.h-gmenu2x->font->getHeight(), gmenu2x->skinConfColors["messageBoxBorder"]);
+	bg.rectangle(box.x+2, box.y+2, box.w-4, box.h-gmenu2x->font->getHeight(),
+	gmenu2x->skinConfColors[COLOR_MESSAGE_BOX_BORDER]);
 	//icon+text
 	if (gmenu2x->sc[icon] != NULL)
 		gmenu2x->sc[icon]->blitCenter( &bg, box.x+25, box.y+gmenu2x->font->getHeight()+3 );

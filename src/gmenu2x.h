@@ -45,6 +45,19 @@ const int BATTERY_READS = 10;
 
 const int LOOP_DELAY=30000;
 
+enum color {
+	COLOR_TOP_BAR_BG,
+	COLOR_BOTTOM_BAR_BG,
+	COLOR_SELECTION_BG,
+	COLOR_MESSAGE_BOX_BG,
+	COLOR_MESSAGE_BOX_BORDER,
+	COLOR_MESSAGE_BOX_SELECTION,
+	COLOR_FONT,
+	COLOR_FONT_OUTLINE,
+
+	NUM_COLORS,
+};
+
 using std::string;
 using fastdelegate::FastDelegate0;
 using google::dense_hash_map;
@@ -52,7 +65,6 @@ using google::dense_hash_map;
 typedef FastDelegate0<> MenuAction;
 typedef dense_hash_map<string, string, hash<string> > ConfStrHash;
 typedef dense_hash_map<string, int, hash<string> > ConfIntHash;
-typedef dense_hash_map<string, RGBAColor, hash<string> > ConfRGBAHash;
 
 typedef struct {
 	unsigned short batt;
@@ -134,6 +146,9 @@ private:
 	void gp2x_deinit();
 	void toggleTvOut();
 
+	enum color stringToColor(const string &name);
+	const string &colorToString(enum color);
+
 public:
 	GMenu2X(int argc, char *argv[]);
 	~GMenu2X();
@@ -159,7 +174,7 @@ public:
 	//Configuration hashes
 	ConfStrHash confStr, skinConfStr;
 	ConfIntHash confInt, skinConfInt;
-	ConfRGBAHash skinConfColors;
+	RGBAColor skinConfColors[NUM_COLORS];
 
 	//Configuration settings
 	bool useSelectionPng;

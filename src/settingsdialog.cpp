@@ -73,7 +73,7 @@ bool SettingsDialog::exec() {
 		iY = gmenu2x->skinConfInt["topBarHeight"]+2+(iY*rowHeight);
 		gmenu2x->s->setClipRect(clipRect);
 		if (sel<voices.size())
-			gmenu2x->s->box(1, iY, 148, rowHeight-2, gmenu2x->skinConfColors["selectionBg"]);
+			gmenu2x->s->box(1, iY, 148, rowHeight-2, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 		gmenu2x->s->clearClipRect();
 
 		//selected option

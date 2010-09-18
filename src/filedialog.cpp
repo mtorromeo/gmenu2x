@@ -80,7 +80,7 @@ bool FileDialog::exec() {
 		//Selection
 		iY = selected-firstElement;
 		iY = gmenu2x->skinConfInt["topBarHeight"]+1+(iY*rowHeight);
-		gmenu2x->s->box(2, iY, gmenu2x->resX-12, rowHeight-1, gmenu2x->skinConfColors["selectionBg"]);
+		gmenu2x->s->box(2, iY, gmenu2x->resX-12, rowHeight-1, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
 		beforeFileList();
 

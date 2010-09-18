@@ -249,9 +249,9 @@ void LinkApp::drawRun() {
 	int halfBoxW = boxW/2;
 
 	//outer box
-	gmenu2x->s->box(gmenu2x->halfX-2-halfBoxW, gmenu2x->halfY-23, halfBoxW*2+5, 47, gmenu2x->skinConfColors["messageBoxBg"]);
+	gmenu2x->s->box(gmenu2x->halfX-2-halfBoxW, gmenu2x->halfY-23, halfBoxW*2+5, 47, gmenu2x->skinConfColors[COLOR_MESSAGE_BOX_BG]);
 	//inner rectangle
-	gmenu2x->s->rectangle(gmenu2x->halfX-halfBoxW, gmenu2x->halfY-21, boxW, 42, gmenu2x->skinConfColors["messageBoxBorder"]);
+	gmenu2x->s->rectangle(gmenu2x->halfX-halfBoxW, gmenu2x->halfY-21, boxW, 42, gmenu2x->skinConfColors[COLOR_MESSAGE_BOX_BORDER]);
 
 	int x = gmenu2x->halfX+10-halfBoxW;
 	/*if (getIcon()!="")

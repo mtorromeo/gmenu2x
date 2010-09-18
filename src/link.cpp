@@ -48,7 +48,7 @@ bool Link::paintHover() {
 	if (gmenu2x->useSelectionPng)
 		gmenu2x->sc["imgs/selection.png"]->blit(gmenu2x->s,rect,SFontHAlignCenter,SFontVAlignMiddle);
 	else
-		gmenu2x->s->box(rect.x, rect.y, rect.w, rect.h, gmenu2x->skinConfColors["selectionBg"]);
+		gmenu2x->s->box(rect.x, rect.y, rect.w, rect.h, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 	return true;
 }
 
