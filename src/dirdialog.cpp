@@ -181,7 +181,7 @@ bool DirDialog::exec() {
 
 void DirDialog::up() {
 	string::size_type p = path.rfind("/");
-	if (p==string::npos || path.substr(0,4)!="/mnt" || p<4) {
+	if (p==string::npos || path.compare(0,4,"/mnt")!=0 || p<4) {
 		close = true;
 		result = false;
 	} else {
