@@ -776,7 +776,7 @@ int GMenu2X::main() {
 	uint linksPerPage = linkColumns*linkRows;
 	int linkSpacingX = (resX-10 - linkColumns*skinConfInt["linkWidth"])/linkColumns;
 	int linkSpacingY = (resY-35 - skinConfInt["topBarHeight"] - linkRows*skinConfInt["linkHeight"])/linkRows;
-	uint sectionLinkPadding = (skinConfInt["topBarHeight"] - 32 - font->getLineHeight()) / 3;
+	uint sectionLinkPadding = max(skinConfInt["topBarHeight"] - 32 - font->getLineHeight(), 0) / 3;
 
 	bool quit = false;
 	int x,y, offset = menu->sectionLinks()->size()>linksPerPage ? 2 : 6, helpBoxHeight = fwType=="open2x" ? 154 : 139;
@@ -806,6 +806,7 @@ int GMenu2X::main() {
 		
 		//Sections
 		sectionsCoordX = halfX - (constrain((uint)menu->sections.size(), 0 , linkColumns) * skinConfInt["linkWidth"]) / 2;
+		cout << "secX: " << sectionsCoordX << ", halfX: " << halfX << ", sections: " << menu->sections.size() << endl;
 		if (menu->firstDispSection()>0)
 			sc.skinRes("imgs/l_enabled.png")->blit(s,0,0);
 		else
@@ -817,6 +818,7 @@ int GMenu2X::main() {
 		for (i=menu->firstDispSection(); i<menu->sections.size() && i<menu->firstDispSection()+linkColumns; i++) {
 			string sectionIcon = "skin:sections/"+menu->sections[i]+".png";
 			x = (i-menu->firstDispSection())*skinConfInt["linkWidth"]+sectionsCoordX;
+			cout << "x: " << x << ", lw: " << skinConfInt["linkWidth"] << ", pad: " << sectionLinkPadding << endl;
 			if (menu->selSectionIndex()==(int)i)
 				s->box(x, 0, skinConfInt["linkWidth"], skinConfInt["topBarHeight"], skinConfColors["selectionBg"]);
 			x += skinConfInt["linkWidth"]/2;
