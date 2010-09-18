@@ -22,7 +22,12 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <fstream>
 #include <iostream>
+#include <strings.h>
+#include <math.h>
+
+#include <SDL.h>
 
 #include "utilities.h"
 

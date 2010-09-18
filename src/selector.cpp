@@ -25,6 +25,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <fstream>
 
 #include "menu.h"
 #include "linkapp.h"
