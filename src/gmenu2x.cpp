@@ -139,7 +139,7 @@ void GMenu2X::gp2x_init() {
 		f200 = ts.init();
 	}
 #endif
-#ifdef TARGET_WIZ
+#if defined(TARGET_WIZ)
 	/* open /dev/mem to access registers */
 	wiz_mem = open("/dev/mem", O_RDWR);
 	if (wiz_mem < 0) {
@@ -153,7 +153,7 @@ void GMenu2X::gp2x_init() {
 			close(wiz_mem);
 		}
 	}
-	/* get access to battery device */	
+	/* get access to battery device */
 	batteryHandle = open("/dev/pollux_batt", O_RDONLY);
 	printf( "System Init Done!\n" );
 #endif
@@ -168,11 +168,11 @@ void GMenu2X::gp2x_deinit() {
 	}
 	if (f200) ts.deinit();
 #endif
-#ifdef TARGET_WIZ
+#if defined(TARGET_WIZ)
 	wiz_memregs = NULL;
 	close(wiz_mem);
 #endif
-#if defined(TARGET_GP2X) || defined(TARGET_WIZ)
+#if defined(TARGET_GP2X) || defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 	if (batteryHandle!=0) close(batteryHandle);
 #endif
 }
@@ -258,13 +258,13 @@ GMenu2X::GMenu2X() {
 	path = "";
 	getExePath();
 
-#ifdef TARGET_WIZ
+#if defined(TARGET_WIZ)
 	wiz_mem = 0;
 #elif TARGET_GP2X
 	gp2x_mem = 0;
 	cx25874 = 0;
 #endif
-#if defined(TARGET_GP2X) || defined(TARGET_WIZ)
+#if defined(TARGET_GP2X) || defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 	batteryHandle = 0;
 	gp2x_init();
 #endif
@@ -288,7 +288,7 @@ GMenu2X::GMenu2X() {
 	}
 
 	s = new Surface();
-#if defined(TARGET_GP2X) || defined(TARGET_WIZ)
+#if defined(TARGET_GP2X) || defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 	{
 		//I use a tmp variable to hide the cursor as soon as possible (and create the double buffer surface only after that)
 		//I'm forced to use SW surfaces since with HW there are issuse with changing the clock frequency
@@ -476,7 +476,7 @@ void GMenu2X::about() {
 Website: http://gmenu2x.sourceforge.net\n\
 E-Mail & PayPal account: massimiliano.torromeo@gmail.com\n\
 \n\
-Wiz version by Pickle\n\
+Wiz/Caanoo version by Pickle\n\
 \n\
 Thanks goes to...\n\
 \n\
@@ -579,7 +579,7 @@ void GMenu2X::readConfig() {
 #ifdef TARGET_GP2X
 	evalIntConf( &confInt["maxClock"], 300, 200,300 );
 #endif
-#ifdef TARGET_WIZ
+#if defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 	evalIntConf( &confInt["maxClock"], 550, 200,900 );
 #endif
 	evalIntConf( &confInt["menuClock"], f200 ? 136 : 100, 50,300 );
@@ -814,7 +814,7 @@ void GMenu2X::main() {
 
 		//Background
 		sc["bgmain"]->blit(s,0,0);
-		
+
 		//Sections
 		sectionsCoordX = halfX - (constrain((uint)menu->getSections().size(), 0 , linkColumns) * skinConfInt["linkWidth"]) / 2;
 		if (menu->firstDispSection()>0)
@@ -986,7 +986,7 @@ void GMenu2X::main() {
 				if ( input.isActive(ACTION_VOLUP) && input.isActive(ACTION_VOLDOWN) ) menu->selLinkApp()->setVolume(-1);
 			} else {
 				// CLOCK
-#if defined(TARGET_WIZ)
+#if defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 				int inc = 10;
 #else
 				int inc = 1;
@@ -1060,7 +1060,7 @@ void GMenu2X::options() {
 	sd.addSetting(new MenuSettingInt(this,tr["Clock for GMenu2X"],tr["Set the cpu working frequency when running GMenu2X"],&confInt["menuClock"],50,325));
 	sd.addSetting(new MenuSettingInt(this,tr["Maximum overclock"],tr["Set the maximum overclock for launching links"],&confInt["maxClock"],50,325));
 #endif
-#ifdef TARGET_WIZ
+#if defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 	sd.addSetting(new MenuSettingInt(this,tr["Clock for GMenu2X"],tr["Set the cpu working frequency when running GMenu2X"],&confInt["menuClock"],50,900,10));
 	sd.addSetting(new MenuSettingInt(this,tr["Maximum overclock"],tr["Set the maximum overclock for launching links"],&confInt["maxClock"],50,900,10));
 #endif
@@ -1439,7 +1439,7 @@ void GMenu2X::editLink() {
 #ifdef TARGET_GP2X
 	sd.addSetting(new MenuSettingInt(this,tr["Clock (default: 200)"],tr["Cpu clock frequency to set when launching this link"],&linkClock,50,confInt["maxClock"]));
 #endif
-#ifdef TARGET_WIZ
+#if defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 	sd.addSetting(new MenuSettingInt(this,tr["Clock (default: 550)"],tr["Cpu clock frequency to set when launching this link"],&linkClock,50,confInt["maxClock"],10));
 #endif
 	sd.addSetting(new MenuSettingBool(this,tr["Tweak RAM Timings"],tr["This usually speeds up the application at the cost of stability"],&linkUseRamTimings));
@@ -1687,7 +1687,7 @@ void GMenu2X::scanPath(string path, vector<string> *files) {
 			scanPath(filepath, files);
 		if (statRet != -1) {
 			ext = filepath.substr(filepath.length()-4,4);
-#if defined(TARGET_GP2X) || defined(TARGET_WIZ)
+#if defined(TARGET_GP2X) || defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 			if (ext==".gpu" || ext==".gpe")
 #endif
 				files->push_back(filepath);
@@ -1698,7 +1698,7 @@ void GMenu2X::scanPath(string path, vector<string> *files) {
 }
 
 unsigned short GMenu2X::getBatteryLevel() {
-#if defined(TARGET_GP2X) || defined(TARGET_WIZ)
+#if defined(TARGET_GP2X) || defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 	if (batteryHandle<=0) return 0;
 
 	if (f200) {
@@ -1790,10 +1790,10 @@ void GMenu2X::setClock(unsigned mhz) {
 		MEM_REG[0x910>>1]=v;
 	}
 #endif
-#ifdef TARGET_WIZ
+#if defined(TARGET_WIZ)
 	unsigned  long v;
 	unsigned mdiv, pdiv=9, sdiv=0;
-	if (wiz_mem!=0) {  
+	if (wiz_mem!=0) {
 		printf( "Setting clockspeed to %d\n", mhz );
 		mdiv= (mhz * pdiv) / SYS_CLK_FREQ;
 		mdiv &= 0x3FF;

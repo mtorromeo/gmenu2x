@@ -139,7 +139,7 @@ private:
 	volatile unsigned short *MEM_REG;
 	int cx25874; //tv-out
 #endif
-#ifdef TARGET_WIZ
+#if defined(TARGET_WIZ)
 	#define PLLSETREG0		(wiz_memregs[0xF004>>2])
 	#define PWRMODE			(wiz_memregs[0xF07C>>2])
 	#define SYS_CLK_FREQ 27

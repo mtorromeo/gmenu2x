@@ -1,5 +1,6 @@
-CHAINPREFIX=/mythtv/media/devel/toolchains/openwiz/arm-openwiz-linux-gnu
-CROSS_COMPILE=$(CHAINPREFIX)/bin/arm-openwiz-linux-gnu-
+CHAINPREFIX=/mythtv/media/devel/toolchains/caanoo/GPH_SDK
+TOOLS=tools/gcc-4.2.4-glibc-2.7-eabi/bin
+CROSS_COMPILE=$(CHAINPREFIX)/$(TOOLS)/arm-gph-linux-gnueabi-
 
 INCLUDE=$(CHAINPREFIX)/include
 
@@ -7,9 +8,9 @@ CC= $(CROSS_COMPILE)gcc
 CXX = $(CROSS_COMPILE)g++
 STRIP = $(CROSS_COMPILE)strip
 
-CFLAGS = -I"$(CHAINPREFIX)/include" `$(CHAINPREFIX)/bin/sdl-config --cflags` -DTARGET_WIZ -O3 -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops -Wall -Wno-unknown-pragmas -Wno-format
+CFLAGS = -I"$(CHAINPREFIX)/DGE/include" `$(CHAINPREFIX)/$(TOOLS)/sdl-config --cflags` -DTARGET_CAANOO -O3 -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops -Wall -Wno-unknown-pragmas -Wno-format
 CXXFLAGS = $(CFLAGS)
-LDFLAGS = -L$(CHAINPREFIX)/lib `$(CHAINPREFIX)/bin/sdl-config --libs` -lSDL_ttf -lSDL_image -lSDL_gfx -lfreetype -ljpeg -lpng12 -lSDL -lz -ldl
+LDFLAGS = -L$(CHAINPREFIX)/lib `$(CHAINPREFIX)/$(TOOLS)/sdl-config --libs` -lSDL_ttf -lSDL_image -lSDL_gfx -lfreetype -ljpeg -lpng12 -lSDL -lz -ldl
 
 TARGET = ../build/gmenu2x
 OBJDIR = ../objs/gp2x
