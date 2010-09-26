@@ -4,20 +4,25 @@
 #include <SDL.h>
 #include <string>
 #include <vector>
+#include <SDL_ttf.h>
 
-#define SFONTPLUS_CHARSET "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~¡¿ÀÁÈÉÌÍÒÓÙÚÝÄËÏÖÜŸÂÊÎÔÛÅÃÕÑÆÇČĎĚĽĹŇÔŘŔŠŤŮŽàáèéìíòóùúýäëïöüÿâêîôûåãõñæçčďěľĺňôřŕšťžůðßÐÞþАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюяØøąćęłńśżźĄĆĘŁŃŚŻŹ"
 #ifdef _WIN32
     typedef unsigned int uint;
 #endif
 using std::vector;
 using std::string;
 
-const unsigned short SFontHAlignLeft   = 0;
-const unsigned short SFontHAlignRight  = 1;
-const unsigned short SFontHAlignCenter = 2;
-const unsigned short SFontVAlignTop    = 0;
-const unsigned short SFontVAlignBottom = 1;
-const unsigned short SFontVAlignMiddle = 2;
+enum SFontHAlign {
+	SFontHAlignLeft,
+	SFontHAlignRight,
+	SFontHAlignCenter
+};
+
+enum SFontVAlign {
+	SFontVAlignTop,
+	SFontVAlignBottom,
+	SFontVAlignMiddle
+};
 
 #ifdef TARGET_PANDORA
 	#define FONTSIZE 12
@@ -30,28 +35,15 @@ class Surface;
 class SFontPlus {
 private:
 
-	vector<uint> charpos;
-	string characters;
-	uint height, lineHeight, halfHeight, halfLineHeight;
-	bool ttf;
-	
-	void postInit();
+	int height, halfHeight;
+	TTF_Font *font, *fontOutline;
+	SDL_Color textColor, outlineColor;
 
 public:
-	Surface *surface;
-	SFontPlus();
-	SFontPlus(SDL_Surface *font);
-	SFontPlus(const string &font, bool ttf = false, SDL_Color textColor = (SDL_Color){255,255,255}, SDL_Color outlineColor = (SDL_Color){5,5,5});
+	SFontPlus(const string &font, SDL_Color textColor = (SDL_Color){255,255,255}, SDL_Color outlineColor = (SDL_Color){5,5,5});
 	~SFontPlus();
 
 	bool utf8Code(unsigned char c);
-
-	void initTTF(const string &fontfile, Uint32 flags = SDL_HWSURFACE|SDL_SRCALPHA, SDL_Color textColor = (SDL_Color){255,255,255}, SDL_Color outlineColor = (SDL_Color){5,5,5}, const string &characters = SFONTPLUS_CHARSET);
-	void initFont(SDL_Surface *font, const string &characters = SFONTPLUS_CHARSET);
-	void initFont(const string &font, const string &characters = SFONTPLUS_CHARSET);
-	void freeFont();
-	
-	bool isTTF();
 
 	void write(SDL_Surface *s, const string &text, int x, int y);
 	void write(SDL_Surface* surface, const string& text, int x, int y, const unsigned short halign, const unsigned short valign = 0);
@@ -62,10 +54,8 @@ public:
 	uint getTextWidth(const string& text);
 	uint getTextWidth(vector<string> *text);
 	
-	uint getHeight();
-	uint getHalfHeight();
-	uint getLineHeight();
-	uint getHalfLineHeight();
+	uint getHeight() { return height; };
+	uint getHalfHeight() { return halfHeight; };
 };
 
 #endif /* SFONTPLUS_H */

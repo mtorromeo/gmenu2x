@@ -420,19 +420,7 @@ void GMenu2X::initFont() {
 		free(font);
 		font = NULL;
 	}
-
-	bool ttf = false;
-	string fontFile = sc.getSkinFilePath("font.png");
-	if (fontFile.empty()) {
-		fontFile = sc.getSkinFilePath("font.ttf");
-		ttf = true;
-	}
-	if (fontFile.empty()) {
-		ERROR("Font not found!\n");
-		quit();
-		exit(-1);
-	}
-	font = new SFontPlus(fontFile, ttf, rgbatosdl(skinConfColors[COLOR_FONT]), rgbatosdl(skinConfColors[COLOR_FONT_OUTLINE]));
+	font = new SFontPlus(sc.getSkinFilePath("font.ttf"), rgbatosdl(skinConfColors[COLOR_FONT]), rgbatosdl(skinConfColors[COLOR_FONT_OUTLINE]));
 }
 
 void GMenu2X::initMenu() {
@@ -794,7 +782,7 @@ void GMenu2X::main() {
 	uint linksPerPage = linkColumns*linkRows;
 	int linkSpacingX = (resX-10 - linkColumns*skinConfInt["linkWidth"])/linkColumns;
 	int linkSpacingY = (resY-35 - skinConfInt["topBarHeight"] - linkRows*skinConfInt["linkHeight"])/linkRows;
-	uint sectionLinkPadding = max(skinConfInt["topBarHeight"] - 32 - font->getLineHeight(), 0) / 3;
+	uint sectionLinkPadding = max(skinConfInt["topBarHeight"] - 32 - font->getHeight(), 0) / 3;
 
 	bool quit = false;
 	int x,y, offset = menu->sectionLinks()->size()>linksPerPage ? 2 : 6, helpBoxHeight = fwType=="open2x" ? 154 : 139;

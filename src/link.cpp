@@ -134,5 +134,5 @@ void Link::setPosition(int x, int y) {
 
 void Link::recalcCoordinates() {
 	iconX = rect.x+(rect.w-32)/2;
-	padding = max(gmenu2x->skinConfInt["linkHeight"] - 32 - gmenu2x->font->getLineHeight(), 0) / 3;
+	padding = max(gmenu2x->skinConfInt["linkHeight"] - 32 - gmenu2x->font->getHeight(), 0) / 3;
 }
