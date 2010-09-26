@@ -420,7 +420,7 @@ void GMenu2X::initFont() {
 		free(font);
 		font = NULL;
 	}
-	font = new SFontPlus(sc.getSkinFilePath("font.ttf"), rgbatosdl(skinConfColors[COLOR_FONT]), rgbatosdl(skinConfColors[COLOR_FONT_OUTLINE]));
+	font = new SFontPlus(sc.getSkinFilePath("font.ttf"), skinConfColors[COLOR_FONT], skinConfColors[COLOR_FONT_OUTLINE]);
 }
 
 void GMenu2X::initMenu() {
@@ -1121,6 +1121,7 @@ void GMenu2X::skinMenu() {
 			setSkin(confStr["skin"]);
 			writeConfig();
 		}
+		font->setColor(skinConfColors[COLOR_FONT])->setOutlineColor(skinConfColors[COLOR_FONT_OUTLINE]);
 		writeSkinConfig();
 		initBG();
 	}

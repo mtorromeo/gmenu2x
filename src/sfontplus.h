@@ -1,7 +1,8 @@
 #ifndef SFONTPLUS_H
 #define SFONTPLUS_H
 
-#include <SDL.h>
+#include "surface.h"
+
 #include <string>
 #include <vector>
 #include <SDL_ttf.h>
@@ -37,10 +38,10 @@ private:
 
 	int height, halfHeight;
 	TTF_Font *font, *fontOutline;
-	SDL_Color textColor, outlineColor;
+	RGBAColor textColor, outlineColor;
 
 public:
-	SFontPlus(const string &font, SDL_Color textColor = (SDL_Color){255,255,255}, SDL_Color outlineColor = (SDL_Color){5,5,5});
+	SFontPlus(const string &font, RGBAColor textColor = (RGBAColor){255,255,255}, RGBAColor outlineColor = (RGBAColor){5,5,5});
 	~SFontPlus();
 
 	bool utf8Code(unsigned char c);
@@ -56,6 +57,9 @@ public:
 	
 	uint getHeight() { return height; };
 	uint getHalfHeight() { return halfHeight; };
+	
+	SFontPlus *setColor(RGBAColor color);
+	SFontPlus *setOutlineColor(RGBAColor color);
 };
 
 #endif /* SFONTPLUS_H */

@@ -20,10 +20,8 @@
 
 #include <SDL_gfxPrimitives.h>
 
-#include <iostream>
-using namespace std;
-
 #include "surface.h"
+#include "sfontplus.h"
 #include "utilities.h"
 #include "debug.h"
 

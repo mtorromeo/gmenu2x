@@ -29,6 +29,7 @@
 #include "touchscreen.h"
 #include "inputmanager.h"
 #include "surface.h"
+#include "sfontplus.h"
 
 #include <iostream>
 #include <string>

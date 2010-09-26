@@ -1,8 +1,8 @@
 #include "sfontplus.h"
-#include "surface.h"
 #include "utilities.h"
+#include "debug.h"
 
-SFontPlus::SFontPlus(const string &font, SDL_Color textColor, SDL_Color outlineColor) {
+SFontPlus::SFontPlus(const string &font, RGBAColor textColor, RGBAColor outlineColor) {
 	this->textColor = textColor;
 	this->outlineColor = outlineColor;
 	
@@ -25,17 +25,26 @@ bool SFontPlus::utf8Code(unsigned char c) {
 	return (c>=194 && c<=198) || c==208 || c==209;
 }
 
+SFontPlus *SFontPlus::setColor(RGBAColor color) {
+	textColor = color;
+	return this;
+}
+
+SFontPlus *SFontPlus::setOutlineColor(RGBAColor color) {
+	outlineColor = color;
+	return this;
+}
 void SFontPlus::write(SDL_Surface *s, const string &text, int x, int y) {
 	if (text.empty()) return;
 	
-	SDL_Rect dstrect;
-	dstrect.y = y;
-	dstrect.h = getHeight();
-	dstrect.x = x;
-	SDL_BlitSurface( TTF_RenderUTF8_Blended(fontOutline, text.c_str(), outlineColor), NULL, s, &dstrect );
-	dstrect.x++;
-	dstrect.y++;
-	SDL_BlitSurface( TTF_RenderUTF8_Blended(font, text.c_str(), textColor), NULL, s, &dstrect );
+	Surface bg;
+	bg.raw = TTF_RenderUTF8_Blended(fontOutline, text.c_str(), rgbatosdl(outlineColor));
+	
+	Surface fg;
+	fg.raw = TTF_RenderUTF8_Blended(font, text.c_str(), rgbatosdl(textColor));
+	fg.blit(&bg, 1,1);
+	
+	bg.blit(s, x,y);
 }
 
 void SFontPlus::write(SDL_Surface* surface, const string& text, int x, int y, const unsigned short halign, const unsigned short valign) {

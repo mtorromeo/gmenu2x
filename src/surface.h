@@ -24,9 +24,9 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include "sfontplus.h"
-
 using std::string;
+
+class SFontPlus;
 
 struct RGBAColor {
 	unsigned short r,g,b,a;
