@@ -51,9 +51,6 @@ SFontPlus *SFontPlus::setOutlineColor(RGBAColor color) {
 void SFontPlus::write(SDL_Surface *s, const string &text, int x, int y) {
 	if (text.empty()) return;
 	
-	SDL_Color color={0,0,0};
-	SDL_Surface *stest = TTF_RenderUTF8_Blended(fontOutline, "hw", color);
-	
 	Surface bg;
 	bg.raw = TTF_RenderUTF8_Blended(fontOutline, text.c_str(), rgbatosdl(outlineColor));
 	
