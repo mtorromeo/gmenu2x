@@ -78,7 +78,15 @@ const int CARD_ROOT_LEN = 5;
 
 static GMenu2X *app;
 
-using namespace std;
+using std::ifstream;
+using std::ofstream;
+using std::endl;
+using std::setw;
+using std::setfill;
+using std::right;
+using std::hex;
+using std::ios_base;
+using std::stringstream;
 using namespace fastdelegate;
 
 // Note: Keep this in sync with the enum!
@@ -893,21 +901,6 @@ void GMenu2X::main() {
 			s->write( font, tr["START: Show options menu"], 20, 170 );
 			if (fwType=="open2x") s->write( font, tr["X: Toggle speaker mode"], 20, 185 );
 		}
-
-/*
-	if (!TTF_WasInit()) TTF_Init();
-	TTF_Font *font = TTF_OpenFont("/usr/share/fonts/webcore-vista/CALIBRII.TTF", 12);
-	if (font != NULL) {
-		INFO("TTF init\n");
-		SDL_Surface *tmpSurface = TTF_RenderUTF8_Blended(font, "Hello world", (SDL_Color){0,0,0,255});
-		SDL_BlitSurface(tmpSurface, NULL, s->raw, NULL);
-		SDL_FreeSurface(tmpSurface);
-		TTF_CloseFont(font);
-		sleep(10);
-	}
-*/
-
-
 
 		s->flip();
 

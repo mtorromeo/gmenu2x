@@ -6,9 +6,23 @@ SFontPlus::SFontPlus(const string &font, RGBAColor textColor, RGBAColor outlineC
 	this->textColor = textColor;
 	this->outlineColor = outlineColor;
 	
-	if (!TTF_WasInit()) TTF_Init();
+	if (!TTF_WasInit()) {
+		DEBUG("Initializing font\n");
+		if (TTF_Init() == -1) {
+			ERROR("TTF_Init: %s\n", TTF_GetError());
+			exit(2);
+		}
+	}
 	this->font = TTF_OpenFont(font.c_str(), FONTSIZE);
+	if (!this->font) {
+		ERROR("TTF_OpenFont %s: %s\n", font.c_str(), TTF_GetError());
+		exit(2);
+	}
 	fontOutline = TTF_OpenFont(font.c_str(), FONTSIZE);
+	if (!fontOutline) {
+		ERROR("TTF_OpenFont %s: %s\n", font.c_str(), TTF_GetError());
+		exit(2);
+	}
 	TTF_SetFontOutline(fontOutline, 1);
 	height = 0;
 	// Get maximum line height with a sample text
@@ -17,8 +31,8 @@ SFontPlus::SFontPlus(const string &font, RGBAColor textColor, RGBAColor outlineC
 }
 
 SFontPlus::~SFontPlus() {
-	free(font);
-	free(fontOutline);
+	TTF_CloseFont(font);
+	TTF_CloseFont(fontOutline);
 }
 
 bool SFontPlus::utf8Code(unsigned char c) {
