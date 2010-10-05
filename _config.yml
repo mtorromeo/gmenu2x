@@ -1,2 +1,3 @@
 markdown: rdiscount
 permalink: /blog/:year/:month/:title.html
+pygments: true

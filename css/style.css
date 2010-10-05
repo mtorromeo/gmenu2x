@@ -139,6 +139,9 @@ header h1 {
 	color: white;
 	text-shadow: 0 -2px 0 black;
 }
+header h1 a {
+	text-decoration: none;
+}
 footer {
 	font-size: 10px;
 	text-align: center;
@@ -200,4 +203,14 @@ p {
 }
 pre {
 	padding: 5px;
+	white-space: normal;
+}
+code {
+	white-space: pre;
+}
+a, a:link, a:visited {
+	color: #CF4913;
+}
+a:hover {
+	text-decoration: none;
 }
