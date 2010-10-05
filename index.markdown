@@ -17,7 +17,7 @@ GMenu2X is totally skinnable and there's no risk of bricking your gp2x by instal
 ## Installation
 Copy the file *autorun.gpu* on the root of your SD card along with the gmenu2x directory.
 Check that the autorun option is enabled on your gp2x.
-[Create the links](Documentation#Links) and enjoy your gp2x.
+[Create the links](documentation.html#Links) and enjoy your gp2x.
 
 ## Getting GMenu2X
 * Source: [gmenu2x-0.9-src.tar.bz2](http://prdownloads.sourceforge.net/gmenu2x/gmenu2x-0.9-src.tar.bz2?download)
