@@ -9,11 +9,11 @@ GMenu2X is written in C++ and requires the following libraries to be present:
 
 * SDL
 * SDL_image
-* SDL_ttf
+* SDL_ttf >= 2.0.10
 * SDL_gfx
 * libpng
 * libjpeg
-* freetype
+* freetype >= 2.4.0
 
 ## Instructions
 
