@@ -3,6 +3,20 @@ layout: default
 title: Compiling
 ---
 
+## Requirements
+
+GMenu2X is written in C++ and requires the following libraries to be present:
+
+* SDL
+* SDL_image
+* SDL_ttf
+* SDL_gfx
+* libpng
+* libjpeg
+* freetype
+
+## Instructions
+
 To retrieve GMenu2X' sources you need the [git version control system installed](http://help.github.com/linux-git-installation/) on your pc.
 
 You can then clone the repository with the following command:

@@ -1,3 +1,11 @@
+@font-face {
+	font-family: 'Insolent';
+	src: url('insolent-webfont.eot');
+	src: local('Insolent'), local('Insolent'), url('insolent-webfont.woff') format('woff'), url('insolent-webfont.ttf') format('truetype'), url('insolent-webfont.svg#webfontoIxLbMJa') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
 /* reset.ccss */
 html,
 body,
@@ -106,6 +114,58 @@ nav,
 section {
 	display: block;
 }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong {
+	color: black;
+	text-shadow: 0 2px 0 #EEE;
+}
+h1,
+h2,
+h3,
+h4 {
+	font-family: 'Insolent', sans-serif;
+	font-weight: normal;
+}
+h1 {
+	font-size: 24pt;
+}
+h2 {
+	font-size: 18pt;
+	margin-top: 15px;
+}
+h3 {
+	font-size: 14pt;
+	margin-top: 10px;
+}
+h4 {
+	font-size: 13pt;
+	margin-top: 5px;
+}
+p, ul, ol {
+	margin-top: 5px;
+}
+pre {
+	padding: 5px;
+	white-space: normal;
+}
+code {
+	white-space: pre;
+}
+a, a:link, a:visited {
+	color: #CF4913;
+}
+a:hover {
+	text-decoration: none;
+}
+ul {
+	list-style-type: square;
+	margin-left: 20px;
+}
 body {
 	color: #333;
 	background-color: #D9D9D9;
@@ -139,7 +199,8 @@ header h1 {
 	color: white;
 	text-shadow: 0 -2px 0 black;
 }
-header h1 a {
+header h1 a, header h1 a:link, header h1 a:visited {
+	color: #EB7331;
 	text-decoration: none;
 }
 footer {
@@ -166,51 +227,10 @@ footer {
 	-webkit-box-shadow: 0 -5px 10px rgba(100,100,100,.4);
 	-moz-box-shadow: 0 -5px 10px rgba(100,100,100,.4);
 }
-footer a {
+footer a, footer a:link, footer a:visited {
 	color: white;
 }
 #main {
 	width: 720px;
 	margin: 20px auto;
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-strong {
-	color: black;
-	text-shadow: 0 2px 0 #EEE;
-}
-h1 {
-	font-size: 24pt;
-}
-h2 {
-	font-size: 18pt;
-	margin-top: 15px;
-}
-h3 {
-	font-size: 14pt;
-	margin-top: 10px;
-}
-h4 {
-	font-size: 13pt;
-	margin-top: 5px;
-}
-p {
-	margin-top: 5px;
-}
-pre {
-	padding: 5px;
-	white-space: normal;
-}
-code {
-	white-space: pre;
-}
-a, a:link, a:visited {
-	color: #CF4913;
-}
-a:hover {
-	text-decoration: none;
 }
