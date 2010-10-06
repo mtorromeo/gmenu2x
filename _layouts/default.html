@@ -1,6 +1,9 @@
 <html>
 	<head>
 		<title>{{ page.title }} - GMenu2X</title>
+		<!--[if lt IE 9]>
+			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
 		<link rel="stylesheet" href="/gmenu2x/css/style.css" type="text/css" />
 
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
@@ -11,6 +14,12 @@
 		<header>
 			<h1><a href="/gmenu2x/index.html">GMenu2X</a> - {{ page.title }}</h1>
 		</header>
+		<nav id="breadcrumbs">
+			<a href="/gmenu2x/">Home</a>
+			{% if page.url != '/index.html' %}
+				<a href="/gmenu2x{{ page.url }}">{{ page.title }}</a>
+			{% endif %}
+		</nav>
 		<section id="main">{{ content }}</section>
 		<footer>{{ site.time | date: "%Y" }} &mdash; <a href="&#109;&#97;&#x69;&#x6c;&#116;&#111;&#x3a;&#x6d;&#x61;&#115;&#x73;&#x69;&#109;&#105;&#x6c;&#105;&#x61;&#110;&#x6f;&#x2e;&#116;&#x6f;&#x72;&#114;&#x6f;&#x6d;&#x65;&#x6f;&#64;&#x67;&#109;&#97;&#105;&#x6c;&#x2e;&#99;&#111;&#109;">Massimiliano Torromeo</a></footer>
 	</body>
