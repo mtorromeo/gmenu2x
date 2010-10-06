@@ -3,7 +3,7 @@ layout: default
 title: An alternative frontend for the GP2X
 ---
 
-<img src="/images/gmenu2x-gp2x.png" alt="GMenu2X on GP2X" style="float:right; margin: 0 0 5px 5px" />
+<img src="/gmenu2x/images/gmenu2x-gp2x.png" alt="GMenu2X on GP2X" style="float:right; margin: 0 0 5px 5px" />
 
 GMenu2X is an alternative frontend for the [gp2x](http://www.gp2x.com).
 
