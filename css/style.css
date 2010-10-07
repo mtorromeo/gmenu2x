@@ -268,3 +268,15 @@ footer a, footer a:link, footer a:visited {
 #breadcrumbs a:first-child:before {
 	content: '';
 }
+#slideshow {
+	position: relative;
+	float: right;
+	width: 320px;
+	height: 240px;
+	margin: 0 0 5px 5px;
+}
+#slideshow img {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
