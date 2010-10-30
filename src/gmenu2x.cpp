@@ -580,7 +580,7 @@ void GMenu2X::readConfig() {
 #endif
 	evalIntConf( &confInt["menuClock"], f200 ? 136 : 100, 50,300 );
 	evalIntConf( &confInt["globalVolume"], 67, 0,100 );
-	evalIntConf( &confInt["gamma"], 1, 1,100 );
+	evalIntConf( &confInt["gamma"], 10, 1,100 );
 	evalIntConf( &confInt["videoBpp"], 16, 8,32 );
 
 	if (confStr["tvoutEncoding"] != "PAL") confStr["tvoutEncoding"] = "NTSC";
