@@ -1,0 +1,48 @@
+CHAINPREFIX=/mythtv/media/devel/toolchains/caanoo/GPH_SDK
+TOOLS=tools/gcc-4.2.4-glibc-2.7-eabi/bin
+CROSS_COMPILE=$(CHAINPREFIX)/$(TOOLS)/arm-gph-linux-gnueabi-
+
+INCLUDE=$(CHAINPREFIX)/include
+
+CC= $(CROSS_COMPILE)gcc
+CXX = $(CROSS_COMPILE)g++
+STRIP = $(CROSS_COMPILE)strip
+
+CFLAGS = -I"$(CHAINPREFIX)/DGE/include" `$(CHAINPREFIX)/$(TOOLS)/sdl-config --cflags` -DTARGET_CAANOO -O3 -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops -Wall -Wno-unknown-pragmas -Wno-format
+CXXFLAGS = $(CFLAGS)
+LDFLAGS = -L$(CHAINPREFIX)/lib -lSDL_ttf -lSDL_image -lSDL_gfx -lfreetype -ljpeg -lpng12 -lSDL -lz -ldl
+
+TARGET = build/gmenu2x
+OBJDIR = objs/caanoo
+
+SOURCES := $(wildcard src/*.cpp)
+OBJS := $(patsubst src/%.cpp, $(OBJDIR)/%.o, $(SOURCES))
+
+# File types rules
+$(OBJDIR)/%.o: src/%.cpp src/%.h
+	$(CXX) $(CFLAGS) -o $@ -c $<
+
+all: dir shared
+
+dir:
+	@if [ ! -d $(OBJDIR) ]; then mkdir -p $(OBJDIR); fi
+
+debug-static: $(OBJS)
+	@echo "Linking $(TARGET)-debug..."
+	$(CXX) -o $(TARGET)-debug $(OBJS) -static `$(CHAINPREFIX)/$(TOOLS)/sdl-config --static-libs` $(LDFLAGS)
+
+debug-shared: $(OBJS)
+	@echo "Linking $(TARGET)-debug..."
+	$(CXX) -o $(TARGET)-debug `$(CHAINPREFIX)/$(TOOLS)/sdl-config --libs` $(LDFLAGS) $(OBJS)
+
+shared: debug-shared
+	$(STRIP) $(TARGET)-debug -o $(TARGET)
+
+static: debug-static
+	$(STRIP) $(TARGET)-debug -o $(TARGET)
+
+clean:
+	rm -f $(OBJDIR)/*.o *.gcda *.gcno $(TARGET)
+
+depend:
+	makedepend -fMakefile.caanoo -p$(OBJDIR)/ -- $(CFLAGS) -- src/*.cpp
