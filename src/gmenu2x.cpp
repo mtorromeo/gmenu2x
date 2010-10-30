@@ -933,8 +933,7 @@ void GMenu2X::main() {
 		}
 
 //#ifdef TARGET_GP2X
-		while (!input.update())
-			usleep(LOOP_DELAY);
+		input.update();
 		if ( input[ACTION_B] && menu->selLink()!=NULL ) menu->selLink()->run();
 		else if ( input[ACTION_START]  ) options();
 		else if ( input[ACTION_SELECT] ) contextMenu();
@@ -1647,7 +1646,6 @@ void GMenu2X::scanner() {
 	while (!close) {
 		input.update();
 		if (input[ACTION_START] || input[ACTION_B] || input[ACTION_X]) close = true;
-		usleep(30000);
 	}
 }
 

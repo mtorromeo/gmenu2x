@@ -76,9 +76,11 @@ public:
 
 	InputManager();
 	~InputManager();
-	void init(const string &conffile = "input.conf");
+	void init(const string &conffile);
+	void initJoysticks();
+	bool readConfFile(const string &conffile = "input.conf");
 
-	bool update();
+	bool update(bool wait=true);
 	int count();
 	void setActionsCount(int count);
 	void setInterval(int ms, int action = -1);
