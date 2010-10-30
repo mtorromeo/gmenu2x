@@ -5,3 +5,5 @@ pandora/input.conf
 objs
 _site
 *.patch
+*.kdev4
+*.gdb
