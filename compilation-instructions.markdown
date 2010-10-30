@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Compiling
+title: Compilation Instructions
 ---
 
 ## Requirements

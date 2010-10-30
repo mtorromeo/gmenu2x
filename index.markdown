@@ -29,7 +29,7 @@ Check that the autorun option is enabled on your GP2X.
 * Precompiled for GP2X: [gmenu2x-0.9.zip](http://prdownloads.sourceforge.net/gmenu2x/gmenu2x-0.9.zip?download)
 
 ## Getting the latest revision
-You can try to compile the source from the git repository. This is usually not recommended if precompiled packages are available, but you may [give it a try](compiling.html) if you cannot wait for the latest feature to come out or if you experience problems that may have been fixed it the repository.
+You can try to compile the source from the git repository. This is usually not recommended if precompiled packages are available, but you may [give it a try](compilation-instructions.html) if you cannot wait for the latest feature to come out or if you experience problems that may have been fixed it the repository.
 
 ## Reporting Bugs
 Before reporting a bug, check the [troubleshooting](troubleshooting.html) section and the [bugs already reported](http://github.com/mtorromeo/gmenu2x/issues) to see if you are experiencing a known problem. If not, report the bug in the  dedicated [bug tracking system](http://github.com/mtorromeo/gmenu2x/issues).
