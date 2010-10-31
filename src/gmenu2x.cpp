@@ -534,9 +534,9 @@ void GMenu2X::viewLog() {
 			td.exec();
 
 			MessageBox mb(this, tr["Do you want to delete the log file?"], "icons/ebook.png");
-			mb.setButton(ACTION_B, tr["Yes"]);
-			mb.setButton(ACTION_X, tr["No"]);
-			if (mb.exec() == ACTION_B) {
+			mb.setButton(CONFIRM, tr["Yes"]);
+			mb.setButton(CANCEL,  tr["No"]);
+			if (mb.exec() == CONFIRM) {
 				ledOn();
 				unlink(logfile.c_str());
 				sync();
@@ -888,7 +888,7 @@ void GMenu2X::main() {
 		sc.skinRes(batteryIcon)->blit( s, resX-19, bottomBarIconY );
 
 		//On Screen Help
-		if (input[ACTION_A]) {
+		if (input[MODIFIER]) {
 			s->box(10,50,300,143, skinConfColors[COLOR_MESSAGE_BOX_BG]);
 			s->rectangle( 12,52,296,helpBoxHeight, skinConfColors[COLOR_MESSAGE_BOX_BORDER] );
 			s->write( font, tr["CONTROLS"], 20, 60 );
@@ -934,11 +934,11 @@ void GMenu2X::main() {
 
 //#ifdef TARGET_GP2X
 		input.update();
-		if ( input[ACTION_B] && menu->selLink()!=NULL ) menu->selLink()->run();
-		else if ( input[ACTION_START]  ) options();
-		else if ( input[ACTION_SELECT] ) contextMenu();
+		if ( input[CONFIRM] && menu->selLink()!=NULL ) menu->selLink()->run();
+		else if ( input[SETTINGS]  ) options();
+		else if ( input[MENU] ) contextMenu();
 		// VOLUME SCALE MODIFIER
-		else if ( fwType=="open2x" && input[ACTION_X] ) {
+		else if ( fwType=="open2x" && input[CANCEL] ) {
 			volumeMode = constrain(volumeMode-1, -VOLUME_MODE_MUTE-1, VOLUME_MODE_NORMAL);
 			if(volumeMode < VOLUME_MODE_MUTE)
 				volumeMode = VOLUME_MODE_NORMAL;
@@ -950,20 +950,20 @@ void GMenu2X::main() {
 			setVolume(confInt["globalVolume"]);
 		}
 		// LINK NAVIGATION
-		else if ( input[ACTION_LEFT ]  ) menu->linkLeft();
-		else if ( input[ACTION_RIGHT]  ) menu->linkRight();
-		else if ( input[ACTION_UP   ]  ) menu->linkUp();
-		else if ( input[ACTION_DOWN ]  ) menu->linkDown();
+		else if ( input[LEFT ]  ) menu->linkLeft();
+		else if ( input[RIGHT]  ) menu->linkRight();
+		else if ( input[UP   ]  ) menu->linkUp();
+		else if ( input[DOWN ]  ) menu->linkDown();
 		// SELLINKAPP SELECTED
 		else if (menu->selLinkApp()!=NULL) {
-			if ( input[ACTION_Y] ) menu->selLinkApp()->showManual();
-			else if ( input.isActive(ACTION_A) ) {
+			if ( input[MANUAL] ) menu->selLinkApp()->showManual();
+			else if ( input.isActive(MODIFIER) ) {
 				// VOLUME
-				if ( input[ACTION_VOLDOWN] && !input.isActive(ACTION_VOLUP) )
+				if ( input[VOLDOWN] && !input.isActive(VOLUP) )
 					menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()-1,0,100) );
-				if ( input[ACTION_VOLUP] && !input.isActive(ACTION_VOLDOWN) )
+				if ( input[VOLUP] && !input.isActive(VOLDOWN) )
 					menu->selLinkApp()->setVolume( constrain(menu->selLinkApp()->volume()+1,0,100) );;
-				if ( input.isActive(ACTION_VOLUP) && input.isActive(ACTION_VOLDOWN) ) menu->selLinkApp()->setVolume(-1);
+				if ( input.isActive(VOLUP) && input.isActive(VOLDOWN) ) menu->selLinkApp()->setVolume(-1);
 			} else {
 				// CLOCK
 #if defined(TARGET_WIZ) || defined(TARGET_CAANOO)
@@ -971,22 +971,22 @@ void GMenu2X::main() {
 #else
 				int inc = 1;
 #endif
-				if ( input[ACTION_VOLDOWN] && !input.isActive(ACTION_VOLUP) )
+				if ( input[VOLDOWN] && !input.isActive(VOLUP) )
 					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-inc,50,confInt["maxClock"]) );
-				if ( input[ACTION_VOLUP] && !input.isActive(ACTION_VOLDOWN) )
+				if ( input[VOLUP] && !input.isActive(VOLDOWN) )
 					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+inc,50,confInt["maxClock"]) );
-				if ( input.isActive(ACTION_VOLUP) && input.isActive(ACTION_VOLDOWN) ) menu->selLinkApp()->setClock(200);
+				if ( input.isActive(VOLUP) && input.isActive(VOLDOWN) ) menu->selLinkApp()->setClock(200);
 			}
 		}
-		if ( input.isActive(ACTION_A) ) {
-			if (input.isActive(ACTION_L) && input.isActive(ACTION_R))
+		if ( input.isActive(MODIFIER) ) {
+			if (input.isActive(SECTION_PREV) && input.isActive(SECTION_NEXT))
 				saveScreenshot();
 		} else {
 			// SECTIONS
-			if ( input[ACTION_L     ] ) {
+			if ( input[SECTION_PREV] ) {
 				menu->decSectionIndex();
 				offset = menu->sectionLinks()->size()>linksPerPage ? 2 : 6;
-			} else if ( input[ACTION_R     ] ) {
+			} else if ( input[SECTION_NEXT] ) {
 				menu->incSectionIndex();
 				offset = menu->sectionLinks()->size()>linksPerPage ? 2 : 6;
 			}
@@ -1203,7 +1203,7 @@ void GMenu2X::activateSdUsb() {
 	} else {
 		system("scripts/usbon.sh sd");
 		MessageBox mb(this,tr["USB Enabled (SD)"],"icons/usb.png");
-		mb.setButton(ACTION_B, tr["Turn off"]);
+		mb.setButton(CONFIRM, tr["Turn off"]);
 		mb.exec();
 		system("scripts/usboff.sh sd");
 	}
@@ -1216,7 +1216,7 @@ void GMenu2X::activateNandUsb() {
 	} else {
 		system("scripts/usbon.sh nand");
 		MessageBox mb(this,tr["USB Enabled (Nand)"],"icons/usb.png");
-		mb.setButton(ACTION_B, tr["Turn off"]);
+		mb.setButton(CONFIRM, tr["Turn off"]);
 		mb.exec();
 		system("scripts/usboff.sh nand");
 	}
@@ -1229,7 +1229,7 @@ void GMenu2X::activateRootUsb() {
 	} else {
 		system("scripts/usbon.sh root");
 		MessageBox mb(this,tr["USB Enabled (Root)"],"icons/usb.png");
-		mb.setButton(ACTION_B, tr["Turn off"]);
+		mb.setButton(CONFIRM, tr["Turn off"]);
 		mb.exec();
 		system("scripts/usboff.sh root");
 	}
@@ -1338,10 +1338,10 @@ void GMenu2X::contextMenu() {
 		}
 
 		input.update();
-		if ( input[ACTION_SELECT] ) close = true;
-		if ( input[ACTION_UP    ] ) sel = max(0, sel-1);
-		if ( input[ACTION_DOWN  ] ) sel = min((int)voices.size()-1, sel+1);
-		if ( input[ACTION_B] ) { voices[sel].action(); close = true; }
+		if ( input[MENU]    ) close = true;
+		if ( input[UP]      ) sel = max(0, sel-1);
+		if ( input[DOWN]    ) sel = min((int)voices.size()-1, sel+1);
+		if ( input[CONFIRM] ) { voices[sel].action(); close = true; }
 	}
 }
 
@@ -1486,9 +1486,9 @@ void GMenu2X::editLink() {
 void GMenu2X::deleteLink() {
 	if (menu->selLinkApp()!=NULL) {
 		MessageBox mb(this, tr.translate("Deleting $1",menu->selLink()->getTitle().c_str(),NULL)+"\n"+tr["Are you sure?"], menu->selLink()->getIconPath());
-		mb.setButton(ACTION_B, tr["Yes"]);
-		mb.setButton(ACTION_X, tr["No"]);
-		if (mb.exec() == ACTION_B) {
+		mb.setButton(CONFIRM, tr["Yes"]);
+		mb.setButton(CANCEL,  tr["No"]);
+		if (mb.exec() == CONFIRM) {
 			ledOn();
 			menu->deleteSelectedLink();
 			sync();
@@ -1548,9 +1548,9 @@ void GMenu2X::renameSection() {
 
 void GMenu2X::deleteSection() {
 	MessageBox mb(this,tr["You will lose all the links in this section."]+"\n"+tr["Are you sure?"]);
-	mb.setButton(ACTION_B, tr["Yes"]);
-	mb.setButton(ACTION_X, tr["No"]);
-	if (mb.exec() == ACTION_B) {
+	mb.setButton(CONFIRM, tr["Yes"]);
+	mb.setButton(CANCEL,  tr["No"]);
+	if (mb.exec() == CONFIRM) {
 		ledOn();
 		if (rmtree(path+"sections/"+menu->selSection())) {
 			menu->deleteSelectedSection();
@@ -1568,9 +1568,6 @@ void GMenu2X::scanner() {
 
 	uint lineY = 42;
 
-#ifdef _TARGET_PANDORA
-	//char *configpath = pnd_conf_query_searchpath();
-#else
 	if (confInt["menuClock"]<200) {
 		setClock(200);
 		scanbg.write(font,tr["Raising cpu clock to 200Mhz"],5,lineY);
@@ -1640,12 +1637,11 @@ void GMenu2X::scanner() {
 
 	sync();
 	ledOff();
-#endif
 
 	bool close = false;
 	while (!close) {
 		input.update();
-		if (input[ACTION_START] || input[ACTION_B] || input[ACTION_X]) close = true;
+		if (input[SETTINGS] || input[CONFIRM] || input[CANCEL]) close = true;
 	}
 }
 
@@ -1719,17 +1715,20 @@ unsigned short GMenu2X::getBatteryLevel() {
 
 void GMenu2X::setInputSpeed() {
 	input.setInterval(150);
-	input.setInterval(30,  ACTION_VOLDOWN);
-	input.setInterval(30,  ACTION_VOLUP  );
-	input.setInterval(30,  ACTION_A      );
-	input.setInterval(500, ACTION_START  );
-	input.setInterval(500, ACTION_SELECT );
-	input.setInterval(300, ACTION_X      );
-	input.setInterval(300,  ACTION_Y      );
-	input.setInterval(1000,ACTION_B      );
-	//joy.setInterval(1000,ACTION_CLICK  );
-	input.setInterval(300, ACTION_L      );
-	input.setInterval(300, ACTION_R      );
+	input.setInterval(30,  VOLDOWN);
+	input.setInterval(30,  VOLUP);
+	input.setInterval(30,  CANCEL);
+	input.setInterval(500, SETTINGS);
+	input.setInterval(500, MENU);
+	input.setInterval(300, CANCEL);
+	input.setInterval(300, MANUAL);
+	input.setInterval(200, INC);
+	input.setInterval(200, DEC);
+	input.setInterval(1000,CONFIRM);
+	input.setInterval(300, SECTION_PREV);
+	input.setInterval(300, SECTION_NEXT);
+	input.setInterval(300, PAGEUP);
+	input.setInterval(300, PAGEDOWN);
 	SDL_EnableKeyRepeat(1,150);
 }
 

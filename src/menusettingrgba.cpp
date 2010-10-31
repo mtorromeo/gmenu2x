@@ -80,13 +80,13 @@ void MenuSettingRGBA::handleTS() {
 }
 
 void MenuSettingRGBA::manageInput() {
-	if (gmenu2x->input[ACTION_Y])
+	if (gmenu2x->input[INC])
 		inc();
-	if (gmenu2x->input[ACTION_X])
+	if (gmenu2x->input[DEC])
 		dec();
-	if (gmenu2x->input[ACTION_LEFT])
+	if (gmenu2x->input[LEFT])
 		leftComponent();
-	if (gmenu2x->input[ACTION_RIGHT])
+	if (gmenu2x->input[RIGHT])
 		rightComponent();
 }
 

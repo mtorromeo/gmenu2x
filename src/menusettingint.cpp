@@ -65,8 +65,8 @@ void MenuSettingInt::draw(int y) {
 }
 
 void MenuSettingInt::manageInput() {
-	if ( gmenu2x->input[ACTION_LEFT ] || gmenu2x->input[ACTION_X] ) dec();
-	if ( gmenu2x->input[ACTION_RIGHT] || gmenu2x->input[ACTION_Y] ) inc();
+	if ( gmenu2x->input[LEFT ] || gmenu2x->input[DEC] ) dec();
+	if ( gmenu2x->input[RIGHT] || gmenu2x->input[INC] ) inc();
 }
 
 void MenuSettingInt::inc() {

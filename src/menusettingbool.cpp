@@ -62,7 +62,7 @@ void MenuSettingBool::draw(int y)
 
 void MenuSettingBool::manageInput()
 {
-	if (gmenu2x->input[ACTION_B])
+	if (gmenu2x->input[CONFIRM])
 		toggle();
 }
 

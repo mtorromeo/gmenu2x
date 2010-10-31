@@ -20,20 +20,15 @@
 #ifndef INPUTMANAGER_H
 #define INPUTMANAGER_H
 
-#define ACTION_UP      0
-#define ACTION_DOWN    1
-#define ACTION_LEFT    2
-#define ACTION_RIGHT   3
-#define ACTION_A       4
-#define ACTION_B       5
-#define ACTION_X       6
-#define ACTION_Y       7
-#define ACTION_L       8
-#define ACTION_R       9
-#define ACTION_START   10
-#define ACTION_SELECT  11
-#define ACTION_VOLUP   12
-#define ACTION_VOLDOWN 13
+enum actions {
+	UP, DOWN, LEFT, RIGHT,
+	CONFIRM, CANCEL, MANUAL, MODIFIER,
+	SECTION_PREV, SECTION_NEXT,
+	INC, DEC,
+	PAGEUP, PAGEDOWN,
+	SETTINGS, MENU,
+	VOLUP, VOLDOWN
+};
 
 #include <SDL.h>
 #include <SDL_image.h>

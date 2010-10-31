@@ -64,21 +64,21 @@ bool BrowseDialog::exec() {
 BrowseDialog::Action BrowseDialog::getAction() {
 	BrowseDialog::Action action = BrowseDialog::ACT_NONE;
 
-	if (gmenu2x->input[ACTION_SELECT])
+	if (gmenu2x->input[MENU])
 		action = BrowseDialog::ACT_CLOSE;
-	else if (gmenu2x->input[ACTION_UP])
+	else if (gmenu2x->input[UP])
 		action = BrowseDialog::ACT_UP;
-	else if (gmenu2x->input[ACTION_L])
+	else if (gmenu2x->input[PAGEUP])
 		action = BrowseDialog::ACT_SCROLLUP;
-	else if (gmenu2x->input[ACTION_DOWN])
+	else if (gmenu2x->input[DOWN])
 		action = BrowseDialog::ACT_DOWN;
-	else if (gmenu2x->input[ACTION_R])
+	else if (gmenu2x->input[PAGEDOWN])
 		action = BrowseDialog::ACT_SCROLLDOWN;
-	else if (gmenu2x->input[ACTION_X] || gmenu2x->input[ACTION_LEFT])
+	else if (gmenu2x->input[CANCEL] || gmenu2x->input[LEFT])
 		action = BrowseDialog::ACT_GOUP;
-	else if (gmenu2x->input[ACTION_B])
+	else if (gmenu2x->input[CONFIRM])
 		action = BrowseDialog::ACT_SELECT;
-	else if (gmenu2x->input[ACTION_START])
+	else if (gmenu2x->input[SETTINGS])
 		action = BrowseDialog::ACT_CONFIRM;
 
 	return action;

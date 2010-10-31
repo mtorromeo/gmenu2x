@@ -40,23 +40,27 @@ MessageBox::MessageBox(GMenu2X *gmenu2x, const string &text, const string &icon)
 	}
 
 	//Default enabled button
-	buttons[ACTION_B] = "OK";
+	buttons[CONFIRM] = "OK";
 
 	//Default labels
-	buttonLabels[ACTION_UP] = "up";
-	buttonLabels[ACTION_DOWN] = "down";
-	buttonLabels[ACTION_LEFT] = "left";
-	buttonLabels[ACTION_RIGHT] = "right";
-	buttonLabels[ACTION_A] = "a";
-	buttonLabels[ACTION_B] = "b";
-	buttonLabels[ACTION_X] = "x";
-	buttonLabels[ACTION_Y] = "y";
-	buttonLabels[ACTION_L] = "l";
-	buttonLabels[ACTION_R] = "r";
-	buttonLabels[ACTION_START] = "start";
-	buttonLabels[ACTION_SELECT] = "select";
-	buttonLabels[ACTION_VOLUP] = "vol+";
-	buttonLabels[ACTION_VOLDOWN] = "vol-";
+	buttonLabels[UP] = "up";
+	buttonLabels[DOWN] = "down";
+	buttonLabels[LEFT] = "left";
+	buttonLabels[RIGHT] = "right";
+	buttonLabels[MODIFIER] = "a";
+	buttonLabels[CONFIRM] = "b";
+	buttonLabels[CANCEL] = "x";
+	buttonLabels[MANUAL] = "y";
+	buttonLabels[DEC] = "x";
+	buttonLabels[INC] = "y";
+	buttonLabels[SECTION_PREV] = "l";
+	buttonLabels[SECTION_NEXT] = "r";
+	buttonLabels[PAGEUP] = "l";
+	buttonLabels[PAGEDOWN] = "r";
+	buttonLabels[SETTINGS] = "start";
+	buttonLabels[MENU] = "select";
+	buttonLabels[VOLUP] = "vol+";
+	buttonLabels[VOLDOWN] = "vol-";
 }
 
 void MessageBox::setButton(int action, const string &btn) {

@@ -118,20 +118,20 @@ void TextDialog::exec() {
 
 
 		gmenu2x->input.update();
-		if ( gmenu2x->input[ACTION_UP  ] && firstRow>0 ) firstRow--;
-		if ( gmenu2x->input[ACTION_DOWN] && firstRow+rowsPerPage<text->size() ) firstRow++;
-		if ( gmenu2x->input[ACTION_L   ] ) {
+		if ( gmenu2x->input[UP  ] && firstRow>0 ) firstRow--;
+		if ( gmenu2x->input[DOWN] && firstRow+rowsPerPage<text->size() ) firstRow++;
+		if ( gmenu2x->input[PAGEUP] ) {
 			if (firstRow>=rowsPerPage-1)
 				firstRow-= rowsPerPage-1;
 			else
 				firstRow = 0;
 		}
-		if ( gmenu2x->input[ACTION_R   ] ) {
+		if ( gmenu2x->input[PAGEDOWN] ) {
 			if (firstRow+rowsPerPage*2-1<text->size())
 				firstRow+= rowsPerPage-1;
 			else
 				firstRow = max(0,text->size()-rowsPerPage);
 		}
-		if ( gmenu2x->input[ACTION_START] || gmenu2x->input[ACTION_X] ) close = true;
+		if ( gmenu2x->input[SETTINGS] || gmenu2x->input[CANCEL] ) close = true;
 	}
 }

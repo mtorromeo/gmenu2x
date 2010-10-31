@@ -165,15 +165,15 @@ bool InputDialog::exec() {
 		gmenu2x->s->flip();
 
 		inputMgr.update();
-		if ( inputMgr[ACTION_START] ) action = ID_ACTION_CLOSE;
-		if ( inputMgr[ACTION_UP   ] ) action = ID_ACTION_UP;
-		if ( inputMgr[ACTION_DOWN ] ) action = ID_ACTION_DOWN;
-		if ( inputMgr[ACTION_LEFT ] ) action = ID_ACTION_LEFT;
-		if ( inputMgr[ACTION_RIGHT] ) action = ID_ACTION_RIGHT;
-		if ( inputMgr[ACTION_B]     ) action = ID_ACTION_SELECT;
-		if ( inputMgr[ACTION_Y]     ) action = ID_ACTION_KB_CHANGE;
-		if ( inputMgr[ACTION_X] || inputMgr[ACTION_L] ) action = ID_ACTION_BACKSPACE;
-		if ( inputMgr[ACTION_R    ] ) action = ID_ACTION_SPACE;
+		if      ( inputMgr[SETTINGS]     ) action = ID_ACTION_CLOSE;
+		else if ( inputMgr[UP]           ) action = ID_ACTION_UP;
+		else if ( inputMgr[DOWN]         ) action = ID_ACTION_DOWN;
+		else if ( inputMgr[LEFT]         ) action = ID_ACTION_LEFT;
+		else if ( inputMgr[RIGHT]        ) action = ID_ACTION_RIGHT;
+		else if ( inputMgr[CONFIRM]      ) action = ID_ACTION_SELECT;
+		else if ( inputMgr[MANUAL]       ) action = ID_ACTION_KB_CHANGE;
+		else if ( inputMgr[CANCEL] || inputMgr[SECTION_PREV] ) action = ID_ACTION_BACKSPACE;
+		else if ( inputMgr[SECTION_NEXT] ) action = ID_ACTION_SPACE;
 
 		switch (action) {
 			case ID_ACTION_CLOSE: {

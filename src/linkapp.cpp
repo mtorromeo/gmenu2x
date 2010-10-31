@@ -319,9 +319,9 @@ void LinkApp::showManual() {
 			}
 
 			inputMgr.update();
-			if ( inputMgr[ACTION_Y] || inputMgr[ACTION_X] || inputMgr[ACTION_START] ) close = true;
-			if ( inputMgr[ACTION_LEFT] && page>0 ) { page--; repaint=true; }
-			if ( inputMgr[ACTION_RIGHT] && page<pagecount-1 ) { page++; repaint=true; }
+			if ( inputMgr[MANUAL] || inputMgr[CANCEL] || inputMgr[SETTINGS] ) close = true;
+			if ( inputMgr[LEFT] && page>0 ) { page--; repaint=true; }
+			if ( inputMgr[RIGHT] && page<pagecount-1 ) { page++; repaint=true; }
 		}
 		return;
 	}

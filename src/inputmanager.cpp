@@ -61,7 +61,7 @@ void InputManager::initJoysticks() {
 
 
 bool InputManager::readConfFile(const string &conffile) {
-	setActionsCount(14);
+	setActionsCount(18);
 
 	if (!fileExists(conffile)) {
 		ERROR("File not found: %s\n", conffile.c_str());
@@ -85,20 +85,24 @@ bool InputManager::readConfFile(const string &conffile) {
 		name = trim(line.substr(0,pos));
 		value = trim(line.substr(pos+1,line.length()));
 
-		if (name=="up")           action = ACTION_UP;
-		else if (name=="down")    action = ACTION_DOWN;
-		else if (name=="left")    action = ACTION_LEFT;
-		else if (name=="right")   action = ACTION_RIGHT;
-		else if (name=="a")       action = ACTION_A;
-		else if (name=="b")       action = ACTION_B;
-		else if (name=="x")       action = ACTION_X;
-		else if (name=="y")       action = ACTION_Y;
-		else if (name=="l")       action = ACTION_L;
-		else if (name=="r")       action = ACTION_R;
-		else if (name=="start")   action = ACTION_START;
-		else if (name=="select")  action = ACTION_SELECT;
-		else if (name=="volup")   action = ACTION_VOLUP;
-		else if (name=="voldown") action = ACTION_VOLDOWN;
+		if (name=="up")                action = UP;
+		else if (name=="down")         action = DOWN;
+		else if (name=="left")         action = LEFT;
+		else if (name=="right")        action = RIGHT;
+		else if (name=="modifier")     action = MODIFIER;
+		else if (name=="confirm")      action = CONFIRM;
+		else if (name=="cancel")       action = CANCEL;
+		else if (name=="manual")       action = MANUAL;
+		else if (name=="dec")          action = DEC;
+		else if (name=="inc")          action = INC;
+		else if (name=="section_prev") action = SECTION_PREV;
+		else if (name=="section_next") action = SECTION_NEXT;
+		else if (name=="pageup")       action = PAGEUP;
+		else if (name=="pagedown")     action = PAGEDOWN;
+		else if (name=="settings")     action = SETTINGS;
+		else if (name=="menu")         action = MENU;
+		else if (name=="volup")        action = VOLUP;
+		else if (name=="voldown")      action = VOLDOWN;
 		else {
 			ERROR("%s:%d Unknown action '%s'.\n", conffile.c_str(), linenum, name.c_str());
 			return false;
@@ -227,6 +231,7 @@ bool InputManager::isActive(int action) {
 			break;
 			case InputManager::MAPPING_TYPE_KEYPRESS:
 				for (uint ex=0; ex<events.size(); ex++) {
+					INFO("KEYPRESS: %d\n", events[ex].key.keysym.sym);
 					if (events[ex].type == SDL_KEYDOWN && events[ex].key.keysym.sym == map.value)
 						return true;
 				}

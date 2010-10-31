@@ -51,8 +51,8 @@ MenuSettingMultiString::MenuSettingMultiString(
 
 void MenuSettingMultiString::manageInput()
 {
-	if (gmenu2x->input[ACTION_LEFT ]) decSel();
-	if (gmenu2x->input[ACTION_RIGHT]) incSel();
+	if (gmenu2x->input[LEFT ]) decSel();
+	if (gmenu2x->input[RIGHT]) incSel();
 }
 
 void MenuSettingMultiString::incSel()
