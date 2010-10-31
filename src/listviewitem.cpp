@@ -15,7 +15,7 @@ void ListViewItem::setPosition(int x, int y) {
 }
 
 void ListViewItem::paint() {
-	parent->gmenu2x->s->write(parent->gmenu2x->font, text, rect.x, rect.y, SFontHAlignLeft, SFontVAlignMiddle);
+	parent->gmenu2x->s->write(parent->gmenu2x->font, text, rect.x, rect.y, HAlignLeft, VAlignMiddle);
 }
 
 int ListViewItem::getHeight() {

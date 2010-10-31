@@ -29,7 +29,7 @@
 #include "touchscreen.h"
 #include "inputmanager.h"
 #include "surface.h"
-#include "sfontplus.h"
+#include "fonthelper.h"
 
 #include <iostream>
 #include <string>
@@ -201,7 +201,7 @@ public:
 	SurfaceCollection sc;
 	Translator tr;
 	Surface *s, *bg;
-	SFontPlus *font;
+	FontHelper *font;
 
 	//Status functions
 	void main();

@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "menusetting.h"
-#include "sfontplus.h"
+#include "fonthelper.h"
 #include "gmenu2x.h"
 
 MenuSetting::MenuSetting(GMenu2X *gmenu2x, const string &name, const string &description)
@@ -28,7 +28,7 @@ MenuSetting::MenuSetting(GMenu2X *gmenu2x, const string &name, const string &des
 MenuSetting::~MenuSetting() {}
 
 void MenuSetting::draw(int y) {
-	gmenu2x->s->write( gmenu2x->font, name, 5, y+gmenu2x->font->getHalfHeight(), SFontHAlignLeft, SFontVAlignMiddle );
+	gmenu2x->s->write( gmenu2x->font, name, 5, y+gmenu2x->font->getHalfHeight(), HAlignLeft, VAlignMiddle );
 }
 
 void MenuSetting::handleTS() {

@@ -41,7 +41,7 @@ void MenuSettingStringBase::draw(int y)
 	gmenu2x->s->write(
 			gmenu2x->font, value(),
 			155, y + gmenu2x->font->getHalfHeight(),
-			SFontHAlignLeft, SFontVAlignMiddle);
+			HAlignLeft, VAlignMiddle);
 }
 
 void MenuSettingStringBase::manageInput()

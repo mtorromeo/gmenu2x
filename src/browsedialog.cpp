@@ -220,7 +220,7 @@ void BrowseDialog::paint() {
 			icon = iconFile;
 		}
 		icon->blit(gmenu2x->s, 5, offsetY);
-		gmenu2x->s->write(gmenu2x->font, (*fl)[i], 24, offsetY + 8, SFontHAlignLeft, SFontVAlignMiddle);
+		gmenu2x->s->write(gmenu2x->font, (*fl)[i], 24, offsetY + 8, HAlignLeft, VAlignMiddle);
 
 		if (gmenu2x->f200 && gmenu2x->ts.pressed() && gmenu2x->ts.inRect(touchRect.x, offsetY + 3, touchRect.w, rowHeight)) {
 			ts_pressed = true;

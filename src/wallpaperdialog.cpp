@@ -77,7 +77,7 @@ bool WallpaperDialog::exec()
 		gmenu2x->s->setClipRect(0,41,311,179);
 		for (i=firstElement; i<wallpapers.size() && i<firstElement+10; i++) {
 			iY = i-firstElement;
-			gmenu2x->s->write(gmenu2x->font, wallpapers[i], 5, 52+(iY*17), SFontHAlignLeft, SFontVAlignMiddle);
+			gmenu2x->s->write(gmenu2x->font, wallpapers[i], 5, 52+(iY*17), HAlignLeft, VAlignMiddle);
 		}
 		gmenu2x->s->clearClipRect();
 

@@ -26,7 +26,7 @@
 
 using std::string;
 
-class SFontPlus;
+class FontHelper;
 
 struct RGBAColor {
 	unsigned short r,g,b,a;
@@ -84,7 +84,7 @@ public:
 	bool blitRight(Surface *destination, int x, int y, int w=0, int h=0, int a=-1);
 	bool blitRight(SDL_Surface *destination, int x, int y, int w=0, int h=0, int a=-1);
 
-	void write(SFontPlus *font, const string &text, int x, int y, const unsigned short halign=0, const unsigned short valign=0);
+	void write(FontHelper *font, const string &text, int x, int y, const unsigned short halign=0, const unsigned short valign=0);
 
 	int box(Sint16, Sint16, Sint16, Sint16, Uint8, Uint8, Uint8, Uint8);
 	int box(Sint16, Sint16, Sint16, Sint16, Uint8, Uint8, Uint8);

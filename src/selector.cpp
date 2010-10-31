@@ -105,9 +105,9 @@ int Selector::exec(int startSelection) {
 			iY = i-firstElement;
 			if (fl.isDirectory(i)) {
 				gmenu2x->sc["imgs/folder.png"]->blit(gmenu2x->s, 4, 42+(iY*16));
-				gmenu2x->s->write(gmenu2x->font, fl[i], 21, 49+(iY*16), SFontHAlignLeft, SFontVAlignMiddle);
+				gmenu2x->s->write(gmenu2x->font, fl[i], 21, 49+(iY*16), HAlignLeft, VAlignMiddle);
 			} else
-				gmenu2x->s->write(gmenu2x->font, titles[i-fl.dirCount()], 4, 49+(iY*16), SFontHAlignLeft, SFontVAlignMiddle);
+				gmenu2x->s->write(gmenu2x->font, titles[i-fl.dirCount()], 4, 49+(iY*16), HAlignLeft, VAlignMiddle);
 		}
 		gmenu2x->s->clearClipRect();
 

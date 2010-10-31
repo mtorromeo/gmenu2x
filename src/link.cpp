@@ -43,12 +43,12 @@ void Link::run() {}
 
 void Link::paint() {
 	iconSurface->blit(gmenu2x->s, iconX, rect.y+padding, 32,32);
-	gmenu2x->s->write( gmenu2x->font, getTitle(), iconX+16, rect.y+gmenu2x->skinConfInt["linkHeight"]-padding, SFontHAlignCenter, SFontVAlignBottom );
+	gmenu2x->s->write( gmenu2x->font, getTitle(), iconX+16, rect.y+gmenu2x->skinConfInt["linkHeight"]-padding, HAlignCenter, VAlignBottom );
 }
 
 bool Link::paintHover() {
 	if (gmenu2x->useSelectionPng)
-		gmenu2x->sc["imgs/selection.png"]->blit(gmenu2x->s,rect,SFontHAlignCenter,SFontVAlignMiddle);
+		gmenu2x->sc["imgs/selection.png"]->blit(gmenu2x->s,rect,HAlignCenter,VAlignMiddle);
 	else
 		gmenu2x->s->box(rect.x, rect.y, rect.w, rect.h, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 	return true;

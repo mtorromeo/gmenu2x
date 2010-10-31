@@ -71,13 +71,13 @@ void IconButton::recalcSize() {
 		if (labelPosition == IconButton::DISP_LEFT || labelPosition == IconButton::DISP_RIGHT) {
 			w += margin + labelRect.w;
 			//if (labelRect.h > h) h = labelRect.h;
-			labelHAlign = SFontHAlignLeft;
-			labelVAlign = SFontVAlignMiddle;
+			labelHAlign = HAlignLeft;
+			labelVAlign = VAlignMiddle;
 		} else {
 			h += margin + labelRect.h;
 			//if (labelRect.w > w) w = labelRect.w;
-			labelHAlign = SFontHAlignCenter;
-			labelVAlign = SFontVAlignTop;
+			labelHAlign = HAlignCenter;
+			labelVAlign = VAlignTop;
 		}
 
 		switch (labelPosition) {

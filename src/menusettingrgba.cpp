@@ -60,10 +60,10 @@ void MenuSettingRGBA::draw(int y) {
 	MenuSetting::draw(y);
 	gmenu2x->s->rectangle( 153, y+1, 11, 11, 0,0,0,255 );
 	gmenu2x->s->box( 154, y+2, 9, 9, value() );
-	gmenu2x->s->write( gmenu2x->font, "R: "+strR, 169, y+gmenu2x->font->getHalfHeight(), SFontHAlignLeft, SFontVAlignMiddle );
-	gmenu2x->s->write( gmenu2x->font, "G: "+strG, 205, y+gmenu2x->font->getHalfHeight(), SFontHAlignLeft, SFontVAlignMiddle );
-	gmenu2x->s->write( gmenu2x->font, "B: "+strB, 241, y+gmenu2x->font->getHalfHeight(), SFontHAlignLeft, SFontVAlignMiddle );
-	gmenu2x->s->write( gmenu2x->font, "A: "+strA, 277, y+gmenu2x->font->getHalfHeight(), SFontHAlignLeft, SFontVAlignMiddle );
+	gmenu2x->s->write( gmenu2x->font, "R: "+strR, 169, y+gmenu2x->font->getHalfHeight(), HAlignLeft, VAlignMiddle );
+	gmenu2x->s->write( gmenu2x->font, "G: "+strG, 205, y+gmenu2x->font->getHalfHeight(), HAlignLeft, VAlignMiddle );
+	gmenu2x->s->write( gmenu2x->font, "B: "+strB, 241, y+gmenu2x->font->getHalfHeight(), HAlignLeft, VAlignMiddle );
+	gmenu2x->s->write( gmenu2x->font, "A: "+strA, 277, y+gmenu2x->font->getHalfHeight(), HAlignLeft, VAlignMiddle );
 }
 
 void MenuSettingRGBA::handleTS() {

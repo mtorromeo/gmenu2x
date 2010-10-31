@@ -1,8 +1,8 @@
-#include "sfontplus.h"
+#include "fonthelper.h"
 #include "utilities.h"
 #include "debug.h"
 
-SFontPlus::SFontPlus(const string &font, int size, RGBAColor textColor, RGBAColor outlineColor) {
+FontHelper::FontHelper(const string &font, int size, RGBAColor textColor, RGBAColor outlineColor) {
 	this->textColor = textColor;
 	this->outlineColor = outlineColor;
 	
@@ -32,25 +32,25 @@ SFontPlus::SFontPlus(const string &font, int size, RGBAColor textColor, RGBAColo
 	halfHeight = height/2;
 }
 
-SFontPlus::~SFontPlus() {
+FontHelper::~FontHelper() {
 	TTF_CloseFont(font);
 	TTF_CloseFont(fontOutline);
 }
 
-bool SFontPlus::utf8Code(unsigned char c) {
+bool FontHelper::utf8Code(unsigned char c) {
 	return (c>=194 && c<=198) || c==208 || c==209;
 }
 
-SFontPlus *SFontPlus::setColor(RGBAColor color) {
+FontHelper *FontHelper::setColor(RGBAColor color) {
 	textColor = color;
 	return this;
 }
 
-SFontPlus *SFontPlus::setOutlineColor(RGBAColor color) {
+FontHelper *FontHelper::setOutlineColor(RGBAColor color) {
 	outlineColor = color;
 	return this;
 }
-void SFontPlus::write(SDL_Surface *s, const string &text, int x, int y) {
+void FontHelper::write(SDL_Surface *s, const string &text, int x, int y) {
 	if (text.empty()) return;
 	
 	Surface bg;
@@ -63,21 +63,21 @@ void SFontPlus::write(SDL_Surface *s, const string &text, int x, int y) {
 	bg.blit(s, x,y);
 }
 
-void SFontPlus::write(SDL_Surface* surface, const string& text, int x, int y, const unsigned short halign, const unsigned short valign) {
+void FontHelper::write(SDL_Surface* surface, const string& text, int x, int y, const unsigned short halign, const unsigned short valign) {
 	switch (halign) {
-		case SFontHAlignCenter:
+		case HAlignCenter:
 			x -= getTextWidth(text)/2;
 		break;
-		case SFontHAlignRight:
+		case HAlignRight:
 			x -= getTextWidth(text);
 		break;
 	}
 
 	switch (valign) {
-		case SFontVAlignMiddle:
+		case VAlignMiddle:
 			y -= getHalfHeight();
 		break;
-		case SFontVAlignBottom:
+		case VAlignBottom:
 			y -= getHeight();
 		break;
 	}
@@ -85,12 +85,12 @@ void SFontPlus::write(SDL_Surface* surface, const string& text, int x, int y, co
 	write(surface, text, x, y);
 }
 
-void SFontPlus::write(SDL_Surface* surface, vector<string> *text, int x, int y, const unsigned short halign, const unsigned short valign) {
+void FontHelper::write(SDL_Surface* surface, vector<string> *text, int x, int y, const unsigned short halign, const unsigned short valign) {
 	switch (valign) {
-		case SFontVAlignMiddle:
+		case VAlignMiddle:
 			y -= getHalfHeight()*text->size();
 		break;
-		case SFontVAlignBottom:
+		case VAlignBottom:
 			y -= getHeight()*text->size();
 		break;
 	}
@@ -98,10 +98,10 @@ void SFontPlus::write(SDL_Surface* surface, vector<string> *text, int x, int y, 
 	for (uint i=0; i<text->size(); i++) {
 		int ix = x;
 		switch (halign) {
-			case SFontHAlignCenter:
+			case HAlignCenter:
 				ix -= getTextWidth(text->at(i))/2;
 			break;
-			case SFontHAlignRight:
+			case HAlignRight:
 				ix -= getTextWidth(text->at(i));
 			break;
 		}
@@ -110,7 +110,7 @@ void SFontPlus::write(SDL_Surface* surface, vector<string> *text, int x, int y, 
 	}
 }
 
-void SFontPlus::write(Surface* surface, const string& text, int x, int y, const unsigned short halign, const unsigned short valign) {
+void FontHelper::write(Surface* surface, const string& text, int x, int y, const unsigned short halign, const unsigned short valign) {
 	if (text.find("\n",0)!=string::npos) {
 		vector<string> textArr;
 		split(textArr,text,"\n");
@@ -119,12 +119,12 @@ void SFontPlus::write(Surface* surface, const string& text, int x, int y, const 
 		write(surface->raw, text, x, y, halign, valign);
 }
 
-uint SFontPlus::getLineWidth(const string& text) {
+uint FontHelper::getLineWidth(const string& text) {
 	int width = 0;
 	TTF_SizeUTF8(fontOutline, text.c_str(), &width, NULL);
 	return width;
 }
-uint SFontPlus::getTextWidth(const string& text) {
+uint FontHelper::getTextWidth(const string& text) {
 	if (text.find("\n",0)!=string::npos) {
 		vector<string> textArr;
 		split(textArr,text,"\n");
@@ -132,7 +132,7 @@ uint SFontPlus::getTextWidth(const string& text) {
 	} else
 		return getLineWidth(text);
 }
-uint SFontPlus::getTextWidth(vector<string> *text) {
+uint FontHelper::getTextWidth(vector<string> *text) {
 	int w = 0;
 	for (uint i=0; i<text->size(); i++)
 		w = max( getLineWidth(text->at(i)), w );

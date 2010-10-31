@@ -21,7 +21,7 @@
 #include <SDL_gfxPrimitives.h>
 
 #include "surface.h"
-#include "sfontplus.h"
+#include "fonthelper.h"
 #include "utilities.h"
 #include "debug.h"
 
@@ -268,7 +268,7 @@ void Surface::blendAdd(Surface *target, int x, int y) {
 */
 }
 
-void Surface::write(SFontPlus *font, const string &text, int x, int y, const unsigned short halign, const unsigned short valign) {
+void Surface::write(FontHelper *font, const string &text, int x, int y, const unsigned short halign, const unsigned short valign) {
 	font->write(this,text,x,y,halign,valign);
 }
 
@@ -343,19 +343,19 @@ void Surface::setClipRect(SDL_Rect rect) {
 
 bool Surface::blit(Surface *destination, SDL_Rect container, const unsigned short halign, const unsigned short valign) {
 	switch (halign) {
-	case SFontHAlignCenter:
+	case HAlignCenter:
 		container.x += container.w/2-halfW;
 		break;
-	case SFontHAlignRight:
+	case HAlignRight:
 		container.x += container.w-raw->w;
 		break;
 	}
 
 	switch (valign) {
-	case SFontVAlignMiddle:
+	case VAlignMiddle:
 		container.y += container.h/2-halfH;
 		break;
-	case SFontVAlignBottom:
+	case VAlignBottom:
 		container.y += container.h-raw->h;
 		break;
 	}

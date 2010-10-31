@@ -1,5 +1,5 @@
-#ifndef SFONTPLUS_H
-#define SFONTPLUS_H
+#ifndef FONTHELPER_H
+#define FONTHELPER_H
 
 #include "surface.h"
 
@@ -13,21 +13,21 @@
 using std::vector;
 using std::string;
 
-enum SFontHAlign {
-	SFontHAlignLeft,
-	SFontHAlignRight,
-	SFontHAlignCenter
+enum FHHAlign {
+	HAlignLeft,
+	HAlignRight,
+	HAlignCenter
 };
 
-enum SFontVAlign {
-	SFontVAlignTop,
-	SFontVAlignBottom,
-	SFontVAlignMiddle
+enum FHVAlign {
+	VAlignTop,
+	VAlignBottom,
+	VAlignMiddle
 };
 
 class Surface;
 
-class SFontPlus {
+class FontHelper {
 private:
 
 	int height, halfHeight;
@@ -35,8 +35,8 @@ private:
 	RGBAColor textColor, outlineColor;
 
 public:
-	SFontPlus(const string &font, int size, RGBAColor textColor = (RGBAColor){255,255,255}, RGBAColor outlineColor = (RGBAColor){5,5,5});
-	~SFontPlus();
+	FontHelper(const string &font, int size, RGBAColor textColor = (RGBAColor){255,255,255}, RGBAColor outlineColor = (RGBAColor){5,5,5});
+	~FontHelper();
 
 	bool utf8Code(unsigned char c);
 
@@ -52,8 +52,8 @@ public:
 	uint getHeight() { return height; };
 	uint getHalfHeight() { return halfHeight; };
 	
-	SFontPlus *setColor(RGBAColor color);
-	SFontPlus *setOutlineColor(RGBAColor color);
+	FontHelper *setColor(RGBAColor color);
+	FontHelper *setOutlineColor(RGBAColor color);
 };
 
-#endif /* SFONTPLUS_H */
+#endif /* FONTHELPER_H */

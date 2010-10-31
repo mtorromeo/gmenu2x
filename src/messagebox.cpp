@@ -88,7 +88,7 @@ int MessageBox::exec() {
 	//icon+text
 	if (gmenu2x->sc[icon] != NULL)
 		gmenu2x->sc[icon]->blitCenter( &bg, box.x+25, box.y+gmenu2x->font->getHeight()+3 );
-	bg.write( gmenu2x->font, text, box.x+(gmenu2x->sc[icon] != NULL ? 47 : 10), box.y+gmenu2x->font->getHeight()+3, SFontHAlignLeft, SFontVAlignMiddle );
+	bg.write( gmenu2x->font, text, box.x+(gmenu2x->sc[icon] != NULL ? 47 : 10), box.y+gmenu2x->font->getHeight()+3, HAlignLeft, VAlignMiddle );
 
 	int btnX = gmenu2x->halfX+box.w/2-6;
 	for (uint i=0; i<buttons.size(); i++) {
