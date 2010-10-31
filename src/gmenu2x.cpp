@@ -428,7 +428,7 @@ void GMenu2X::initFont() {
 		free(font);
 		font = NULL;
 	}
-	font = new SFontPlus(sc.getSkinFilePath("font.ttf"), skinConfColors[COLOR_FONT], skinConfColors[COLOR_FONT_OUTLINE]);
+	font = new SFontPlus(sc.getSkinFilePath("font.ttf"), skinConfInt["fontSize"], skinConfColors[COLOR_FONT], skinConfColors[COLOR_FONT_OUTLINE]);
 }
 
 void GMenu2X::initMenu() {
@@ -1182,6 +1182,7 @@ void GMenu2X::setSkin(const string &skin, bool setWallpaper) {
 	evalIntConf( &skinConfInt["topBarHeight"], 40, 32,120 );
 	evalIntConf( &skinConfInt["linkHeight"], 40, 32,120 );
 	evalIntConf( &skinConfInt["linkWidth"], 60, 32,120 );
+	evalIntConf( &skinConfInt["fontSize"], 9, 6,60 );
 
 	//recalculate some coordinates based on the new element sizes
 	linkColumns = (resX-10)/skinConfInt["linkWidth"];

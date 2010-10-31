@@ -25,12 +25,6 @@ enum SFontVAlign {
 	SFontVAlignMiddle
 };
 
-#ifdef TARGET_PANDORA
-	#define FONTSIZE 12
-#else
-	#define FONTSIZE 9
-#endif
-
 class Surface;
 
 class SFontPlus {
@@ -41,7 +35,7 @@ private:
 	RGBAColor textColor, outlineColor;
 
 public:
-	SFontPlus(const string &font, RGBAColor textColor = (RGBAColor){255,255,255}, RGBAColor outlineColor = (RGBAColor){5,5,5});
+	SFontPlus(const string &font, int size, RGBAColor textColor = (RGBAColor){255,255,255}, RGBAColor outlineColor = (RGBAColor){5,5,5});
 	~SFontPlus();
 
 	bool utf8Code(unsigned char c);
