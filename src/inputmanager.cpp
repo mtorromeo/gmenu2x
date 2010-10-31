@@ -231,7 +231,7 @@ bool InputManager::isActive(int action) {
 			break;
 			case InputManager::MAPPING_TYPE_KEYPRESS:
 				for (uint ex=0; ex<events.size(); ex++) {
-					INFO("KEYPRESS: %d\n", events[ex].key.keysym.sym);
+					//INFO("KEYPRESS: %d\n", events[ex].key.keysym.sym);
 					if (events[ex].type == SDL_KEYDOWN && events[ex].key.keysym.sym == map.value)
 						return true;
 				}
