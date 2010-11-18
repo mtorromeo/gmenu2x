@@ -191,9 +191,6 @@ header {
 		rgb(51,51,51) 7%,
 		rgb(0,0,0) 54%
 	);
-	box-shadow: 0 5px 5px rgba(0,0,0,.6);
-	-webkit-box-shadow: 0 5px 10px rgba(100,100,100,.4);
-	-moz-box-shadow: 0 5px 10px rgba(100,100,100,.4);
 }
 header h1 {
 	color: white;
@@ -223,9 +220,9 @@ footer {
 		rgb(51,51,51) 7%,
 		rgb(0,0,0) 54%
 	);
-	box-shadow: 0 -5px 5px rgba(0,0,0,.6);
-	-webkit-box-shadow: 0 -5px 10px rgba(100,100,100,.4);
-	-moz-box-shadow: 0 -5px 10px rgba(100,100,100,.4);
+	box-shadow: 0 -5px 5px rgba(100,100,100,.4);
+	-webkit-box-shadow: 0 -5px 5px rgba(100,100,100,.4);
+	-moz-box-shadow: 0 -5px 5px rgba(100,100,100,.4);
 }
 footer a, footer a:link, footer a:visited {
 	color: white;
@@ -234,14 +231,12 @@ footer a, footer a:link, footer a:visited {
 	width: 720px;
 	margin: 20px auto;
 }
-#breadcrumbs {
-	line-height: 20px;
-	height: 20px;
-	font-size: 10px;
+#menu {
+	line-height: 30px;
+	height: 30px;
 	font-weight: bold;
-	color: #444;
-	padding-left: 10px;
 	background-color: #CCC;
+	
 	background-image: -webkit-gradient(
 		linear,
 		left top,
@@ -254,7 +249,45 @@ footer a, footer a:link, footer a:visited {
 		rgb(232,232,232) 0%,
 		rgb(187,187,187) 100%
 	);
+	
 	text-shadow: 0 1px 0 #E5E5E5;
+}
+#menu a {
+	display: block;
+	float: left;
+	margin-left: 10px;
+	text-decoration: none;
+}
+#menu a:hover {
+	color: #EB7F45;
+}
+#breadcrumbs {
+	line-height: 20px;
+	height: 20px;
+	font-size: 10px;
+	font-weight: bold;
+	color: #444;
+	padding-left: 10px;
+	background-color: #CCC;
+	
+	background-image: -webkit-gradient(
+		linear,
+		left top,
+		left bottom,
+		color-stop(0, rgb(232,232,232)),
+		color-stop(1, rgb(187,187,187))
+    );
+	background-image: -moz-linear-gradient(
+		center top,
+		rgb(232,232,232) 0%,
+		rgb(187,187,187) 100%
+	);
+	
+	text-shadow: 0 1px 0 #E5E5E5;
+	
+	box-shadow: 0 5px 5px rgba(100,100,100,.4);
+	-webkit-box-shadow: 0 5px 5px rgba(100,100,100,.4);
+	-moz-box-shadow: 0 5px 5px rgba(100,100,100,.4);
 }
 #breadcrumbs a, #breadcrumbs a:link, #breadcrumbs a:visited {
 	color: black;
@@ -267,4 +300,19 @@ footer a, footer a:link, footer a:visited {
 }
 #breadcrumbs a:first-child:before {
 	content: '';
+}
+#breadcrumbs a:hover {
+	color: #666;
+}
+#slideshow {
+	position: relative;
+	float: right;
+	width: 320px;
+	height: 240px;
+	margin: 0 0 5px 5px;
+}
+#slideshow img {
+	position: absolute;
+	top: 0;
+	left: 0;
 }
