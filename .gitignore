@@ -7,3 +7,4 @@ _site
 *.patch
 *.kdev*
 *.gdb
+*.bak
