@@ -27,10 +27,6 @@
 
 using namespace std;
 
-InputManager::InputManager() {
-	initJoysticks();
-}
-
 
 InputManager::~InputManager() {
 	for (uint x=0; x<joysticks.size(); x++)
@@ -40,15 +36,17 @@ InputManager::~InputManager() {
 
 
 void InputManager::init(const string &conffile) {
+	initJoysticks();
 	if (!readConfFile(conffile))
 		ERROR("InputManager initialization from config file failed.\n");
 }
 
 
 void InputManager::initJoysticks() {
-	SDL_JoystickEventState(SDL_IGNORE);
+	//SDL_JoystickEventState(SDL_IGNORE);
 
 	int numJoy = SDL_NumJoysticks();
+	INFO("%d joysticks found\n", numJoy);
 	for (int x=0; x<numJoy; x++) {
 		SDL_Joystick *joy = SDL_JoystickOpen(x);
 		if (joy) {
@@ -162,7 +160,7 @@ void InputManager::setActionsCount(int count) {
 bool InputManager::update(bool wait) {
 	bool anyactions = false;
 	SDL_JoystickUpdate();
-	
+
 	events.clear();
 	SDL_Event event;
 	if (wait) {
@@ -174,7 +172,7 @@ bool InputManager::update(bool wait) {
 		SDL_Event evcopy = event;
 		events.push_back(evcopy);
 	}
-	
+
 	Uint32 tick = SDL_GetTicks();
 	for (uint x=0; x<actions.size(); x++) {
 		actions[x] = false;

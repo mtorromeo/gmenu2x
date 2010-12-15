@@ -69,7 +69,7 @@ public:
 	static const int MAPPING_TYPE_AXYS = 1;
 	static const int MAPPING_TYPE_KEYPRESS = 2;
 
-	InputManager();
+	InputManager() {};
 	~InputManager();
 	void init(const string &conffile);
 	void initJoysticks();

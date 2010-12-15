@@ -290,7 +290,7 @@ GMenu2X::GMenu2X() {
 #endif
 
 	//Screen
-	if( SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_JOYSTICK)<0 ) {
+	if( SDL_Init(SDL_INIT_EVERYTHING)<0 ) {
 		ERROR("Could not initialize SDL: %s\n", SDL_GetError());
 		quit();
 	}
