@@ -375,11 +375,12 @@ void GMenu2X::initBG() {
 
 	if (bg != NULL) free(bg);
 
-	if (!fileExists(confStr["wallpaper"])) {
-		bg = new Surface(s);
-		bg->box(0,0,resX,resY,0,0,0);
-	} else {
-		bg = new Surface(confStr["wallpaper"],false);
+	bg = new Surface(s);
+	bg->box(0,0,resX,resY,0,0,0);
+	if (fileExists(confStr["wallpaper"])) {
+		Surface *wall = new Surface(confStr["wallpaper"],false);
+		wall->blit(bg,0,0);
+		free(wall);
 	}
 
 	drawTopBar(bg);
