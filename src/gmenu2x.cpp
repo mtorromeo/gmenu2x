@@ -465,17 +465,33 @@ void GMenu2X::initMenu() {
 
 void GMenu2X::about() {
 	vector<string> text;
-	split(text,"GMenu2X is developed by Massimiliano \"Ryo\" Torromeo, and is released under the GPL-v2 license.\n\
-Website: http://gmenu2x.sourceforge.net\n\
-E-Mail & PayPal account: massimiliano.torromeo@gmail.com\n\
-\n\
-Wiz/Caanoo version by Pickle\n\
-\n\
+	string temp;
+	temp = "GMenu2X is developed by Massimiliano \"Ryo\" Torromeo, and is released under the GPL-v2 license.\n\
+Website: http://mtorromeo.github.com/gmenu2x\n\
+E-Mail & PayPal account: massimiliano.torromeo@gmail.com\n";
+#if defined(TARGET_CAANOO)
+	string versionFile = "";
+	if (fileExists("/usr/gp2x/version"))
+		versionFile = "/usr/gp2x/version";
+	else if (fileExists("/tmp/gp2x/version"))
+		versionFile = "/tmp/gp2x/version";
+	if (!versionFile.empty()) {
+		ifstream f(versionFile.c_str(), ios_base::in);
+		if (f.is_open()) {
+			string line;
+			if (getline(f, line, '\n'))
+				temp += "\nFirmware version: " + line + "\n" + exec("uname -srm");
+			f.close();
+		}
+	}
+#endif
+	temp += "\n\
 Thanks goes to...\n\
 \n\
  Contributors\n\
 ----\n\
 NoidZ for his gp2x' buttons graphics\n\
+Pickle for the initial Wiz and Caanoo ports\n\
 \n\
  Beta testers\n\
 ----\n\
@@ -510,8 +526,9 @@ b._.o._.b\n\
 Jacopastorius\n\
 lorystorm90\n\
 and all the anonymous donors...\n\
-(If I missed to list you or if you want to be removed, contact me.)","\n");
-	TextDialog td(this, "GMenu2X", tr.translate("Version $1 (Build date: $2)","0.10-test4",__DATE__,NULL), "icons/about.png", &text);
+(If I missed to list you or if you want to be removed, contact me.)";
+	split(text, temp, "\n");
+	TextDialog td(this, "GMenu2X", tr.translate("Version $1 (Build date: $2)","0.11",__DATE__,NULL), "icons/about.png", &text);
 	td.exec();
 }
 

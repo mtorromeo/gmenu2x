@@ -24,6 +24,7 @@
 #include <dirent.h>
 #include <fstream>
 #include <iostream>
+#include <stdio.h>
 #include <strings.h>
 #include <math.h>
 
@@ -195,4 +196,17 @@ int intTransition(int from, int to, long tickStart, long duration, long tickNow)
 	float elapsed = (float)(tickNow-tickStart)/duration;
 	//                    elapsed                 increments
 	return constrain(round(elapsed*(to-from)),from,to);
+}
+
+string exec(const char* cmd) {
+	FILE* pipe = popen(cmd, "r");
+	if (!pipe) return "";
+	char buffer[128];
+	string result = "";
+	while (!feof(pipe)) {
+		if(fgets(buffer, 128, pipe) != NULL)
+			result += buffer;
+	}
+	pclose(pipe);
+	return result;
 }
