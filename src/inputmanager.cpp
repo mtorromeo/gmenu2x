@@ -198,6 +198,18 @@ bool InputManager::update(bool wait) {
 }
 
 
+void InputManager::dropEvents() {
+	for (uint x=0; x<actions.size(); x++) {
+		actions[x].active = false;
+		actions[x].pressed = false;
+		if (actions[x].timer != NULL) {
+			SDL_RemoveTimer(actions[x].timer);
+			actions[x].timer = NULL;
+		}
+	}
+}
+
+
 Uint32 InputManager::checkRepeat(Uint32 interval, void *_data) {
 	RepeatEventData *data = (RepeatEventData *)_data;
 	InputManager *im = (class InputManager*)data->im;

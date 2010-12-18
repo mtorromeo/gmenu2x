@@ -90,6 +90,7 @@ public:
 	bool readConfFile(const string &conffile = "input.conf");
 
 	bool update(bool wait=true);
+	void dropEvents();
 	int count();
 	void setActionsCount(int count);
 	void setInterval(int ms, int action = -1);
