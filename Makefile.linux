@@ -101,7 +101,7 @@ objs/linux/src/browsedialog.o: /usr/include/bits/fcntl.h
 objs/linux/src/browsedialog.o: /usr/include/bits/uio.h
 objs/linux/src/browsedialog.o: /usr/include/bits/stat.h src/inputmanager.h
 objs/linux/src/browsedialog.o: /usr/include/SDL/SDL_image.h src/surface.h
-objs/linux/src/browsedialog.o: src/sfontplus.h /usr/include/SDL/SDL_ttf.h
+objs/linux/src/browsedialog.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
 objs/linux/src/browsedialog.o: src/buttonbox.h src/dialog.h
 objs/linux/src/buttonbox.o: src/button.h /usr/include/SDL/SDL.h
 objs/linux/src/buttonbox.o: /usr/include/SDL/SDL_main.h
@@ -163,7 +163,7 @@ objs/linux/src/buttonbox.o: src/touchscreen.h /usr/include/fcntl.h
 objs/linux/src/buttonbox.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
 objs/linux/src/buttonbox.o: /usr/include/bits/stat.h src/inputmanager.h
 objs/linux/src/buttonbox.o: /usr/include/SDL/SDL_image.h src/surface.h
-objs/linux/src/buttonbox.o: src/sfontplus.h /usr/include/SDL/SDL_ttf.h
+objs/linux/src/buttonbox.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
 objs/linux/src/buttonbox.o: src/buttonbox.h
 objs/linux/src/button.o: src/button.h /usr/include/SDL/SDL.h
 objs/linux/src/button.o: /usr/include/SDL/SDL_main.h
@@ -219,7 +219,7 @@ objs/linux/src/button.o: src/translator.h src/utilities.h src/touchscreen.h
 objs/linux/src/button.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 objs/linux/src/button.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
 objs/linux/src/button.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
-objs/linux/src/button.o: src/surface.h src/sfontplus.h
+objs/linux/src/button.o: src/surface.h src/fonthelper.h
 objs/linux/src/button.o: /usr/include/SDL/SDL_ttf.h
 objs/linux/src/dialog.o: src/dialog.h src/gmenu2x.h src/surfacecollection.h
 objs/linux/src/dialog.o: src/iconbutton.h src/button.h /usr/include/SDL/SDL.h
@@ -275,7 +275,7 @@ objs/linux/src/dialog.o: src/utilities.h src/touchscreen.h
 objs/linux/src/dialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 objs/linux/src/dialog.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
 objs/linux/src/dialog.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
-objs/linux/src/dialog.o: src/surface.h src/sfontplus.h
+objs/linux/src/dialog.o: src/surface.h src/fonthelper.h
 objs/linux/src/dialog.o: /usr/include/SDL/SDL_ttf.h
 objs/linux/src/dirdialog.o: src/dirdialog.h src/gmenu2x.h
 objs/linux/src/dirdialog.o: src/surfacecollection.h src/iconbutton.h
@@ -337,7 +337,7 @@ objs/linux/src/dirdialog.o: src/utilities.h src/touchscreen.h
 objs/linux/src/dirdialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 objs/linux/src/dirdialog.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
 objs/linux/src/dirdialog.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
-objs/linux/src/dirdialog.o: src/surface.h src/sfontplus.h
+objs/linux/src/dirdialog.o: src/surface.h src/fonthelper.h
 objs/linux/src/dirdialog.o: /usr/include/SDL/SDL_ttf.h src/browsedialog.h
 objs/linux/src/dirdialog.o: src/filelister.h src/buttonbox.h src/dialog.h
 objs/linux/src/filedialog.o: /usr/include/SDL/SDL.h
@@ -414,7 +414,7 @@ objs/linux/src/filedialog.o: src/utilities.h src/touchscreen.h
 objs/linux/src/filedialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 objs/linux/src/filedialog.o: /usr/include/bits/uio.h src/inputmanager.h
 objs/linux/src/filedialog.o: /usr/include/SDL/SDL_image.h src/surface.h
-objs/linux/src/filedialog.o: src/sfontplus.h /usr/include/SDL/SDL_ttf.h
+objs/linux/src/filedialog.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
 objs/linux/src/filedialog.o: src/buttonbox.h src/dialog.h
 objs/linux/src/filelister.o: /usr/include/sys/stat.h /usr/include/features.h
 objs/linux/src/filelister.o: /usr/include/sys/cdefs.h
@@ -487,8 +487,66 @@ objs/linux/src/filelister.o: src/translator.h src/touchscreen.h
 objs/linux/src/filelister.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 objs/linux/src/filelister.o: /usr/include/bits/uio.h src/inputmanager.h
 objs/linux/src/filelister.o: /usr/include/SDL/SDL_image.h src/surface.h
-objs/linux/src/filelister.o: src/sfontplus.h /usr/include/SDL/SDL_ttf.h
+objs/linux/src/filelister.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
 objs/linux/src/filelister.o: src/debug.h
+objs/linux/src/fonthelper.o: src/fonthelper.h src/surface.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_main.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_stdinc.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_config.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_platform.h
+objs/linux/src/fonthelper.o: /usr/include/sys/types.h /usr/include/features.h
+objs/linux/src/fonthelper.o: /usr/include/sys/cdefs.h
+objs/linux/src/fonthelper.o: /usr/include/bits/wordsize.h
+objs/linux/src/fonthelper.o: /usr/include/gnu/stubs.h
+objs/linux/src/fonthelper.o: /usr/include/gnu/stubs-64.h
+objs/linux/src/fonthelper.o: /usr/include/bits/types.h
+objs/linux/src/fonthelper.o: /usr/include/bits/typesizes.h
+objs/linux/src/fonthelper.o: /usr/include/time.h /usr/include/endian.h
+objs/linux/src/fonthelper.o: /usr/include/bits/endian.h
+objs/linux/src/fonthelper.o: /usr/include/bits/byteswap.h
+objs/linux/src/fonthelper.o: /usr/include/sys/select.h
+objs/linux/src/fonthelper.o: /usr/include/bits/select.h
+objs/linux/src/fonthelper.o: /usr/include/bits/sigset.h
+objs/linux/src/fonthelper.o: /usr/include/bits/time.h
+objs/linux/src/fonthelper.o: /usr/include/sys/sysmacros.h
+objs/linux/src/fonthelper.o: /usr/include/bits/pthreadtypes.h
+objs/linux/src/fonthelper.o: /usr/include/stdio.h /usr/include/libio.h
+objs/linux/src/fonthelper.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/linux/src/fonthelper.o: /usr/include/bits/stdio_lim.h
+objs/linux/src/fonthelper.o: /usr/include/bits/sys_errlist.h
+objs/linux/src/fonthelper.o: /usr/include/stdlib.h
+objs/linux/src/fonthelper.o: /usr/include/bits/waitflags.h
+objs/linux/src/fonthelper.o: /usr/include/bits/waitstatus.h
+objs/linux/src/fonthelper.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/linux/src/fonthelper.o: /usr/include/string.h /usr/include/strings.h
+objs/linux/src/fonthelper.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/linux/src/fonthelper.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/linux/src/fonthelper.o: /usr/include/iconv.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/begin_code.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/close_code.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_audio.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_error.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_endian.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_mutex.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_thread.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_rwops.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_cdrom.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_events.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_active.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_keyboard.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_keysym.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_mouse.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_video.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_joystick.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_quit.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_loadso.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_timer.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_version.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_image.h
+objs/linux/src/fonthelper.o: /usr/include/SDL/SDL_ttf.h src/utilities.h
+objs/linux/src/fonthelper.o: src/debug.h
 objs/linux/src/gmenu2x.o: /usr/include/stdlib.h /usr/include/features.h
 objs/linux/src/gmenu2x.o: /usr/include/sys/cdefs.h
 objs/linux/src/gmenu2x.o: /usr/include/bits/wordsize.h
@@ -589,7 +647,7 @@ objs/linux/src/gmenu2x.o: /usr/include/linux/patchkey.h src/linkapp.h
 objs/linux/src/gmenu2x.o: src/link.h src/button.h src/FastDelegate.h
 objs/linux/src/gmenu2x.o: /usr/include/memory.h src/surface.h
 objs/linux/src/gmenu2x.o: /usr/include/SDL/SDL_image.h src/linkaction.h
-objs/linux/src/gmenu2x.o: src/menu.h src/sfontplus.h
+objs/linux/src/gmenu2x.o: src/menu.h src/fonthelper.h
 objs/linux/src/gmenu2x.o: /usr/include/SDL/SDL_ttf.h src/filedialog.h
 objs/linux/src/gmenu2x.o: src/browsedialog.h src/filelister.h src/gmenu2x.h
 objs/linux/src/gmenu2x.o: src/surfacecollection.h src/iconbutton.h
@@ -667,7 +725,7 @@ objs/linux/src/iconbutton.o: src/touchscreen.h /usr/include/fcntl.h
 objs/linux/src/iconbutton.o: /usr/include/bits/fcntl.h
 objs/linux/src/iconbutton.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
 objs/linux/src/iconbutton.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
-objs/linux/src/iconbutton.o: src/surface.h src/sfontplus.h
+objs/linux/src/iconbutton.o: src/surface.h src/fonthelper.h
 objs/linux/src/iconbutton.o: /usr/include/SDL/SDL_ttf.h
 objs/linux/src/imagedialog.o: /usr/include/SDL/SDL.h
 objs/linux/src/imagedialog.o: /usr/include/SDL/SDL_main.h
@@ -747,7 +805,7 @@ objs/linux/src/imagedialog.o: src/utilities.h src/touchscreen.h
 objs/linux/src/imagedialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 objs/linux/src/imagedialog.o: /usr/include/bits/uio.h src/inputmanager.h
 objs/linux/src/imagedialog.o: /usr/include/SDL/SDL_image.h src/surface.h
-objs/linux/src/imagedialog.o: src/sfontplus.h /usr/include/SDL/SDL_ttf.h
+objs/linux/src/imagedialog.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
 objs/linux/src/imagedialog.o: src/buttonbox.h src/dialog.h
 objs/linux/src/inputdialog.o: /usr/include/SDL/SDL.h
 objs/linux/src/inputdialog.o: /usr/include/SDL/SDL_main.h
@@ -821,9 +879,10 @@ objs/linux/src/inputdialog.o: /usr/include/bits/fcntl.h
 objs/linux/src/inputdialog.o: /usr/include/bits/uio.h
 objs/linux/src/inputdialog.o: /usr/include/bits/stat.h src/inputmanager.h
 objs/linux/src/inputdialog.o: /usr/include/SDL/SDL_image.h src/surface.h
-objs/linux/src/inputdialog.o: src/sfontplus.h /usr/include/SDL/SDL_ttf.h
+objs/linux/src/inputdialog.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
 objs/linux/src/inputdialog.o: src/dialog.h
-objs/linux/src/inputmanager.o: src/inputmanager.h /usr/include/SDL/SDL.h
+objs/linux/src/inputmanager.o: src/debug.h src/inputmanager.h
+objs/linux/src/inputmanager.o: /usr/include/SDL/SDL.h
 objs/linux/src/inputmanager.o: /usr/include/SDL/SDL_main.h
 objs/linux/src/inputmanager.o: /usr/include/SDL/SDL_stdinc.h
 objs/linux/src/inputmanager.o: /usr/include/SDL/SDL_config.h
@@ -879,7 +938,6 @@ objs/linux/src/inputmanager.o: /usr/include/SDL/SDL_loadso.h
 objs/linux/src/inputmanager.o: /usr/include/SDL/SDL_timer.h
 objs/linux/src/inputmanager.o: /usr/include/SDL/SDL_version.h
 objs/linux/src/inputmanager.o: /usr/include/SDL/SDL_image.h src/utilities.h
-objs/linux/src/inputmanager.o: src/debug.h
 objs/linux/src/linkaction.o: src/linkaction.h src/FastDelegate.h
 objs/linux/src/linkaction.o: /usr/include/memory.h /usr/include/features.h
 objs/linux/src/linkaction.o: /usr/include/sys/cdefs.h
@@ -998,7 +1056,7 @@ objs/linux/src/linkapp.o: src/surfacecollection.h src/iconbutton.h
 objs/linux/src/linkapp.o: src/translator.h src/utilities.h src/touchscreen.h
 objs/linux/src/linkapp.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 objs/linux/src/linkapp.o: /usr/include/bits/uio.h src/inputmanager.h
-objs/linux/src/linkapp.o: src/sfontplus.h /usr/include/SDL/SDL_ttf.h
+objs/linux/src/linkapp.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
 objs/linux/src/linkapp.o: src/dialog.h src/textmanualdialog.h
 objs/linux/src/linkapp.o: src/textdialog.h src/debug.h
 objs/linux/src/link.o: src/link.h src/button.h /usr/include/SDL/SDL.h
@@ -1053,7 +1111,7 @@ objs/linux/src/link.o: src/surfacecollection.h src/iconbutton.h
 objs/linux/src/link.o: src/translator.h src/utilities.h src/touchscreen.h
 objs/linux/src/link.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 objs/linux/src/link.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
-objs/linux/src/link.o: src/inputmanager.h src/sfontplus.h
+objs/linux/src/link.o: src/inputmanager.h src/fonthelper.h
 objs/linux/src/link.o: /usr/include/SDL/SDL_ttf.h src/dialog.h
 objs/linux/src/listview.o: src/listview.h src/gmenu2x.h
 objs/linux/src/listview.o: src/surfacecollection.h src/iconbutton.h
@@ -1114,7 +1172,7 @@ objs/linux/src/listview.o: src/utilities.h src/touchscreen.h
 objs/linux/src/listview.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 objs/linux/src/listview.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
 objs/linux/src/listview.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
-objs/linux/src/listview.o: src/surface.h src/sfontplus.h
+objs/linux/src/listview.o: src/surface.h src/fonthelper.h
 objs/linux/src/listview.o: /usr/include/SDL/SDL_ttf.h src/listviewitem.h
 objs/linux/src/listviewitem.o: src/listview.h src/gmenu2x.h
 objs/linux/src/listviewitem.o: src/surfacecollection.h src/iconbutton.h
@@ -1180,7 +1238,7 @@ objs/linux/src/listviewitem.o: /usr/include/bits/fcntl.h
 objs/linux/src/listviewitem.o: /usr/include/bits/uio.h
 objs/linux/src/listviewitem.o: /usr/include/bits/stat.h src/inputmanager.h
 objs/linux/src/listviewitem.o: /usr/include/SDL/SDL_image.h src/surface.h
-objs/linux/src/listviewitem.o: src/sfontplus.h /usr/include/SDL/SDL_ttf.h
+objs/linux/src/listviewitem.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
 objs/linux/src/listviewitem.o: src/listviewitem.h
 objs/linux/src/menu.o: /usr/include/sys/stat.h /usr/include/features.h
 objs/linux/src/menu.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
@@ -1241,7 +1299,7 @@ objs/linux/src/menu.o: /usr/include/memory.h src/translator.h src/utilities.h
 objs/linux/src/menu.o: src/touchscreen.h /usr/include/fcntl.h
 objs/linux/src/menu.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
 objs/linux/src/menu.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
-objs/linux/src/menu.o: src/surface.h src/sfontplus.h
+objs/linux/src/menu.o: src/surface.h src/fonthelper.h
 objs/linux/src/menu.o: /usr/include/SDL/SDL_ttf.h src/linkapp.h src/link.h
 objs/linux/src/menu.o: src/menu.h src/linkaction.h src/filelister.h
 objs/linux/src/menu.o: src/debug.h
@@ -1313,9 +1371,9 @@ objs/linux/src/menusettingbool.o: /usr/include/bits/fcntl.h
 objs/linux/src/menusettingbool.o: /usr/include/bits/uio.h
 objs/linux/src/menusettingbool.o: /usr/include/bits/stat.h src/inputmanager.h
 objs/linux/src/menusettingbool.o: /usr/include/SDL/SDL_image.h src/surface.h
-objs/linux/src/menusettingbool.o: src/sfontplus.h /usr/include/SDL/SDL_ttf.h
+objs/linux/src/menusettingbool.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
 objs/linux/src/menusetting.o: src/menusetting.h src/buttonbox.h
-objs/linux/src/menusetting.o: src/sfontplus.h src/surface.h
+objs/linux/src/menusetting.o: src/fonthelper.h src/surface.h
 objs/linux/src/menusetting.o: /usr/include/SDL/SDL.h
 objs/linux/src/menusetting.o: /usr/include/SDL/SDL_main.h
 objs/linux/src/menusetting.o: /usr/include/SDL/SDL_stdinc.h
@@ -1450,7 +1508,7 @@ objs/linux/src/menusettingdir.o: /usr/include/bits/fcntl.h
 objs/linux/src/menusettingdir.o: /usr/include/bits/uio.h
 objs/linux/src/menusettingdir.o: /usr/include/bits/stat.h src/inputmanager.h
 objs/linux/src/menusettingdir.o: /usr/include/SDL/SDL_image.h src/surface.h
-objs/linux/src/menusettingdir.o: src/sfontplus.h /usr/include/SDL/SDL_ttf.h
+objs/linux/src/menusettingdir.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
 objs/linux/src/menusettingdir.o: src/browsedialog.h src/filelister.h
 objs/linux/src/menusettingdir.o: src/dialog.h
 objs/linux/src/menusettingfile.o: src/menusettingfile.h
@@ -1525,7 +1583,7 @@ objs/linux/src/menusettingfile.o: /usr/include/bits/fcntl.h
 objs/linux/src/menusettingfile.o: /usr/include/bits/uio.h
 objs/linux/src/menusettingfile.o: /usr/include/bits/stat.h src/inputmanager.h
 objs/linux/src/menusettingfile.o: /usr/include/SDL/SDL_image.h src/surface.h
-objs/linux/src/menusettingfile.o: src/sfontplus.h /usr/include/SDL/SDL_ttf.h
+objs/linux/src/menusettingfile.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
 objs/linux/src/menusettingfile.o: src/dialog.h
 objs/linux/src/menusettingimage.o: src/menusettingimage.h
 objs/linux/src/menusettingimage.o: src/menusettingfile.h
@@ -1602,8 +1660,8 @@ objs/linux/src/menusettingimage.o: /usr/include/bits/uio.h
 objs/linux/src/menusettingimage.o: /usr/include/bits/stat.h
 objs/linux/src/menusettingimage.o: src/inputmanager.h
 objs/linux/src/menusettingimage.o: /usr/include/SDL/SDL_image.h src/surface.h
-objs/linux/src/menusettingimage.o: src/sfontplus.h /usr/include/SDL/SDL_ttf.h
-objs/linux/src/menusettingimage.o: src/dialog.h
+objs/linux/src/menusettingimage.o: src/fonthelper.h
+objs/linux/src/menusettingimage.o: /usr/include/SDL/SDL_ttf.h src/dialog.h
 objs/linux/src/menusettingint.o: src/menusettingint.h src/menusetting.h
 objs/linux/src/menusettingint.o: src/buttonbox.h src/gmenu2x.h
 objs/linux/src/menusettingint.o: src/surfacecollection.h src/iconbutton.h
@@ -1671,7 +1729,7 @@ objs/linux/src/menusettingint.o: /usr/include/bits/fcntl.h
 objs/linux/src/menusettingint.o: /usr/include/bits/uio.h
 objs/linux/src/menusettingint.o: /usr/include/bits/stat.h src/inputmanager.h
 objs/linux/src/menusettingint.o: /usr/include/SDL/SDL_image.h src/surface.h
-objs/linux/src/menusettingint.o: src/sfontplus.h /usr/include/SDL/SDL_ttf.h
+objs/linux/src/menusettingint.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
 objs/linux/src/menusettingmultistring.o: src/menusettingmultistring.h
 objs/linux/src/menusettingmultistring.o: src/menusettingstringbase.h
 objs/linux/src/menusettingmultistring.o: src/menusetting.h src/buttonbox.h
@@ -1750,7 +1808,7 @@ objs/linux/src/menusettingmultistring.o: /usr/include/bits/uio.h
 objs/linux/src/menusettingmultistring.o: /usr/include/bits/stat.h
 objs/linux/src/menusettingmultistring.o: src/inputmanager.h
 objs/linux/src/menusettingmultistring.o: /usr/include/SDL/SDL_image.h
-objs/linux/src/menusettingmultistring.o: src/surface.h src/sfontplus.h
+objs/linux/src/menusettingmultistring.o: src/surface.h src/fonthelper.h
 objs/linux/src/menusettingmultistring.o: /usr/include/SDL/SDL_ttf.h
 objs/linux/src/menusettingrgba.o: src/menusettingrgba.h src/menusetting.h
 objs/linux/src/menusettingrgba.o: src/buttonbox.h src/surface.h
@@ -1821,7 +1879,7 @@ objs/linux/src/menusettingrgba.o: /usr/include/fcntl.h
 objs/linux/src/menusettingrgba.o: /usr/include/bits/fcntl.h
 objs/linux/src/menusettingrgba.o: /usr/include/bits/uio.h
 objs/linux/src/menusettingrgba.o: /usr/include/bits/stat.h src/inputmanager.h
-objs/linux/src/menusettingrgba.o: src/sfontplus.h /usr/include/SDL/SDL_ttf.h
+objs/linux/src/menusettingrgba.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
 objs/linux/src/menusettingstringbase.o: src/menusettingstringbase.h
 objs/linux/src/menusettingstringbase.o: src/menusetting.h src/buttonbox.h
 objs/linux/src/menusettingstringbase.o: src/gmenu2x.h src/surfacecollection.h
@@ -1898,7 +1956,7 @@ objs/linux/src/menusettingstringbase.o: /usr/include/bits/uio.h
 objs/linux/src/menusettingstringbase.o: /usr/include/bits/stat.h
 objs/linux/src/menusettingstringbase.o: src/inputmanager.h
 objs/linux/src/menusettingstringbase.o: /usr/include/SDL/SDL_image.h
-objs/linux/src/menusettingstringbase.o: src/surface.h src/sfontplus.h
+objs/linux/src/menusettingstringbase.o: src/surface.h src/fonthelper.h
 objs/linux/src/menusettingstringbase.o: /usr/include/SDL/SDL_ttf.h
 objs/linux/src/menusettingstring.o: src/menusettingstring.h
 objs/linux/src/menusettingstring.o: src/menusettingstringbase.h
@@ -1973,7 +2031,7 @@ objs/linux/src/menusettingstring.o: /usr/include/bits/uio.h
 objs/linux/src/menusettingstring.o: /usr/include/bits/stat.h
 objs/linux/src/menusettingstring.o: src/inputmanager.h
 objs/linux/src/menusettingstring.o: /usr/include/SDL/SDL_image.h
-objs/linux/src/menusettingstring.o: src/surface.h src/sfontplus.h
+objs/linux/src/menusettingstring.o: src/surface.h src/fonthelper.h
 objs/linux/src/menusettingstring.o: /usr/include/SDL/SDL_ttf.h src/dialog.h
 objs/linux/src/messagebox.o: /usr/include/SDL/SDL.h
 objs/linux/src/messagebox.o: /usr/include/SDL/SDL_main.h
@@ -2043,7 +2101,7 @@ objs/linux/src/messagebox.o: src/utilities.h src/touchscreen.h
 objs/linux/src/messagebox.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 objs/linux/src/messagebox.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
 objs/linux/src/messagebox.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
-objs/linux/src/messagebox.o: src/surface.h src/sfontplus.h
+objs/linux/src/messagebox.o: src/surface.h src/fonthelper.h
 objs/linux/src/messagebox.o: /usr/include/SDL/SDL_ttf.h
 objs/linux/src/selector.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
 objs/linux/src/selector.o: /usr/include/SDL/SDL_stdinc.h
@@ -2116,7 +2174,7 @@ objs/linux/src/selector.o: src/surfacecollection.h src/iconbutton.h
 objs/linux/src/selector.o: src/translator.h src/utilities.h src/touchscreen.h
 objs/linux/src/selector.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
 objs/linux/src/selector.o: /usr/include/bits/uio.h src/inputmanager.h
-objs/linux/src/selector.o: src/sfontplus.h /usr/include/SDL/SDL_ttf.h
+objs/linux/src/selector.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
 objs/linux/src/selector.o: src/dialog.h src/filelister.h src/debug.h
 objs/linux/src/settingsdialog.o: /usr/include/SDL/SDL.h
 objs/linux/src/settingsdialog.o: /usr/include/SDL/SDL_main.h
@@ -2194,66 +2252,9 @@ objs/linux/src/settingsdialog.o: /usr/include/bits/fcntl.h
 objs/linux/src/settingsdialog.o: /usr/include/bits/uio.h
 objs/linux/src/settingsdialog.o: /usr/include/bits/stat.h src/inputmanager.h
 objs/linux/src/settingsdialog.o: /usr/include/SDL/SDL_image.h src/surface.h
-objs/linux/src/settingsdialog.o: src/sfontplus.h /usr/include/SDL/SDL_ttf.h
+objs/linux/src/settingsdialog.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
 objs/linux/src/settingsdialog.o: src/menusetting.h src/buttonbox.h
 objs/linux/src/settingsdialog.o: src/dialog.h
-objs/linux/src/sfontplus.o: src/sfontplus.h src/surface.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_main.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_stdinc.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_config.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_platform.h
-objs/linux/src/sfontplus.o: /usr/include/sys/types.h /usr/include/features.h
-objs/linux/src/sfontplus.o: /usr/include/sys/cdefs.h
-objs/linux/src/sfontplus.o: /usr/include/bits/wordsize.h
-objs/linux/src/sfontplus.o: /usr/include/gnu/stubs.h
-objs/linux/src/sfontplus.o: /usr/include/gnu/stubs-64.h
-objs/linux/src/sfontplus.o: /usr/include/bits/types.h
-objs/linux/src/sfontplus.o: /usr/include/bits/typesizes.h /usr/include/time.h
-objs/linux/src/sfontplus.o: /usr/include/endian.h /usr/include/bits/endian.h
-objs/linux/src/sfontplus.o: /usr/include/bits/byteswap.h
-objs/linux/src/sfontplus.o: /usr/include/sys/select.h
-objs/linux/src/sfontplus.o: /usr/include/bits/select.h
-objs/linux/src/sfontplus.o: /usr/include/bits/sigset.h
-objs/linux/src/sfontplus.o: /usr/include/bits/time.h
-objs/linux/src/sfontplus.o: /usr/include/sys/sysmacros.h
-objs/linux/src/sfontplus.o: /usr/include/bits/pthreadtypes.h
-objs/linux/src/sfontplus.o: /usr/include/stdio.h /usr/include/libio.h
-objs/linux/src/sfontplus.o: /usr/include/_G_config.h /usr/include/wchar.h
-objs/linux/src/sfontplus.o: /usr/include/bits/stdio_lim.h
-objs/linux/src/sfontplus.o: /usr/include/bits/sys_errlist.h
-objs/linux/src/sfontplus.o: /usr/include/stdlib.h
-objs/linux/src/sfontplus.o: /usr/include/bits/waitflags.h
-objs/linux/src/sfontplus.o: /usr/include/bits/waitstatus.h
-objs/linux/src/sfontplus.o: /usr/include/xlocale.h /usr/include/alloca.h
-objs/linux/src/sfontplus.o: /usr/include/string.h /usr/include/strings.h
-objs/linux/src/sfontplus.o: /usr/include/inttypes.h /usr/include/stdint.h
-objs/linux/src/sfontplus.o: /usr/include/bits/wchar.h /usr/include/ctype.h
-objs/linux/src/sfontplus.o: /usr/include/iconv.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/begin_code.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/close_code.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_audio.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_error.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_endian.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_mutex.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_thread.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_rwops.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_cdrom.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_cpuinfo.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_events.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_active.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_keyboard.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_keysym.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_mouse.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_video.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_joystick.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_quit.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_loadso.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_timer.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_version.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_image.h
-objs/linux/src/sfontplus.o: /usr/include/SDL/SDL_ttf.h src/utilities.h
-objs/linux/src/sfontplus.o: src/debug.h
 objs/linux/src/surfacecollection.o: src/surfacecollection.h src/surface.h
 objs/linux/src/surfacecollection.o: /usr/include/SDL/SDL.h
 objs/linux/src/surfacecollection.o: /usr/include/SDL/SDL_main.h
@@ -2372,7 +2373,7 @@ objs/linux/src/surface.o: /usr/include/SDL/SDL_quit.h
 objs/linux/src/surface.o: /usr/include/SDL/SDL_loadso.h
 objs/linux/src/surface.o: /usr/include/SDL/SDL_timer.h
 objs/linux/src/surface.o: /usr/include/SDL/SDL_version.h src/surface.h
-objs/linux/src/surface.o: /usr/include/SDL/SDL_image.h src/sfontplus.h
+objs/linux/src/surface.o: /usr/include/SDL/SDL_image.h src/fonthelper.h
 objs/linux/src/surface.o: /usr/include/SDL/SDL_ttf.h src/utilities.h
 objs/linux/src/surface.o: src/debug.h
 objs/linux/src/textdialog.o: src/textdialog.h src/gmenu2x.h
@@ -2437,7 +2438,7 @@ objs/linux/src/textdialog.o: src/touchscreen.h /usr/include/fcntl.h
 objs/linux/src/textdialog.o: /usr/include/bits/fcntl.h
 objs/linux/src/textdialog.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
 objs/linux/src/textdialog.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
-objs/linux/src/textdialog.o: src/surface.h src/sfontplus.h
+objs/linux/src/textdialog.o: src/surface.h src/fonthelper.h
 objs/linux/src/textdialog.o: /usr/include/SDL/SDL_ttf.h src/dialog.h
 objs/linux/src/textmanualdialog.o: src/textmanualdialog.h src/textdialog.h
 objs/linux/src/textmanualdialog.o: src/gmenu2x.h src/surfacecollection.h
@@ -2509,8 +2510,8 @@ objs/linux/src/textmanualdialog.o: /usr/include/bits/uio.h
 objs/linux/src/textmanualdialog.o: /usr/include/bits/stat.h
 objs/linux/src/textmanualdialog.o: src/inputmanager.h
 objs/linux/src/textmanualdialog.o: /usr/include/SDL/SDL_image.h src/surface.h
-objs/linux/src/textmanualdialog.o: src/sfontplus.h /usr/include/SDL/SDL_ttf.h
-objs/linux/src/textmanualdialog.o: src/dialog.h
+objs/linux/src/textmanualdialog.o: src/fonthelper.h
+objs/linux/src/textmanualdialog.o: /usr/include/SDL/SDL_ttf.h src/dialog.h
 objs/linux/src/touchscreen.o: /usr/include/unistd.h /usr/include/features.h
 objs/linux/src/touchscreen.o: /usr/include/sys/cdefs.h
 objs/linux/src/touchscreen.o: /usr/include/bits/wordsize.h
@@ -2706,5 +2707,5 @@ objs/linux/src/wallpaperdialog.o: /usr/include/bits/fcntl.h
 objs/linux/src/wallpaperdialog.o: /usr/include/bits/uio.h
 objs/linux/src/wallpaperdialog.o: /usr/include/bits/stat.h src/inputmanager.h
 objs/linux/src/wallpaperdialog.o: /usr/include/SDL/SDL_image.h src/surface.h
-objs/linux/src/wallpaperdialog.o: src/sfontplus.h /usr/include/SDL/SDL_ttf.h
+objs/linux/src/wallpaperdialog.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
 objs/linux/src/wallpaperdialog.o: src/dialog.h src/filelister.h src/debug.h
