@@ -138,8 +138,12 @@ int main(int /*argc*/, char * /*argv*/[]) {
 void GMenu2X::gp2x_init() {
 #ifdef TARGET_GP2X
 	gp2x_mem = open("/dev/mem", O_RDWR);
-	gp2x_memregs=(unsigned short *)mmap(0, 0x10000, PROT_READ|PROT_WRITE, MAP_SHARED, gp2x_mem, 0xc0000000);
-	MEM_REG=&gp2x_memregs[0];
+	if (gp2x_mem < 0)
+		ERROR("Could not open /dev/mem\n");
+	else {
+		gp2x_memregs = (unsigned short *)mmap(0, 0x10000, PROT_READ|PROT_WRITE, MAP_SHARED, gp2x_mem, 0xc0000000);
+		MEM_REG=&gp2x_memregs[0];
+	}
 
 	batteryHandle = open(f200 ? "/dev/mmsp2adc" : "/dev/batt", O_RDONLY);
 	if (f200) {
@@ -150,21 +154,22 @@ void GMenu2X::gp2x_init() {
 #if defined(TARGET_WIZ)
 	/* open /dev/mem to access registers */
 	wiz_mem = open("/dev/mem", O_RDWR);
-	if (wiz_mem < 0) {
-		printf("Could not open /dev/mem!\n");
-	}
+	if (wiz_mem < 0)
+		ERROR("Could not open /dev/mem\n");
 	/* get access to the registers */
 	else {
 		wiz_memregs = (volatile uint32_t*)mmap(0, 0x20000, PROT_READ|PROT_WRITE, MAP_SHARED, wiz_mem, 0xC0000000);
-		if(wiz_memregs == (volatile uint32_t*)0xFFFFFFFF) {
-			printf("Could not mmap hardware registers!\n");
+		if (wiz_memregs == (volatile uint32_t*)0xFFFFFFFF) {
+			ERROR("Could not mmap hardware registers!\n");
 			close(wiz_mem);
 		}
 	}
+#endif
+#if defined(TARGET_CAANOO) || defined(TARGET_WIZ)
 	/* get access to battery device */
 	batteryHandle = open("/dev/pollux_batt", O_RDONLY);
-	printf( "System Init Done!\n" );
 #endif
+	INFO("System Init Done!\n");
 }
 
 void GMenu2X::gp2x_deinit() {
@@ -180,9 +185,7 @@ void GMenu2X::gp2x_deinit() {
 	wiz_memregs = NULL;
 	close(wiz_mem);
 #endif
-#if defined(TARGET_GP2X) || defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 	if (batteryHandle!=0) close(batteryHandle);
-#endif
 }
 
 void GMenu2X::gp2x_tvout_on(bool pal) {
@@ -272,8 +275,8 @@ GMenu2X::GMenu2X() {
 	gp2x_mem = 0;
 	cx25874 = 0;
 #endif
-#if defined(TARGET_GP2X) || defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 	batteryHandle = 0;
+#if defined(TARGET_GP2X) || defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 	gp2x_init();
 #endif
 
@@ -1675,9 +1678,9 @@ void GMenu2X::scanPath(string path, vector<string> *files) {
 }
 
 unsigned short GMenu2X::getBatteryLevel() {
-#if defined(TARGET_GP2X) || defined(TARGET_WIZ) || defined(TARGET_CAANOO)
-	if (batteryHandle<=0) return 0;
+	if (batteryHandle<=0) return 6; //AC Power
 
+#if defined(TARGET_GP2X) || defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 	if (f200) {
 		MMSP2ADC val;
 		read(batteryHandle, &val, sizeof(MMSP2ADC));
