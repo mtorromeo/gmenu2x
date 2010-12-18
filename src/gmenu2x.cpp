@@ -918,7 +918,7 @@ void GMenu2X::main() {
 			if (ts.pressed() && ts.inRect(re)) {
 				re.w = skinConfInt["linkWidth"];
 				for (i=menu->firstDispSection(); !ts.handled() && i<menu->getSections().size() && i<menu->firstDispSection()+linkColumns; i++) {
-					sectionsCoordX = halfX - (constrain((uint)(linkColumns-menu->getSections().size()), 0 , linkColumns) * skinConfInt["linkWidth"]) / 2;
+					sectionsCoordX = halfX - (constrain((uint)menu->getSections().size(), 0 , linkColumns) * skinConfInt["linkWidth"]) / 2;
 					re.x = (i-menu->firstDispSection())*re.w+sectionsCoordX;
 
 					if (ts.inRect(re)) {
