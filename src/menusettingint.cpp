@@ -30,7 +30,7 @@ using fastdelegate::MakeDelegate;
 MenuSettingInt::MenuSettingInt(GMenu2X *gmenu2x, const string &name, const string &description, int *value, int min, int max, int delta)
 	: MenuSetting(gmenu2x,name,description) {
 	IconButton *btn;
-	
+
 	_value = value;
 	originalValue = *value;
 	this->min = min;
@@ -85,20 +85,17 @@ void MenuSettingInt::setValue(int value) {
 	ss >> strvalue;
 }
 
-int MenuSettingInt::value()
-{
+int MenuSettingInt::value() {
 	return *_value;
 }
 
-void MenuSettingInt::adjustInput()
-{
-#ifdef TARGET_GP2X
-	gmenu2x->input.setInterval(30, ACTION_LEFT );
-	gmenu2x->input.setInterval(30, ACTION_RIGHT);
-#endif
+void MenuSettingInt::adjustInput() {
+	gmenu2x->input.setInterval(30, LEFT );
+	gmenu2x->input.setInterval(30, RIGHT );
+	gmenu2x->input.setInterval(30, DEC );
+	gmenu2x->input.setInterval(30, INC );
 }
 
-bool MenuSettingInt::edited()
-{
+bool MenuSettingInt::edited() {
 	return originalValue != value();
 }

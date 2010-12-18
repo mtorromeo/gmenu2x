@@ -167,13 +167,9 @@ unsigned short MenuSettingRGBA::getSelPart()
 	}
 }
 
-void MenuSettingRGBA::adjustInput()
-{
-#ifdef TARGET_GP2X
-	gmenu2x->input.setInterval(30, ACTION_Y );
-	gmenu2x->input.setInterval(30, ACTION_X );
-	gmenu2x->input.setInterval(30, ACTION_L );
-#endif
+void MenuSettingRGBA::adjustInput() {
+	gmenu2x->input.setInterval(30, INC );
+	gmenu2x->input.setInterval(30, DEC );
 }
 
 void MenuSettingRGBA::drawSelected(int y)
