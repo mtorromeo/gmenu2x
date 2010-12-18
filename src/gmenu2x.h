@@ -48,6 +48,12 @@ const int BATTERY_READS = 10;
 
 const int LOOP_DELAY=30000;
 
+#if defined(TARGET_GP2X)
+	#define DEFAULT_CPU_CLK 200
+#else
+	#define DEFAULT_CPU_CLK 550
+#endif
+
 extern const char *CARD_ROOT;
 extern const int CARD_ROOT_LEN;
 
@@ -134,18 +140,11 @@ private:
 	void initFont();
 	void initMenu();
 
+	unsigned int memdev;
+	volatile unsigned short *memregs;
 #ifdef TARGET_GP2X
-	unsigned long gp2x_mem;
-	unsigned short *gp2x_memregs;
 	volatile unsigned short *MEM_REG;
 	int cx25874; //tv-out
-#endif
-#if defined(TARGET_WIZ)
-	#define PLLSETREG0		(wiz_memregs[0xF004>>2])
-	#define PWRMODE			(wiz_memregs[0xF07C>>2])
-	#define SYS_CLK_FREQ 27
-	int wiz_mem;
-	volatile uint32_t *wiz_memregs;
 #endif
 	void gp2x_tvout_on(bool pal);
 	void gp2x_tvout_off();

@@ -33,7 +33,6 @@
 #include <sys/statvfs.h>
 #include <errno.h>
 
-#include "gp2x.h"
 #include <sys/fcntl.h> //for battery
 
 //for browsing the filesystem
@@ -136,36 +135,32 @@ int main(int /*argc*/, char * /*argv*/[]) {
 }
 
 void GMenu2X::gp2x_init() {
-#ifdef TARGET_GP2X
-	gp2x_mem = open("/dev/mem", O_RDWR);
-	if (gp2x_mem < 0)
+#if defined(TARGET_GP2X) || defined(TARGET_WIZ) || defined(TARGET_CAANOO)
+	memdev = open("/dev/mem", O_RDWR);
+	if (memdev < 0)
 		ERROR("Could not open /dev/mem\n");
-	else {
-		gp2x_memregs = (unsigned short *)mmap(0, 0x10000, PROT_READ|PROT_WRITE, MAP_SHARED, gp2x_mem, 0xc0000000);
-		MEM_REG=&gp2x_memregs[0];
+#endif
+
+	if (memdev > 0) {
+#ifdef TARGET_GP2X
+		memregs = (unsigned short*)mmap(0, 0x10000, PROT_READ|PROT_WRITE, MAP_SHARED, memdev, 0xc0000000);
+		MEM_REG=&memregs[0];
+#elif defined(TARGET_WIZ) || defined(TARGET_CAANOO)
+		memregs = (unsigned short*)mmap(0, 0x20000, PROT_READ|PROT_WRITE, MAP_SHARED, memdev, 0xc0000000);
+#endif
+		if (memregs == MAP_FAILED) {
+			ERROR("Could not mmap hardware registers!\n");
+			close(memdev);
+		}
 	}
 
+#if defined(TARGET_GP2X)
 	batteryHandle = open(f200 ? "/dev/mmsp2adc" : "/dev/batt", O_RDONLY);
 	if (f200) {
 		//if wm97xx fails to open, set f200 to false to prevent any further access to the touchscreen
 		f200 = ts.init();
 	}
-#endif
-#if defined(TARGET_WIZ)
-	/* open /dev/mem to access registers */
-	wiz_mem = open("/dev/mem", O_RDWR);
-	if (wiz_mem < 0)
-		ERROR("Could not open /dev/mem\n");
-	/* get access to the registers */
-	else {
-		wiz_memregs = (volatile uint32_t*)mmap(0, 0x20000, PROT_READ|PROT_WRITE, MAP_SHARED, wiz_mem, 0xC0000000);
-		if (wiz_memregs == (volatile uint32_t*)0xFFFFFFFF) {
-			ERROR("Could not mmap hardware registers!\n");
-			close(wiz_mem);
-		}
-	}
-#endif
-#if defined(TARGET_CAANOO) || defined(TARGET_WIZ)
+#elif defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 	/* get access to battery device */
 	batteryHandle = open("/dev/pollux_batt", O_RDONLY);
 #endif
@@ -174,43 +169,44 @@ void GMenu2X::gp2x_init() {
 
 void GMenu2X::gp2x_deinit() {
 #ifdef TARGET_GP2X
-	if (gp2x_mem!=0) {
-		gp2x_memregs[0x28DA>>1]=0x4AB;
-		gp2x_memregs[0x290C>>1]=640;
-		close(gp2x_mem);
+	if (memdev > 0) {
+		memregs[0x28DA>>1]=0x4AB;
+		memregs[0x290C>>1]=640;
 	}
 	if (f200) ts.deinit();
 #endif
-#if defined(TARGET_WIZ)
-	wiz_memregs = NULL;
-	close(wiz_mem);
-#endif
+
+	if (memdev > 0) {
+		memregs = NULL;
+		close(memdev);
+	}
 	if (batteryHandle!=0) close(batteryHandle);
 }
 
 void GMenu2X::gp2x_tvout_on(bool pal) {
 #ifdef TARGET_GP2X
-	if (gp2x_mem!=0) {
+	if (memdev!=0) {
 		/*Ioctl_Dummy_t *msg;
+		#define FBMMSP2CTRL 0x4619
 		int TVHandle = ioctl(SDL_videofd, FBMMSP2CTRL, msg);*/
 		if (cx25874!=0) gp2x_tvout_off();
 		//if tv-out is enabled without cx25874 open, stop
-		//if (gp2x_memregs[0x2800>>1]&0x100) return;
+		//if (memregs[0x2800>>1]&0x100) return;
 		cx25874 = open("/dev/cx25874",O_RDWR);
 		ioctl(cx25874, _IOW('v', 0x02, unsigned char), pal ? 4 : 3);
-		gp2x_memregs[0x2906>>1]=512;
-		gp2x_memregs[0x28E4>>1]=gp2x_memregs[0x290C>>1];
-		gp2x_memregs[0x28E8>>1]=239;
+		memregs[0x2906>>1]=512;
+		memregs[0x28E4>>1]=memregs[0x290C>>1];
+		memregs[0x28E8>>1]=239;
 	}
 #endif
 }
 
 void GMenu2X::gp2x_tvout_off() {
 #ifdef TARGET_GP2X
-	if (gp2x_mem!=0) {
+	if (memdev!=0) {
 		close(cx25874);
 		cx25874 = 0;
-		gp2x_memregs[0x2906>>1]=1024;
+		memregs[0x2906>>1]=1024;
 	}
 #endif
 }
@@ -269,26 +265,24 @@ GMenu2X::GMenu2X() {
 	path = "";
 	getExePath();
 
-#if defined(TARGET_WIZ)
-	wiz_mem = 0;
-#elif TARGET_GP2X
-	gp2x_mem = 0;
+#if TARGET_GP2X
 	cx25874 = 0;
 #endif
 	batteryHandle = 0;
+	memdev = 0;
 #if defined(TARGET_GP2X) || defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 	gp2x_init();
 #endif
 
 #ifdef TARGET_GP2X
 	//Fix tv-out
-	if (gp2x_mem!=0) {
-		if (gp2x_memregs[0x2800>>1]&0x100) {
-			gp2x_memregs[0x2906>>1]=512;
-			//gp2x_memregs[0x290C>>1]=640;
-			gp2x_memregs[0x28E4>>1]=gp2x_memregs[0x290C>>1];
+	if (memdev > 0) {
+		if (memregs[0x2800>>1]&0x100) {
+			memregs[0x2906>>1]=512;
+			//memregs[0x290C>>1]=640;
+			memregs[0x28E4>>1]=memregs[0x290C>>1];
 		}
-		gp2x_memregs[0x28E8>>1]=239;
+		memregs[0x28E8>>1]=239;
 	}
 #endif
 
@@ -362,11 +356,11 @@ void GMenu2X::quit() {
 	s->free();
 	SDL_Quit();
 #ifdef TARGET_GP2X
-	if (gp2x_mem!=0) {
+	if (memdev!=0) {
 		//Fix tv-out
-		if (gp2x_memregs[0x2800>>1]&0x100) {
-			gp2x_memregs[0x2906>>1]=512;
-			gp2x_memregs[0x28E4>>1]=gp2x_memregs[0x290C>>1];
+		if (memregs[0x2800>>1]&0x100) {
+			memregs[0x2906>>1]=512;
+			memregs[0x28E4>>1]=memregs[0x290C>>1];
 		}
 		gp2x_deinit();
 	}
@@ -777,14 +771,14 @@ void GMenu2X::initServices() {
 
 void GMenu2X::ledOn() {
 #ifdef TARGET_GP2X
-	if (gp2x_mem!=0 && !f200) gp2x_memregs[0x106E >> 1] ^= 16;
+	if (memdev!=0 && !f200) memregs[0x106E >> 1] ^= 16;
 	//SDL_SYS_JoystickGp2xSys(joy.joystick, BATT_LED_ON);
 #endif
 }
 
 void GMenu2X::ledOff() {
 #ifdef TARGET_GP2X
-	if (gp2x_mem!=0 && !f200) gp2x_memregs[0x106E >> 1] ^= 16;
+	if (memdev!=0 && !f200) memregs[0x106E >> 1] ^= 16;
 	//SDL_SYS_JoystickGp2xSys(joy.joystick, BATT_LED_OFF);
 #endif
 }
@@ -978,7 +972,7 @@ void GMenu2X::main() {
 					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-inc,50,confInt["maxClock"]) );
 				if ( input[VOLUP] && !input.isActive(VOLDOWN) )
 					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+inc,50,confInt["maxClock"]) );
-				if ( input.isActive(VOLUP) && input.isActive(VOLDOWN) ) menu->selLinkApp()->setClock(200);
+				if ( input.isActive(VOLUP) && input.isActive(VOLDOWN) ) menu->selLinkApp()->setClock(DEFAULT_CPU_CLK);
 			}
 		}
 		if ( input.isActive(MODIFIER) ) {
@@ -1009,7 +1003,7 @@ void GMenu2X::explorer() {
 		string command = cmdclean(fd.getPath()+"/"+fd.getFile());
 		chdir(fd.getPath().c_str());
 		quit();
-		setClock(200);
+		setClock(DEFAULT_CPU_CLK);
 		execlp("/bin/sh","/bin/sh","-c",command.c_str(),NULL);
 
 		//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue
@@ -1415,18 +1409,18 @@ void GMenu2X::editLink() {
 	string diagTitle = tr.translate("Edit link: $1",linkTitle.c_str(),NULL);
 	string diagIcon = menu->selLinkApp()->getIconPath();
 
+	string strClock;
+	stringstream ss;
+	ss << DEFAULT_CPU_CLK;
+	ss >> strClock;
+
 	SettingsDialog sd(this, input, ts, diagTitle, diagIcon);
 	sd.addSetting(new MenuSettingString(this,tr["Title"],tr["Link title"],&linkTitle, diagTitle,diagIcon));
 	sd.addSetting(new MenuSettingString(this,tr["Description"],tr["Link description"],&linkDescription, diagTitle,diagIcon));
 	sd.addSetting(new MenuSettingMultiString(this,tr["Section"],tr["The section this link belongs to"],&newSection,&menu->getSections()));
 	sd.addSetting(new MenuSettingImage(this,tr["Icon"],tr.translate("Select an icon for the link: $1",linkTitle.c_str(),NULL),&linkIcon,".png,.bmp,.jpg,.jpeg"));
 	sd.addSetting(new MenuSettingFile(this,tr["Manual"],tr["Select a graphic/textual manual or a readme"],&linkManual,".man.png,.txt"));
-#ifdef TARGET_GP2X
-	sd.addSetting(new MenuSettingInt(this,tr["Clock (default: 200)"],tr["Cpu clock frequency to set when launching this link"],&linkClock,50,confInt["maxClock"]));
-#endif
-#if defined(TARGET_WIZ) || defined(TARGET_CAANOO)
-	sd.addSetting(new MenuSettingInt(this,tr["Clock (default: 550)"],tr["Cpu clock frequency to set when launching this link"],&linkClock,50,confInt["maxClock"],10));
-#endif
+	sd.addSetting(new MenuSettingInt(this,tr.translate("Clock (default: $1)",strClock.c_str()),tr["Cpu clock frequency to set when launching this link"],&linkClock,50,confInt["maxClock"]));
 	sd.addSetting(new MenuSettingBool(this,tr["Tweak RAM Timings"],tr["This usually speeds up the application at the cost of stability"],&linkUseRamTimings));
 	sd.addSetting(new MenuSettingInt(this,tr["Volume (default: -1)"],tr["Volume to set for this link"],&linkVolume,-1,100));
 	sd.addSetting(new MenuSettingString(this,tr["Parameters"],tr["Parameters to pass to the application"],&linkParams, diagTitle,diagIcon));
@@ -1572,9 +1566,13 @@ void GMenu2X::scanner() {
 
 	uint lineY = 42;
 
-	if (confInt["menuClock"]<200) {
-		setClock(200);
-		scanbg.write(font,tr["Raising cpu clock to 200Mhz"],5,lineY);
+	if (confInt["menuClock"]<DEFAULT_CPU_CLK) {
+		setClock(DEFAULT_CPU_CLK);
+		string strClock;
+		stringstream ss;
+		ss << DEFAULT_CPU_CLK;
+		ss >> strClock;
+		scanbg.write(font,tr.translate("Raising cpu clock to $1Mhz", strClock.c_str()),5,lineY);
 		scanbg.blit(s,0,0);
 		s->flip();
 		lineY += 26;
@@ -1631,7 +1629,7 @@ void GMenu2X::scanner() {
 	s->flip();
 	lineY += 26;
 
-	if (confInt["menuClock"]<200) {
+	if (confInt["menuClock"]<DEFAULT_CPU_CLK) {
 		setClock(confInt["menuClock"]);
 		scanbg.write(font,tr["Decreasing cpu clock"],5,lineY);
 		scanbg.blit(s,0,0);
@@ -1751,10 +1749,10 @@ void GMenu2X::setInputSpeed() {
 void GMenu2X::applyRamTimings() {
 #ifdef TARGET_GP2X
 	// 6 4 1 1 1 2 2
-	if (gp2x_mem!=0) {
+	if (memdev!=0) {
 		int tRC = 5, tRAS = 3, tWR = 0, tMRD = 0, tRFC = 0, tRP = 1, tRCD = 1;
-		gp2x_memregs[0x3802>>1] = ((tMRD & 0xF) << 12) | ((tRFC & 0xF) << 8) | ((tRP & 0xF) << 4) | (tRCD & 0xF);
-		gp2x_memregs[0x3804>>1] = ((tRC & 0xF) << 8) | ((tRAS & 0xF) << 4) | (tWR & 0xF);
+		memregs[0x3802>>1] = ((tMRD & 0xF) << 12) | ((tRFC & 0xF) << 8) | ((tRP & 0xF) << 4) | (tRCD & 0xF);
+		memregs[0x3804>>1] = ((tRC & 0xF) << 8) | ((tRAS & 0xF) << 4) | (tWR & 0xF);
 	}
 #endif
 }
@@ -1762,42 +1760,46 @@ void GMenu2X::applyRamTimings() {
 void GMenu2X::applyDefaultTimings() {
 #ifdef TARGET_GP2X
 	// 8 16 3 8 8 8 8
-	if (gp2x_mem!=0) {
+	if (memdev!=0) {
 		int tRC = 7, tRAS = 15, tWR = 2, tMRD = 7, tRFC = 7, tRP = 7, tRCD = 7;
-		gp2x_memregs[0x3802>>1] = ((tMRD & 0xF) << 12) | ((tRFC & 0xF) << 8) | ((tRP & 0xF) << 4) | (tRCD & 0xF);
-		gp2x_memregs[0x3804>>1] = ((tRC & 0xF) << 8) | ((tRAS & 0xF) << 4) | (tWR & 0xF);
+		memregs[0x3802>>1] = ((tMRD & 0xF) << 12) | ((tRFC & 0xF) << 8) | ((tRP & 0xF) << 4) | (tRCD & 0xF);
+		memregs[0x3804>>1] = ((tRC & 0xF) << 8) | ((tRAS & 0xF) << 4) | (tWR & 0xF);
 	}
 #endif
 }
 
 void GMenu2X::setClock(unsigned mhz) {
 	mhz = constrain(mhz,50,confInt["maxClock"]);
+	if (memdev > 0) {
 #ifdef TARGET_GP2X
-	if (gp2x_mem!=0) {
 		unsigned v;
-		unsigned mdiv,pdiv=3,scale=0;
-		mhz*=1000000;
-		mdiv=(mhz*pdiv)/GP2X_CLK_FREQ;
-		mdiv=((mdiv-8)<<8) & 0xff00;
-		pdiv=((pdiv-2)<<2) & 0xfc;
-		scale&=3;
-		v=mdiv | pdiv | scale;
-		MEM_REG[0x910>>1]=v;
-	}
-#endif
-#if defined(TARGET_WIZ)
-	unsigned  long v;
-	unsigned mdiv, pdiv=9, sdiv=0;
-	if (wiz_mem!=0) {
-		printf( "Setting clockspeed to %d\n", mhz );
-		mdiv= (mhz * pdiv) / SYS_CLK_FREQ;
-		mdiv &= 0x3FF;
-		v= pdiv<<18 | mdiv<<8 | sdiv;
+		unsigned mdiv, pdiv=3, scale=0;
+
+		#define SYS_CLK_FREQ 7372800
+		mhz *= 1000000;
+		mdiv = (mhz * pdiv) / SYS_CLK_FREQ;
+		mdiv = ((mdiv-8)<<8) & 0xff00;
+		pdiv = ((pdiv-2)<<2) & 0xfc;
+		scale &= 3;
+		v = mdiv | pdiv | scale;
+		MEM_REG[0x910>>1] = v;
+#elif defined(TARGET_CAANOO) || defined(TARGET_WIZ)
+		volatile unsigned int *memregl = static_cast<volatile unsigned int*>((volatile void*)memregs);
+		int mdiv, pdiv = 9, sdiv = 0;
+		unsigned long i, v;
+
+		#define SYS_CLK_FREQ 27
+		#define PLLSETREG0   (memregl[0xF004>>2])
+		#define PWRMODE      (memregl[0xF07C>>2])
+		mdiv = (mhz * pdiv) / SYS_CLK_FREQ;
+		if (mdiv & ~0x3ff) return;
+		v = pdiv<<18 | mdiv<<8 | sdiv;
 
 		PLLSETREG0 = v;
 		PWRMODE |= 0x8000;
-	}
+		for (i = 0; (PWRMODE & 0x8000) && i < 0x100000; i++);
 #endif
+	}
 }
 
 void GMenu2X::setGamma(int gamma) {
@@ -1880,8 +1882,8 @@ string GMenu2X::getDiskFree() {
 
 	int ret = statvfs("/mnt/sd", &b);
 	if (ret==0) {
-		unsigned long long free = ((unsigned long long)b.f_bfree * b.f_bsize) / 1048576.0;
-		unsigned long long total = ((unsigned long long)b.f_blocks * b.f_frsize) / 1048576.0;
+		unsigned long long free = (unsigned long long)(((unsigned long long)b.f_bfree * b.f_bsize) / 1048576.0);
+		unsigned long long total = (unsigned long long)(((unsigned long long)b.f_blocks * b.f_frsize) / 1048576.0);
 		ss << free << "/" << total << "MB";
 		ss >> df;
 	} else WARNING("statvfs failed with error '%s'.\n", strerror(errno));
