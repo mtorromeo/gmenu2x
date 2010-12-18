@@ -1680,7 +1680,7 @@ void GMenu2X::scanPath(string path, vector<string> *files) {
 unsigned short GMenu2X::getBatteryLevel() {
 	if (batteryHandle<=0) return 6; //AC Power
 
-#if defined(TARGET_GP2X) || defined(TARGET_WIZ) || defined(TARGET_CAANOO)
+#if defined(TARGET_GP2X)
 	if (f200) {
 		MMSP2ADC val;
 		read(batteryHandle, &val, sizeof(MMSP2ADC));
@@ -1689,6 +1689,7 @@ unsigned short GMenu2X::getBatteryLevel() {
 		if (val.batt==1) return 3;
 		if (val.batt==2) return 1;
 		if (val.batt==3) return 0;
+		return 6;
 	} else {
 		int battval = 0;
 		unsigned short cbv, min=900, max=0;
@@ -1711,10 +1712,22 @@ unsigned short GMenu2X::getBatteryLevel() {
 		if (battval>690) return 2;
 		if (battval>680) return 1;
 	}
-	return 0;
-#else
-	return 6; //AC Power
+#elif defined(TARGET_GP2X) || defined(TARGET_WIZ) || defined(TARGET_CAANOO)
+	unsigned short cbv;
+	if ( read(batteryHandle, &cbv, 2) == 2) {
+		INFO("Battery: %d\n", cbv);
+		// 0=fail, 1=100%, 2=66%, 3=33%, 4=0%
+		switch (cbv) {
+			case 4: return 1;
+			case 3: return 2;
+			case 2: return 4;
+			case 1: return 5;
+			default: return 6;
+		}
+	}
 #endif
+
+	return 6; //AC Power
 }
 
 void GMenu2X::setInputSpeed() {
