@@ -51,7 +51,7 @@ const int LOOP_DELAY=30000;
 #if defined(TARGET_GP2X)
 	#define DEFAULT_CPU_CLK 200
 #else
-	#define DEFAULT_CPU_CLK 550
+	#define DEFAULT_CPU_CLK 533
 #endif
 
 extern const char *CARD_ROOT;

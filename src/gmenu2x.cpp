@@ -287,7 +287,7 @@ GMenu2X::GMenu2X() {
 #endif
 
 	//Screen
-	if( SDL_Init(SDL_INIT_EVERYTHING)<0 ) {
+	if( SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER|SDL_INIT_JOYSTICK)<0 ) {
 		ERROR("Could not initialize SDL: %s\n", SDL_GetError());
 		quit();
 	}
@@ -571,11 +571,11 @@ void GMenu2X::readConfig() {
 	evalIntConf( &confInt["outputLogs"], 0, 0,1 );
 #ifdef TARGET_GP2X
 	evalIntConf( &confInt["maxClock"], 300, 200,300 );
-#endif
-#if defined(TARGET_WIZ) || defined(TARGET_CAANOO)
-	evalIntConf( &confInt["maxClock"], 550, 200,900 );
-#endif
 	evalIntConf( &confInt["menuClock"], f200 ? 136 : 100, 50,300 );
+#elif defined(TARGET_WIZ) || defined(TARGET_CAANOO)
+	evalIntConf( &confInt["maxClock"], 900, 200,900 );
+	evalIntConf( &confInt["menuClock"], DEFAULT_CPU_CLK, 50,300 );
+#endif
 	evalIntConf( &confInt["globalVolume"], 67, 0,100 );
 	evalIntConf( &confInt["gamma"], 10, 1,100 );
 	evalIntConf( &confInt["videoBpp"], 16, 8,32 );
@@ -1713,7 +1713,6 @@ unsigned short GMenu2X::getBatteryLevel() {
 #elif defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 	unsigned short cbv;
 	if ( read(batteryHandle, &cbv, 2) == 2) {
-		INFO("Battery: %d\n", cbv);
 		// 0=fail, 1=100%, 2=66%, 3=33%, 4=0%
 		switch (cbv) {
 			case 4: return 1;
@@ -1771,6 +1770,7 @@ void GMenu2X::applyDefaultTimings() {
 void GMenu2X::setClock(unsigned mhz) {
 	mhz = constrain(mhz,50,confInt["maxClock"]);
 	if (memdev > 0) {
+		INFO("Setting clock to %d\n", mhz);
 #ifdef TARGET_GP2X
 		unsigned v;
 		unsigned mdiv, pdiv=3, scale=0;
@@ -1786,7 +1786,7 @@ void GMenu2X::setClock(unsigned mhz) {
 #elif defined(TARGET_CAANOO) || defined(TARGET_WIZ)
 		volatile unsigned int *memregl = static_cast<volatile unsigned int*>((volatile void*)memregs);
 		int mdiv, pdiv = 9, sdiv = 0;
-		unsigned long i, v;
+		unsigned long v;
 
 		#define SYS_CLK_FREQ 27
 		#define PLLSETREG0   (memregl[0xF004>>2])
@@ -1797,7 +1797,7 @@ void GMenu2X::setClock(unsigned mhz) {
 
 		PLLSETREG0 = v;
 		PWRMODE |= 0x8000;
-		for (i = 0; (PWRMODE & 0x8000) && i < 0x100000; i++);
+		for (int i = 0; (PWRMODE & 0x8000) && i < 0x100000; i++);
 #endif
 	}
 }
