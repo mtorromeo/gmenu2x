@@ -534,30 +534,28 @@ and all the anonymous donors...\n\
 
 void GMenu2X::viewLog() {
 	string logfile = path+"log.txt";
-	if (fileExists(logfile)) {
-		ifstream inf(logfile.c_str(), ios_base::in);
-		if (inf.is_open()) {
-			vector<string> log;
+	if (!fileExists(logfile)) return;
+	ifstream inf(logfile.c_str(), ios_base::in);
+	if (inf.is_open()) return;
+	vector<string> log;
 
-			string line;
-			while (getline(inf, line, '\n'))
-				log.push_back(line);
-			inf.close();
+	string line;
+	while (getline(inf, line, '\n'))
+		log.push_back(line);
+	inf.close();
 
-			TextDialog td(this, tr["Log Viewer"], tr["Displays last launched program's output"], "icons/ebook.png", &log);
-			td.exec();
+	TextDialog td(this, tr["Log Viewer"], tr["Displays last launched program's output"], "icons/ebook.png", &log);
+	td.exec();
 
-			MessageBox mb(this, tr["Do you want to delete the log file?"], "icons/ebook.png");
-			mb.setButton(CONFIRM, tr["Yes"]);
-			mb.setButton(CANCEL,  tr["No"]);
-			if (mb.exec() == CONFIRM) {
-				ledOn();
-				unlink(logfile.c_str());
-				sync();
-				menu->deleteSelectedLink();
-				ledOff();
-			}
-		}
+	MessageBox mb(this, tr["Do you want to delete the log file?"], "icons/ebook.png");
+	mb.setButton(CONFIRM, tr["Yes"]);
+	mb.setButton(CANCEL,  tr["No"]);
+	if (mb.exec() == CONFIRM) {
+		ledOn();
+		unlink(logfile.c_str());
+		sync();
+		menu->deleteSelectedLink();
+		ledOff();
 	}
 }
 
@@ -624,30 +622,28 @@ void GMenu2X::writeConfig() {
 
 void GMenu2X::readConfigOpen2x() {
 	string conffile = "/etc/config/open2x.conf";
-	if (fileExists(conffile)) {
-		ifstream inf(conffile.c_str(), ios_base::in);
-		if (inf.is_open()) {
-			string line;
-			while (getline(inf, line, '\n')) {
-				string::size_type pos = line.find("=");
-				string name = trim(line.substr(0,pos));
-				string value = trim(line.substr(pos+1,line.length()));
+	if (!fileExists(conffile)) return;
+	ifstream inf(conffile.c_str(), ios_base::in);
+	if (!inf.is_open()) return;
+	string line;
+	while (getline(inf, line, '\n')) {
+		string::size_type pos = line.find("=");
+		string name = trim(line.substr(0,pos));
+		string value = trim(line.substr(pos+1,line.length()));
 
-				if (name=="USB_NET_ON_BOOT") o2x_usb_net_on_boot = value == "y" ? true : false;
-				else if (name=="USB_NET_IP") o2x_usb_net_ip = value;
-				else if (name=="TELNET_ON_BOOT") o2x_telnet_on_boot = value == "y" ? true : false;
-				else if (name=="FTP_ON_BOOT") o2x_ftp_on_boot = value == "y" ? true : false;
-				else if (name=="GP2XJOY_ON_BOOT") o2x_gp2xjoy_on_boot = value == "y" ? true : false;
-				else if (name=="USB_HOST_ON_BOOT") o2x_usb_host_on_boot = value == "y" ? true : false;
-				else if (name=="USB_HID_ON_BOOT") o2x_usb_hid_on_boot = value == "y" ? true : false;
-				else if (name=="USB_STORAGE_ON_BOOT") o2x_usb_storage_on_boot = value == "y" ? true : false;
-				else if (name=="VOLUME_MODE") volumeMode = savedVolumeMode = constrain( atoi(value.c_str()), 0, 2);
-				else if (name=="PHONES_VALUE") volumeScalerPhones = constrain( atoi(value.c_str()), 0, 100);
-				else if (name=="NORMAL_VALUE") volumeScalerNormal = constrain( atoi(value.c_str()), 0, 150);
-			}
-			inf.close();
-		}
+		if (name=="USB_NET_ON_BOOT") o2x_usb_net_on_boot = value == "y" ? true : false;
+		else if (name=="USB_NET_IP") o2x_usb_net_ip = value;
+		else if (name=="TELNET_ON_BOOT") o2x_telnet_on_boot = value == "y" ? true : false;
+		else if (name=="FTP_ON_BOOT") o2x_ftp_on_boot = value == "y" ? true : false;
+		else if (name=="GP2XJOY_ON_BOOT") o2x_gp2xjoy_on_boot = value == "y" ? true : false;
+		else if (name=="USB_HOST_ON_BOOT") o2x_usb_host_on_boot = value == "y" ? true : false;
+		else if (name=="USB_HID_ON_BOOT") o2x_usb_hid_on_boot = value == "y" ? true : false;
+		else if (name=="USB_STORAGE_ON_BOOT") o2x_usb_storage_on_boot = value == "y" ? true : false;
+		else if (name=="VOLUME_MODE") volumeMode = savedVolumeMode = constrain( atoi(value.c_str()), 0, 2);
+		else if (name=="PHONES_VALUE") volumeScalerPhones = constrain( atoi(value.c_str()), 0, 100);
+		else if (name=="NORMAL_VALUE") volumeScalerNormal = constrain( atoi(value.c_str()), 0, 150);
 	}
+	inf.close();
 }
 void GMenu2X::writeConfigOpen2x() {
 	ledOn();
@@ -700,67 +696,63 @@ void GMenu2X::writeSkinConfig() {
 }
 
 void GMenu2X::readCommonIni() {
-	if (fileExists("/usr/gp2x/common.ini")) {
-		ifstream inf("/usr/gp2x/common.ini", ios_base::in);
-		if (inf.is_open()) {
-			string line;
-			string section = "";
-			while (getline(inf, line, '\n')) {
-				line = trim(line);
-				if (line[0]=='[' && line[line.length()-1]==']') {
-					section = line.substr(1,line.length()-2);
-				} else {
-					string::size_type pos = line.find("=");
-					string name = trim(line.substr(0,pos));
-					string value = trim(line.substr(pos+1,line.length()));
+	if (!fileExists("/usr/gp2x/common.ini")) return;
+	ifstream inf("/usr/gp2x/common.ini", ios_base::in);
+	if (!inf.is_open()) return;
+	string line;
+	string section = "";
+	while (getline(inf, line, '\n')) {
+		line = trim(line);
+		if (line[0]=='[' && line[line.length()-1]==']') {
+			section = line.substr(1,line.length()-2);
+		} else {
+			string::size_type pos = line.find("=");
+			string name = trim(line.substr(0,pos));
+			string value = trim(line.substr(pos+1,line.length()));
 
-					if (section=="usbnet") {
-						if (name=="enable")
-							usbnet = value=="true" ? true : false;
-						else if (name=="ip")
-							ip = value;
+			if (section=="usbnet") {
+				if (name=="enable")
+					usbnet = value=="true" ? true : false;
+				else if (name=="ip")
+					ip = value;
 
-					} else if (section=="server") {
-						if (name=="inet")
-							inet = value=="true" ? true : false;
-						else if (name=="samba")
-							samba = value=="true" ? true : false;
-						else if (name=="web")
-							web = value=="true" ? true : false;
-					}
-				}
+			} else if (section=="server") {
+				if (name=="inet")
+					inet = value=="true" ? true : false;
+				else if (name=="samba")
+					samba = value=="true" ? true : false;
+				else if (name=="web")
+					web = value=="true" ? true : false;
 			}
-			inf.close();
 		}
 	}
+	inf.close();
 }
 
 void GMenu2X::writeCommonIni() {}
 
 void GMenu2X::readTmp() {
 	lastSelectorElement = -1;
-	if (fileExists("/tmp/gmenu2x.tmp")) {
-		ifstream inf("/tmp/gmenu2x.tmp", ios_base::in);
-		if (inf.is_open()) {
-			string line;
-			string section = "";
-			while (getline(inf, line, '\n')) {
-				string::size_type pos = line.find("=");
-				string name = trim(line.substr(0,pos));
-				string value = trim(line.substr(pos+1,line.length()));
+	if (!fileExists("/tmp/gmenu2x.tmp")) return;
+	ifstream inf("/tmp/gmenu2x.tmp", ios_base::in);
+	if (!inf.is_open()) return;
+	string line;
+	string section = "";
+	while (getline(inf, line, '\n')) {
+		string::size_type pos = line.find("=");
+		string name = trim(line.substr(0,pos));
+		string value = trim(line.substr(pos+1,line.length()));
 
-				if (name=="section")
-					menu->setSectionIndex(atoi(value.c_str()));
-				else if (name=="link")
-					menu->setLinkIndex(atoi(value.c_str()));
-				else if (name=="selectorelem")
-					lastSelectorElement = atoi(value.c_str());
-				else if (name=="selectordir")
-					lastSelectorDir = value;
-			}
-			inf.close();
-		}
+		if (name=="section")
+			menu->setSectionIndex(atoi(value.c_str()));
+		else if (name=="link")
+			menu->setLinkIndex(atoi(value.c_str()));
+		else if (name=="selectorelem")
+			lastSelectorElement = atoi(value.c_str());
+		else if (name=="selectordir")
+			lastSelectorDir = value;
 	}
+	inf.close();
 }
 
 void GMenu2X::writeTmp(int selelem, const string &selectordir) {
