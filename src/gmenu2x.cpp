@@ -938,7 +938,6 @@ void GMenu2X::main() {
 			}
 		}
 
-//#ifdef TARGET_GP2X
 		input.update();
 		if ( input[CONFIRM] && menu->selLink()!=NULL ) menu->selLink()->run();
 		else if ( input[SETTINGS]  ) options();
@@ -972,15 +971,10 @@ void GMenu2X::main() {
 				if ( input.isActive(VOLUP) && input.isActive(VOLDOWN) ) menu->selLinkApp()->setVolume(-1);
 			} else {
 				// CLOCK
-#if defined(TARGET_WIZ) || defined(TARGET_CAANOO)
-				int inc = 10;
-#else
-				int inc = 1;
-#endif
 				if ( input[VOLDOWN] && !input.isActive(VOLUP) )
-					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-inc,50,confInt["maxClock"]) );
+					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()-10,50,confInt["maxClock"]) );
 				if ( input[VOLUP] && !input.isActive(VOLDOWN) )
-					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+inc,50,confInt["maxClock"]) );
+					menu->selLinkApp()->setClock( constrain(menu->selLinkApp()->clock()+10,50,confInt["maxClock"]) );
 				if ( input.isActive(VOLUP) && input.isActive(VOLDOWN) ) menu->selLinkApp()->setClock(DEFAULT_CPU_CLK);
 			}
 		}
