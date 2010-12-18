@@ -1712,7 +1712,7 @@ unsigned short GMenu2X::getBatteryLevel() {
 		if (battval>690) return 2;
 		if (battval>680) return 1;
 	}
-#elif defined(TARGET_GP2X) || defined(TARGET_WIZ) || defined(TARGET_CAANOO)
+#elif defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 	unsigned short cbv;
 	if ( read(batteryHandle, &cbv, 2) == 2) {
 		INFO("Battery: %d\n", cbv);
