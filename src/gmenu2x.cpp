@@ -1730,7 +1730,6 @@ void GMenu2X::setInputSpeed() {
 	input.setInterval(300, SECTION_NEXT);
 	input.setInterval(300, PAGEUP);
 	input.setInterval(300, PAGEDOWN);
-	SDL_EnableKeyRepeat(1,150);
 }
 
 void GMenu2X::applyRamTimings() {

@@ -48,6 +48,20 @@ typedef struct {
 typedef vector<InputMap> MappingList;
 typedef vector<SDL_Event> SDLEventList;
 
+typedef struct {
+	bool active;
+	bool pressed;
+	int interval;
+	MappingList maplist;
+	SDL_TimerID timer;
+} InputManagerAction;
+
+enum InputManagerActionState {
+	IM_INACTIVE,
+	IM_ACTIVE,
+	IM_UNCHANGED
+};
+
 /**
 Manages all input peripherals
 @author Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
@@ -55,18 +69,18 @@ Manages all input peripherals
 class InputManager {
 private:
 	InputMap getInputMapping(int action);
-	vector<Uint32> actionTick;
-	vector<Uint32> interval;
 	SDLEventList events;
 
 	vector <SDL_Joystick*> joysticks;
-	vector<bool> actions;
-	vector<MappingList> mappings;
+	vector <InputManagerAction> actions;
+
+	static Uint32 checkRepeat(Uint32 interval, void *_data);
+	SDL_Event *fakeEventForAction(int action);
 
 public:
 	static const int MAPPING_TYPE_UNDEFINED = -1;
 	static const int MAPPING_TYPE_BUTTON = 0;
-	static const int MAPPING_TYPE_AXYS = 1;
+	static const int MAPPING_TYPE_AXIS = 1;
 	static const int MAPPING_TYPE_KEYPRESS = 2;
 
 	InputManager() {};
@@ -80,7 +94,13 @@ public:
 	void setActionsCount(int count);
 	void setInterval(int ms, int action = -1);
 	bool operator[](int action);
+	int actionStatus(int action);
 	bool isActive(int action);
 };
+
+typedef struct {
+	int action;
+	InputManager *im;
+} RepeatEventData;
 
 #endif
