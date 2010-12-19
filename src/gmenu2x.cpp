@@ -894,7 +894,7 @@ void GMenu2X::main() {
 		sc.skinRes(batteryIcon)->blit( s, resX-19, bottomBarIconY );
 
 		//On Screen Help
-		if (input[MODIFIER]) {
+		if (input.isActive(MODIFIER)) {
 			s->box(10,50,300,143, skinConfColors[COLOR_MESSAGE_BOX_BG]);
 			s->rectangle( 12,52,296,helpBoxHeight, skinConfColors[COLOR_MESSAGE_BOX_BORDER] );
 			s->write( font, tr["CONTROLS"], 20, 60 );
