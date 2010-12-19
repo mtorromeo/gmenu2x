@@ -1,5 +1,7 @@
-CHAINPREFIX=/mythtv/media/devel/toolchains/openwiz/arm-openwiz-linux-gnu
+# Export a OPENWIZ environment variable pointing to the openwiz toolchain
+CHAINPREFIX=$(OPENWIZ)
 CROSS_COMPILE=$(CHAINPREFIX)/bin/arm-openwiz-linux-gnu-
+TARGET=wiz
 
 INCLUDE=$(CHAINPREFIX)/include
 
@@ -7,12 +9,14 @@ CC= $(CROSS_COMPILE)gcc
 CXX = $(CROSS_COMPILE)g++
 STRIP = $(CROSS_COMPILE)strip
 
-CFLAGS = -I"$(CHAINPREFIX)/include" `$(CHAINPREFIX)/bin/sdl-config --cflags` -DTARGET_WIZ -O3 -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops -Wall -Wno-unknown-pragmas -Wno-format
+CFLAGS = -I"$(CHAINPREFIX)/include" `$(CHAINPREFIX)/bin/sdl-config --cflags` -DTARGET_WIZ -DTARGET=$(TARGET) -O3 -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops -Wall -Wno-unknown-pragmas -Wno-format
 CXXFLAGS = $(CFLAGS)
 LDFLAGS = -L$(CHAINPREFIX)/lib -lSDL_ttf -lSDL_image -lSDL_gfx -lfreetype -ljpeg -lpng12 -lSDL -lz -ldl
 
-TARGET = build/gmenu2x
-OBJDIR = objs/wiz
+BUILDDIR = build
+OBJDIR = objs/$(TARGET)
+DISTDIR = dist/$(TARGET)
+APPNAME = $(BUILDDIR)/gmenu2x.$(TARGET)
 
 SOURCES := $(wildcard src/*.cpp)
 OBJS := $(patsubst src/%.cpp, $(OBJDIR)/%.o, $(SOURCES))
@@ -28,20 +32,1014 @@ dir:
 
 debug-static: $(OBJS)
 	@echo "Linking $(TARGET)-debug..."
-	$(CXX) -o $(TARGET)-debug $(OBJS) -static `$(CHAINPREFIX)/bin/sdl-config --static-libs` $(LDFLAGS)
+	$(CXX) -o $(APPNAME)-debug $(OBJS) -static `$(CHAINPREFIX)/bin/sdl-config --static-libs` $(LDFLAGS)
 
 debug-shared: $(OBJS)
 	@echo "Linking $(TARGET)-debug..."
-	$(CXX) -o $(TARGET)-debug `$(CHAINPREFIX)/bin/sdl-config --libs` $(LDFLAGS) $(OBJS)
+	$(CXX) -o $(APPNAME)-debug `$(CHAINPREFIX)/bin/sdl-config --libs` $(LDFLAGS) $(OBJS)
 
 shared: debug-shared
-	$(STRIP) $(TARGET)-debug -o $(TARGET)
+	$(STRIP) $(APPNAME)-debug -o $(APPNAME)
 
 static: debug-static
-	$(STRIP) $(TARGET)-debug -o $(TARGET)
+	$(STRIP) $(APPNAME)-debug -o $(APPNAME)
 
 clean:
-	rm -f $(OBJDIR)/*.o *.gcda *.gcno $(TARGET)
+	rm -f $(OBJDIR)/*.o *.gcda *.gcno $(APPNAME)
+	rm -rf $(DISTDIR)
+
+dist: dir shared
+	@if [ ! -d $(DISTDIR) ]; then mkdir -p $(DISTDIR); fi
+	install -m755 $(APPNAME) $(DISTDIR)/gmenu2x
+	install -m644 $(BUILDDIR)/input.conf.$(TARGET) $(DISTDIR)/input.conf
+	cp -R $(BUILDDIR)/skins $(BUILDDIR)/translations $(DISTDIR)
+	mkdir -p $(DISTDIR)/sections/applications $(DISTDIR)/sections/emulators $(DISTDIR)/sections/games $(DISTDIR)/sections/settings
 
 depend:
-	makedepend -fMakefile.caanoo -p$(OBJDIR)/ -- $(CFLAGS) -- src/*.cpp
+	makedepend -fMakefile.wiz -p$(OBJDIR)/ -- $(CFLAGS) -- src/*.cpp
+# DO NOT DELETE
+
+objs/wiz/src/browsedialog.o: src/browsedialog.h src/filelister.h
+objs/wiz/src/browsedialog.o: src/gmenu2x.h src/surfacecollection.h
+objs/wiz/src/browsedialog.o: src/iconbutton.h src/button.h src/FastDelegate.h
+objs/wiz/src/browsedialog.o: /usr/include/memory.h /usr/include/features.h
+objs/wiz/src/browsedialog.o: /usr/include/sys/cdefs.h
+objs/wiz/src/browsedialog.o: /usr/include/bits/wordsize.h
+objs/wiz/src/browsedialog.o: /usr/include/gnu/stubs.h
+objs/wiz/src/browsedialog.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/browsedialog.o: /usr/include/string.h /usr/include/xlocale.h
+objs/wiz/src/browsedialog.o: src/translator.h src/utilities.h
+objs/wiz/src/browsedialog.o: src/touchscreen.h /usr/include/fcntl.h
+objs/wiz/src/browsedialog.o: /usr/include/bits/fcntl.h
+objs/wiz/src/browsedialog.o: /usr/include/sys/types.h
+objs/wiz/src/browsedialog.o: /usr/include/bits/types.h
+objs/wiz/src/browsedialog.o: /usr/include/bits/typesizes.h
+objs/wiz/src/browsedialog.o: /usr/include/time.h /usr/include/endian.h
+objs/wiz/src/browsedialog.o: /usr/include/bits/endian.h
+objs/wiz/src/browsedialog.o: /usr/include/bits/byteswap.h
+objs/wiz/src/browsedialog.o: /usr/include/sys/select.h
+objs/wiz/src/browsedialog.o: /usr/include/bits/select.h
+objs/wiz/src/browsedialog.o: /usr/include/bits/sigset.h
+objs/wiz/src/browsedialog.o: /usr/include/bits/time.h
+objs/wiz/src/browsedialog.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/browsedialog.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/browsedialog.o: /usr/include/bits/stat.h /usr/include/stdint.h
+objs/wiz/src/browsedialog.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/browsedialog.o: src/surface.h src/fonthelper.h src/buttonbox.h
+objs/wiz/src/browsedialog.o: src/dialog.h
+objs/wiz/src/buttonbox.o: src/button.h src/FastDelegate.h
+objs/wiz/src/buttonbox.o: /usr/include/memory.h /usr/include/features.h
+objs/wiz/src/buttonbox.o: /usr/include/sys/cdefs.h
+objs/wiz/src/buttonbox.o: /usr/include/bits/wordsize.h
+objs/wiz/src/buttonbox.o: /usr/include/gnu/stubs.h
+objs/wiz/src/buttonbox.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
+objs/wiz/src/buttonbox.o: /usr/include/xlocale.h src/gmenu2x.h
+objs/wiz/src/buttonbox.o: src/surfacecollection.h src/iconbutton.h
+objs/wiz/src/buttonbox.o: src/translator.h src/utilities.h src/touchscreen.h
+objs/wiz/src/buttonbox.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/wiz/src/buttonbox.o: /usr/include/sys/types.h /usr/include/bits/types.h
+objs/wiz/src/buttonbox.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/wiz/src/buttonbox.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/wiz/src/buttonbox.o: /usr/include/bits/byteswap.h
+objs/wiz/src/buttonbox.o: /usr/include/sys/select.h
+objs/wiz/src/buttonbox.o: /usr/include/bits/select.h
+objs/wiz/src/buttonbox.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/wiz/src/buttonbox.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/buttonbox.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/buttonbox.o: /usr/include/bits/stat.h /usr/include/stdint.h
+objs/wiz/src/buttonbox.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/buttonbox.o: src/surface.h src/fonthelper.h src/buttonbox.h
+objs/wiz/src/button.o: src/button.h src/FastDelegate.h /usr/include/memory.h
+objs/wiz/src/button.o: /usr/include/features.h /usr/include/sys/cdefs.h
+objs/wiz/src/button.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
+objs/wiz/src/button.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
+objs/wiz/src/button.o: /usr/include/xlocale.h src/gmenu2x.h
+objs/wiz/src/button.o: src/surfacecollection.h src/iconbutton.h
+objs/wiz/src/button.o: src/translator.h src/utilities.h src/touchscreen.h
+objs/wiz/src/button.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/wiz/src/button.o: /usr/include/sys/types.h /usr/include/bits/types.h
+objs/wiz/src/button.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/wiz/src/button.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/wiz/src/button.o: /usr/include/bits/byteswap.h /usr/include/sys/select.h
+objs/wiz/src/button.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
+objs/wiz/src/button.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+objs/wiz/src/button.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/button.o: /usr/include/bits/stat.h /usr/include/stdint.h
+objs/wiz/src/button.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/button.o: src/surface.h src/fonthelper.h
+objs/wiz/src/dialog.o: src/dialog.h src/gmenu2x.h src/surfacecollection.h
+objs/wiz/src/dialog.o: src/iconbutton.h src/button.h src/FastDelegate.h
+objs/wiz/src/dialog.o: /usr/include/memory.h /usr/include/features.h
+objs/wiz/src/dialog.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
+objs/wiz/src/dialog.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+objs/wiz/src/dialog.o: /usr/include/string.h /usr/include/xlocale.h
+objs/wiz/src/dialog.o: src/translator.h src/utilities.h src/touchscreen.h
+objs/wiz/src/dialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/wiz/src/dialog.o: /usr/include/sys/types.h /usr/include/bits/types.h
+objs/wiz/src/dialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/wiz/src/dialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/wiz/src/dialog.o: /usr/include/bits/byteswap.h /usr/include/sys/select.h
+objs/wiz/src/dialog.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
+objs/wiz/src/dialog.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+objs/wiz/src/dialog.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/dialog.o: /usr/include/bits/stat.h /usr/include/stdint.h
+objs/wiz/src/dialog.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/dialog.o: src/surface.h src/fonthelper.h
+objs/wiz/src/dirdialog.o: src/dirdialog.h src/gmenu2x.h
+objs/wiz/src/dirdialog.o: src/surfacecollection.h src/iconbutton.h
+objs/wiz/src/dirdialog.o: src/button.h src/FastDelegate.h
+objs/wiz/src/dirdialog.o: /usr/include/memory.h /usr/include/features.h
+objs/wiz/src/dirdialog.o: /usr/include/sys/cdefs.h
+objs/wiz/src/dirdialog.o: /usr/include/bits/wordsize.h
+objs/wiz/src/dirdialog.o: /usr/include/gnu/stubs.h
+objs/wiz/src/dirdialog.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
+objs/wiz/src/dirdialog.o: /usr/include/xlocale.h src/translator.h
+objs/wiz/src/dirdialog.o: src/utilities.h src/touchscreen.h
+objs/wiz/src/dirdialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/wiz/src/dirdialog.o: /usr/include/sys/types.h /usr/include/bits/types.h
+objs/wiz/src/dirdialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/wiz/src/dirdialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/wiz/src/dirdialog.o: /usr/include/bits/byteswap.h
+objs/wiz/src/dirdialog.o: /usr/include/sys/select.h
+objs/wiz/src/dirdialog.o: /usr/include/bits/select.h
+objs/wiz/src/dirdialog.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/wiz/src/dirdialog.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/dirdialog.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/dirdialog.o: /usr/include/bits/stat.h /usr/include/stdint.h
+objs/wiz/src/dirdialog.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/dirdialog.o: src/surface.h src/fonthelper.h src/browsedialog.h
+objs/wiz/src/dirdialog.o: src/filelister.h src/buttonbox.h src/dialog.h
+objs/wiz/src/filedialog.o: /usr/include/sys/stat.h /usr/include/features.h
+objs/wiz/src/filedialog.o: /usr/include/sys/cdefs.h
+objs/wiz/src/filedialog.o: /usr/include/bits/wordsize.h
+objs/wiz/src/filedialog.o: /usr/include/gnu/stubs.h
+objs/wiz/src/filedialog.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/filedialog.o: /usr/include/bits/types.h
+objs/wiz/src/filedialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/wiz/src/filedialog.o: /usr/include/bits/stat.h /usr/include/sys/types.h
+objs/wiz/src/filedialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/wiz/src/filedialog.o: /usr/include/bits/byteswap.h
+objs/wiz/src/filedialog.o: /usr/include/sys/select.h
+objs/wiz/src/filedialog.o: /usr/include/bits/select.h
+objs/wiz/src/filedialog.o: /usr/include/bits/sigset.h
+objs/wiz/src/filedialog.o: /usr/include/bits/time.h
+objs/wiz/src/filedialog.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/filedialog.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/filedialog.o: /usr/include/dirent.h /usr/include/bits/dirent.h
+objs/wiz/src/filedialog.o: /usr/include/bits/posix1_lim.h
+objs/wiz/src/filedialog.o: /usr/include/bits/local_lim.h
+objs/wiz/src/filedialog.o: /usr/include/linux/limits.h src/filedialog.h
+objs/wiz/src/filedialog.o: src/browsedialog.h src/filelister.h src/gmenu2x.h
+objs/wiz/src/filedialog.o: src/surfacecollection.h src/iconbutton.h
+objs/wiz/src/filedialog.o: src/button.h src/FastDelegate.h
+objs/wiz/src/filedialog.o: /usr/include/memory.h /usr/include/string.h
+objs/wiz/src/filedialog.o: /usr/include/xlocale.h src/translator.h
+objs/wiz/src/filedialog.o: src/utilities.h src/touchscreen.h
+objs/wiz/src/filedialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/wiz/src/filedialog.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+objs/wiz/src/filedialog.o: src/inputmanager.h src/surface.h src/fonthelper.h
+objs/wiz/src/filedialog.o: src/buttonbox.h src/dialog.h
+objs/wiz/src/filelister.o: /usr/include/sys/stat.h /usr/include/features.h
+objs/wiz/src/filelister.o: /usr/include/sys/cdefs.h
+objs/wiz/src/filelister.o: /usr/include/bits/wordsize.h
+objs/wiz/src/filelister.o: /usr/include/gnu/stubs.h
+objs/wiz/src/filelister.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/filelister.o: /usr/include/bits/types.h
+objs/wiz/src/filelister.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/wiz/src/filelister.o: /usr/include/bits/stat.h /usr/include/sys/types.h
+objs/wiz/src/filelister.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/wiz/src/filelister.o: /usr/include/bits/byteswap.h
+objs/wiz/src/filelister.o: /usr/include/sys/select.h
+objs/wiz/src/filelister.o: /usr/include/bits/select.h
+objs/wiz/src/filelister.o: /usr/include/bits/sigset.h
+objs/wiz/src/filelister.o: /usr/include/bits/time.h
+objs/wiz/src/filelister.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/filelister.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/filelister.o: /usr/include/dirent.h /usr/include/bits/dirent.h
+objs/wiz/src/filelister.o: /usr/include/bits/posix1_lim.h
+objs/wiz/src/filelister.o: /usr/include/bits/local_lim.h
+objs/wiz/src/filelister.o: /usr/include/linux/limits.h /usr/include/errno.h
+objs/wiz/src/filelister.o: /usr/include/bits/errno.h
+objs/wiz/src/filelister.o: /usr/include/linux/errno.h
+objs/wiz/src/filelister.o: /usr/include/asm/errno.h
+objs/wiz/src/filelister.o: /usr/include/asm-generic/errno.h
+objs/wiz/src/filelister.o: /usr/include/asm-generic/errno-base.h
+objs/wiz/src/filelister.o: src/filelister.h src/utilities.h src/gmenu2x.h
+objs/wiz/src/filelister.o: src/surfacecollection.h src/iconbutton.h
+objs/wiz/src/filelister.o: src/button.h src/FastDelegate.h
+objs/wiz/src/filelister.o: /usr/include/memory.h /usr/include/string.h
+objs/wiz/src/filelister.o: /usr/include/xlocale.h src/translator.h
+objs/wiz/src/filelister.o: src/touchscreen.h /usr/include/fcntl.h
+objs/wiz/src/filelister.o: /usr/include/bits/fcntl.h /usr/include/stdint.h
+objs/wiz/src/filelister.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/filelister.o: src/surface.h src/fonthelper.h src/debug.h
+objs/wiz/src/fonthelper.o: src/fonthelper.h src/surface.h src/utilities.h
+objs/wiz/src/fonthelper.o: src/debug.h
+objs/wiz/src/gmenu2x.o: /usr/include/stdlib.h /usr/include/features.h
+objs/wiz/src/gmenu2x.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
+objs/wiz/src/gmenu2x.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/waitflags.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/waitstatus.h /usr/include/endian.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/endian.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/byteswap.h /usr/include/sys/types.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/types.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/wiz/src/gmenu2x.o: /usr/include/sys/select.h /usr/include/bits/select.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/wiz/src/gmenu2x.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/gmenu2x.o: /usr/include/alloca.h /usr/include/unistd.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/posix_opt.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/environments.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/confname.h /usr/include/getopt.h
+objs/wiz/src/gmenu2x.o: /usr/include/math.h /usr/include/bits/huge_val.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/huge_valf.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/mathcalls.h /usr/include/signal.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/signum.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/siginfo.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/sigaction.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/sigcontext.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/sigstack.h
+objs/wiz/src/gmenu2x.o: /usr/include/sys/ucontext.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/sigthread.h
+objs/wiz/src/gmenu2x.o: /usr/include/sys/statvfs.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/statvfs.h /usr/include/errno.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/errno.h /usr/include/linux/errno.h
+objs/wiz/src/gmenu2x.o: /usr/include/asm/errno.h
+objs/wiz/src/gmenu2x.o: /usr/include/asm-generic/errno.h
+objs/wiz/src/gmenu2x.o: /usr/include/asm-generic/errno-base.h
+objs/wiz/src/gmenu2x.o: /usr/include/sys/fcntl.h /usr/include/fcntl.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/fcntl.h /usr/include/bits/stat.h
+objs/wiz/src/gmenu2x.o: /usr/include/sys/stat.h /usr/include/dirent.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/dirent.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/posix1_lim.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/local_lim.h
+objs/wiz/src/gmenu2x.o: /usr/include/linux/limits.h /usr/include/sys/ioctl.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/ioctls.h /usr/include/asm/ioctls.h
+objs/wiz/src/gmenu2x.o: /usr/include/asm-generic/ioctls.h
+objs/wiz/src/gmenu2x.o: /usr/include/linux/ioctl.h /usr/include/asm/ioctl.h
+objs/wiz/src/gmenu2x.o: /usr/include/asm-generic/ioctl.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/ioctl-types.h
+objs/wiz/src/gmenu2x.o: /usr/include/sys/ttydefaults.h
+objs/wiz/src/gmenu2x.o: /usr/include/linux/soundcard.h
+objs/wiz/src/gmenu2x.o: /usr/include/linux/patchkey.h src/linkapp.h
+objs/wiz/src/gmenu2x.o: src/link.h src/button.h src/FastDelegate.h
+objs/wiz/src/gmenu2x.o: /usr/include/memory.h /usr/include/string.h
+objs/wiz/src/gmenu2x.o: /usr/include/xlocale.h src/surface.h src/linkaction.h
+objs/wiz/src/gmenu2x.o: src/menu.h src/fonthelper.h src/filedialog.h
+objs/wiz/src/gmenu2x.o: src/browsedialog.h src/filelister.h src/gmenu2x.h
+objs/wiz/src/gmenu2x.o: src/surfacecollection.h src/iconbutton.h
+objs/wiz/src/gmenu2x.o: src/translator.h src/utilities.h src/touchscreen.h
+objs/wiz/src/gmenu2x.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+objs/wiz/src/gmenu2x.o: src/inputmanager.h src/buttonbox.h src/dialog.h
+objs/wiz/src/gmenu2x.o: src/messagebox.h src/inputdialog.h
+objs/wiz/src/gmenu2x.o: src/settingsdialog.h src/menusetting.h
+objs/wiz/src/gmenu2x.o: src/wallpaperdialog.h src/textdialog.h
+objs/wiz/src/gmenu2x.o: src/menusettingint.h src/menusettingbool.h
+objs/wiz/src/gmenu2x.o: src/menusettingrgba.h src/menusettingstring.h
+objs/wiz/src/gmenu2x.o: src/menusettingstringbase.h
+objs/wiz/src/gmenu2x.o: src/menusettingmultistring.h src/menusettingfile.h
+objs/wiz/src/gmenu2x.o: src/menusettingimage.h src/menusettingdir.h
+objs/wiz/src/gmenu2x.o: src/debug.h /usr/include/sys/mman.h
+objs/wiz/src/gmenu2x.o: /usr/include/bits/mman.h
+objs/wiz/src/iconbutton.o: src/iconbutton.h src/button.h src/FastDelegate.h
+objs/wiz/src/iconbutton.o: /usr/include/memory.h /usr/include/features.h
+objs/wiz/src/iconbutton.o: /usr/include/sys/cdefs.h
+objs/wiz/src/iconbutton.o: /usr/include/bits/wordsize.h
+objs/wiz/src/iconbutton.o: /usr/include/gnu/stubs.h
+objs/wiz/src/iconbutton.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
+objs/wiz/src/iconbutton.o: /usr/include/xlocale.h src/gmenu2x.h
+objs/wiz/src/iconbutton.o: src/surfacecollection.h src/translator.h
+objs/wiz/src/iconbutton.o: src/utilities.h src/touchscreen.h
+objs/wiz/src/iconbutton.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/wiz/src/iconbutton.o: /usr/include/sys/types.h /usr/include/bits/types.h
+objs/wiz/src/iconbutton.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/wiz/src/iconbutton.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/wiz/src/iconbutton.o: /usr/include/bits/byteswap.h
+objs/wiz/src/iconbutton.o: /usr/include/sys/select.h
+objs/wiz/src/iconbutton.o: /usr/include/bits/select.h
+objs/wiz/src/iconbutton.o: /usr/include/bits/sigset.h
+objs/wiz/src/iconbutton.o: /usr/include/bits/time.h
+objs/wiz/src/iconbutton.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/iconbutton.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/iconbutton.o: /usr/include/bits/stat.h /usr/include/stdint.h
+objs/wiz/src/iconbutton.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/iconbutton.o: src/surface.h src/fonthelper.h
+objs/wiz/src/imagedialog.o: /usr/include/sys/stat.h /usr/include/features.h
+objs/wiz/src/imagedialog.o: /usr/include/sys/cdefs.h
+objs/wiz/src/imagedialog.o: /usr/include/bits/wordsize.h
+objs/wiz/src/imagedialog.o: /usr/include/gnu/stubs.h
+objs/wiz/src/imagedialog.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/imagedialog.o: /usr/include/bits/types.h
+objs/wiz/src/imagedialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/wiz/src/imagedialog.o: /usr/include/bits/stat.h /usr/include/sys/types.h
+objs/wiz/src/imagedialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/wiz/src/imagedialog.o: /usr/include/bits/byteswap.h
+objs/wiz/src/imagedialog.o: /usr/include/sys/select.h
+objs/wiz/src/imagedialog.o: /usr/include/bits/select.h
+objs/wiz/src/imagedialog.o: /usr/include/bits/sigset.h
+objs/wiz/src/imagedialog.o: /usr/include/bits/time.h
+objs/wiz/src/imagedialog.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/imagedialog.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/imagedialog.o: /usr/include/dirent.h /usr/include/bits/dirent.h
+objs/wiz/src/imagedialog.o: /usr/include/bits/posix1_lim.h
+objs/wiz/src/imagedialog.o: /usr/include/bits/local_lim.h
+objs/wiz/src/imagedialog.o: /usr/include/linux/limits.h src/imagedialog.h
+objs/wiz/src/imagedialog.o: src/filedialog.h src/browsedialog.h
+objs/wiz/src/imagedialog.o: src/filelister.h src/gmenu2x.h
+objs/wiz/src/imagedialog.o: src/surfacecollection.h src/iconbutton.h
+objs/wiz/src/imagedialog.o: src/button.h src/FastDelegate.h
+objs/wiz/src/imagedialog.o: /usr/include/memory.h /usr/include/string.h
+objs/wiz/src/imagedialog.o: /usr/include/xlocale.h src/translator.h
+objs/wiz/src/imagedialog.o: src/utilities.h src/touchscreen.h
+objs/wiz/src/imagedialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/wiz/src/imagedialog.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+objs/wiz/src/imagedialog.o: src/inputmanager.h src/surface.h src/fonthelper.h
+objs/wiz/src/imagedialog.o: src/buttonbox.h src/dialog.h
+objs/wiz/src/inputdialog.o: src/inputdialog.h src/gmenu2x.h
+objs/wiz/src/inputdialog.o: src/surfacecollection.h src/iconbutton.h
+objs/wiz/src/inputdialog.o: src/button.h src/FastDelegate.h
+objs/wiz/src/inputdialog.o: /usr/include/memory.h /usr/include/features.h
+objs/wiz/src/inputdialog.o: /usr/include/sys/cdefs.h
+objs/wiz/src/inputdialog.o: /usr/include/bits/wordsize.h
+objs/wiz/src/inputdialog.o: /usr/include/gnu/stubs.h
+objs/wiz/src/inputdialog.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
+objs/wiz/src/inputdialog.o: /usr/include/xlocale.h src/translator.h
+objs/wiz/src/inputdialog.o: src/utilities.h src/touchscreen.h
+objs/wiz/src/inputdialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/wiz/src/inputdialog.o: /usr/include/sys/types.h
+objs/wiz/src/inputdialog.o: /usr/include/bits/types.h
+objs/wiz/src/inputdialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/wiz/src/inputdialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/wiz/src/inputdialog.o: /usr/include/bits/byteswap.h
+objs/wiz/src/inputdialog.o: /usr/include/sys/select.h
+objs/wiz/src/inputdialog.o: /usr/include/bits/select.h
+objs/wiz/src/inputdialog.o: /usr/include/bits/sigset.h
+objs/wiz/src/inputdialog.o: /usr/include/bits/time.h
+objs/wiz/src/inputdialog.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/inputdialog.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/inputdialog.o: /usr/include/bits/stat.h /usr/include/stdint.h
+objs/wiz/src/inputdialog.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/inputdialog.o: src/surface.h src/fonthelper.h src/dialog.h
+objs/wiz/src/inputmanager.o: src/debug.h src/inputmanager.h src/utilities.h
+objs/wiz/src/linkaction.o: src/linkaction.h src/FastDelegate.h
+objs/wiz/src/linkaction.o: /usr/include/memory.h /usr/include/features.h
+objs/wiz/src/linkaction.o: /usr/include/sys/cdefs.h
+objs/wiz/src/linkaction.o: /usr/include/bits/wordsize.h
+objs/wiz/src/linkaction.o: /usr/include/gnu/stubs.h
+objs/wiz/src/linkaction.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
+objs/wiz/src/linkaction.o: /usr/include/xlocale.h src/link.h src/button.h
+objs/wiz/src/linkaction.o: src/surface.h
+objs/wiz/src/linkapp.o: /usr/include/sys/types.h /usr/include/features.h
+objs/wiz/src/linkapp.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
+objs/wiz/src/linkapp.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+objs/wiz/src/linkapp.o: /usr/include/bits/types.h
+objs/wiz/src/linkapp.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/wiz/src/linkapp.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/wiz/src/linkapp.o: /usr/include/bits/byteswap.h
+objs/wiz/src/linkapp.o: /usr/include/sys/select.h /usr/include/bits/select.h
+objs/wiz/src/linkapp.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/wiz/src/linkapp.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/linkapp.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/linkapp.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
+objs/wiz/src/linkapp.o: /usr/include/unistd.h /usr/include/bits/posix_opt.h
+objs/wiz/src/linkapp.o: /usr/include/bits/environments.h
+objs/wiz/src/linkapp.o: /usr/include/bits/confname.h /usr/include/getopt.h
+objs/wiz/src/linkapp.o: src/linkapp.h src/link.h src/button.h
+objs/wiz/src/linkapp.o: src/FastDelegate.h /usr/include/memory.h
+objs/wiz/src/linkapp.o: /usr/include/string.h /usr/include/xlocale.h
+objs/wiz/src/linkapp.o: src/surface.h src/menu.h src/linkaction.h
+objs/wiz/src/linkapp.o: src/selector.h src/gmenu2x.h src/surfacecollection.h
+objs/wiz/src/linkapp.o: src/iconbutton.h src/translator.h src/utilities.h
+objs/wiz/src/linkapp.o: src/touchscreen.h /usr/include/fcntl.h
+objs/wiz/src/linkapp.o: /usr/include/bits/fcntl.h /usr/include/stdint.h
+objs/wiz/src/linkapp.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/linkapp.o: src/fonthelper.h src/dialog.h src/textmanualdialog.h
+objs/wiz/src/linkapp.o: src/textdialog.h src/debug.h
+objs/wiz/src/link.o: src/link.h src/button.h src/FastDelegate.h
+objs/wiz/src/link.o: /usr/include/memory.h /usr/include/features.h
+objs/wiz/src/link.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
+objs/wiz/src/link.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+objs/wiz/src/link.o: /usr/include/string.h /usr/include/xlocale.h
+objs/wiz/src/link.o: src/surface.h src/menu.h src/linkaction.h src/selector.h
+objs/wiz/src/link.o: src/gmenu2x.h src/surfacecollection.h src/iconbutton.h
+objs/wiz/src/link.o: src/translator.h src/utilities.h src/touchscreen.h
+objs/wiz/src/link.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/wiz/src/link.o: /usr/include/sys/types.h /usr/include/bits/types.h
+objs/wiz/src/link.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/wiz/src/link.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/wiz/src/link.o: /usr/include/bits/byteswap.h /usr/include/sys/select.h
+objs/wiz/src/link.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
+objs/wiz/src/link.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+objs/wiz/src/link.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/link.o: /usr/include/bits/stat.h /usr/include/stdint.h
+objs/wiz/src/link.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/link.o: src/fonthelper.h src/dialog.h
+objs/wiz/src/listview.o: src/listview.h src/gmenu2x.h src/surfacecollection.h
+objs/wiz/src/listview.o: src/iconbutton.h src/button.h src/FastDelegate.h
+objs/wiz/src/listview.o: /usr/include/memory.h /usr/include/features.h
+objs/wiz/src/listview.o: /usr/include/sys/cdefs.h
+objs/wiz/src/listview.o: /usr/include/bits/wordsize.h
+objs/wiz/src/listview.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+objs/wiz/src/listview.o: /usr/include/string.h /usr/include/xlocale.h
+objs/wiz/src/listview.o: src/translator.h src/utilities.h src/touchscreen.h
+objs/wiz/src/listview.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/wiz/src/listview.o: /usr/include/sys/types.h /usr/include/bits/types.h
+objs/wiz/src/listview.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/wiz/src/listview.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/wiz/src/listview.o: /usr/include/bits/byteswap.h
+objs/wiz/src/listview.o: /usr/include/sys/select.h /usr/include/bits/select.h
+objs/wiz/src/listview.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/wiz/src/listview.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/listview.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/listview.o: /usr/include/bits/stat.h /usr/include/stdint.h
+objs/wiz/src/listview.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/listview.o: src/surface.h src/fonthelper.h src/listviewitem.h
+objs/wiz/src/listviewitem.o: src/listview.h src/gmenu2x.h
+objs/wiz/src/listviewitem.o: src/surfacecollection.h src/iconbutton.h
+objs/wiz/src/listviewitem.o: src/button.h src/FastDelegate.h
+objs/wiz/src/listviewitem.o: /usr/include/memory.h /usr/include/features.h
+objs/wiz/src/listviewitem.o: /usr/include/sys/cdefs.h
+objs/wiz/src/listviewitem.o: /usr/include/bits/wordsize.h
+objs/wiz/src/listviewitem.o: /usr/include/gnu/stubs.h
+objs/wiz/src/listviewitem.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/listviewitem.o: /usr/include/string.h /usr/include/xlocale.h
+objs/wiz/src/listviewitem.o: src/translator.h src/utilities.h
+objs/wiz/src/listviewitem.o: src/touchscreen.h /usr/include/fcntl.h
+objs/wiz/src/listviewitem.o: /usr/include/bits/fcntl.h
+objs/wiz/src/listviewitem.o: /usr/include/sys/types.h
+objs/wiz/src/listviewitem.o: /usr/include/bits/types.h
+objs/wiz/src/listviewitem.o: /usr/include/bits/typesizes.h
+objs/wiz/src/listviewitem.o: /usr/include/time.h /usr/include/endian.h
+objs/wiz/src/listviewitem.o: /usr/include/bits/endian.h
+objs/wiz/src/listviewitem.o: /usr/include/bits/byteswap.h
+objs/wiz/src/listviewitem.o: /usr/include/sys/select.h
+objs/wiz/src/listviewitem.o: /usr/include/bits/select.h
+objs/wiz/src/listviewitem.o: /usr/include/bits/sigset.h
+objs/wiz/src/listviewitem.o: /usr/include/bits/time.h
+objs/wiz/src/listviewitem.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/listviewitem.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/listviewitem.o: /usr/include/bits/stat.h /usr/include/stdint.h
+objs/wiz/src/listviewitem.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/listviewitem.o: src/surface.h src/fonthelper.h
+objs/wiz/src/listviewitem.o: src/listviewitem.h
+objs/wiz/src/menu.o: /usr/include/sys/stat.h /usr/include/features.h
+objs/wiz/src/menu.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
+objs/wiz/src/menu.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+objs/wiz/src/menu.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
+objs/wiz/src/menu.o: /usr/include/time.h /usr/include/bits/stat.h
+objs/wiz/src/menu.o: /usr/include/sys/types.h /usr/include/endian.h
+objs/wiz/src/menu.o: /usr/include/bits/endian.h /usr/include/bits/byteswap.h
+objs/wiz/src/menu.o: /usr/include/sys/select.h /usr/include/bits/select.h
+objs/wiz/src/menu.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/wiz/src/menu.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/menu.o: /usr/include/bits/pthreadtypes.h /usr/include/dirent.h
+objs/wiz/src/menu.o: /usr/include/bits/dirent.h
+objs/wiz/src/menu.o: /usr/include/bits/posix1_lim.h
+objs/wiz/src/menu.o: /usr/include/bits/local_lim.h
+objs/wiz/src/menu.o: /usr/include/linux/limits.h /usr/include/math.h
+objs/wiz/src/menu.o: /usr/include/bits/huge_val.h
+objs/wiz/src/menu.o: /usr/include/bits/huge_valf.h
+objs/wiz/src/menu.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
+objs/wiz/src/menu.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
+objs/wiz/src/menu.o: /usr/include/bits/mathcalls.h src/gmenu2x.h
+objs/wiz/src/menu.o: src/surfacecollection.h src/iconbutton.h src/button.h
+objs/wiz/src/menu.o: src/FastDelegate.h /usr/include/memory.h
+objs/wiz/src/menu.o: /usr/include/string.h /usr/include/xlocale.h
+objs/wiz/src/menu.o: src/translator.h src/utilities.h src/touchscreen.h
+objs/wiz/src/menu.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/wiz/src/menu.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+objs/wiz/src/menu.o: src/inputmanager.h src/surface.h src/fonthelper.h
+objs/wiz/src/menu.o: src/linkapp.h src/link.h src/menu.h src/linkaction.h
+objs/wiz/src/menu.o: src/filelister.h src/debug.h
+objs/wiz/src/menusettingbool.o: src/menusettingbool.h src/menusetting.h
+objs/wiz/src/menusettingbool.o: src/buttonbox.h src/gmenu2x.h
+objs/wiz/src/menusettingbool.o: src/surfacecollection.h src/iconbutton.h
+objs/wiz/src/menusettingbool.o: src/button.h src/FastDelegate.h
+objs/wiz/src/menusettingbool.o: /usr/include/memory.h /usr/include/features.h
+objs/wiz/src/menusettingbool.o: /usr/include/sys/cdefs.h
+objs/wiz/src/menusettingbool.o: /usr/include/bits/wordsize.h
+objs/wiz/src/menusettingbool.o: /usr/include/gnu/stubs.h
+objs/wiz/src/menusettingbool.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/menusettingbool.o: /usr/include/string.h /usr/include/xlocale.h
+objs/wiz/src/menusettingbool.o: src/translator.h src/utilities.h
+objs/wiz/src/menusettingbool.o: src/touchscreen.h /usr/include/fcntl.h
+objs/wiz/src/menusettingbool.o: /usr/include/bits/fcntl.h
+objs/wiz/src/menusettingbool.o: /usr/include/sys/types.h
+objs/wiz/src/menusettingbool.o: /usr/include/bits/types.h
+objs/wiz/src/menusettingbool.o: /usr/include/bits/typesizes.h
+objs/wiz/src/menusettingbool.o: /usr/include/time.h /usr/include/endian.h
+objs/wiz/src/menusettingbool.o: /usr/include/bits/endian.h
+objs/wiz/src/menusettingbool.o: /usr/include/bits/byteswap.h
+objs/wiz/src/menusettingbool.o: /usr/include/sys/select.h
+objs/wiz/src/menusettingbool.o: /usr/include/bits/select.h
+objs/wiz/src/menusettingbool.o: /usr/include/bits/sigset.h
+objs/wiz/src/menusettingbool.o: /usr/include/bits/time.h
+objs/wiz/src/menusettingbool.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/menusettingbool.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/menusettingbool.o: /usr/include/bits/stat.h
+objs/wiz/src/menusettingbool.o: /usr/include/stdint.h
+objs/wiz/src/menusettingbool.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/menusettingbool.o: src/surface.h src/fonthelper.h
+objs/wiz/src/menusetting.o: src/menusetting.h src/buttonbox.h
+objs/wiz/src/menusetting.o: src/fonthelper.h src/surface.h src/gmenu2x.h
+objs/wiz/src/menusetting.o: src/surfacecollection.h src/iconbutton.h
+objs/wiz/src/menusetting.o: src/button.h src/FastDelegate.h
+objs/wiz/src/menusetting.o: /usr/include/memory.h /usr/include/features.h
+objs/wiz/src/menusetting.o: /usr/include/sys/cdefs.h
+objs/wiz/src/menusetting.o: /usr/include/bits/wordsize.h
+objs/wiz/src/menusetting.o: /usr/include/gnu/stubs.h
+objs/wiz/src/menusetting.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
+objs/wiz/src/menusetting.o: /usr/include/xlocale.h src/translator.h
+objs/wiz/src/menusetting.o: src/utilities.h src/touchscreen.h
+objs/wiz/src/menusetting.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/wiz/src/menusetting.o: /usr/include/sys/types.h
+objs/wiz/src/menusetting.o: /usr/include/bits/types.h
+objs/wiz/src/menusetting.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/wiz/src/menusetting.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/wiz/src/menusetting.o: /usr/include/bits/byteswap.h
+objs/wiz/src/menusetting.o: /usr/include/sys/select.h
+objs/wiz/src/menusetting.o: /usr/include/bits/select.h
+objs/wiz/src/menusetting.o: /usr/include/bits/sigset.h
+objs/wiz/src/menusetting.o: /usr/include/bits/time.h
+objs/wiz/src/menusetting.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/menusetting.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/menusetting.o: /usr/include/bits/stat.h /usr/include/stdint.h
+objs/wiz/src/menusetting.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/menusettingdir.o: src/menusettingdir.h
+objs/wiz/src/menusettingdir.o: src/menusettingstringbase.h src/menusetting.h
+objs/wiz/src/menusettingdir.o: src/buttonbox.h src/iconbutton.h src/button.h
+objs/wiz/src/menusettingdir.o: src/FastDelegate.h /usr/include/memory.h
+objs/wiz/src/menusettingdir.o: /usr/include/features.h
+objs/wiz/src/menusettingdir.o: /usr/include/sys/cdefs.h
+objs/wiz/src/menusettingdir.o: /usr/include/bits/wordsize.h
+objs/wiz/src/menusettingdir.o: /usr/include/gnu/stubs.h
+objs/wiz/src/menusettingdir.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/menusettingdir.o: /usr/include/string.h /usr/include/xlocale.h
+objs/wiz/src/menusettingdir.o: src/dirdialog.h src/gmenu2x.h
+objs/wiz/src/menusettingdir.o: src/surfacecollection.h src/translator.h
+objs/wiz/src/menusettingdir.o: src/utilities.h src/touchscreen.h
+objs/wiz/src/menusettingdir.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/wiz/src/menusettingdir.o: /usr/include/sys/types.h
+objs/wiz/src/menusettingdir.o: /usr/include/bits/types.h
+objs/wiz/src/menusettingdir.o: /usr/include/bits/typesizes.h
+objs/wiz/src/menusettingdir.o: /usr/include/time.h /usr/include/endian.h
+objs/wiz/src/menusettingdir.o: /usr/include/bits/endian.h
+objs/wiz/src/menusettingdir.o: /usr/include/bits/byteswap.h
+objs/wiz/src/menusettingdir.o: /usr/include/sys/select.h
+objs/wiz/src/menusettingdir.o: /usr/include/bits/select.h
+objs/wiz/src/menusettingdir.o: /usr/include/bits/sigset.h
+objs/wiz/src/menusettingdir.o: /usr/include/bits/time.h
+objs/wiz/src/menusettingdir.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/menusettingdir.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/menusettingdir.o: /usr/include/bits/stat.h /usr/include/stdint.h
+objs/wiz/src/menusettingdir.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/menusettingdir.o: src/surface.h src/fonthelper.h
+objs/wiz/src/menusettingdir.o: src/browsedialog.h src/filelister.h
+objs/wiz/src/menusettingdir.o: src/dialog.h
+objs/wiz/src/menusettingfile.o: src/menusettingfile.h
+objs/wiz/src/menusettingfile.o: src/menusettingstringbase.h src/menusetting.h
+objs/wiz/src/menusettingfile.o: src/buttonbox.h src/iconbutton.h src/button.h
+objs/wiz/src/menusettingfile.o: src/FastDelegate.h /usr/include/memory.h
+objs/wiz/src/menusettingfile.o: /usr/include/features.h
+objs/wiz/src/menusettingfile.o: /usr/include/sys/cdefs.h
+objs/wiz/src/menusettingfile.o: /usr/include/bits/wordsize.h
+objs/wiz/src/menusettingfile.o: /usr/include/gnu/stubs.h
+objs/wiz/src/menusettingfile.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/menusettingfile.o: /usr/include/string.h /usr/include/xlocale.h
+objs/wiz/src/menusettingfile.o: src/filedialog.h src/browsedialog.h
+objs/wiz/src/menusettingfile.o: src/filelister.h src/gmenu2x.h
+objs/wiz/src/menusettingfile.o: src/surfacecollection.h src/translator.h
+objs/wiz/src/menusettingfile.o: src/utilities.h src/touchscreen.h
+objs/wiz/src/menusettingfile.o: /usr/include/fcntl.h
+objs/wiz/src/menusettingfile.o: /usr/include/bits/fcntl.h
+objs/wiz/src/menusettingfile.o: /usr/include/sys/types.h
+objs/wiz/src/menusettingfile.o: /usr/include/bits/types.h
+objs/wiz/src/menusettingfile.o: /usr/include/bits/typesizes.h
+objs/wiz/src/menusettingfile.o: /usr/include/time.h /usr/include/endian.h
+objs/wiz/src/menusettingfile.o: /usr/include/bits/endian.h
+objs/wiz/src/menusettingfile.o: /usr/include/bits/byteswap.h
+objs/wiz/src/menusettingfile.o: /usr/include/sys/select.h
+objs/wiz/src/menusettingfile.o: /usr/include/bits/select.h
+objs/wiz/src/menusettingfile.o: /usr/include/bits/sigset.h
+objs/wiz/src/menusettingfile.o: /usr/include/bits/time.h
+objs/wiz/src/menusettingfile.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/menusettingfile.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/menusettingfile.o: /usr/include/bits/stat.h
+objs/wiz/src/menusettingfile.o: /usr/include/stdint.h
+objs/wiz/src/menusettingfile.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/menusettingfile.o: src/surface.h src/fonthelper.h src/dialog.h
+objs/wiz/src/menusettingimage.o: src/menusettingimage.h src/menusettingfile.h
+objs/wiz/src/menusettingimage.o: src/menusettingstringbase.h
+objs/wiz/src/menusettingimage.o: src/menusetting.h src/buttonbox.h
+objs/wiz/src/menusettingimage.o: src/imagedialog.h src/filedialog.h
+objs/wiz/src/menusettingimage.o: src/browsedialog.h src/filelister.h
+objs/wiz/src/menusettingimage.o: src/gmenu2x.h src/surfacecollection.h
+objs/wiz/src/menusettingimage.o: src/iconbutton.h src/button.h
+objs/wiz/src/menusettingimage.o: src/FastDelegate.h /usr/include/memory.h
+objs/wiz/src/menusettingimage.o: /usr/include/features.h
+objs/wiz/src/menusettingimage.o: /usr/include/sys/cdefs.h
+objs/wiz/src/menusettingimage.o: /usr/include/bits/wordsize.h
+objs/wiz/src/menusettingimage.o: /usr/include/gnu/stubs.h
+objs/wiz/src/menusettingimage.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/menusettingimage.o: /usr/include/string.h /usr/include/xlocale.h
+objs/wiz/src/menusettingimage.o: src/translator.h src/utilities.h
+objs/wiz/src/menusettingimage.o: src/touchscreen.h /usr/include/fcntl.h
+objs/wiz/src/menusettingimage.o: /usr/include/bits/fcntl.h
+objs/wiz/src/menusettingimage.o: /usr/include/sys/types.h
+objs/wiz/src/menusettingimage.o: /usr/include/bits/types.h
+objs/wiz/src/menusettingimage.o: /usr/include/bits/typesizes.h
+objs/wiz/src/menusettingimage.o: /usr/include/time.h /usr/include/endian.h
+objs/wiz/src/menusettingimage.o: /usr/include/bits/endian.h
+objs/wiz/src/menusettingimage.o: /usr/include/bits/byteswap.h
+objs/wiz/src/menusettingimage.o: /usr/include/sys/select.h
+objs/wiz/src/menusettingimage.o: /usr/include/bits/select.h
+objs/wiz/src/menusettingimage.o: /usr/include/bits/sigset.h
+objs/wiz/src/menusettingimage.o: /usr/include/bits/time.h
+objs/wiz/src/menusettingimage.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/menusettingimage.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/menusettingimage.o: /usr/include/bits/stat.h
+objs/wiz/src/menusettingimage.o: /usr/include/stdint.h
+objs/wiz/src/menusettingimage.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/menusettingimage.o: src/surface.h src/fonthelper.h src/dialog.h
+objs/wiz/src/menusettingint.o: src/menusettingint.h src/menusetting.h
+objs/wiz/src/menusettingint.o: src/buttonbox.h src/gmenu2x.h
+objs/wiz/src/menusettingint.o: src/surfacecollection.h src/iconbutton.h
+objs/wiz/src/menusettingint.o: src/button.h src/FastDelegate.h
+objs/wiz/src/menusettingint.o: /usr/include/memory.h /usr/include/features.h
+objs/wiz/src/menusettingint.o: /usr/include/sys/cdefs.h
+objs/wiz/src/menusettingint.o: /usr/include/bits/wordsize.h
+objs/wiz/src/menusettingint.o: /usr/include/gnu/stubs.h
+objs/wiz/src/menusettingint.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/menusettingint.o: /usr/include/string.h /usr/include/xlocale.h
+objs/wiz/src/menusettingint.o: src/translator.h src/utilities.h
+objs/wiz/src/menusettingint.o: src/touchscreen.h /usr/include/fcntl.h
+objs/wiz/src/menusettingint.o: /usr/include/bits/fcntl.h
+objs/wiz/src/menusettingint.o: /usr/include/sys/types.h
+objs/wiz/src/menusettingint.o: /usr/include/bits/types.h
+objs/wiz/src/menusettingint.o: /usr/include/bits/typesizes.h
+objs/wiz/src/menusettingint.o: /usr/include/time.h /usr/include/endian.h
+objs/wiz/src/menusettingint.o: /usr/include/bits/endian.h
+objs/wiz/src/menusettingint.o: /usr/include/bits/byteswap.h
+objs/wiz/src/menusettingint.o: /usr/include/sys/select.h
+objs/wiz/src/menusettingint.o: /usr/include/bits/select.h
+objs/wiz/src/menusettingint.o: /usr/include/bits/sigset.h
+objs/wiz/src/menusettingint.o: /usr/include/bits/time.h
+objs/wiz/src/menusettingint.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/menusettingint.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/menusettingint.o: /usr/include/bits/stat.h /usr/include/stdint.h
+objs/wiz/src/menusettingint.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/menusettingint.o: src/surface.h src/fonthelper.h
+objs/wiz/src/menusettingmultistring.o: src/menusettingmultistring.h
+objs/wiz/src/menusettingmultistring.o: src/menusettingstringbase.h
+objs/wiz/src/menusettingmultistring.o: src/menusetting.h src/buttonbox.h
+objs/wiz/src/menusettingmultistring.o: src/gmenu2x.h src/surfacecollection.h
+objs/wiz/src/menusettingmultistring.o: src/iconbutton.h src/button.h
+objs/wiz/src/menusettingmultistring.o: src/FastDelegate.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/memory.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/features.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/sys/cdefs.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/bits/wordsize.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/gnu/stubs.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/string.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/xlocale.h
+objs/wiz/src/menusettingmultistring.o: src/translator.h src/utilities.h
+objs/wiz/src/menusettingmultistring.o: src/touchscreen.h /usr/include/fcntl.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/bits/fcntl.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/sys/types.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/bits/types.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/bits/typesizes.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/time.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/endian.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/bits/endian.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/bits/byteswap.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/sys/select.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/bits/select.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/bits/sigset.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/bits/time.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/bits/stat.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/stdint.h
+objs/wiz/src/menusettingmultistring.o: /usr/include/bits/wchar.h
+objs/wiz/src/menusettingmultistring.o: src/inputmanager.h src/surface.h
+objs/wiz/src/menusettingmultistring.o: src/fonthelper.h
+objs/wiz/src/menusettingrgba.o: src/menusettingrgba.h src/menusetting.h
+objs/wiz/src/menusettingrgba.o: src/buttonbox.h src/surface.h src/gmenu2x.h
+objs/wiz/src/menusettingrgba.o: src/surfacecollection.h src/iconbutton.h
+objs/wiz/src/menusettingrgba.o: src/button.h src/FastDelegate.h
+objs/wiz/src/menusettingrgba.o: /usr/include/memory.h /usr/include/features.h
+objs/wiz/src/menusettingrgba.o: /usr/include/sys/cdefs.h
+objs/wiz/src/menusettingrgba.o: /usr/include/bits/wordsize.h
+objs/wiz/src/menusettingrgba.o: /usr/include/gnu/stubs.h
+objs/wiz/src/menusettingrgba.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/menusettingrgba.o: /usr/include/string.h /usr/include/xlocale.h
+objs/wiz/src/menusettingrgba.o: src/translator.h src/utilities.h
+objs/wiz/src/menusettingrgba.o: src/touchscreen.h /usr/include/fcntl.h
+objs/wiz/src/menusettingrgba.o: /usr/include/bits/fcntl.h
+objs/wiz/src/menusettingrgba.o: /usr/include/sys/types.h
+objs/wiz/src/menusettingrgba.o: /usr/include/bits/types.h
+objs/wiz/src/menusettingrgba.o: /usr/include/bits/typesizes.h
+objs/wiz/src/menusettingrgba.o: /usr/include/time.h /usr/include/endian.h
+objs/wiz/src/menusettingrgba.o: /usr/include/bits/endian.h
+objs/wiz/src/menusettingrgba.o: /usr/include/bits/byteswap.h
+objs/wiz/src/menusettingrgba.o: /usr/include/sys/select.h
+objs/wiz/src/menusettingrgba.o: /usr/include/bits/select.h
+objs/wiz/src/menusettingrgba.o: /usr/include/bits/sigset.h
+objs/wiz/src/menusettingrgba.o: /usr/include/bits/time.h
+objs/wiz/src/menusettingrgba.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/menusettingrgba.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/menusettingrgba.o: /usr/include/bits/stat.h
+objs/wiz/src/menusettingrgba.o: /usr/include/stdint.h
+objs/wiz/src/menusettingrgba.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/menusettingrgba.o: src/fonthelper.h
+objs/wiz/src/menusettingstringbase.o: src/menusettingstringbase.h
+objs/wiz/src/menusettingstringbase.o: src/menusetting.h src/buttonbox.h
+objs/wiz/src/menusettingstringbase.o: src/gmenu2x.h src/surfacecollection.h
+objs/wiz/src/menusettingstringbase.o: src/iconbutton.h src/button.h
+objs/wiz/src/menusettingstringbase.o: src/FastDelegate.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/memory.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/features.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/sys/cdefs.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/bits/wordsize.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/gnu/stubs.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/string.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/xlocale.h src/translator.h
+objs/wiz/src/menusettingstringbase.o: src/utilities.h src/touchscreen.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/fcntl.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/bits/fcntl.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/sys/types.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/bits/types.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/bits/typesizes.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/time.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/endian.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/bits/endian.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/bits/byteswap.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/sys/select.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/bits/select.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/bits/sigset.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/bits/time.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/bits/stat.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/stdint.h
+objs/wiz/src/menusettingstringbase.o: /usr/include/bits/wchar.h
+objs/wiz/src/menusettingstringbase.o: src/inputmanager.h src/surface.h
+objs/wiz/src/menusettingstringbase.o: src/fonthelper.h
+objs/wiz/src/menusettingstring.o: src/menusettingstring.h
+objs/wiz/src/menusettingstring.o: src/menusettingstringbase.h
+objs/wiz/src/menusettingstring.o: src/menusetting.h src/buttonbox.h
+objs/wiz/src/menusettingstring.o: src/iconbutton.h src/button.h
+objs/wiz/src/menusettingstring.o: src/FastDelegate.h /usr/include/memory.h
+objs/wiz/src/menusettingstring.o: /usr/include/features.h
+objs/wiz/src/menusettingstring.o: /usr/include/sys/cdefs.h
+objs/wiz/src/menusettingstring.o: /usr/include/bits/wordsize.h
+objs/wiz/src/menusettingstring.o: /usr/include/gnu/stubs.h
+objs/wiz/src/menusettingstring.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/menusettingstring.o: /usr/include/string.h
+objs/wiz/src/menusettingstring.o: /usr/include/xlocale.h src/inputdialog.h
+objs/wiz/src/menusettingstring.o: src/gmenu2x.h src/surfacecollection.h
+objs/wiz/src/menusettingstring.o: src/translator.h src/utilities.h
+objs/wiz/src/menusettingstring.o: src/touchscreen.h /usr/include/fcntl.h
+objs/wiz/src/menusettingstring.o: /usr/include/bits/fcntl.h
+objs/wiz/src/menusettingstring.o: /usr/include/sys/types.h
+objs/wiz/src/menusettingstring.o: /usr/include/bits/types.h
+objs/wiz/src/menusettingstring.o: /usr/include/bits/typesizes.h
+objs/wiz/src/menusettingstring.o: /usr/include/time.h /usr/include/endian.h
+objs/wiz/src/menusettingstring.o: /usr/include/bits/endian.h
+objs/wiz/src/menusettingstring.o: /usr/include/bits/byteswap.h
+objs/wiz/src/menusettingstring.o: /usr/include/sys/select.h
+objs/wiz/src/menusettingstring.o: /usr/include/bits/select.h
+objs/wiz/src/menusettingstring.o: /usr/include/bits/sigset.h
+objs/wiz/src/menusettingstring.o: /usr/include/bits/time.h
+objs/wiz/src/menusettingstring.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/menusettingstring.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/menusettingstring.o: /usr/include/bits/stat.h
+objs/wiz/src/menusettingstring.o: /usr/include/stdint.h
+objs/wiz/src/menusettingstring.o: /usr/include/bits/wchar.h
+objs/wiz/src/menusettingstring.o: src/inputmanager.h src/surface.h
+objs/wiz/src/menusettingstring.o: src/fonthelper.h src/dialog.h
+objs/wiz/src/messagebox.o: src/messagebox.h src/gmenu2x.h
+objs/wiz/src/messagebox.o: src/surfacecollection.h src/iconbutton.h
+objs/wiz/src/messagebox.o: src/button.h src/FastDelegate.h
+objs/wiz/src/messagebox.o: /usr/include/memory.h /usr/include/features.h
+objs/wiz/src/messagebox.o: /usr/include/sys/cdefs.h
+objs/wiz/src/messagebox.o: /usr/include/bits/wordsize.h
+objs/wiz/src/messagebox.o: /usr/include/gnu/stubs.h
+objs/wiz/src/messagebox.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
+objs/wiz/src/messagebox.o: /usr/include/xlocale.h src/translator.h
+objs/wiz/src/messagebox.o: src/utilities.h src/touchscreen.h
+objs/wiz/src/messagebox.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/wiz/src/messagebox.o: /usr/include/sys/types.h /usr/include/bits/types.h
+objs/wiz/src/messagebox.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/wiz/src/messagebox.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/wiz/src/messagebox.o: /usr/include/bits/byteswap.h
+objs/wiz/src/messagebox.o: /usr/include/sys/select.h
+objs/wiz/src/messagebox.o: /usr/include/bits/select.h
+objs/wiz/src/messagebox.o: /usr/include/bits/sigset.h
+objs/wiz/src/messagebox.o: /usr/include/bits/time.h
+objs/wiz/src/messagebox.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/messagebox.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/messagebox.o: /usr/include/bits/stat.h /usr/include/stdint.h
+objs/wiz/src/messagebox.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/messagebox.o: src/surface.h src/fonthelper.h
+objs/wiz/src/selector.o: /usr/include/sys/stat.h /usr/include/features.h
+objs/wiz/src/selector.o: /usr/include/sys/cdefs.h
+objs/wiz/src/selector.o: /usr/include/bits/wordsize.h
+objs/wiz/src/selector.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+objs/wiz/src/selector.o: /usr/include/bits/types.h
+objs/wiz/src/selector.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/wiz/src/selector.o: /usr/include/bits/stat.h /usr/include/sys/types.h
+objs/wiz/src/selector.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/wiz/src/selector.o: /usr/include/bits/byteswap.h
+objs/wiz/src/selector.o: /usr/include/sys/select.h /usr/include/bits/select.h
+objs/wiz/src/selector.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/wiz/src/selector.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/selector.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/selector.o: /usr/include/dirent.h /usr/include/bits/dirent.h
+objs/wiz/src/selector.o: /usr/include/bits/posix1_lim.h
+objs/wiz/src/selector.o: /usr/include/bits/local_lim.h
+objs/wiz/src/selector.o: /usr/include/linux/limits.h src/menu.h
+objs/wiz/src/selector.o: src/linkaction.h src/FastDelegate.h
+objs/wiz/src/selector.o: /usr/include/memory.h /usr/include/string.h
+objs/wiz/src/selector.o: /usr/include/xlocale.h src/link.h src/button.h
+objs/wiz/src/selector.o: src/surface.h src/linkapp.h src/selector.h
+objs/wiz/src/selector.o: src/gmenu2x.h src/surfacecollection.h
+objs/wiz/src/selector.o: src/iconbutton.h src/translator.h src/utilities.h
+objs/wiz/src/selector.o: src/touchscreen.h /usr/include/fcntl.h
+objs/wiz/src/selector.o: /usr/include/bits/fcntl.h /usr/include/stdint.h
+objs/wiz/src/selector.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/selector.o: src/fonthelper.h src/dialog.h src/filelister.h
+objs/wiz/src/selector.o: src/debug.h
+objs/wiz/src/settingsdialog.o: src/settingsdialog.h src/gmenu2x.h
+objs/wiz/src/settingsdialog.o: src/surfacecollection.h src/iconbutton.h
+objs/wiz/src/settingsdialog.o: src/button.h src/FastDelegate.h
+objs/wiz/src/settingsdialog.o: /usr/include/memory.h /usr/include/features.h
+objs/wiz/src/settingsdialog.o: /usr/include/sys/cdefs.h
+objs/wiz/src/settingsdialog.o: /usr/include/bits/wordsize.h
+objs/wiz/src/settingsdialog.o: /usr/include/gnu/stubs.h
+objs/wiz/src/settingsdialog.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/settingsdialog.o: /usr/include/string.h /usr/include/xlocale.h
+objs/wiz/src/settingsdialog.o: src/translator.h src/utilities.h
+objs/wiz/src/settingsdialog.o: src/touchscreen.h /usr/include/fcntl.h
+objs/wiz/src/settingsdialog.o: /usr/include/bits/fcntl.h
+objs/wiz/src/settingsdialog.o: /usr/include/sys/types.h
+objs/wiz/src/settingsdialog.o: /usr/include/bits/types.h
+objs/wiz/src/settingsdialog.o: /usr/include/bits/typesizes.h
+objs/wiz/src/settingsdialog.o: /usr/include/time.h /usr/include/endian.h
+objs/wiz/src/settingsdialog.o: /usr/include/bits/endian.h
+objs/wiz/src/settingsdialog.o: /usr/include/bits/byteswap.h
+objs/wiz/src/settingsdialog.o: /usr/include/sys/select.h
+objs/wiz/src/settingsdialog.o: /usr/include/bits/select.h
+objs/wiz/src/settingsdialog.o: /usr/include/bits/sigset.h
+objs/wiz/src/settingsdialog.o: /usr/include/bits/time.h
+objs/wiz/src/settingsdialog.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/settingsdialog.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/settingsdialog.o: /usr/include/bits/stat.h /usr/include/stdint.h
+objs/wiz/src/settingsdialog.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/settingsdialog.o: src/surface.h src/fonthelper.h
+objs/wiz/src/settingsdialog.o: src/menusetting.h src/buttonbox.h src/dialog.h
+objs/wiz/src/surfacecollection.o: src/surfacecollection.h src/surface.h
+objs/wiz/src/surfacecollection.o: src/utilities.h src/debug.h
+objs/wiz/src/surface.o: src/surface.h src/fonthelper.h src/utilities.h
+objs/wiz/src/surface.o: src/debug.h
+objs/wiz/src/textdialog.o: src/textdialog.h src/gmenu2x.h
+objs/wiz/src/textdialog.o: src/surfacecollection.h src/iconbutton.h
+objs/wiz/src/textdialog.o: src/button.h src/FastDelegate.h
+objs/wiz/src/textdialog.o: /usr/include/memory.h /usr/include/features.h
+objs/wiz/src/textdialog.o: /usr/include/sys/cdefs.h
+objs/wiz/src/textdialog.o: /usr/include/bits/wordsize.h
+objs/wiz/src/textdialog.o: /usr/include/gnu/stubs.h
+objs/wiz/src/textdialog.o: /usr/include/gnu/stubs-64.h /usr/include/string.h
+objs/wiz/src/textdialog.o: /usr/include/xlocale.h src/translator.h
+objs/wiz/src/textdialog.o: src/utilities.h src/touchscreen.h
+objs/wiz/src/textdialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/wiz/src/textdialog.o: /usr/include/sys/types.h /usr/include/bits/types.h
+objs/wiz/src/textdialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/wiz/src/textdialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/wiz/src/textdialog.o: /usr/include/bits/byteswap.h
+objs/wiz/src/textdialog.o: /usr/include/sys/select.h
+objs/wiz/src/textdialog.o: /usr/include/bits/select.h
+objs/wiz/src/textdialog.o: /usr/include/bits/sigset.h
+objs/wiz/src/textdialog.o: /usr/include/bits/time.h
+objs/wiz/src/textdialog.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/textdialog.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/textdialog.o: /usr/include/bits/stat.h /usr/include/stdint.h
+objs/wiz/src/textdialog.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/textdialog.o: src/surface.h src/fonthelper.h src/dialog.h
+objs/wiz/src/textmanualdialog.o: src/textmanualdialog.h src/textdialog.h
+objs/wiz/src/textmanualdialog.o: src/gmenu2x.h src/surfacecollection.h
+objs/wiz/src/textmanualdialog.o: src/iconbutton.h src/button.h
+objs/wiz/src/textmanualdialog.o: src/FastDelegate.h /usr/include/memory.h
+objs/wiz/src/textmanualdialog.o: /usr/include/features.h
+objs/wiz/src/textmanualdialog.o: /usr/include/sys/cdefs.h
+objs/wiz/src/textmanualdialog.o: /usr/include/bits/wordsize.h
+objs/wiz/src/textmanualdialog.o: /usr/include/gnu/stubs.h
+objs/wiz/src/textmanualdialog.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/textmanualdialog.o: /usr/include/string.h /usr/include/xlocale.h
+objs/wiz/src/textmanualdialog.o: src/translator.h src/utilities.h
+objs/wiz/src/textmanualdialog.o: src/touchscreen.h /usr/include/fcntl.h
+objs/wiz/src/textmanualdialog.o: /usr/include/bits/fcntl.h
+objs/wiz/src/textmanualdialog.o: /usr/include/sys/types.h
+objs/wiz/src/textmanualdialog.o: /usr/include/bits/types.h
+objs/wiz/src/textmanualdialog.o: /usr/include/bits/typesizes.h
+objs/wiz/src/textmanualdialog.o: /usr/include/time.h /usr/include/endian.h
+objs/wiz/src/textmanualdialog.o: /usr/include/bits/endian.h
+objs/wiz/src/textmanualdialog.o: /usr/include/bits/byteswap.h
+objs/wiz/src/textmanualdialog.o: /usr/include/sys/select.h
+objs/wiz/src/textmanualdialog.o: /usr/include/bits/select.h
+objs/wiz/src/textmanualdialog.o: /usr/include/bits/sigset.h
+objs/wiz/src/textmanualdialog.o: /usr/include/bits/time.h
+objs/wiz/src/textmanualdialog.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/textmanualdialog.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/textmanualdialog.o: /usr/include/bits/stat.h
+objs/wiz/src/textmanualdialog.o: /usr/include/stdint.h
+objs/wiz/src/textmanualdialog.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/textmanualdialog.o: src/surface.h src/fonthelper.h src/dialog.h
+objs/wiz/src/touchscreen.o: /usr/include/unistd.h /usr/include/features.h
+objs/wiz/src/touchscreen.o: /usr/include/sys/cdefs.h
+objs/wiz/src/touchscreen.o: /usr/include/bits/wordsize.h
+objs/wiz/src/touchscreen.o: /usr/include/gnu/stubs.h
+objs/wiz/src/touchscreen.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/touchscreen.o: /usr/include/bits/posix_opt.h
+objs/wiz/src/touchscreen.o: /usr/include/bits/environments.h
+objs/wiz/src/touchscreen.o: /usr/include/bits/types.h
+objs/wiz/src/touchscreen.o: /usr/include/bits/typesizes.h
+objs/wiz/src/touchscreen.o: /usr/include/bits/confname.h
+objs/wiz/src/touchscreen.o: /usr/include/getopt.h src/touchscreen.h
+objs/wiz/src/touchscreen.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/wiz/src/touchscreen.o: /usr/include/sys/types.h /usr/include/time.h
+objs/wiz/src/touchscreen.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/wiz/src/touchscreen.o: /usr/include/bits/byteswap.h
+objs/wiz/src/touchscreen.o: /usr/include/sys/select.h
+objs/wiz/src/touchscreen.o: /usr/include/bits/select.h
+objs/wiz/src/touchscreen.o: /usr/include/bits/sigset.h
+objs/wiz/src/touchscreen.o: /usr/include/bits/time.h
+objs/wiz/src/touchscreen.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/touchscreen.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/touchscreen.o: /usr/include/bits/stat.h /usr/include/stdint.h
+objs/wiz/src/touchscreen.o: /usr/include/bits/wchar.h
+objs/wiz/src/translator.o: src/translator.h src/utilities.h src/debug.h
+objs/wiz/src/utilities.o: /usr/include/sys/stat.h /usr/include/features.h
+objs/wiz/src/utilities.o: /usr/include/sys/cdefs.h
+objs/wiz/src/utilities.o: /usr/include/bits/wordsize.h
+objs/wiz/src/utilities.o: /usr/include/gnu/stubs.h
+objs/wiz/src/utilities.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/utilities.o: /usr/include/bits/types.h
+objs/wiz/src/utilities.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/wiz/src/utilities.o: /usr/include/bits/stat.h /usr/include/sys/types.h
+objs/wiz/src/utilities.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/wiz/src/utilities.o: /usr/include/bits/byteswap.h
+objs/wiz/src/utilities.o: /usr/include/sys/select.h
+objs/wiz/src/utilities.o: /usr/include/bits/select.h
+objs/wiz/src/utilities.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/wiz/src/utilities.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/utilities.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/utilities.o: /usr/include/dirent.h /usr/include/bits/dirent.h
+objs/wiz/src/utilities.o: /usr/include/bits/posix1_lim.h
+objs/wiz/src/utilities.o: /usr/include/bits/local_lim.h
+objs/wiz/src/utilities.o: /usr/include/linux/limits.h /usr/include/stdio.h
+objs/wiz/src/utilities.o: /usr/include/libio.h /usr/include/_G_config.h
+objs/wiz/src/utilities.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
+objs/wiz/src/utilities.o: /usr/include/bits/sys_errlist.h
+objs/wiz/src/utilities.o: /usr/include/strings.h /usr/include/xlocale.h
+objs/wiz/src/utilities.o: /usr/include/math.h /usr/include/bits/huge_val.h
+objs/wiz/src/utilities.o: /usr/include/bits/huge_valf.h
+objs/wiz/src/utilities.o: /usr/include/bits/huge_vall.h
+objs/wiz/src/utilities.o: /usr/include/bits/inf.h /usr/include/bits/nan.h
+objs/wiz/src/utilities.o: /usr/include/bits/mathdef.h
+objs/wiz/src/utilities.o: /usr/include/bits/mathcalls.h src/utilities.h
+objs/wiz/src/utilities.o: src/debug.h
+objs/wiz/src/wallpaperdialog.o: src/wallpaperdialog.h src/gmenu2x.h
+objs/wiz/src/wallpaperdialog.o: src/surfacecollection.h src/iconbutton.h
+objs/wiz/src/wallpaperdialog.o: src/button.h src/FastDelegate.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/memory.h /usr/include/features.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/sys/cdefs.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/bits/wordsize.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/gnu/stubs.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/gnu/stubs-64.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/string.h /usr/include/xlocale.h
+objs/wiz/src/wallpaperdialog.o: src/translator.h src/utilities.h
+objs/wiz/src/wallpaperdialog.o: src/touchscreen.h /usr/include/fcntl.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/bits/fcntl.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/sys/types.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/bits/types.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/bits/typesizes.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/time.h /usr/include/endian.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/bits/endian.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/bits/byteswap.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/sys/select.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/bits/select.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/bits/sigset.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/bits/time.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/sys/sysmacros.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/bits/pthreadtypes.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/bits/stat.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/stdint.h
+objs/wiz/src/wallpaperdialog.o: /usr/include/bits/wchar.h src/inputmanager.h
+objs/wiz/src/wallpaperdialog.o: src/surface.h src/fonthelper.h src/dialog.h
+objs/wiz/src/wallpaperdialog.o: src/filelister.h src/debug.h

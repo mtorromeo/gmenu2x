@@ -1,6 +1,7 @@
 # Export a CAANOOSDK environment variable pointing to GPH_SDK
 CHAINPREFIX=$(CAANOOSDK)
 CROSS_COMPILE=$(CHAINPREFIX)/tools/gcc-4.2.4-glibc-2.7-eabi/bin/arm-gph-linux-gnueabi-
+TARGET=caanoo
 
 INCLUDE=$(CHAINPREFIX)/include
 
@@ -8,12 +9,14 @@ CC= $(CROSS_COMPILE)gcc
 CXX = $(CROSS_COMPILE)g++
 STRIP = $(CROSS_COMPILE)strip
 
-CFLAGS = -I"$(CHAINPREFIX)/DGE/include" `$(CHAINPREFIX)/DGE/bin/sdl-config --cflags` -DLOG_LEVEL=4 -DTARGET_CAANOO -O3 -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops -Wall -Wno-unknown-pragmas -Wno-format
+CFLAGS = -I"$(CHAINPREFIX)/DGE/include" `$(CHAINPREFIX)/DGE/bin/sdl-config --cflags` -DLOG_LEVEL=4 -DTARGET_CAANOO -DTARGET=$(TARGET) -O3 -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops -Wall -Wno-unknown-pragmas -Wno-format
 CXXFLAGS = $(CFLAGS)
 LDFLAGS = -L$(CHAINPREFIX)/lib -lSDL_image -lSDL_ttf -lfreetype -lSDL_gfx -ljpeg -lpng12 -lSDL -lz -ldl
 
-TARGET = build/gmenu2x
-OBJDIR = objs/caanoo
+BUILDDIR = build
+OBJDIR = objs/$(TARGET)
+DISTDIR = dist/$(TARGET)
+APPNAME = $(BUILDDIR)/gmenu2x.$(TARGET)
 
 SOURCES := $(wildcard src/*.cpp)
 OBJS := $(patsubst src/%.cpp, $(OBJDIR)/%.o, $(SOURCES))
@@ -28,21 +31,29 @@ dir:
 	@if [ ! -d $(OBJDIR) ]; then mkdir -p $(OBJDIR); fi
 
 debug-static: $(OBJS)
-	@echo "Linking $(TARGET)-debug..."
-	$(CXX) -o $(TARGET)-debug $(OBJS) -static `$(CHAINPREFIX)/DGE/bin/sdl-config --static-libs` -lSDL $(LDFLAGS)
+	@echo "Linking gmenu2x-debug..."
+	$(CXX) -o $(APPNAME)-debug $(OBJS) -static `$(CHAINPREFIX)/DGE/bin/sdl-config --static-libs` -lSDL $(LDFLAGS)
 
 debug-shared: $(OBJS)
-	@echo "Linking $(TARGET)-debug..."
-	$(CXX) -o $(TARGET)-debug `$(CHAINPREFIX)/DGE/bin/sdl-config --libs` $(LDFLAGS) $(OBJS)
+	@echo "Linking gmenu2x-debug..."
+	$(CXX) -o $(APPNAME)-debug `$(CHAINPREFIX)/DGE/bin/sdl-config --libs` $(LDFLAGS) $(OBJS)
 
 shared: debug-shared
-	$(STRIP) $(TARGET)-debug -o $(TARGET)
+	$(STRIP) $(APPNAME)-debug -o $(APPNAME)
 
 static: debug-static
-	$(STRIP) $(TARGET)-debug -o $(TARGET)
+	$(STRIP) $(APPNAME)-debug -o $(APPNAME)
 
 clean:
-	rm -f $(OBJDIR)/*.o *.gcda *.gcno $(TARGET)
+	rm -f $(OBJDIR)/*.o *.gcda *.gcno $(APPNAME)
+	rm -rf $(DISTDIR)
+
+dist: dir shared
+	@if [ ! -d $(DISTDIR) ]; then mkdir -p $(DISTDIR); fi
+	install -m755 $(APPNAME) $(DISTDIR)/gmenu2x
+	install -m644 $(BUILDDIR)/input.conf.$(TARGET) $(DISTDIR)/input.conf
+	cp -R $(BUILDDIR)/skins $(BUILDDIR)/translations $(DISTDIR)
+	mkdir -p $(DISTDIR)/sections/applications $(DISTDIR)/sections/emulators $(DISTDIR)/sections/games $(DISTDIR)/sections/settings
 
 depend:
 	makedepend -fMakefile.caanoo -p$(OBJDIR)/ -- $(CFLAGS) -- src/*.cpp

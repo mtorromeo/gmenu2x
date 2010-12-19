@@ -1,16 +1,20 @@
+# Export a OPEN2X environment variable pointing to the open2x toolchain
 CHAINPREFIX=$(OPEN2X)
 CROSS_COMPILE=$(CHAINPREFIX)/bin/arm-open2x-linux-
+TARGET=gp2x
 
 CC= $(CROSS_COMPILE)gcc
 CXX = $(CROSS_COMPILE)g++
 STRIP = $(CROSS_COMPILE)strip
 
-CFLAGS = -I"$(CHAINPREFIX)/include" `$(CHAINPREFIX)/bin/sdl-config --cflags` -DLOG_LEVEL=4 -DTARGET_GP2X -O3 -g -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops -fno-exceptions -Wall -Wno-unknown-pragmas -Wno-format
+CFLAGS = -I"$(CHAINPREFIX)/include" `$(CHAINPREFIX)/bin/sdl-config --cflags` -DLOG_LEVEL=4 -DTARGET_GP2X -DTARGET=$(TARGET) -O3 -g -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops -fno-exceptions -Wall -Wno-unknown-pragmas -Wno-format
 CXXFLAGS = $(CFLAGS)
 LDFLAGS = -L$(CHAINPREFIX)/lib -lSDL_image -lSDL_ttf -lfreetype -lSDL_gfx -ljpeg -lpng12 -lSDL -lz -ldl
 
-TARGET = build/gmenu2x
-OBJDIR = objs/gp2x
+BUILDDIR = build
+OBJDIR = objs/$(TARGET)
+DISTDIR = dist/$(TARGET)
+APPNAME = $(BUILDDIR)/gmenu2x.$(TARGET)
 
 SOURCES := $(wildcard src/*.cpp)
 OBJS := $(patsubst src/%.cpp, $(OBJDIR)/%.o, $(SOURCES))
@@ -25,21 +29,29 @@ dir:
 	@if [ ! -d $(OBJDIR) ]; then mkdir -p $(OBJDIR); fi
 
 debug-static: $(OBJS)
-	@echo "Linking $(TARGET)-debug..."
-	$(CXX) -o $(TARGET)-debug $(OBJS) -static `$(CHAINPREFIX)/bin/sdl-config --static-libs` $(LDFLAGS) $(OBJS)
+	@echo "Linking gmenu2x-debug..."
+	$(CXX) -o $(APPNAME)-debug $(OBJS) -static `$(CHAINPREFIX)/bin/sdl-config --static-libs` $(LDFLAGS) $(OBJS)
 
 debug-shared: $(OBJS)
-	@echo "Linking $(TARGET)-debug..."
-	$(CXX) -o $(TARGET)-debug `$(CHAINPREFIX)/bin/sdl-config --libs` $(LDFLAGS) $(OBJS)
+	@echo "Linking gmenu2x-debug..."
+	$(CXX) -o $(APPNAME)-debug `$(CHAINPREFIX)/bin/sdl-config --libs` $(LDFLAGS) $(OBJS)
 
 shared: debug-shared
-	$(STRIP) $(TARGET)-debug -o $(TARGET)
+	$(STRIP) $(APPNAME)-debug -o $(APPNAME)
 
 static: debug-static
-	$(STRIP) $(TARGET)-debug -o $(TARGET)
+	$(STRIP) $(APPNAME)-debug -o $(APPNAME)
 
 clean:
-	-rm -f $(OBJDIR)/*.o $(TARGET)
+	rm -f $(OBJDIR)/*.o *.gcda *.gcno $(APPNAME)
+	rm -rf $(DISTDIR)
+
+dist: dir shared
+	@if [ ! -d $(DISTDIR) ]; then mkdir -p $(DISTDIR); fi
+	install -m755 $(APPNAME) $(DISTDIR)/gmenu2x
+	install -m644 $(BUILDDIR)/input.conf.$(TARGET) $(DISTDIR)/input.conf
+	cp -R $(BUILDDIR)/skins $(BUILDDIR)/translations $(DISTDIR)
+	mkdir -p $(DISTDIR)/sections/applications $(DISTDIR)/sections/emulators $(DISTDIR)/sections/games $(DISTDIR)/sections/settings
 
 depend:
 	makedepend -p$(OBJDIR)/ -- $(CFLAGS) -- src/*.cpp
@@ -630,16 +642,7 @@ objs/gp2x/src/gmenu2x.o: /usr/include/bits/statvfs.h /usr/include/errno.h
 objs/gp2x/src/gmenu2x.o: /usr/include/bits/errno.h /usr/include/linux/errno.h
 objs/gp2x/src/gmenu2x.o: /usr/include/asm/errno.h
 objs/gp2x/src/gmenu2x.o: /usr/include/asm-generic/errno.h
-objs/gp2x/src/gmenu2x.o: /usr/include/asm-generic/errno-base.h src/gp2x.h
-objs/gp2x/src/gmenu2x.o: /usr/include/linux/types.h /usr/include/asm/types.h
-objs/gp2x/src/gmenu2x.o: /usr/include/asm-generic/types.h
-objs/gp2x/src/gmenu2x.o: /usr/include/asm-generic/int-ll64.h
-objs/gp2x/src/gmenu2x.o: /usr/include/asm/bitsperlong.h
-objs/gp2x/src/gmenu2x.o: /usr/include/asm-generic/bitsperlong.h
-objs/gp2x/src/gmenu2x.o: /usr/include/linux/posix_types.h
-objs/gp2x/src/gmenu2x.o: /usr/include/linux/stddef.h
-objs/gp2x/src/gmenu2x.o: /usr/include/asm/posix_types.h
-objs/gp2x/src/gmenu2x.o: /usr/include/asm/posix_types_64.h
+objs/gp2x/src/gmenu2x.o: /usr/include/asm-generic/errno-base.h
 objs/gp2x/src/gmenu2x.o: /usr/include/sys/fcntl.h /usr/include/fcntl.h
 objs/gp2x/src/gmenu2x.o: /usr/include/bits/fcntl.h /usr/include/bits/stat.h
 objs/gp2x/src/gmenu2x.o: /usr/include/sys/stat.h /usr/include/dirent.h
@@ -2594,8 +2597,12 @@ objs/gp2x/src/utilities.o: /usr/include/bits/pthreadtypes.h
 objs/gp2x/src/utilities.o: /usr/include/dirent.h /usr/include/bits/dirent.h
 objs/gp2x/src/utilities.o: /usr/include/bits/posix1_lim.h
 objs/gp2x/src/utilities.o: /usr/include/bits/local_lim.h
-objs/gp2x/src/utilities.o: /usr/include/linux/limits.h /usr/include/strings.h
-objs/gp2x/src/utilities.o: /usr/include/math.h /usr/include/bits/huge_val.h
+objs/gp2x/src/utilities.o: /usr/include/linux/limits.h /usr/include/stdio.h
+objs/gp2x/src/utilities.o: /usr/include/libio.h /usr/include/_G_config.h
+objs/gp2x/src/utilities.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
+objs/gp2x/src/utilities.o: /usr/include/bits/sys_errlist.h
+objs/gp2x/src/utilities.o: /usr/include/strings.h /usr/include/math.h
+objs/gp2x/src/utilities.o: /usr/include/bits/huge_val.h
 objs/gp2x/src/utilities.o: /usr/include/bits/huge_valf.h
 objs/gp2x/src/utilities.o: /usr/include/bits/huge_vall.h
 objs/gp2x/src/utilities.o: /usr/include/bits/inf.h /usr/include/bits/nan.h
@@ -2606,10 +2613,6 @@ objs/gp2x/src/utilities.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_mai
 objs/gp2x/src/utilities.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_stdinc.h
 objs/gp2x/src/utilities.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_config.h
 objs/gp2x/src/utilities.o: /opt/open2x/gcc-4.1.1-glibc-2.3.6/include/SDL/SDL_platform.h
-objs/gp2x/src/utilities.o: /usr/include/stdio.h /usr/include/libio.h
-objs/gp2x/src/utilities.o: /usr/include/_G_config.h /usr/include/wchar.h
-objs/gp2x/src/utilities.o: /usr/include/bits/stdio_lim.h
-objs/gp2x/src/utilities.o: /usr/include/bits/sys_errlist.h
 objs/gp2x/src/utilities.o: /usr/include/stdlib.h
 objs/gp2x/src/utilities.o: /usr/include/bits/waitflags.h
 objs/gp2x/src/utilities.o: /usr/include/bits/waitstatus.h
