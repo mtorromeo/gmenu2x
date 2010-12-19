@@ -127,6 +127,7 @@ string FileLister::operator[](uint x) {
 }
 
 string FileLister::at(uint x) {
+	if (x>=size()) return "";
 	if (x<directories.size())
 		return directories[x];
 	else
