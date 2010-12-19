@@ -5,22 +5,22 @@
 FontHelper::FontHelper(const string &font, int size, RGBAColor textColor, RGBAColor outlineColor) {
 	this->textColor = textColor;
 	this->outlineColor = outlineColor;
-	
+
 	if (!TTF_WasInit()) {
-		DEBUG("Initializing font\n");
+		DEBUG("Initializing font");
 		if (TTF_Init() == -1) {
-			ERROR("TTF_Init: %s\n", TTF_GetError());
+			ERROR("TTF_Init: %s", TTF_GetError());
 			exit(2);
 		}
 	}
 	this->font = TTF_OpenFont(font.c_str(), size);
 	if (!this->font) {
-		ERROR("TTF_OpenFont %s: %s\n", font.c_str(), TTF_GetError());
+		ERROR("TTF_OpenFont %s: %s", font.c_str(), TTF_GetError());
 		exit(2);
 	}
 	fontOutline = TTF_OpenFont(font.c_str(), size);
 	if (!fontOutline) {
-		ERROR("TTF_OpenFont %s: %s\n", font.c_str(), TTF_GetError());
+		ERROR("TTF_OpenFont %s: %s", font.c_str(), TTF_GetError());
 		exit(2);
 	}
 	TTF_SetFontHinting(this->font, TTF_HINTING_NORMAL);
@@ -52,14 +52,14 @@ FontHelper *FontHelper::setOutlineColor(RGBAColor color) {
 }
 void FontHelper::write(SDL_Surface *s, const string &text, int x, int y) {
 	if (text.empty()) return;
-	
+
 	Surface bg;
 	bg.raw = TTF_RenderUTF8_Blended(fontOutline, text.c_str(), rgbatosdl(outlineColor));
-	
+
 	Surface fg;
 	fg.raw = TTF_RenderUTF8_Blended(font, text.c_str(), rgbatosdl(textColor));
 	fg.blit(&bg, 1,1);
-	
+
 	bg.blit(s, x,y);
 }
 

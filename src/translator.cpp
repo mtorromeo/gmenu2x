@@ -68,7 +68,7 @@ string Translator::translate(const string &term,const char *replacestr,...) {
 			result = i->second;
 		}
 
-		else WARNING("Untranslated string: '%s'\n", term.c_str());
+		else WARNING("Untranslated string: '%s'", term.c_str());
 	}
 
 	va_list arglist;

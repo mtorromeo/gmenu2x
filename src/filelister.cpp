@@ -64,7 +64,7 @@ void FileLister::browse() {
 	if (showDirectories || showFiles) {
 		DIR *dirp;
 		if ((dirp = opendir(path.c_str())) == NULL) {
-			ERROR("Error: opendir(%s)\n", path.c_str());
+			ERROR("Error: opendir(%s)", path.c_str());
 			return;
 		}
 
@@ -81,7 +81,7 @@ void FileLister::browse() {
 			filepath = path+file;
 			int statRet = stat(filepath.c_str(), &st);
 			if (statRet == -1) {
-				ERROR("Stat failed on '%s' with error '%s'\n", filepath.c_str(), strerror(errno));
+				ERROR("Stat failed on '%s' with error '%s'", filepath.c_str(), strerror(errno));
 				continue;
 			}
 			if (find(excludes.begin(), excludes.end(), file) != excludes.end())
@@ -89,7 +89,7 @@ void FileLister::browse() {
 
 			if (S_ISDIR(st.st_mode)) {
 				if (!showDirectories) continue;
-#if defined(TARGET_GP2X) || defined(TARGET_WIZ)
+#if defined(TARGET_GP2X) || defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 				if (!(path==CARD_ROOT && (file!="sd" && file!="ext" && file!="nand")))
 #endif
 					directories.push_back(file);

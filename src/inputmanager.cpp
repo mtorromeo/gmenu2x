@@ -38,7 +38,7 @@ InputManager::~InputManager() {
 void InputManager::init(const string &conffile) {
 	initJoysticks();
 	if (!readConfFile(conffile))
-		ERROR("InputManager initialization from config file failed.\n");
+		ERROR("InputManager initialization from config file failed.");
 }
 
 
@@ -46,14 +46,14 @@ void InputManager::initJoysticks() {
 	//SDL_JoystickEventState(SDL_IGNORE);
 
 	int numJoy = SDL_NumJoysticks();
-	INFO("%d joysticks found\n", numJoy);
+	INFO("%d joysticks found", numJoy);
 	for (int x=0; x<numJoy; x++) {
 		SDL_Joystick *joy = SDL_JoystickOpen(x);
 		if (joy) {
-			INFO("Initialized joystick: '%s'\n", SDL_JoystickName(x));
+			INFO("Initialized joystick: '%s'", SDL_JoystickName(x));
 			joysticks.push_back(joy);
 		}
-		else WARNING("Failed to initialize joystick: %i\n", x);
+		else WARNING("Failed to initialize joystick: %i", x);
 	}
 }
 
@@ -62,13 +62,13 @@ bool InputManager::readConfFile(const string &conffile) {
 	setActionsCount(18);
 
 	if (!fileExists(conffile)) {
-		ERROR("File not found: %s\n", conffile.c_str());
+		ERROR("File not found: %s", conffile.c_str());
 		return false;
 	}
 
 	ifstream inf(conffile.c_str(), ios_base::in);
 	if (!inf.is_open()) {
-		ERROR("Could not open %s\n", conffile.c_str());
+		ERROR("Could not open %s", conffile.c_str());
 		return false;
 	}
 
@@ -102,7 +102,7 @@ bool InputManager::readConfFile(const string &conffile) {
 		else if (name=="volup")        action = VOLUP;
 		else if (name=="voldown")      action = VOLDOWN;
 		else {
-			ERROR("%s:%d Unknown action '%s'.\n", conffile.c_str(), linenum, name.c_str());
+			ERROR("%s:%d Unknown action '%s'.", conffile.c_str(), linenum, name.c_str());
 			return false;
 		}
 
@@ -129,12 +129,12 @@ bool InputManager::readConfFile(const string &conffile) {
 				map.value = atoi(values[1].c_str());
 				actions[action].maplist.push_back(map);
 			} else {
-				ERROR("%s:%d Invalid syntax or unsupported mapping type '%s'.\n", conffile.c_str(), linenum, value.c_str());
+				ERROR("%s:%d Invalid syntax or unsupported mapping type '%s'.", conffile.c_str(), linenum, value.c_str());
 				return false;
 			}
 
 		} else {
-			ERROR("%s:%d Every definition must have at least 2 values (%s).\n", conffile.c_str(), linenum, value.c_str());
+			ERROR("%s:%d Every definition must have at least 2 values (%s).", conffile.c_str(), linenum, value.c_str());
 			return false;
 		}
 	}
@@ -198,6 +198,7 @@ bool InputManager::update(bool wait) {
 					SDL_RemoveTimer(actions[x].timer);
 					actions[x].timer = NULL;
 				}
+				actions[x].last = 0;
 			}
 		}
 	}

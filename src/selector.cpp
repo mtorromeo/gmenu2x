@@ -157,7 +157,7 @@ int Selector::exec(int startSelection) {
 					result = false;
 				} else {
 					dir = dir.substr(0,p+1);
-					INFO("%s\n", dir.c_str());
+					INFO("%s", dir.c_str());
 					selected = 0;
 					firstElement = 0;
 					prepare(&fl,&screens,&titles);
@@ -205,7 +205,7 @@ void Selector::prepare(FileLister *fl, vector<string> *screens, vector<string> *
 		if (titles->at(i)=="")
 			titles->at(i) = noext;
 
-		DEBUG("Searching for screen '%s%s.png'\n", screendir.c_str(), noext.c_str());
+		DEBUG("Searching for screen '%s%s.png'", screendir.c_str(), noext.c_str());
 
 		if (fileExists(screendir+noext+".png"))
 			screens->at(i) = screendir+noext+".png";

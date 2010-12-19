@@ -99,7 +99,7 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, InputManager &inputMgr_,
 		} else if (name == "selectoraliases") {
 			setAliasFile( value );
 		} else {
-			WARNING("Unrecognized option: '%s'\n", name.c_str());
+			WARNING("Unrecognized option: '%s'", name.c_str());
 			break;
 		}
 	}
@@ -233,7 +233,7 @@ bool LinkApp::save() {
 		f.close();
 		return true;
 	} else
-		ERROR("Error while opening the file '%s' for write.\n", file.c_str());
+		ERROR("Error while opening the file '%s' for write.", file.c_str());
 	return false;
 }
 
@@ -417,7 +417,7 @@ void LinkApp::launch(const string &selectedFile, const string &selectedDir) {
 	if (volume()>=0)
 		gmenu2x->setVolume(volume());
 
-	INFO("Executing '%s' (%s %s)\n", title.c_str(), exec.c_str(), params.c_str());
+	INFO("Executing '%s' (%s %s)", title.c_str(), exec.c_str(), params.c_str());
 
 	//check if we have to quit
 	string command = cmdclean(exec);

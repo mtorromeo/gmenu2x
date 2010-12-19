@@ -32,7 +32,7 @@ WallpaperDialog::WallpaperDialog(GMenu2X *gmenu2x)
 bool WallpaperDialog::exec()
 {
 	bool close = false, result = true;
-	
+
 	FileLister fl("skins/"+gmenu2x->confStr["skin"]+"/wallpapers");
 	fl.setFilter(".png,.jpg,.jpeg,.bmp");
 	vector<string> wallpapers;
@@ -46,7 +46,7 @@ bool WallpaperDialog::exec()
 			wallpapers.push_back(fl.getFiles()[i]);
 	}
 
-	DEBUG("Wallpapers: %i\n", wallpapers.size());
+	DEBUG("Wallpapers: %i", wallpapers.size());
 
 	uint i, selected = 0, firstElement = 0, iY;
 	while (!close) {

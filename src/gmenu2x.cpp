@@ -121,14 +121,14 @@ static void quit_all(int err) {
 }
 
 int main(int /*argc*/, char * /*argv*/[]) {
-	INFO("----\nGMenu2X starting: If you read this message in the logs, check http://gmenu2x.sourceforge.net/page/Troubleshooting for a solution\n----\n");
+	INFO("GMenu2X starting: If you read this message in the logs, check http://gmenu2x.sourceforge.net/page/Troubleshooting for a solution");
 
 	signal(SIGINT, &quit_all);
 	signal(SIGSEGV,&quit_all);
 	signal(SIGTERM,&quit_all);
 
 	app = new GMenu2X();
-	DEBUG("Starting main()\n");
+	DEBUG("Starting main()");
 	app->main();
 
 	return 0;
@@ -138,7 +138,7 @@ void GMenu2X::gp2x_init() {
 #if defined(TARGET_GP2X) || defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 	memdev = open("/dev/mem", O_RDWR);
 	if (memdev < 0)
-		ERROR("Could not open /dev/mem\n");
+		WARNING("Could not open /dev/mem");
 #endif
 
 	if (memdev > 0) {
@@ -149,7 +149,7 @@ void GMenu2X::gp2x_init() {
 		memregs = (unsigned short*)mmap(0, 0x20000, PROT_READ|PROT_WRITE, MAP_SHARED, memdev, 0xc0000000);
 #endif
 		if (memregs == MAP_FAILED) {
-			ERROR("Could not mmap hardware registers!\n");
+			ERROR("Could not mmap hardware registers!");
 			close(memdev);
 		}
 	}
@@ -164,7 +164,7 @@ void GMenu2X::gp2x_init() {
 	/* get access to battery device */
 	batteryHandle = open("/dev/pollux_batt", O_RDONLY);
 #endif
-	INFO("System Init Done!\n");
+	INFO("System Init Done!");
 }
 
 void GMenu2X::gp2x_deinit() {
@@ -288,7 +288,7 @@ GMenu2X::GMenu2X() {
 
 	//Screen
 	if( SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER|SDL_INIT_JOYSTICK)<0 ) {
-		ERROR("Could not initialize SDL: %s\n", SDL_GetError());
+		ERROR("Could not initialize SDL: %s", SDL_GetError());
 		quit();
 	}
 
@@ -312,7 +312,7 @@ GMenu2X::GMenu2X() {
 	initMenu();
 
 	if (!fileExists(confStr["wallpaper"])) {
-		DEBUG("Searching wallpaper\n");
+		DEBUG("Searching wallpaper");
 
 		FileLister fl("skins/"+confStr["skin"]+"/wallpapers",false,true);
 		fl.setFilter(".png,.jpg,.jpeg,.bmp");
@@ -1011,7 +1011,7 @@ void GMenu2X::explorer() {
 
 		//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue
 		//try relaunching gmenu2x
-		ERROR("Error executing selected application, re-launching gmenu2x\n");
+		WARNING("Error executing selected application, re-launching gmenu2x");
 		chdir(getExePath().c_str());
 		execlp("./gmenu2x", "./gmenu2x", NULL);
 	}
@@ -1158,7 +1158,7 @@ void GMenu2X::setSkin(const string &skin, bool setWallpaper) {
 			string line;
 			while (getline(skinconf, line, '\n')) {
 				line = trim(line);
-				DEBUG("skinconf: '%s'\n", line.c_str());
+				DEBUG("skinconf: '%s'", line.c_str());
 				string::size_type pos = line.find("=");
 				string name = trim(line.substr(0,pos));
 				string value = trim(line.substr(pos+1,line.length()));
@@ -1456,7 +1456,7 @@ void GMenu2X::editLink() {
 		//G
 		menu->selLinkApp()->setGamma(linkGamma);
 
-		INFO("New Section: '%s'\n", newSection.c_str());
+		INFO("New Section: '%s'", newSection.c_str());
 
 		//if section changed move file and update link->file
 		if (oldSection!=newSection) {
@@ -1473,7 +1473,7 @@ void GMenu2X::editLink() {
 			rename(menu->selLinkApp()->getFile().c_str(),newFileName.c_str());
 			menu->selLinkApp()->renameFile(newFileName);
 
-			INFO("New section index: %i.\n", newSectionIndex - menu->getSections().begin());
+			INFO("New section index: %i.", newSectionIndex - menu->getSections().begin());
 
 			menu->linkChangeSection(menu->selLinkIndex(), menu->selSectionIndex(), newSectionIndex - menu->getSections().begin());
 		}
@@ -1773,7 +1773,7 @@ void GMenu2X::applyDefaultTimings() {
 void GMenu2X::setClock(unsigned mhz) {
 	mhz = constrain(mhz,50,confInt["maxClock"]);
 	if (memdev > 0) {
-		INFO("Setting clock to %d\n", mhz);
+		DEBUG("Setting clock to %d", mhz);
 #ifdef TARGET_GP2X
 		unsigned v;
 		unsigned mdiv, pdiv=3, scale=0;
@@ -1889,7 +1889,7 @@ string GMenu2X::getDiskFree() {
 		unsigned long long total = (unsigned long long)(((unsigned long long)b.f_blocks * b.f_frsize) / 1048576.0);
 		ss << free << "/" << total << "MB";
 		ss >> df;
-	} else WARNING("statvfs failed with error '%s'.\n", strerror(errno));
+	} else WARNING("statvfs failed with error '%s'.", strerror(errno));
 	return df;
 }
 

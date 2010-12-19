@@ -76,7 +76,7 @@ bool rmtree(string path) {
 	struct dirent *dptr;
 	string filepath;
 
-	DEBUG("RMTREE: '%s'\n", path.c_str());
+	DEBUG("RMTREE: '%s'", path.c_str());
 
 	if ((dirp = opendir(path.c_str())) == NULL) return false;
 	if (path[path.length()-1]!='/') path += "/";

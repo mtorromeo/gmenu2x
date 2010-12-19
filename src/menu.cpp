@@ -209,7 +209,7 @@ bool Menu::addLink(string path, string file, string section) {
 		x++;
 	}
 
-	INFO("Adding link: '%s'\n", linkpath.c_str());
+	INFO("Adding link: '%s'", linkpath.c_str());
 
 	if (path[path.length()-1]!='/') path += "/";
 	//search for a manual
@@ -242,7 +242,7 @@ bool Menu::addLink(string path, string file, string section) {
 		}
 	}
 
-	INFO("Manual: '%s'\n", manual.c_str());
+	INFO("Manual: '%s'", manual.c_str());
 
 	string shorttitle = title, exec = path+file, icon="";
 	if (fileExists(exename+".png")) icon = exename+".png";
@@ -265,7 +265,7 @@ bool Menu::addLink(string path, string file, string section) {
 
 		int isection = find(sections.begin(),sections.end(),section) - sections.begin();
 		if (isection>=0 && isection<(int)sections.size()) {
-			INFO("Section: '%s(%i)'\n", sections[isection].c_str(), isection);
+			INFO("Section: '%s(%i)'", sections[isection].c_str(), isection);
 
 			LinkApp *link = new LinkApp(gmenu2x, gmenu2x->input, linkpath.c_str());
 			link->setSize(gmenu2x->skinConfInt["linkWidth"],gmenu2x->skinConfInt["linkHeight"]);
@@ -276,7 +276,7 @@ bool Menu::addLink(string path, string file, string section) {
 
 		}
 	} else {
-		ERROR("Error while opening the file '%s' for write.\n", linkpath.c_str());
+		ERROR("Error while opening the file '%s' for write.", linkpath.c_str());
 		return false;
 	}
 
@@ -295,7 +295,7 @@ bool Menu::addSection(const string &sectionName) {
 }
 
 void Menu::deleteSelectedLink() {
-	INFO("Deleting link '%s'\n", selLink()->getTitle().c_str());
+	INFO("Deleting link '%s'", selLink()->getTitle().c_str());
 
 	if (selLinkApp()!=NULL)
 		unlink(selLinkApp()->getFile().c_str());
@@ -305,7 +305,7 @@ void Menu::deleteSelectedLink() {
 }
 
 void Menu::deleteSelectedSection() {
-	INFO("Deleting section '%s'\n", selSection().c_str());
+	INFO("Deleting section '%s'", selSection().c_str());
 
 	gmenu2x->sc.del("sections/"+selSection()+".png");
 	links.erase( links.begin()+selSectionIndex() );

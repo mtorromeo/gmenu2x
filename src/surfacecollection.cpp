@@ -49,7 +49,7 @@ string SurfaceCollection::getSkinFilePath(const string &file) {
 void SurfaceCollection::debug() {
 	SurfaceHash::iterator end = surfaces.end();
 	for(SurfaceHash::iterator curr = surfaces.begin(); curr != end; curr++){
-		DEBUG("key: %i\n", curr->first.c_str());
+		DEBUG("key: %i", curr->first.c_str());
 	}
 }
 
@@ -64,7 +64,7 @@ Surface *SurfaceCollection::add(Surface *s, const string &path) {
 }
 
 Surface *SurfaceCollection::add(const string &path, bool alpha) {
-	DEBUG("Adding surface: '%s'\n", path.c_str());
+	DEBUG("Adding surface: '%s'", path.c_str());
 
 	if (exists(path)) del(path);
 	string filePath = path;
@@ -81,7 +81,7 @@ Surface *SurfaceCollection::add(const string &path, bool alpha) {
 }
 
 Surface *SurfaceCollection::addSkinRes(const string &path, bool alpha) {
-	DEBUG("Adding skin surface: '%s'\n", path.c_str());
+	DEBUG("Adding skin surface: '%s'", path.c_str());
 
 	if (path.empty()) return NULL;
 	if (exists(path)) del(path);
