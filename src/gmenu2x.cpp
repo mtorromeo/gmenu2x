@@ -1575,7 +1575,7 @@ void GMenu2X::scanner() {
 		stringstream ss;
 		ss << DEFAULT_CPU_CLK;
 		ss >> strClock;
-		scanbg.write(font,tr.translate("Raising cpu clock to $1Mhz", strClock.c_str()),5,lineY);
+		scanbg.write(font,tr.translate("Raising cpu clock to $1Mhz", strClock.c_str(), NULL),5,lineY);
 		scanbg.blit(s,0,0);
 		s->flip();
 		lineY += 26;
