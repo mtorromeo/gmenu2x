@@ -1,9 +1,0 @@
-title=SNES
-description=SquidgeSnes
-icon=/mnt/sd/Icons/Videogames/snes.png
-exec=/mnt/sd/snes/squidgesnes.gpe
-params=ntrd load=[selFullPath]
-clock=240
-selectordir=/mnt/sd/roms/snes/
-selectorscreens=/mnt/sd/screens/snes
-wrapper=true
