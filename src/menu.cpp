@@ -246,7 +246,7 @@ bool Menu::addLink(string path, string file, string section) {
 
 	string shorttitle = title, exec = path+file, icon="";
 	if (fileExists(exename+".png")) icon = exename+".png";
-	
+
 	//Reduce title length to fit the link width
 	if ((int)gmenu2x->font->getTextWidth(shorttitle)>gmenu2x->skinConfInt["linkWidth"]) {
 		while ((int)gmenu2x->font->getTextWidth(shorttitle+"..")>gmenu2x->skinConfInt["linkWidth"])
@@ -273,7 +273,7 @@ bool Menu::addLink(string path, string file, string section) {
 				links[isection].push_back( link );
 			else
 				free(link);
- 
+
 		}
 	} else {
 		ERROR("Error while opening the file '%s' for write.\n", linkpath.c_str());
