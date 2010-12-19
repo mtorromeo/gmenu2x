@@ -148,8 +148,8 @@ void InputManager::setActionsCount(int count) {
 	for (int x=0; x<count; x++) {
 		InputManagerAction action;
 		action.active = false;
-		action.pressed = false;
 		action.interval = 0;
+		action.last = 0;
 		action.timer = NULL;
 		actions.push_back(action);
 	}
@@ -173,24 +173,32 @@ bool InputManager::update(bool wait) {
 		events.push_back(evcopy);
 	}
 
+	long now = SDL_GetTicks();
 	for (uint x=0; x<actions.size(); x++) {
-		int status = actionStatus(x);
+		bool prevstate = actions[x].active;
+		bool state = isActive(x);
 		actions[x].active = false;
-		if (status == IM_ACTIVE) {
-			actions[x].active = true;
-			actions[x].pressed = true;
-			anyactions = true;
+		if (state != prevstate) {
+			if (state) {
+				if (now-actions[x].last >= actions[x].interval) {
+					actions[x].active = true;
+					anyactions = true;
+					actions[x].last = now;
 
-			if (actions[x].timer == NULL) {
-				// Set a timer to repeat the event in actions[x].interval milliseconds
-				RepeatEventData *data = new RepeatEventData();
-				data->im = this;
-				data->action = x;
-				actions[x].timer = SDL_AddTimer(actions[x].interval, checkRepeat, data);
+					if (actions[x].timer == NULL) {
+						// Set a timer to repeat the event in actions[x].interval milliseconds
+						RepeatEventData *data = new RepeatEventData();
+						data->im = this;
+						data->action = x;
+						actions[x].timer = SDL_AddTimer(actions[x].interval, checkRepeat, data);
+					}
+				}
+			} else {
+				if (actions[x].timer != NULL) {
+					SDL_RemoveTimer(actions[x].timer);
+					actions[x].timer = NULL;
+				}
 			}
-		} else if (status == IM_INACTIVE) {
-			actions[x].pressed = false;
-			actions[x].timer = NULL;
 		}
 	}
 
@@ -201,7 +209,6 @@ bool InputManager::update(bool wait) {
 void InputManager::dropEvents() {
 	for (uint x=0; x<actions.size(); x++) {
 		actions[x].active = false;
-		actions[x].pressed = false;
 		if (actions[x].timer != NULL) {
 			SDL_RemoveTimer(actions[x].timer);
 			actions[x].timer = NULL;
@@ -214,8 +221,7 @@ Uint32 InputManager::checkRepeat(Uint32 interval, void *_data) {
 	RepeatEventData *data = (RepeatEventData *)_data;
 	InputManager *im = (class InputManager*)data->im;
 	SDL_JoystickUpdate();
-	if (im->actions[data->action].pressed) {
-		im->actions[data->action].pressed = false;
+	if (im->isActive(data->action)) {
 		SDL_PushEvent( im->fakeEventForAction(data->action) );
 		return interval;
 	} else {
@@ -275,50 +281,29 @@ bool InputManager::operator[](int action) {
 }
 
 
-int InputManager::actionStatus(int action) {
+bool InputManager::isActive(int action) {
 	MappingList mapList = actions[action].maplist;
 	for (MappingList::const_iterator it = mapList.begin(); it !=mapList.end(); ++it) {
 		InputMap map = *it;
 
 		switch (map.type) {
 			case InputManager::MAPPING_TYPE_BUTTON:
-				if (map.num < joysticks.size())
-					for (uint ex=0; ex<events.size(); ex++) {
-						if ((events[ex].type == SDL_JOYBUTTONDOWN || events[ex].type == SDL_JOYBUTTONUP) && events[ex].jbutton.which == map.num && events[ex].jbutton.button == map.value)
-							return events[ex].type == SDL_JOYBUTTONDOWN ? IM_ACTIVE : IM_INACTIVE;
-					}
+				if (map.num < joysticks.size() && SDL_JoystickGetButton(joysticks[map.num], map.value))
+					return true;
 			break;
 			case InputManager::MAPPING_TYPE_AXIS:
-				if (map.num < joysticks.size())
-					for (uint ex=0; ex<events.size(); ex++) {
-						if (events[ex].type == SDL_JOYAXISMOTION && events[ex].jaxis.which == map.num && events[ex].jaxis.axis == map.value) {
-							if (map.treshold<0 && events[ex].jaxis.value <= map.treshold) return actions[action].pressed ? IM_UNCHANGED : IM_ACTIVE;
-							if (map.treshold>0 && events[ex].jaxis.value >= map.treshold) return actions[action].pressed ? IM_UNCHANGED : IM_ACTIVE;
-							return IM_INACTIVE;
-						}
-					}
+				if (map.num < joysticks.size()) {
+					int axyspos = SDL_JoystickGetAxis(joysticks[map.num], map.value);
+					if (map.treshold<0 && axyspos < map.treshold) return true;
+					if (map.treshold>0 && axyspos > map.treshold) return true;
+				}
 			break;
 			case InputManager::MAPPING_TYPE_KEYPRESS:
-					//INFO("KEYPRESS: %d\n", events[ex].key.keysym.sym);
-				for (uint ex=0; ex<events.size(); ex++) {
-					if ((events[ex].type == SDL_KEYDOWN || events[ex].type == SDL_KEYUP) && events[ex].key.keysym.sym == map.value)
-						return events[ex].type == SDL_KEYDOWN ? IM_ACTIVE : IM_INACTIVE;
-				}
+				Uint8 *keystate = SDL_GetKeyState(NULL);
+				if (keystate[map.value])
+					return true;
 			break;
 		}
 	}
-
-	return IM_UNCHANGED;
-}
-
-
-bool InputManager::isActive(int action) {
-	switch (actionStatus(action)) {
-		case IM_ACTIVE:
-			return true;
-		case IM_INACTIVE:
-			return false;
-		default:
-			return actions[action].active;
-	}
+	return false;
 }

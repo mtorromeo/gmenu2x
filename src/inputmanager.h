@@ -50,8 +50,8 @@ typedef vector<SDL_Event> SDLEventList;
 
 typedef struct {
 	bool active;
-	bool pressed;
 	int interval;
+	long last;
 	MappingList maplist;
 	SDL_TimerID timer;
 } InputManagerAction;
@@ -95,7 +95,6 @@ public:
 	void setActionsCount(int count);
 	void setInterval(int ms, int action = -1);
 	bool operator[](int action);
-	int actionStatus(int action);
 	bool isActive(int action);
 };
 
