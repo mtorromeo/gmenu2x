@@ -837,7 +837,7 @@ void GMenu2X::main() {
 			if (sc.exists(sectionIcon))
 				sc[sectionIcon]->blit(s,x-16,sectionLinkPadding,32,32);
 			else
-				sc.skinRes("icons/section.png")->blit(s,x,sectionLinkPadding);
+				sc.skinRes("icons/section.png")->blit(s,x-16,sectionLinkPadding,32,32);
 			s->write( font, menu->getSections()[i], x, skinConfInt["topBarHeight"]-sectionLinkPadding, HAlignCenter, VAlignBottom );
 		}
 
