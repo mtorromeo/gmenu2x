@@ -37,7 +37,7 @@ clean:
 
 dist: dir shared
 	@if [ ! -d $(DISTDIR) ]; then mkdir -p $(DISTDIR); fi
-	install -m755 $(APPNAME) $(DISTDIR)/gmenu2x
+	install -m755 $(APPNAME)-debug $(DISTDIR)/gmenu2x
 	install -m644 $(BUILDDIR)/input.conf.$(TARGET) $(DISTDIR)/input.conf
 	cp -R $(BUILDDIR)/skins $(BUILDDIR)/translations $(DISTDIR)
 	mkdir -p $(DISTDIR)/sections/applications $(DISTDIR)/sections/emulators $(DISTDIR)/sections/games $(DISTDIR)/sections/settings
