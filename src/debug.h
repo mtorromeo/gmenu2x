@@ -24,7 +24,7 @@
 #define COLOR_ERROR   "\e[01;31m"
 #endif
 
-#define COLOR_END "\e[0m"
+#define COLOR_END "\e[00m"
 
 #if (LOG_LEVEL >= DEBUG_L)
 # ifdef COLOR_DEBUG
