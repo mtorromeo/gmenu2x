@@ -256,7 +256,7 @@ void LinkApp::drawRun() {
 		gmenu2x->sc[getIcon()]->blit(gmenu2x->s,x,104);
 	else
 		gmenu2x->sc["icons/generic.png"]->blit(gmenu2x->s,x,104);*/
-	gmenu2x->sc[getIconPath()]->blit(gmenu2x->s,x,gmenu2x->halfY-16);
+	gmenu2x->sc[getIconPath()]->blit(gmenu2x->s,x,gmenu2x->halfY-16,32,32);
 	gmenu2x->s->write( gmenu2x->font, text, x+42, gmenu2x->halfY+1, HAlignLeft, VAlignMiddle );
 	gmenu2x->s->flip();
 }
