@@ -63,6 +63,7 @@ public:
 	const string &getParams();
 	void setParams(const string &params);
 	const string &getWorkdir();
+	const string getRealWorkdir();
 	void setWorkdir(const string &workdir);
 	const string &getManual();
 	void setManual(const string &manual);

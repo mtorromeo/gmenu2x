@@ -50,6 +50,7 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, InputManager &inputMgr_,
 	icon = iconPath = "";
 	selectorbrowser = false;
 	useRamTimings = false;
+	workdir = "";
 
 	string line;
 	ifstream infile (linkfile, ios_base::in);
@@ -374,16 +375,9 @@ void LinkApp::launch(const string &selectedFile, const string &selectedDir) {
 #endif
 
 	//Set correct working directory
-	string wd = workdir;
-	if (wd=="") {
-		string::size_type pos = exec.rfind("/");
-		if (pos!=string::npos)
-			wd = exec.substr(0,pos);
-	}
-	if (!wd.empty()) {
-		if (wd[0]!='/') wd = gmenu2x->getExePath() + wd;
+	string wd = getRealWorkdir();
+	if (!wd.empty())
 		chdir(wd.c_str());
-	}
 
 	//selectedFile
 	if (selectedFile!="") {
@@ -482,6 +476,18 @@ void LinkApp::setParams(const string &params) {
 
 const string &LinkApp::getWorkdir() {
 	return workdir;
+}
+
+const string LinkApp::getRealWorkdir() {
+	string wd = workdir;
+	if (wd=="") {
+		string::size_type pos = exec.rfind("/");
+		if (pos!=string::npos)
+			wd = exec.substr(0,pos);
+	}
+	if (!wd.empty() && wd[0]!='/')
+		wd = gmenu2x->getExePath() + wd;
+	return wd;
 }
 
 void LinkApp::setWorkdir(const string &workdir) {

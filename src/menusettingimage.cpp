@@ -23,13 +23,14 @@
 
 using std::string;
 
-MenuSettingImage::MenuSettingImage(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &filter)
-	: MenuSettingFile(gmenu2x, name, description, value, filter)
-{
-}
+MenuSettingImage::MenuSettingImage(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &filter, const string &startPath)
+	: MenuSettingFile(gmenu2x, name, description, value, filter, startPath) {}
 
 void MenuSettingImage::edit() {
-		ImageDialog id(gmenu2x, description, filter, value());
+	string _value = value();
+	if (_value.empty())
+		_value = startPath+"/";
+	ImageDialog id(gmenu2x, description, filter, _value);
 	if (id.exec()) setValue(id.getPath() + "/" + id.getFile());
 }
 

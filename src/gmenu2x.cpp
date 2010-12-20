@@ -1416,26 +1416,27 @@ void GMenu2X::editLink() {
 	stringstream ss;
 	ss << DEFAULT_CPU_CLK;
 	ss >> strClock;
+	const string wd = menu->selLinkApp()->getRealWorkdir();
 
 	SettingsDialog sd(this, input, ts, diagTitle, diagIcon);
-	sd.addSetting(new MenuSettingString(this,tr["Title"],tr["Link title"],&linkTitle, diagTitle,diagIcon));
-	sd.addSetting(new MenuSettingString(this,tr["Description"],tr["Link description"],&linkDescription, diagTitle,diagIcon));
-	sd.addSetting(new MenuSettingMultiString(this,tr["Section"],tr["The section this link belongs to"],&newSection,&menu->getSections()));
-	sd.addSetting(new MenuSettingImage(this,tr["Icon"],tr.translate("Select an icon for the link: $1",linkTitle.c_str(),NULL),&linkIcon,".png,.bmp,.jpg,.jpeg"));
-	sd.addSetting(new MenuSettingFile(this,tr["Manual"],tr["Select a graphic/textual manual or a readme"],&linkManual,".man.png,.txt"));
-	sd.addSetting(new MenuSettingInt(this,tr.translate("Clock (default: $1)",strClock.c_str(), NULL),tr["Cpu clock frequency to set when launching this link"],&linkClock,50,confInt["maxClock"]));
-	sd.addSetting(new MenuSettingBool(this,tr["Tweak RAM Timings"],tr["This usually speeds up the application at the cost of stability"],&linkUseRamTimings));
-	sd.addSetting(new MenuSettingInt(this,tr["Volume (default: -1)"],tr["Volume to set for this link"],&linkVolume,-1,100));
-	sd.addSetting(new MenuSettingString(this,tr["Parameters"],tr["Parameters to pass to the application"],&linkParams, diagTitle,diagIcon));
-	sd.addSetting(new MenuSettingDir(this,tr["Selector Directory"],tr["Directory to scan for the selector"],&linkSelDir));
-	sd.addSetting(new MenuSettingBool(this,tr["Selector Browser"],tr["Allow the selector to change directory"],&linkSelBrowser));
-	sd.addSetting(new MenuSettingString(this,tr["Selector Filter"],tr["Filter for the selector (Separate values with a comma)"],&linkSelFilter, diagTitle,diagIcon));
-	sd.addSetting(new MenuSettingDir(this,tr["Selector Screenshots"],tr["Directory of the screenshots for the selector"],&linkSelScreens));
-	sd.addSetting(new MenuSettingFile(this,tr["Selector Aliases"],tr["File containing a list of aliases for the selector"],&linkSelAliases));
+	sd.addSetting(new MenuSettingString(      this, tr["Title"],                tr["Link title"], &linkTitle, diagTitle, diagIcon ));
+	sd.addSetting(new MenuSettingString(      this, tr["Description"],          tr["Link description"], &linkDescription, diagTitle, diagIcon ));
+	sd.addSetting(new MenuSettingMultiString( this, tr["Section"],              tr["The section this link belongs to"], &newSection, &menu->getSections() ));
+	sd.addSetting(new MenuSettingImage(       this, tr["Icon"],                 tr.translate("Select an icon for the link: $1", linkTitle.c_str(), NULL), &linkIcon, ".png,.bmp,.jpg,.jpeg", wd ));
+	sd.addSetting(new MenuSettingFile(        this, tr["Manual"],               tr["Select a graphic/textual manual or a readme"], &linkManual, ".man.png,.txt", wd ));
+	sd.addSetting(new MenuSettingInt(         this, tr.translate("Clock (default: $1)",strClock.c_str(), NULL), tr["Cpu clock frequency to set when launching this link"], &linkClock, 50, confInt["maxClock"] ));
+	sd.addSetting(new MenuSettingBool(        this, tr["Tweak RAM Timings"],    tr["This usually speeds up the application at the cost of stability"], &linkUseRamTimings ));
+	sd.addSetting(new MenuSettingInt(         this, tr["Volume (default: -1)"], tr["Volume to set for this link"], &linkVolume, -1, 100 ));
+	sd.addSetting(new MenuSettingString(      this, tr["Parameters"],           tr["Parameters to pass to the application"], &linkParams, diagTitle, diagIcon ));
+	sd.addSetting(new MenuSettingDir(         this, tr["Selector Directory"],   tr["Directory to scan for the selector"], &linkSelDir, wd ));
+	sd.addSetting(new MenuSettingBool(        this, tr["Selector Browser"],     tr["Allow the selector to change directory"], &linkSelBrowser ));
+	sd.addSetting(new MenuSettingString(      this, tr["Selector Filter"],      tr["Filter for the selector (Separate values with a comma)"], &linkSelFilter, diagTitle, diagIcon ));
+	sd.addSetting(new MenuSettingDir(         this, tr["Selector Screenshots"], tr["Directory of the screenshots for the selector"], &linkSelScreens, wd ));
+	sd.addSetting(new MenuSettingFile(        this, tr["Selector Aliases"],     tr["File containing a list of aliases for the selector"], &linkSelAliases, wd ));
 	//G
-	sd.addSetting(new MenuSettingInt(this,tr["Gamma (default: 0)"],tr["Gamma value to set when launching this link"],&linkGamma,0,100));
-	sd.addSetting(new MenuSettingBool(this,tr["Wrapper"],tr["Explicitly relaunch GMenu2X after this link's execution ends"],&menu->selLinkApp()->needsWrapperRef()));
-	sd.addSetting(new MenuSettingBool(this,tr["Don't Leave"],tr["Don't quit GMenu2X when launching this link"],&menu->selLinkApp()->runsInBackgroundRef()));
+	sd.addSetting(new MenuSettingInt(         this, tr["Gamma (default: 0)"],   tr["Gamma value to set when launching this link"], &linkGamma, 0, 100 ));
+	sd.addSetting(new MenuSettingBool(        this, tr["Wrapper"],              tr["Explicitly relaunch GMenu2X after this link's execution ends"], &menu->selLinkApp()->needsWrapperRef() ));
+	sd.addSetting(new MenuSettingBool(        this, tr["Don't Leave"],          tr["Don't quit GMenu2X when launching this link"], &menu->selLinkApp()->runsInBackgroundRef() ));
 
 	if (sd.exec() && sd.edited()) {
 		ledOn();

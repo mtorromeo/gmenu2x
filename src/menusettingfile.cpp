@@ -24,11 +24,9 @@
 using std::string;
 using fastdelegate::MakeDelegate;
 
-MenuSettingFile::MenuSettingFile(
-		GMenu2X *gmenu2x, const string &name,
-		const string &description, string *value, const string &filter_)
+MenuSettingFile::MenuSettingFile(GMenu2X *gmenu2x, const string &name, const string &description, string *value, const string &filter_, const string &startPath_)
 	: MenuSettingStringBase(gmenu2x, name, description, value)
-	, filter(filter_)
+	, filter(filter_), startPath(startPath_)
 {
 	IconButton *btn;
 
@@ -41,10 +39,11 @@ MenuSettingFile::MenuSettingFile(
 	buttonBox.add(btn);
 }
 
-void MenuSettingFile::edit()
-{
-	FileDialog fd(gmenu2x, description, filter, value());
-	if (fd.exec()) {
+void MenuSettingFile::edit() {
+	string _value = value();
+	if (_value.empty())
+		_value = startPath+"/";
+	FileDialog fd(gmenu2x, description, filter, _value);
+	if (fd.exec())
 		setValue(fd.getPath() + "/" + fd.getFile());
-	}
 }

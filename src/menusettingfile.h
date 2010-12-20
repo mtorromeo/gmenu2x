@@ -27,12 +27,11 @@ protected:
 	virtual void edit();
 
 	std::string filter;
+	std::string startPath;
 
 public:
 	MenuSettingFile(
-			GMenu2X *gmenu2x, const std::string &name,
-					const std::string &description, std::string *value,
-					const std::string &filter = "");
+			GMenu2X *gmenu2x, const std::string &name, const std::string &description, std::string *value, const std::string &filter="", const std::string &startPath="");
 	virtual ~MenuSettingFile() {}
 };
 

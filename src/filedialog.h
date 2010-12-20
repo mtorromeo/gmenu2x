@@ -28,8 +28,7 @@
 
 class FileDialog : public BrowseDialog {
 public:
-	FileDialog(GMenu2X *gmenu2x, const string &text, const string &filter="",
-		const string &file="", const string &title = "File Dialog");
+	FileDialog(GMenu2X *gmenu2x, const string &text, const string &filter="", const string &file="", const string &title = "File Dialog");
 	virtual ~FileDialog();
 	bool exec();
 };
