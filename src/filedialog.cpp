@@ -48,10 +48,6 @@ FileDialog::~FileDialog() {
 }
 
 bool FileDialog::exec() {
-	bool ret = BrowseDialog::exec();
-	if (ret && fl->isDirectory(selected)) {
-		// FileDialog must only pick regular files.
-		ret = false;
-	}
-	return ret;
+	// FileDialog must only pick regular files.
+	return BrowseDialog::exec() && !fl->isDirectory(selected);
 }
