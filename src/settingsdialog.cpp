@@ -41,7 +41,7 @@ SettingsDialog::SettingsDialog(
 
 SettingsDialog::~SettingsDialog() {
 	for (uint i=0; i<voices.size(); i++)
-		free(voices[i]);
+		delete voices[i];
 }
 
 bool SettingsDialog::exec() {

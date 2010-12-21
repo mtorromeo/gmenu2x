@@ -100,8 +100,7 @@ static const char *colorNames[NUM_COLORS] = {
 	"fontOutline"
 };
 
-static enum color stringToColor(const string &name)
-{
+static enum color stringToColor(const string &name) {
 	for (unsigned int i = 0; i < NUM_COLORS; i++) {
 		if (strcmp(colorNames[i], name.c_str()) == 0) {
 			return (enum color)i;
@@ -110,14 +109,13 @@ static enum color stringToColor(const string &name)
 	return (enum color)-1;
 }
 
-static const char *colorToString(enum color c)
-{
+static const char *colorToString(enum color c) {
 	return colorNames[c];
 }
 
 static void quit_all(int err) {
-    delete app;
-    exit(err);
+	delete app;
+	exit(err);
 }
 
 int main(int /*argc*/, char * /*argv*/[]) {
@@ -346,9 +344,9 @@ GMenu2X::~GMenu2X() {
 
 	quit();
 
-	free(menu);
-	free(s);
-	free(font);
+	delete menu;
+	delete s;
+	delete font;
 }
 
 void GMenu2X::quit() {
@@ -371,7 +369,7 @@ void GMenu2X::quit() {
 void GMenu2X::initBG() {
 	sc.del("bgmain");
 
-	if (bg != NULL) free(bg);
+	if (bg != NULL) delete bg;
 
 	bg = new Surface(s);
 	bg->box(0,0,resX,resY,0,0,0);
@@ -423,7 +421,7 @@ void GMenu2X::initBG() {
 
 void GMenu2X::initFont() {
 	if (font != NULL) {
-		free(font);
+		delete font;
 		font = NULL;
 	}
 	font = new FontHelper(sc.getSkinFilePath("font.ttf"), skinConfInt["fontSize"], skinConfColors[COLOR_FONT], skinConfColors[COLOR_FONT_OUTLINE]);
@@ -994,7 +992,7 @@ void GMenu2X::main() {
 		}
 	}
 
-	free(btnContextMenu);
+	delete btnContextMenu;
 	btnContextMenu = NULL;
 }
 
