@@ -284,6 +284,9 @@ GMenu2X::GMenu2X() {
 	}
 #endif
 
+#if !defined(TARGET_PC)
+	setenv("SDL_NOMOUSE", "1", 1);
+#endif
 	//Screen
 	if( SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER|SDL_INIT_JOYSTICK)<0 ) {
 		ERROR("Could not initialize SDL: %s", SDL_GetError());
@@ -293,11 +296,10 @@ GMenu2X::GMenu2X() {
 	s = new Surface();
 #if defined(TARGET_GP2X) || defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 	{
-		//I use a tmp variable to hide the cursor as soon as possible (and create the double buffer surface only after that)
 		//I'm forced to use SW surfaces since with HW there are issuse with changing the clock frequency
-		SDL_Surface *tmps = SDL_SetVideoMode(resX, resY, confInt["videoBpp"], SDL_SWSURFACE);
+		SDL_Surface *dbl = SDL_SetVideoMode(resX, resY, confInt["videoBpp"], SDL_SWSURFACE);
+		s->enableVirtualDoubleBuffer(dbl);
 		SDL_ShowCursor(0);
-		s->enableVirtualDoubleBuffer(tmps);
 	}
 #else
 	s->raw = SDL_SetVideoMode(resX, resY, confInt["videoBpp"], SDL_HWSURFACE|SDL_DOUBLEBUF);
