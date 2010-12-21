@@ -1,0 +1,2523 @@
+CC = gcc
+CXX = g++
+STRIP = strip
+TARGET=pc
+
+CFLAGS = -I"/usr/include" `sdl-config --cflags` -DTARGET_PC -DTARGET=$(TARGET) -DLOG_LEVEL=4 -Wall -Wundef -Wno-deprecated -Wno-unknown-pragmas -Wno-format -fno-exceptions -pg -O3 -g
+CXXFLAGS = $(CFLAGS)
+LDFLAGS = -L"/usr/lib" `sdl-config --libs` -lfreetype -lSDL_image -lSDL_ttf -lSDL_gfx -ljpeg -lpng12 -lz #-lSDL_gfx
+
+BUILDDIR = build
+OBJDIR = objs/$(TARGET)
+DISTDIR = dist/$(TARGET)
+APPNAME = $(BUILDDIR)/gmenu2x.$(TARGET)
+
+SOURCES := $(wildcard src/*.cpp)
+OBJS := $(patsubst src/%.cpp, $(OBJDIR)/src/%.o, $(SOURCES))
+
+# File types rules
+$(OBJDIR)/src/%.o: src/%.cpp src/%.h
+	$(CXX) $(CFLAGS) -o $@ -c $<
+
+all: dir shared
+
+dir:
+	@if [ ! -d $(OBJDIR)/src ]; then mkdir -p $(OBJDIR)/src; fi
+
+debug: $(OBJS)
+	@echo "Linking gmenu2x-debug..."
+	$(CXX) -o $(APPNAME)-debug $(LDFLAGS) $(OBJS)
+
+shared: debug
+	$(STRIP) $(APPNAME)-debug -o $(APPNAME)
+
+clean:
+		-rm -f $(OBJDIR)/src/*.o *.gcda *.gcno $(APPNAME)
+	rm -rf $(DISTDIR)
+
+dist: dir shared
+	@if [ ! -d $(DISTDIR) ]; then mkdir -p $(DISTDIR); fi
+	install -m755 $(APPNAME)-debug $(DISTDIR)/gmenu2x
+	install -m644 $(BUILDDIR)/input.conf.$(TARGET) $(DISTDIR)/input.conf
+	cp -R $(BUILDDIR)/skins $(BUILDDIR)/translations $(DISTDIR)
+	mkdir -p $(DISTDIR)/sections/applications $(DISTDIR)/sections/emulators $(DISTDIR)/sections/games $(DISTDIR)/sections/settings
+
+depend:
+	makedepend -fMakefile.$(TARGET) -p$(OBJDIR)/ -- $(CFLAGS) -- src/*.cpp
+# DO NOT DELETE
+
+objs/pc/src/browsedialog.o: src/browsedialog.h src/filelister.h src/gmenu2x.h
+objs/pc/src/browsedialog.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/browsedialog.o: src/button.h /usr/include/SDL/SDL.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/browsedialog.o: /usr/include/sys/types.h /usr/include/features.h
+objs/pc/src/browsedialog.o: /usr/include/sys/cdefs.h
+objs/pc/src/browsedialog.o: /usr/include/bits/wordsize.h
+objs/pc/src/browsedialog.o: /usr/include/gnu/stubs.h
+objs/pc/src/browsedialog.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/browsedialog.o: /usr/include/bits/types.h
+objs/pc/src/browsedialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/browsedialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/browsedialog.o: /usr/include/bits/byteswap.h
+objs/pc/src/browsedialog.o: /usr/include/sys/select.h
+objs/pc/src/browsedialog.o: /usr/include/bits/select.h
+objs/pc/src/browsedialog.o: /usr/include/bits/sigset.h
+objs/pc/src/browsedialog.o: /usr/include/bits/time.h
+objs/pc/src/browsedialog.o: /usr/include/sys/sysmacros.h
+objs/pc/src/browsedialog.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/browsedialog.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/browsedialog.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/browsedialog.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/browsedialog.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/browsedialog.o: /usr/include/stdlib.h
+objs/pc/src/browsedialog.o: /usr/include/bits/waitflags.h
+objs/pc/src/browsedialog.o: /usr/include/bits/waitstatus.h
+objs/pc/src/browsedialog.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/browsedialog.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/browsedialog.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/browsedialog.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/browsedialog.o: /usr/include/iconv.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/begin_code.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/close_code.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_version.h src/FastDelegate.h
+objs/pc/src/browsedialog.o: /usr/include/memory.h src/translator.h
+objs/pc/src/browsedialog.o: src/utilities.h src/touchscreen.h
+objs/pc/src/browsedialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/browsedialog.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
+objs/pc/src/browsedialog.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
+objs/pc/src/browsedialog.o: src/surface.h src/fonthelper.h
+objs/pc/src/browsedialog.o: /usr/include/SDL/SDL_ttf.h src/buttonbox.h
+objs/pc/src/browsedialog.o: src/dialog.h
+objs/pc/src/buttonbox.o: src/button.h /usr/include/SDL/SDL.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/buttonbox.o: /usr/include/sys/types.h /usr/include/features.h
+objs/pc/src/buttonbox.o: /usr/include/sys/cdefs.h
+objs/pc/src/buttonbox.o: /usr/include/bits/wordsize.h
+objs/pc/src/buttonbox.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+objs/pc/src/buttonbox.o: /usr/include/bits/types.h
+objs/pc/src/buttonbox.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/buttonbox.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/buttonbox.o: /usr/include/bits/byteswap.h
+objs/pc/src/buttonbox.o: /usr/include/sys/select.h /usr/include/bits/select.h
+objs/pc/src/buttonbox.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/pc/src/buttonbox.o: /usr/include/sys/sysmacros.h
+objs/pc/src/buttonbox.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/buttonbox.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/buttonbox.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/buttonbox.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/buttonbox.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/buttonbox.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+objs/pc/src/buttonbox.o: /usr/include/bits/waitstatus.h
+objs/pc/src/buttonbox.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/buttonbox.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/buttonbox.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/buttonbox.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/buttonbox.o: /usr/include/iconv.h /usr/include/SDL/begin_code.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/close_code.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_version.h src/FastDelegate.h
+objs/pc/src/buttonbox.o: /usr/include/memory.h src/gmenu2x.h
+objs/pc/src/buttonbox.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/buttonbox.o: src/translator.h src/utilities.h src/touchscreen.h
+objs/pc/src/buttonbox.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/buttonbox.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
+objs/pc/src/buttonbox.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
+objs/pc/src/buttonbox.o: src/surface.h src/fonthelper.h
+objs/pc/src/buttonbox.o: /usr/include/SDL/SDL_ttf.h src/buttonbox.h
+objs/pc/src/button.o: src/button.h /usr/include/SDL/SDL.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/button.o: /usr/include/sys/types.h /usr/include/features.h
+objs/pc/src/button.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
+objs/pc/src/button.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+objs/pc/src/button.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
+objs/pc/src/button.o: /usr/include/time.h /usr/include/endian.h
+objs/pc/src/button.o: /usr/include/bits/endian.h /usr/include/bits/byteswap.h
+objs/pc/src/button.o: /usr/include/sys/select.h /usr/include/bits/select.h
+objs/pc/src/button.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/pc/src/button.o: /usr/include/sys/sysmacros.h
+objs/pc/src/button.o: /usr/include/bits/pthreadtypes.h /usr/include/stdio.h
+objs/pc/src/button.o: /usr/include/libio.h /usr/include/_G_config.h
+objs/pc/src/button.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
+objs/pc/src/button.o: /usr/include/bits/sys_errlist.h /usr/include/stdlib.h
+objs/pc/src/button.o: /usr/include/bits/waitflags.h
+objs/pc/src/button.o: /usr/include/bits/waitstatus.h /usr/include/xlocale.h
+objs/pc/src/button.o: /usr/include/alloca.h /usr/include/string.h
+objs/pc/src/button.o: /usr/include/strings.h /usr/include/inttypes.h
+objs/pc/src/button.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+objs/pc/src/button.o: /usr/include/ctype.h /usr/include/iconv.h
+objs/pc/src/button.o: /usr/include/SDL/begin_code.h
+objs/pc/src/button.o: /usr/include/SDL/close_code.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_version.h src/FastDelegate.h
+objs/pc/src/button.o: /usr/include/memory.h src/gmenu2x.h
+objs/pc/src/button.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/button.o: src/translator.h src/utilities.h src/touchscreen.h
+objs/pc/src/button.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/button.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
+objs/pc/src/button.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
+objs/pc/src/button.o: src/surface.h src/fonthelper.h
+objs/pc/src/button.o: /usr/include/SDL/SDL_ttf.h
+objs/pc/src/dialog.o: src/dialog.h src/gmenu2x.h src/surfacecollection.h
+objs/pc/src/dialog.o: src/iconbutton.h src/button.h /usr/include/SDL/SDL.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/dialog.o: /usr/include/sys/types.h /usr/include/features.h
+objs/pc/src/dialog.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
+objs/pc/src/dialog.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+objs/pc/src/dialog.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
+objs/pc/src/dialog.o: /usr/include/time.h /usr/include/endian.h
+objs/pc/src/dialog.o: /usr/include/bits/endian.h /usr/include/bits/byteswap.h
+objs/pc/src/dialog.o: /usr/include/sys/select.h /usr/include/bits/select.h
+objs/pc/src/dialog.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/pc/src/dialog.o: /usr/include/sys/sysmacros.h
+objs/pc/src/dialog.o: /usr/include/bits/pthreadtypes.h /usr/include/stdio.h
+objs/pc/src/dialog.o: /usr/include/libio.h /usr/include/_G_config.h
+objs/pc/src/dialog.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
+objs/pc/src/dialog.o: /usr/include/bits/sys_errlist.h /usr/include/stdlib.h
+objs/pc/src/dialog.o: /usr/include/bits/waitflags.h
+objs/pc/src/dialog.o: /usr/include/bits/waitstatus.h /usr/include/xlocale.h
+objs/pc/src/dialog.o: /usr/include/alloca.h /usr/include/string.h
+objs/pc/src/dialog.o: /usr/include/strings.h /usr/include/inttypes.h
+objs/pc/src/dialog.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+objs/pc/src/dialog.o: /usr/include/ctype.h /usr/include/iconv.h
+objs/pc/src/dialog.o: /usr/include/SDL/begin_code.h
+objs/pc/src/dialog.o: /usr/include/SDL/close_code.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_version.h src/FastDelegate.h
+objs/pc/src/dialog.o: /usr/include/memory.h src/translator.h src/utilities.h
+objs/pc/src/dialog.o: src/touchscreen.h /usr/include/fcntl.h
+objs/pc/src/dialog.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
+objs/pc/src/dialog.o: /usr/include/bits/stat.h src/inputmanager.h
+objs/pc/src/dialog.o: /usr/include/SDL/SDL_image.h src/surface.h
+objs/pc/src/dialog.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
+objs/pc/src/dirdialog.o: src/dirdialog.h src/gmenu2x.h
+objs/pc/src/dirdialog.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/dirdialog.o: src/button.h /usr/include/SDL/SDL.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/dirdialog.o: /usr/include/sys/types.h /usr/include/features.h
+objs/pc/src/dirdialog.o: /usr/include/sys/cdefs.h
+objs/pc/src/dirdialog.o: /usr/include/bits/wordsize.h
+objs/pc/src/dirdialog.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+objs/pc/src/dirdialog.o: /usr/include/bits/types.h
+objs/pc/src/dirdialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/dirdialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/dirdialog.o: /usr/include/bits/byteswap.h
+objs/pc/src/dirdialog.o: /usr/include/sys/select.h /usr/include/bits/select.h
+objs/pc/src/dirdialog.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/pc/src/dirdialog.o: /usr/include/sys/sysmacros.h
+objs/pc/src/dirdialog.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/dirdialog.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/dirdialog.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/dirdialog.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/dirdialog.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/dirdialog.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+objs/pc/src/dirdialog.o: /usr/include/bits/waitstatus.h
+objs/pc/src/dirdialog.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/dirdialog.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/dirdialog.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/dirdialog.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/dirdialog.o: /usr/include/iconv.h /usr/include/SDL/begin_code.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/close_code.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_version.h src/FastDelegate.h
+objs/pc/src/dirdialog.o: /usr/include/memory.h src/translator.h
+objs/pc/src/dirdialog.o: src/utilities.h src/touchscreen.h
+objs/pc/src/dirdialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/dirdialog.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
+objs/pc/src/dirdialog.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
+objs/pc/src/dirdialog.o: src/surface.h src/fonthelper.h
+objs/pc/src/dirdialog.o: /usr/include/SDL/SDL_ttf.h src/browsedialog.h
+objs/pc/src/dirdialog.o: src/filelister.h src/buttonbox.h src/dialog.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/filedialog.o: /usr/include/sys/types.h /usr/include/features.h
+objs/pc/src/filedialog.o: /usr/include/sys/cdefs.h
+objs/pc/src/filedialog.o: /usr/include/bits/wordsize.h
+objs/pc/src/filedialog.o: /usr/include/gnu/stubs.h
+objs/pc/src/filedialog.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/filedialog.o: /usr/include/bits/types.h
+objs/pc/src/filedialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/filedialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/filedialog.o: /usr/include/bits/byteswap.h
+objs/pc/src/filedialog.o: /usr/include/sys/select.h
+objs/pc/src/filedialog.o: /usr/include/bits/select.h
+objs/pc/src/filedialog.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/pc/src/filedialog.o: /usr/include/sys/sysmacros.h
+objs/pc/src/filedialog.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/filedialog.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/filedialog.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/filedialog.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/filedialog.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/filedialog.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+objs/pc/src/filedialog.o: /usr/include/bits/waitstatus.h
+objs/pc/src/filedialog.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/filedialog.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/filedialog.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/filedialog.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/filedialog.o: /usr/include/iconv.h /usr/include/SDL/begin_code.h
+objs/pc/src/filedialog.o: /usr/include/SDL/close_code.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_gfxPrimitives.h
+objs/pc/src/filedialog.o: /usr/include/math.h /usr/include/bits/huge_val.h
+objs/pc/src/filedialog.o: /usr/include/bits/huge_valf.h
+objs/pc/src/filedialog.o: /usr/include/bits/huge_vall.h
+objs/pc/src/filedialog.o: /usr/include/bits/inf.h /usr/include/bits/nan.h
+objs/pc/src/filedialog.o: /usr/include/bits/mathdef.h
+objs/pc/src/filedialog.o: /usr/include/bits/mathcalls.h
+objs/pc/src/filedialog.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
+objs/pc/src/filedialog.o: /usr/include/dirent.h /usr/include/bits/dirent.h
+objs/pc/src/filedialog.o: /usr/include/bits/posix1_lim.h
+objs/pc/src/filedialog.o: /usr/include/bits/local_lim.h
+objs/pc/src/filedialog.o: /usr/include/linux/limits.h src/filedialog.h
+objs/pc/src/filedialog.o: src/browsedialog.h src/filelister.h src/gmenu2x.h
+objs/pc/src/filedialog.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/filedialog.o: src/button.h src/FastDelegate.h
+objs/pc/src/filedialog.o: /usr/include/memory.h src/translator.h
+objs/pc/src/filedialog.o: src/utilities.h src/touchscreen.h
+objs/pc/src/filedialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/filedialog.o: /usr/include/bits/uio.h src/inputmanager.h
+objs/pc/src/filedialog.o: /usr/include/SDL/SDL_image.h src/surface.h
+objs/pc/src/filedialog.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
+objs/pc/src/filedialog.o: src/buttonbox.h src/dialog.h
+objs/pc/src/filelister.o: /usr/include/sys/stat.h /usr/include/features.h
+objs/pc/src/filelister.o: /usr/include/sys/cdefs.h
+objs/pc/src/filelister.o: /usr/include/bits/wordsize.h
+objs/pc/src/filelister.o: /usr/include/gnu/stubs.h
+objs/pc/src/filelister.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/filelister.o: /usr/include/bits/types.h
+objs/pc/src/filelister.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/filelister.o: /usr/include/bits/stat.h /usr/include/sys/types.h
+objs/pc/src/filelister.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/filelister.o: /usr/include/bits/byteswap.h
+objs/pc/src/filelister.o: /usr/include/sys/select.h
+objs/pc/src/filelister.o: /usr/include/bits/select.h
+objs/pc/src/filelister.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/pc/src/filelister.o: /usr/include/sys/sysmacros.h
+objs/pc/src/filelister.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/filelister.o: /usr/include/dirent.h /usr/include/bits/dirent.h
+objs/pc/src/filelister.o: /usr/include/bits/posix1_lim.h
+objs/pc/src/filelister.o: /usr/include/bits/local_lim.h
+objs/pc/src/filelister.o: /usr/include/linux/limits.h /usr/include/errno.h
+objs/pc/src/filelister.o: /usr/include/bits/errno.h
+objs/pc/src/filelister.o: /usr/include/linux/errno.h /usr/include/asm/errno.h
+objs/pc/src/filelister.o: /usr/include/asm-generic/errno.h
+objs/pc/src/filelister.o: /usr/include/asm-generic/errno-base.h
+objs/pc/src/filelister.o: src/filelister.h src/utilities.h src/gmenu2x.h
+objs/pc/src/filelister.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/filelister.o: src/button.h /usr/include/SDL/SDL.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/filelister.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/filelister.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/filelister.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/filelister.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/filelister.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+objs/pc/src/filelister.o: /usr/include/bits/waitstatus.h
+objs/pc/src/filelister.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/filelister.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/filelister.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/filelister.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/filelister.o: /usr/include/iconv.h /usr/include/SDL/begin_code.h
+objs/pc/src/filelister.o: /usr/include/SDL/close_code.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_version.h src/FastDelegate.h
+objs/pc/src/filelister.o: /usr/include/memory.h src/translator.h
+objs/pc/src/filelister.o: src/touchscreen.h /usr/include/fcntl.h
+objs/pc/src/filelister.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
+objs/pc/src/filelister.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
+objs/pc/src/filelister.o: src/surface.h src/fonthelper.h
+objs/pc/src/filelister.o: /usr/include/SDL/SDL_ttf.h src/debug.h
+objs/pc/src/fonthelper.o: src/fonthelper.h src/surface.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/fonthelper.o: /usr/include/sys/types.h /usr/include/features.h
+objs/pc/src/fonthelper.o: /usr/include/sys/cdefs.h
+objs/pc/src/fonthelper.o: /usr/include/bits/wordsize.h
+objs/pc/src/fonthelper.o: /usr/include/gnu/stubs.h
+objs/pc/src/fonthelper.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/fonthelper.o: /usr/include/bits/types.h
+objs/pc/src/fonthelper.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/fonthelper.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/fonthelper.o: /usr/include/bits/byteswap.h
+objs/pc/src/fonthelper.o: /usr/include/sys/select.h
+objs/pc/src/fonthelper.o: /usr/include/bits/select.h
+objs/pc/src/fonthelper.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/pc/src/fonthelper.o: /usr/include/sys/sysmacros.h
+objs/pc/src/fonthelper.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/fonthelper.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/fonthelper.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/fonthelper.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/fonthelper.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/fonthelper.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+objs/pc/src/fonthelper.o: /usr/include/bits/waitstatus.h
+objs/pc/src/fonthelper.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/fonthelper.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/fonthelper.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/fonthelper.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/fonthelper.o: /usr/include/iconv.h /usr/include/SDL/begin_code.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/close_code.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_image.h
+objs/pc/src/fonthelper.o: /usr/include/SDL/SDL_ttf.h src/utilities.h
+objs/pc/src/fonthelper.o: src/debug.h
+objs/pc/src/gmenu2x.o: /usr/include/stdlib.h /usr/include/features.h
+objs/pc/src/gmenu2x.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
+objs/pc/src/gmenu2x.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/waitflags.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/waitstatus.h /usr/include/endian.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/endian.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/byteswap.h /usr/include/xlocale.h
+objs/pc/src/gmenu2x.o: /usr/include/sys/types.h /usr/include/bits/types.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/gmenu2x.o: /usr/include/sys/select.h /usr/include/bits/select.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/pc/src/gmenu2x.o: /usr/include/sys/sysmacros.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/pthreadtypes.h /usr/include/alloca.h
+objs/pc/src/gmenu2x.o: /usr/include/unistd.h /usr/include/bits/posix_opt.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/environments.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/confname.h /usr/include/getopt.h
+objs/pc/src/gmenu2x.o: /usr/include/math.h /usr/include/bits/huge_val.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/huge_valf.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/mathcalls.h /usr/include/SDL/SDL.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_platform.h /usr/include/stdio.h
+objs/pc/src/gmenu2x.o: /usr/include/libio.h /usr/include/_G_config.h
+objs/pc/src/gmenu2x.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/sys_errlist.h /usr/include/string.h
+objs/pc/src/gmenu2x.o: /usr/include/strings.h /usr/include/inttypes.h
+objs/pc/src/gmenu2x.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+objs/pc/src/gmenu2x.o: /usr/include/ctype.h /usr/include/iconv.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/begin_code.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/close_code.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_gfxPrimitives.h
+objs/pc/src/gmenu2x.o: /usr/include/signal.h /usr/include/bits/signum.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/siginfo.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/sigaction.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/sigcontext.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/sigstack.h
+objs/pc/src/gmenu2x.o: /usr/include/sys/ucontext.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/sigthread.h
+objs/pc/src/gmenu2x.o: /usr/include/sys/statvfs.h /usr/include/bits/statvfs.h
+objs/pc/src/gmenu2x.o: /usr/include/errno.h /usr/include/bits/errno.h
+objs/pc/src/gmenu2x.o: /usr/include/linux/errno.h /usr/include/asm/errno.h
+objs/pc/src/gmenu2x.o: /usr/include/asm-generic/errno.h
+objs/pc/src/gmenu2x.o: /usr/include/asm-generic/errno-base.h
+objs/pc/src/gmenu2x.o: /usr/include/sys/fcntl.h /usr/include/fcntl.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/stat.h /usr/include/sys/stat.h
+objs/pc/src/gmenu2x.o: /usr/include/dirent.h /usr/include/bits/dirent.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/posix1_lim.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/local_lim.h
+objs/pc/src/gmenu2x.o: /usr/include/linux/limits.h /usr/include/sys/ioctl.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/ioctls.h /usr/include/asm/ioctls.h
+objs/pc/src/gmenu2x.o: /usr/include/asm-generic/ioctls.h
+objs/pc/src/gmenu2x.o: /usr/include/linux/ioctl.h /usr/include/asm/ioctl.h
+objs/pc/src/gmenu2x.o: /usr/include/asm-generic/ioctl.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/ioctl-types.h
+objs/pc/src/gmenu2x.o: /usr/include/sys/ttydefaults.h
+objs/pc/src/gmenu2x.o: /usr/include/linux/soundcard.h
+objs/pc/src/gmenu2x.o: /usr/include/linux/patchkey.h src/linkapp.h src/link.h
+objs/pc/src/gmenu2x.o: src/button.h src/FastDelegate.h /usr/include/memory.h
+objs/pc/src/gmenu2x.o: src/surface.h /usr/include/SDL/SDL_image.h
+objs/pc/src/gmenu2x.o: src/linkaction.h src/menu.h src/fonthelper.h
+objs/pc/src/gmenu2x.o: /usr/include/SDL/SDL_ttf.h src/filedialog.h
+objs/pc/src/gmenu2x.o: src/browsedialog.h src/filelister.h src/gmenu2x.h
+objs/pc/src/gmenu2x.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/gmenu2x.o: src/translator.h src/utilities.h src/touchscreen.h
+objs/pc/src/gmenu2x.o: src/inputmanager.h src/buttonbox.h src/dialog.h
+objs/pc/src/gmenu2x.o: src/messagebox.h src/inputdialog.h
+objs/pc/src/gmenu2x.o: src/settingsdialog.h src/menusetting.h
+objs/pc/src/gmenu2x.o: src/wallpaperdialog.h src/textdialog.h
+objs/pc/src/gmenu2x.o: src/menusettingint.h src/menusettingbool.h
+objs/pc/src/gmenu2x.o: src/menusettingrgba.h src/menusettingstring.h
+objs/pc/src/gmenu2x.o: src/menusettingstringbase.h
+objs/pc/src/gmenu2x.o: src/menusettingmultistring.h src/menusettingfile.h
+objs/pc/src/gmenu2x.o: src/menusettingimage.h src/menusettingdir.h
+objs/pc/src/gmenu2x.o: src/debug.h /usr/include/sys/mman.h
+objs/pc/src/gmenu2x.o: /usr/include/bits/mman.h
+objs/pc/src/iconbutton.o: src/iconbutton.h src/button.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/iconbutton.o: /usr/include/sys/types.h /usr/include/features.h
+objs/pc/src/iconbutton.o: /usr/include/sys/cdefs.h
+objs/pc/src/iconbutton.o: /usr/include/bits/wordsize.h
+objs/pc/src/iconbutton.o: /usr/include/gnu/stubs.h
+objs/pc/src/iconbutton.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/iconbutton.o: /usr/include/bits/types.h
+objs/pc/src/iconbutton.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/iconbutton.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/iconbutton.o: /usr/include/bits/byteswap.h
+objs/pc/src/iconbutton.o: /usr/include/sys/select.h
+objs/pc/src/iconbutton.o: /usr/include/bits/select.h
+objs/pc/src/iconbutton.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/pc/src/iconbutton.o: /usr/include/sys/sysmacros.h
+objs/pc/src/iconbutton.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/iconbutton.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/iconbutton.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/iconbutton.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/iconbutton.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/iconbutton.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+objs/pc/src/iconbutton.o: /usr/include/bits/waitstatus.h
+objs/pc/src/iconbutton.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/iconbutton.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/iconbutton.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/iconbutton.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/iconbutton.o: /usr/include/iconv.h /usr/include/SDL/begin_code.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/close_code.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_version.h src/FastDelegate.h
+objs/pc/src/iconbutton.o: /usr/include/memory.h src/gmenu2x.h
+objs/pc/src/iconbutton.o: src/surfacecollection.h src/translator.h
+objs/pc/src/iconbutton.o: src/utilities.h src/touchscreen.h
+objs/pc/src/iconbutton.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/iconbutton.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
+objs/pc/src/iconbutton.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
+objs/pc/src/iconbutton.o: src/surface.h src/fonthelper.h
+objs/pc/src/iconbutton.o: /usr/include/SDL/SDL_ttf.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/imagedialog.o: /usr/include/sys/types.h /usr/include/features.h
+objs/pc/src/imagedialog.o: /usr/include/sys/cdefs.h
+objs/pc/src/imagedialog.o: /usr/include/bits/wordsize.h
+objs/pc/src/imagedialog.o: /usr/include/gnu/stubs.h
+objs/pc/src/imagedialog.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/imagedialog.o: /usr/include/bits/types.h
+objs/pc/src/imagedialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/imagedialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/imagedialog.o: /usr/include/bits/byteswap.h
+objs/pc/src/imagedialog.o: /usr/include/sys/select.h
+objs/pc/src/imagedialog.o: /usr/include/bits/select.h
+objs/pc/src/imagedialog.o: /usr/include/bits/sigset.h
+objs/pc/src/imagedialog.o: /usr/include/bits/time.h
+objs/pc/src/imagedialog.o: /usr/include/sys/sysmacros.h
+objs/pc/src/imagedialog.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/imagedialog.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/imagedialog.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/imagedialog.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/imagedialog.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/imagedialog.o: /usr/include/stdlib.h
+objs/pc/src/imagedialog.o: /usr/include/bits/waitflags.h
+objs/pc/src/imagedialog.o: /usr/include/bits/waitstatus.h
+objs/pc/src/imagedialog.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/imagedialog.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/imagedialog.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/imagedialog.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/imagedialog.o: /usr/include/iconv.h /usr/include/SDL/begin_code.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/close_code.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_gfxPrimitives.h
+objs/pc/src/imagedialog.o: /usr/include/math.h /usr/include/bits/huge_val.h
+objs/pc/src/imagedialog.o: /usr/include/bits/huge_valf.h
+objs/pc/src/imagedialog.o: /usr/include/bits/huge_vall.h
+objs/pc/src/imagedialog.o: /usr/include/bits/inf.h /usr/include/bits/nan.h
+objs/pc/src/imagedialog.o: /usr/include/bits/mathdef.h
+objs/pc/src/imagedialog.o: /usr/include/bits/mathcalls.h
+objs/pc/src/imagedialog.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
+objs/pc/src/imagedialog.o: /usr/include/dirent.h /usr/include/bits/dirent.h
+objs/pc/src/imagedialog.o: /usr/include/bits/posix1_lim.h
+objs/pc/src/imagedialog.o: /usr/include/bits/local_lim.h
+objs/pc/src/imagedialog.o: /usr/include/linux/limits.h src/imagedialog.h
+objs/pc/src/imagedialog.o: src/filedialog.h src/browsedialog.h
+objs/pc/src/imagedialog.o: src/filelister.h src/gmenu2x.h
+objs/pc/src/imagedialog.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/imagedialog.o: src/button.h src/FastDelegate.h
+objs/pc/src/imagedialog.o: /usr/include/memory.h src/translator.h
+objs/pc/src/imagedialog.o: src/utilities.h src/touchscreen.h
+objs/pc/src/imagedialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/imagedialog.o: /usr/include/bits/uio.h src/inputmanager.h
+objs/pc/src/imagedialog.o: /usr/include/SDL/SDL_image.h src/surface.h
+objs/pc/src/imagedialog.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
+objs/pc/src/imagedialog.o: src/buttonbox.h src/dialog.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/inputdialog.o: /usr/include/sys/types.h /usr/include/features.h
+objs/pc/src/inputdialog.o: /usr/include/sys/cdefs.h
+objs/pc/src/inputdialog.o: /usr/include/bits/wordsize.h
+objs/pc/src/inputdialog.o: /usr/include/gnu/stubs.h
+objs/pc/src/inputdialog.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/inputdialog.o: /usr/include/bits/types.h
+objs/pc/src/inputdialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/inputdialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/inputdialog.o: /usr/include/bits/byteswap.h
+objs/pc/src/inputdialog.o: /usr/include/sys/select.h
+objs/pc/src/inputdialog.o: /usr/include/bits/select.h
+objs/pc/src/inputdialog.o: /usr/include/bits/sigset.h
+objs/pc/src/inputdialog.o: /usr/include/bits/time.h
+objs/pc/src/inputdialog.o: /usr/include/sys/sysmacros.h
+objs/pc/src/inputdialog.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/inputdialog.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/inputdialog.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/inputdialog.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/inputdialog.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/inputdialog.o: /usr/include/stdlib.h
+objs/pc/src/inputdialog.o: /usr/include/bits/waitflags.h
+objs/pc/src/inputdialog.o: /usr/include/bits/waitstatus.h
+objs/pc/src/inputdialog.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/inputdialog.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/inputdialog.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/inputdialog.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/inputdialog.o: /usr/include/iconv.h /usr/include/SDL/begin_code.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/close_code.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_gfxPrimitives.h
+objs/pc/src/inputdialog.o: /usr/include/math.h /usr/include/bits/huge_val.h
+objs/pc/src/inputdialog.o: /usr/include/bits/huge_valf.h
+objs/pc/src/inputdialog.o: /usr/include/bits/huge_vall.h
+objs/pc/src/inputdialog.o: /usr/include/bits/inf.h /usr/include/bits/nan.h
+objs/pc/src/inputdialog.o: /usr/include/bits/mathdef.h
+objs/pc/src/inputdialog.o: /usr/include/bits/mathcalls.h src/inputdialog.h
+objs/pc/src/inputdialog.o: src/gmenu2x.h src/surfacecollection.h
+objs/pc/src/inputdialog.o: src/iconbutton.h src/button.h src/FastDelegate.h
+objs/pc/src/inputdialog.o: /usr/include/memory.h src/translator.h
+objs/pc/src/inputdialog.o: src/utilities.h src/touchscreen.h
+objs/pc/src/inputdialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/inputdialog.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
+objs/pc/src/inputdialog.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
+objs/pc/src/inputdialog.o: src/surface.h src/fonthelper.h
+objs/pc/src/inputdialog.o: /usr/include/SDL/SDL_ttf.h src/dialog.h
+objs/pc/src/inputmanager.o: src/debug.h src/inputmanager.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/inputmanager.o: /usr/include/sys/types.h /usr/include/features.h
+objs/pc/src/inputmanager.o: /usr/include/sys/cdefs.h
+objs/pc/src/inputmanager.o: /usr/include/bits/wordsize.h
+objs/pc/src/inputmanager.o: /usr/include/gnu/stubs.h
+objs/pc/src/inputmanager.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/inputmanager.o: /usr/include/bits/types.h
+objs/pc/src/inputmanager.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/inputmanager.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/inputmanager.o: /usr/include/bits/byteswap.h
+objs/pc/src/inputmanager.o: /usr/include/sys/select.h
+objs/pc/src/inputmanager.o: /usr/include/bits/select.h
+objs/pc/src/inputmanager.o: /usr/include/bits/sigset.h
+objs/pc/src/inputmanager.o: /usr/include/bits/time.h
+objs/pc/src/inputmanager.o: /usr/include/sys/sysmacros.h
+objs/pc/src/inputmanager.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/inputmanager.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/inputmanager.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/inputmanager.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/inputmanager.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/inputmanager.o: /usr/include/stdlib.h
+objs/pc/src/inputmanager.o: /usr/include/bits/waitflags.h
+objs/pc/src/inputmanager.o: /usr/include/bits/waitstatus.h
+objs/pc/src/inputmanager.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/inputmanager.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/inputmanager.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/inputmanager.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/inputmanager.o: /usr/include/iconv.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/begin_code.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/close_code.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/inputmanager.o: /usr/include/SDL/SDL_image.h src/utilities.h
+objs/pc/src/linkaction.o: src/linkaction.h src/FastDelegate.h
+objs/pc/src/linkaction.o: /usr/include/memory.h /usr/include/features.h
+objs/pc/src/linkaction.o: /usr/include/sys/cdefs.h
+objs/pc/src/linkaction.o: /usr/include/bits/wordsize.h
+objs/pc/src/linkaction.o: /usr/include/gnu/stubs.h
+objs/pc/src/linkaction.o: /usr/include/gnu/stubs-64.h src/link.h src/button.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/linkaction.o: /usr/include/sys/types.h /usr/include/bits/types.h
+objs/pc/src/linkaction.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/linkaction.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/linkaction.o: /usr/include/bits/byteswap.h
+objs/pc/src/linkaction.o: /usr/include/sys/select.h
+objs/pc/src/linkaction.o: /usr/include/bits/select.h
+objs/pc/src/linkaction.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/pc/src/linkaction.o: /usr/include/sys/sysmacros.h
+objs/pc/src/linkaction.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/linkaction.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/linkaction.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/linkaction.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/linkaction.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/linkaction.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+objs/pc/src/linkaction.o: /usr/include/bits/waitstatus.h
+objs/pc/src/linkaction.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/linkaction.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/linkaction.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/linkaction.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/linkaction.o: /usr/include/iconv.h /usr/include/SDL/begin_code.h
+objs/pc/src/linkaction.o: /usr/include/SDL/close_code.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_version.h src/surface.h
+objs/pc/src/linkaction.o: /usr/include/SDL/SDL_image.h
+objs/pc/src/linkapp.o: /usr/include/sys/types.h /usr/include/features.h
+objs/pc/src/linkapp.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
+objs/pc/src/linkapp.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+objs/pc/src/linkapp.o: /usr/include/bits/types.h
+objs/pc/src/linkapp.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/linkapp.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/linkapp.o: /usr/include/bits/byteswap.h /usr/include/sys/select.h
+objs/pc/src/linkapp.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
+objs/pc/src/linkapp.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+objs/pc/src/linkapp.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/linkapp.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
+objs/pc/src/linkapp.o: /usr/include/unistd.h /usr/include/bits/posix_opt.h
+objs/pc/src/linkapp.o: /usr/include/bits/environments.h
+objs/pc/src/linkapp.o: /usr/include/bits/confname.h /usr/include/getopt.h
+objs/pc/src/linkapp.o: src/linkapp.h src/link.h src/button.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_platform.h /usr/include/stdio.h
+objs/pc/src/linkapp.o: /usr/include/libio.h /usr/include/_G_config.h
+objs/pc/src/linkapp.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
+objs/pc/src/linkapp.o: /usr/include/bits/sys_errlist.h /usr/include/stdlib.h
+objs/pc/src/linkapp.o: /usr/include/bits/waitflags.h
+objs/pc/src/linkapp.o: /usr/include/bits/waitstatus.h /usr/include/xlocale.h
+objs/pc/src/linkapp.o: /usr/include/alloca.h /usr/include/string.h
+objs/pc/src/linkapp.o: /usr/include/strings.h /usr/include/inttypes.h
+objs/pc/src/linkapp.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+objs/pc/src/linkapp.o: /usr/include/ctype.h /usr/include/iconv.h
+objs/pc/src/linkapp.o: /usr/include/SDL/begin_code.h
+objs/pc/src/linkapp.o: /usr/include/SDL/close_code.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_version.h src/FastDelegate.h
+objs/pc/src/linkapp.o: /usr/include/memory.h src/surface.h
+objs/pc/src/linkapp.o: /usr/include/SDL/SDL_image.h src/menu.h
+objs/pc/src/linkapp.o: src/linkaction.h src/selector.h src/gmenu2x.h
+objs/pc/src/linkapp.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/linkapp.o: src/translator.h src/utilities.h src/touchscreen.h
+objs/pc/src/linkapp.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/linkapp.o: /usr/include/bits/uio.h src/inputmanager.h
+objs/pc/src/linkapp.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
+objs/pc/src/linkapp.o: src/dialog.h src/textmanualdialog.h src/textdialog.h
+objs/pc/src/linkapp.o: src/debug.h
+objs/pc/src/link.o: src/link.h src/button.h /usr/include/SDL/SDL.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_main.h /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_platform.h /usr/include/sys/types.h
+objs/pc/src/link.o: /usr/include/features.h /usr/include/sys/cdefs.h
+objs/pc/src/link.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
+objs/pc/src/link.o: /usr/include/gnu/stubs-64.h /usr/include/bits/types.h
+objs/pc/src/link.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/link.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/link.o: /usr/include/bits/byteswap.h /usr/include/sys/select.h
+objs/pc/src/link.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
+objs/pc/src/link.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+objs/pc/src/link.o: /usr/include/bits/pthreadtypes.h /usr/include/stdio.h
+objs/pc/src/link.o: /usr/include/libio.h /usr/include/_G_config.h
+objs/pc/src/link.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
+objs/pc/src/link.o: /usr/include/bits/sys_errlist.h /usr/include/stdlib.h
+objs/pc/src/link.o: /usr/include/bits/waitflags.h
+objs/pc/src/link.o: /usr/include/bits/waitstatus.h /usr/include/xlocale.h
+objs/pc/src/link.o: /usr/include/alloca.h /usr/include/string.h
+objs/pc/src/link.o: /usr/include/strings.h /usr/include/inttypes.h
+objs/pc/src/link.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+objs/pc/src/link.o: /usr/include/ctype.h /usr/include/iconv.h
+objs/pc/src/link.o: /usr/include/SDL/begin_code.h
+objs/pc/src/link.o: /usr/include/SDL/close_code.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_audio.h /usr/include/SDL/SDL_error.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_rwops.h /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_mouse.h /usr/include/SDL/SDL_video.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_quit.h /usr/include/SDL/SDL_loadso.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_version.h src/FastDelegate.h
+objs/pc/src/link.o: /usr/include/memory.h src/surface.h
+objs/pc/src/link.o: /usr/include/SDL/SDL_image.h src/menu.h src/linkaction.h
+objs/pc/src/link.o: src/selector.h src/gmenu2x.h src/surfacecollection.h
+objs/pc/src/link.o: src/iconbutton.h src/translator.h src/utilities.h
+objs/pc/src/link.o: src/touchscreen.h /usr/include/fcntl.h
+objs/pc/src/link.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
+objs/pc/src/link.o: /usr/include/bits/stat.h src/inputmanager.h
+objs/pc/src/link.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h src/dialog.h
+objs/pc/src/listview.o: src/listview.h src/gmenu2x.h src/surfacecollection.h
+objs/pc/src/listview.o: src/iconbutton.h src/button.h /usr/include/SDL/SDL.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/listview.o: /usr/include/sys/types.h /usr/include/features.h
+objs/pc/src/listview.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
+objs/pc/src/listview.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+objs/pc/src/listview.o: /usr/include/bits/types.h
+objs/pc/src/listview.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/listview.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/listview.o: /usr/include/bits/byteswap.h
+objs/pc/src/listview.o: /usr/include/sys/select.h /usr/include/bits/select.h
+objs/pc/src/listview.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/pc/src/listview.o: /usr/include/sys/sysmacros.h
+objs/pc/src/listview.o: /usr/include/bits/pthreadtypes.h /usr/include/stdio.h
+objs/pc/src/listview.o: /usr/include/libio.h /usr/include/_G_config.h
+objs/pc/src/listview.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
+objs/pc/src/listview.o: /usr/include/bits/sys_errlist.h /usr/include/stdlib.h
+objs/pc/src/listview.o: /usr/include/bits/waitflags.h
+objs/pc/src/listview.o: /usr/include/bits/waitstatus.h /usr/include/xlocale.h
+objs/pc/src/listview.o: /usr/include/alloca.h /usr/include/string.h
+objs/pc/src/listview.o: /usr/include/strings.h /usr/include/inttypes.h
+objs/pc/src/listview.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+objs/pc/src/listview.o: /usr/include/ctype.h /usr/include/iconv.h
+objs/pc/src/listview.o: /usr/include/SDL/begin_code.h
+objs/pc/src/listview.o: /usr/include/SDL/close_code.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_version.h src/FastDelegate.h
+objs/pc/src/listview.o: /usr/include/memory.h src/translator.h
+objs/pc/src/listview.o: src/utilities.h src/touchscreen.h
+objs/pc/src/listview.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/listview.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
+objs/pc/src/listview.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
+objs/pc/src/listview.o: src/surface.h src/fonthelper.h
+objs/pc/src/listview.o: /usr/include/SDL/SDL_ttf.h src/listviewitem.h
+objs/pc/src/listviewitem.o: src/listview.h src/gmenu2x.h
+objs/pc/src/listviewitem.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/listviewitem.o: src/button.h /usr/include/SDL/SDL.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/listviewitem.o: /usr/include/sys/types.h /usr/include/features.h
+objs/pc/src/listviewitem.o: /usr/include/sys/cdefs.h
+objs/pc/src/listviewitem.o: /usr/include/bits/wordsize.h
+objs/pc/src/listviewitem.o: /usr/include/gnu/stubs.h
+objs/pc/src/listviewitem.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/listviewitem.o: /usr/include/bits/types.h
+objs/pc/src/listviewitem.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/listviewitem.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/listviewitem.o: /usr/include/bits/byteswap.h
+objs/pc/src/listviewitem.o: /usr/include/sys/select.h
+objs/pc/src/listviewitem.o: /usr/include/bits/select.h
+objs/pc/src/listviewitem.o: /usr/include/bits/sigset.h
+objs/pc/src/listviewitem.o: /usr/include/bits/time.h
+objs/pc/src/listviewitem.o: /usr/include/sys/sysmacros.h
+objs/pc/src/listviewitem.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/listviewitem.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/listviewitem.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/listviewitem.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/listviewitem.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/listviewitem.o: /usr/include/stdlib.h
+objs/pc/src/listviewitem.o: /usr/include/bits/waitflags.h
+objs/pc/src/listviewitem.o: /usr/include/bits/waitstatus.h
+objs/pc/src/listviewitem.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/listviewitem.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/listviewitem.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/listviewitem.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/listviewitem.o: /usr/include/iconv.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/begin_code.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/close_code.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_version.h src/FastDelegate.h
+objs/pc/src/listviewitem.o: /usr/include/memory.h src/translator.h
+objs/pc/src/listviewitem.o: src/utilities.h src/touchscreen.h
+objs/pc/src/listviewitem.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/listviewitem.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
+objs/pc/src/listviewitem.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
+objs/pc/src/listviewitem.o: src/surface.h src/fonthelper.h
+objs/pc/src/listviewitem.o: /usr/include/SDL/SDL_ttf.h src/listviewitem.h
+objs/pc/src/menu.o: /usr/include/sys/stat.h /usr/include/features.h
+objs/pc/src/menu.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
+objs/pc/src/menu.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+objs/pc/src/menu.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
+objs/pc/src/menu.o: /usr/include/time.h /usr/include/bits/stat.h
+objs/pc/src/menu.o: /usr/include/sys/types.h /usr/include/endian.h
+objs/pc/src/menu.o: /usr/include/bits/endian.h /usr/include/bits/byteswap.h
+objs/pc/src/menu.o: /usr/include/sys/select.h /usr/include/bits/select.h
+objs/pc/src/menu.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/pc/src/menu.o: /usr/include/sys/sysmacros.h
+objs/pc/src/menu.o: /usr/include/bits/pthreadtypes.h /usr/include/dirent.h
+objs/pc/src/menu.o: /usr/include/bits/dirent.h /usr/include/bits/posix1_lim.h
+objs/pc/src/menu.o: /usr/include/bits/local_lim.h /usr/include/linux/limits.h
+objs/pc/src/menu.o: /usr/include/math.h /usr/include/bits/huge_val.h
+objs/pc/src/menu.o: /usr/include/bits/huge_valf.h
+objs/pc/src/menu.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
+objs/pc/src/menu.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
+objs/pc/src/menu.o: /usr/include/bits/mathcalls.h src/gmenu2x.h
+objs/pc/src/menu.o: src/surfacecollection.h src/iconbutton.h src/button.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL_platform.h /usr/include/stdio.h
+objs/pc/src/menu.o: /usr/include/libio.h /usr/include/_G_config.h
+objs/pc/src/menu.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
+objs/pc/src/menu.o: /usr/include/bits/sys_errlist.h /usr/include/stdlib.h
+objs/pc/src/menu.o: /usr/include/bits/waitflags.h
+objs/pc/src/menu.o: /usr/include/bits/waitstatus.h /usr/include/xlocale.h
+objs/pc/src/menu.o: /usr/include/alloca.h /usr/include/string.h
+objs/pc/src/menu.o: /usr/include/strings.h /usr/include/inttypes.h
+objs/pc/src/menu.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+objs/pc/src/menu.o: /usr/include/ctype.h /usr/include/iconv.h
+objs/pc/src/menu.o: /usr/include/SDL/begin_code.h
+objs/pc/src/menu.o: /usr/include/SDL/close_code.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL_audio.h /usr/include/SDL/SDL_error.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL_rwops.h /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL_mouse.h /usr/include/SDL/SDL_video.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL_quit.h /usr/include/SDL/SDL_loadso.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/menu.o: /usr/include/SDL/SDL_version.h src/FastDelegate.h
+objs/pc/src/menu.o: /usr/include/memory.h src/translator.h src/utilities.h
+objs/pc/src/menu.o: src/touchscreen.h /usr/include/fcntl.h
+objs/pc/src/menu.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
+objs/pc/src/menu.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
+objs/pc/src/menu.o: src/surface.h src/fonthelper.h /usr/include/SDL/SDL_ttf.h
+objs/pc/src/menu.o: src/linkapp.h src/link.h src/menu.h src/linkaction.h
+objs/pc/src/menu.o: src/filelister.h src/debug.h
+objs/pc/src/menusettingbool.o: src/menusettingbool.h src/menusetting.h
+objs/pc/src/menusettingbool.o: src/buttonbox.h src/gmenu2x.h
+objs/pc/src/menusettingbool.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/menusettingbool.o: src/button.h /usr/include/SDL/SDL.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/menusettingbool.o: /usr/include/sys/types.h
+objs/pc/src/menusettingbool.o: /usr/include/features.h
+objs/pc/src/menusettingbool.o: /usr/include/sys/cdefs.h
+objs/pc/src/menusettingbool.o: /usr/include/bits/wordsize.h
+objs/pc/src/menusettingbool.o: /usr/include/gnu/stubs.h
+objs/pc/src/menusettingbool.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/menusettingbool.o: /usr/include/bits/types.h
+objs/pc/src/menusettingbool.o: /usr/include/bits/typesizes.h
+objs/pc/src/menusettingbool.o: /usr/include/time.h /usr/include/endian.h
+objs/pc/src/menusettingbool.o: /usr/include/bits/endian.h
+objs/pc/src/menusettingbool.o: /usr/include/bits/byteswap.h
+objs/pc/src/menusettingbool.o: /usr/include/sys/select.h
+objs/pc/src/menusettingbool.o: /usr/include/bits/select.h
+objs/pc/src/menusettingbool.o: /usr/include/bits/sigset.h
+objs/pc/src/menusettingbool.o: /usr/include/bits/time.h
+objs/pc/src/menusettingbool.o: /usr/include/sys/sysmacros.h
+objs/pc/src/menusettingbool.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/menusettingbool.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/menusettingbool.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/menusettingbool.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/menusettingbool.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/menusettingbool.o: /usr/include/stdlib.h
+objs/pc/src/menusettingbool.o: /usr/include/bits/waitflags.h
+objs/pc/src/menusettingbool.o: /usr/include/bits/waitstatus.h
+objs/pc/src/menusettingbool.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/menusettingbool.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/menusettingbool.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/menusettingbool.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/menusettingbool.o: /usr/include/iconv.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/begin_code.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/close_code.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/menusettingbool.o: src/FastDelegate.h /usr/include/memory.h
+objs/pc/src/menusettingbool.o: src/translator.h src/utilities.h
+objs/pc/src/menusettingbool.o: src/touchscreen.h /usr/include/fcntl.h
+objs/pc/src/menusettingbool.o: /usr/include/bits/fcntl.h
+objs/pc/src/menusettingbool.o: /usr/include/bits/uio.h
+objs/pc/src/menusettingbool.o: /usr/include/bits/stat.h src/inputmanager.h
+objs/pc/src/menusettingbool.o: /usr/include/SDL/SDL_image.h src/surface.h
+objs/pc/src/menusettingbool.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
+objs/pc/src/menusetting.o: src/menusetting.h src/buttonbox.h src/fonthelper.h
+objs/pc/src/menusetting.o: src/surface.h /usr/include/SDL/SDL.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/menusetting.o: /usr/include/sys/types.h /usr/include/features.h
+objs/pc/src/menusetting.o: /usr/include/sys/cdefs.h
+objs/pc/src/menusetting.o: /usr/include/bits/wordsize.h
+objs/pc/src/menusetting.o: /usr/include/gnu/stubs.h
+objs/pc/src/menusetting.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/menusetting.o: /usr/include/bits/types.h
+objs/pc/src/menusetting.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/menusetting.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/menusetting.o: /usr/include/bits/byteswap.h
+objs/pc/src/menusetting.o: /usr/include/sys/select.h
+objs/pc/src/menusetting.o: /usr/include/bits/select.h
+objs/pc/src/menusetting.o: /usr/include/bits/sigset.h
+objs/pc/src/menusetting.o: /usr/include/bits/time.h
+objs/pc/src/menusetting.o: /usr/include/sys/sysmacros.h
+objs/pc/src/menusetting.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/menusetting.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/menusetting.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/menusetting.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/menusetting.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/menusetting.o: /usr/include/stdlib.h
+objs/pc/src/menusetting.o: /usr/include/bits/waitflags.h
+objs/pc/src/menusetting.o: /usr/include/bits/waitstatus.h
+objs/pc/src/menusetting.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/menusetting.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/menusetting.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/menusetting.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/menusetting.o: /usr/include/iconv.h /usr/include/SDL/begin_code.h
+objs/pc/src/menusetting.o: /usr/include/SDL/close_code.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_image.h
+objs/pc/src/menusetting.o: /usr/include/SDL/SDL_ttf.h src/gmenu2x.h
+objs/pc/src/menusetting.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/menusetting.o: src/button.h src/FastDelegate.h
+objs/pc/src/menusetting.o: /usr/include/memory.h src/translator.h
+objs/pc/src/menusetting.o: src/utilities.h src/touchscreen.h
+objs/pc/src/menusetting.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/menusetting.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
+objs/pc/src/menusetting.o: src/inputmanager.h
+objs/pc/src/menusettingdir.o: src/menusettingdir.h
+objs/pc/src/menusettingdir.o: src/menusettingstringbase.h src/menusetting.h
+objs/pc/src/menusettingdir.o: src/buttonbox.h src/iconbutton.h src/button.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/menusettingdir.o: /usr/include/sys/types.h
+objs/pc/src/menusettingdir.o: /usr/include/features.h
+objs/pc/src/menusettingdir.o: /usr/include/sys/cdefs.h
+objs/pc/src/menusettingdir.o: /usr/include/bits/wordsize.h
+objs/pc/src/menusettingdir.o: /usr/include/gnu/stubs.h
+objs/pc/src/menusettingdir.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/menusettingdir.o: /usr/include/bits/types.h
+objs/pc/src/menusettingdir.o: /usr/include/bits/typesizes.h
+objs/pc/src/menusettingdir.o: /usr/include/time.h /usr/include/endian.h
+objs/pc/src/menusettingdir.o: /usr/include/bits/endian.h
+objs/pc/src/menusettingdir.o: /usr/include/bits/byteswap.h
+objs/pc/src/menusettingdir.o: /usr/include/sys/select.h
+objs/pc/src/menusettingdir.o: /usr/include/bits/select.h
+objs/pc/src/menusettingdir.o: /usr/include/bits/sigset.h
+objs/pc/src/menusettingdir.o: /usr/include/bits/time.h
+objs/pc/src/menusettingdir.o: /usr/include/sys/sysmacros.h
+objs/pc/src/menusettingdir.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/menusettingdir.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/menusettingdir.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/menusettingdir.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/menusettingdir.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/menusettingdir.o: /usr/include/stdlib.h
+objs/pc/src/menusettingdir.o: /usr/include/bits/waitflags.h
+objs/pc/src/menusettingdir.o: /usr/include/bits/waitstatus.h
+objs/pc/src/menusettingdir.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/menusettingdir.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/menusettingdir.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/menusettingdir.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/menusettingdir.o: /usr/include/iconv.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/begin_code.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/close_code.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/menusettingdir.o: src/FastDelegate.h /usr/include/memory.h
+objs/pc/src/menusettingdir.o: src/dirdialog.h src/gmenu2x.h
+objs/pc/src/menusettingdir.o: src/surfacecollection.h src/translator.h
+objs/pc/src/menusettingdir.o: src/utilities.h src/touchscreen.h
+objs/pc/src/menusettingdir.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/menusettingdir.o: /usr/include/bits/uio.h
+objs/pc/src/menusettingdir.o: /usr/include/bits/stat.h src/inputmanager.h
+objs/pc/src/menusettingdir.o: /usr/include/SDL/SDL_image.h src/surface.h
+objs/pc/src/menusettingdir.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
+objs/pc/src/menusettingdir.o: src/browsedialog.h src/filelister.h
+objs/pc/src/menusettingdir.o: src/dialog.h
+objs/pc/src/menusettingfile.o: src/menusettingfile.h
+objs/pc/src/menusettingfile.o: src/menusettingstringbase.h src/menusetting.h
+objs/pc/src/menusettingfile.o: src/buttonbox.h src/iconbutton.h src/button.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/menusettingfile.o: /usr/include/sys/types.h
+objs/pc/src/menusettingfile.o: /usr/include/features.h
+objs/pc/src/menusettingfile.o: /usr/include/sys/cdefs.h
+objs/pc/src/menusettingfile.o: /usr/include/bits/wordsize.h
+objs/pc/src/menusettingfile.o: /usr/include/gnu/stubs.h
+objs/pc/src/menusettingfile.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/menusettingfile.o: /usr/include/bits/types.h
+objs/pc/src/menusettingfile.o: /usr/include/bits/typesizes.h
+objs/pc/src/menusettingfile.o: /usr/include/time.h /usr/include/endian.h
+objs/pc/src/menusettingfile.o: /usr/include/bits/endian.h
+objs/pc/src/menusettingfile.o: /usr/include/bits/byteswap.h
+objs/pc/src/menusettingfile.o: /usr/include/sys/select.h
+objs/pc/src/menusettingfile.o: /usr/include/bits/select.h
+objs/pc/src/menusettingfile.o: /usr/include/bits/sigset.h
+objs/pc/src/menusettingfile.o: /usr/include/bits/time.h
+objs/pc/src/menusettingfile.o: /usr/include/sys/sysmacros.h
+objs/pc/src/menusettingfile.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/menusettingfile.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/menusettingfile.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/menusettingfile.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/menusettingfile.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/menusettingfile.o: /usr/include/stdlib.h
+objs/pc/src/menusettingfile.o: /usr/include/bits/waitflags.h
+objs/pc/src/menusettingfile.o: /usr/include/bits/waitstatus.h
+objs/pc/src/menusettingfile.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/menusettingfile.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/menusettingfile.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/menusettingfile.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/menusettingfile.o: /usr/include/iconv.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/begin_code.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/close_code.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/menusettingfile.o: src/FastDelegate.h /usr/include/memory.h
+objs/pc/src/menusettingfile.o: src/filedialog.h src/browsedialog.h
+objs/pc/src/menusettingfile.o: src/filelister.h src/gmenu2x.h
+objs/pc/src/menusettingfile.o: src/surfacecollection.h src/translator.h
+objs/pc/src/menusettingfile.o: src/utilities.h src/touchscreen.h
+objs/pc/src/menusettingfile.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/menusettingfile.o: /usr/include/bits/uio.h
+objs/pc/src/menusettingfile.o: /usr/include/bits/stat.h src/inputmanager.h
+objs/pc/src/menusettingfile.o: /usr/include/SDL/SDL_image.h src/surface.h
+objs/pc/src/menusettingfile.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
+objs/pc/src/menusettingfile.o: src/dialog.h
+objs/pc/src/menusettingimage.o: src/menusettingimage.h src/menusettingfile.h
+objs/pc/src/menusettingimage.o: src/menusettingstringbase.h src/menusetting.h
+objs/pc/src/menusettingimage.o: src/buttonbox.h src/imagedialog.h
+objs/pc/src/menusettingimage.o: src/filedialog.h src/browsedialog.h
+objs/pc/src/menusettingimage.o: src/filelister.h src/gmenu2x.h
+objs/pc/src/menusettingimage.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/menusettingimage.o: src/button.h /usr/include/SDL/SDL.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/menusettingimage.o: /usr/include/sys/types.h
+objs/pc/src/menusettingimage.o: /usr/include/features.h
+objs/pc/src/menusettingimage.o: /usr/include/sys/cdefs.h
+objs/pc/src/menusettingimage.o: /usr/include/bits/wordsize.h
+objs/pc/src/menusettingimage.o: /usr/include/gnu/stubs.h
+objs/pc/src/menusettingimage.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/menusettingimage.o: /usr/include/bits/types.h
+objs/pc/src/menusettingimage.o: /usr/include/bits/typesizes.h
+objs/pc/src/menusettingimage.o: /usr/include/time.h /usr/include/endian.h
+objs/pc/src/menusettingimage.o: /usr/include/bits/endian.h
+objs/pc/src/menusettingimage.o: /usr/include/bits/byteswap.h
+objs/pc/src/menusettingimage.o: /usr/include/sys/select.h
+objs/pc/src/menusettingimage.o: /usr/include/bits/select.h
+objs/pc/src/menusettingimage.o: /usr/include/bits/sigset.h
+objs/pc/src/menusettingimage.o: /usr/include/bits/time.h
+objs/pc/src/menusettingimage.o: /usr/include/sys/sysmacros.h
+objs/pc/src/menusettingimage.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/menusettingimage.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/menusettingimage.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/menusettingimage.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/menusettingimage.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/menusettingimage.o: /usr/include/stdlib.h
+objs/pc/src/menusettingimage.o: /usr/include/bits/waitflags.h
+objs/pc/src/menusettingimage.o: /usr/include/bits/waitstatus.h
+objs/pc/src/menusettingimage.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/menusettingimage.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/menusettingimage.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/menusettingimage.o: /usr/include/bits/wchar.h
+objs/pc/src/menusettingimage.o: /usr/include/ctype.h /usr/include/iconv.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/begin_code.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/close_code.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/menusettingimage.o: src/FastDelegate.h /usr/include/memory.h
+objs/pc/src/menusettingimage.o: src/translator.h src/utilities.h
+objs/pc/src/menusettingimage.o: src/touchscreen.h /usr/include/fcntl.h
+objs/pc/src/menusettingimage.o: /usr/include/bits/fcntl.h
+objs/pc/src/menusettingimage.o: /usr/include/bits/uio.h
+objs/pc/src/menusettingimage.o: /usr/include/bits/stat.h src/inputmanager.h
+objs/pc/src/menusettingimage.o: /usr/include/SDL/SDL_image.h src/surface.h
+objs/pc/src/menusettingimage.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
+objs/pc/src/menusettingimage.o: src/dialog.h
+objs/pc/src/menusettingint.o: src/menusettingint.h src/menusetting.h
+objs/pc/src/menusettingint.o: src/buttonbox.h src/gmenu2x.h
+objs/pc/src/menusettingint.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/menusettingint.o: src/button.h /usr/include/SDL/SDL.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/menusettingint.o: /usr/include/sys/types.h
+objs/pc/src/menusettingint.o: /usr/include/features.h
+objs/pc/src/menusettingint.o: /usr/include/sys/cdefs.h
+objs/pc/src/menusettingint.o: /usr/include/bits/wordsize.h
+objs/pc/src/menusettingint.o: /usr/include/gnu/stubs.h
+objs/pc/src/menusettingint.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/menusettingint.o: /usr/include/bits/types.h
+objs/pc/src/menusettingint.o: /usr/include/bits/typesizes.h
+objs/pc/src/menusettingint.o: /usr/include/time.h /usr/include/endian.h
+objs/pc/src/menusettingint.o: /usr/include/bits/endian.h
+objs/pc/src/menusettingint.o: /usr/include/bits/byteswap.h
+objs/pc/src/menusettingint.o: /usr/include/sys/select.h
+objs/pc/src/menusettingint.o: /usr/include/bits/select.h
+objs/pc/src/menusettingint.o: /usr/include/bits/sigset.h
+objs/pc/src/menusettingint.o: /usr/include/bits/time.h
+objs/pc/src/menusettingint.o: /usr/include/sys/sysmacros.h
+objs/pc/src/menusettingint.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/menusettingint.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/menusettingint.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/menusettingint.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/menusettingint.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/menusettingint.o: /usr/include/stdlib.h
+objs/pc/src/menusettingint.o: /usr/include/bits/waitflags.h
+objs/pc/src/menusettingint.o: /usr/include/bits/waitstatus.h
+objs/pc/src/menusettingint.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/menusettingint.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/menusettingint.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/menusettingint.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/menusettingint.o: /usr/include/iconv.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/begin_code.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/close_code.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/menusettingint.o: src/FastDelegate.h /usr/include/memory.h
+objs/pc/src/menusettingint.o: src/translator.h src/utilities.h
+objs/pc/src/menusettingint.o: src/touchscreen.h /usr/include/fcntl.h
+objs/pc/src/menusettingint.o: /usr/include/bits/fcntl.h
+objs/pc/src/menusettingint.o: /usr/include/bits/uio.h
+objs/pc/src/menusettingint.o: /usr/include/bits/stat.h src/inputmanager.h
+objs/pc/src/menusettingint.o: /usr/include/SDL/SDL_image.h src/surface.h
+objs/pc/src/menusettingint.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
+objs/pc/src/menusettingmultistring.o: src/menusettingmultistring.h
+objs/pc/src/menusettingmultistring.o: src/menusettingstringbase.h
+objs/pc/src/menusettingmultistring.o: src/menusetting.h src/buttonbox.h
+objs/pc/src/menusettingmultistring.o: src/gmenu2x.h src/surfacecollection.h
+objs/pc/src/menusettingmultistring.o: src/iconbutton.h src/button.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/menusettingmultistring.o: /usr/include/sys/types.h
+objs/pc/src/menusettingmultistring.o: /usr/include/features.h
+objs/pc/src/menusettingmultistring.o: /usr/include/sys/cdefs.h
+objs/pc/src/menusettingmultistring.o: /usr/include/bits/wordsize.h
+objs/pc/src/menusettingmultistring.o: /usr/include/gnu/stubs.h
+objs/pc/src/menusettingmultistring.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/menusettingmultistring.o: /usr/include/bits/types.h
+objs/pc/src/menusettingmultistring.o: /usr/include/bits/typesizes.h
+objs/pc/src/menusettingmultistring.o: /usr/include/time.h
+objs/pc/src/menusettingmultistring.o: /usr/include/endian.h
+objs/pc/src/menusettingmultistring.o: /usr/include/bits/endian.h
+objs/pc/src/menusettingmultistring.o: /usr/include/bits/byteswap.h
+objs/pc/src/menusettingmultistring.o: /usr/include/sys/select.h
+objs/pc/src/menusettingmultistring.o: /usr/include/bits/select.h
+objs/pc/src/menusettingmultistring.o: /usr/include/bits/sigset.h
+objs/pc/src/menusettingmultistring.o: /usr/include/bits/time.h
+objs/pc/src/menusettingmultistring.o: /usr/include/sys/sysmacros.h
+objs/pc/src/menusettingmultistring.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/menusettingmultistring.o: /usr/include/stdio.h
+objs/pc/src/menusettingmultistring.o: /usr/include/libio.h
+objs/pc/src/menusettingmultistring.o: /usr/include/_G_config.h
+objs/pc/src/menusettingmultistring.o: /usr/include/wchar.h
+objs/pc/src/menusettingmultistring.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/menusettingmultistring.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/menusettingmultistring.o: /usr/include/stdlib.h
+objs/pc/src/menusettingmultistring.o: /usr/include/bits/waitflags.h
+objs/pc/src/menusettingmultistring.o: /usr/include/bits/waitstatus.h
+objs/pc/src/menusettingmultistring.o: /usr/include/xlocale.h
+objs/pc/src/menusettingmultistring.o: /usr/include/alloca.h
+objs/pc/src/menusettingmultistring.o: /usr/include/string.h
+objs/pc/src/menusettingmultistring.o: /usr/include/strings.h
+objs/pc/src/menusettingmultistring.o: /usr/include/inttypes.h
+objs/pc/src/menusettingmultistring.o: /usr/include/stdint.h
+objs/pc/src/menusettingmultistring.o: /usr/include/bits/wchar.h
+objs/pc/src/menusettingmultistring.o: /usr/include/ctype.h
+objs/pc/src/menusettingmultistring.o: /usr/include/iconv.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/begin_code.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/close_code.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/menusettingmultistring.o: src/FastDelegate.h
+objs/pc/src/menusettingmultistring.o: /usr/include/memory.h src/translator.h
+objs/pc/src/menusettingmultistring.o: src/utilities.h src/touchscreen.h
+objs/pc/src/menusettingmultistring.o: /usr/include/fcntl.h
+objs/pc/src/menusettingmultistring.o: /usr/include/bits/fcntl.h
+objs/pc/src/menusettingmultistring.o: /usr/include/bits/uio.h
+objs/pc/src/menusettingmultistring.o: /usr/include/bits/stat.h
+objs/pc/src/menusettingmultistring.o: src/inputmanager.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_image.h
+objs/pc/src/menusettingmultistring.o: src/surface.h src/fonthelper.h
+objs/pc/src/menusettingmultistring.o: /usr/include/SDL/SDL_ttf.h
+objs/pc/src/menusettingrgba.o: src/menusettingrgba.h src/menusetting.h
+objs/pc/src/menusettingrgba.o: src/buttonbox.h src/surface.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/menusettingrgba.o: /usr/include/sys/types.h
+objs/pc/src/menusettingrgba.o: /usr/include/features.h
+objs/pc/src/menusettingrgba.o: /usr/include/sys/cdefs.h
+objs/pc/src/menusettingrgba.o: /usr/include/bits/wordsize.h
+objs/pc/src/menusettingrgba.o: /usr/include/gnu/stubs.h
+objs/pc/src/menusettingrgba.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/menusettingrgba.o: /usr/include/bits/types.h
+objs/pc/src/menusettingrgba.o: /usr/include/bits/typesizes.h
+objs/pc/src/menusettingrgba.o: /usr/include/time.h /usr/include/endian.h
+objs/pc/src/menusettingrgba.o: /usr/include/bits/endian.h
+objs/pc/src/menusettingrgba.o: /usr/include/bits/byteswap.h
+objs/pc/src/menusettingrgba.o: /usr/include/sys/select.h
+objs/pc/src/menusettingrgba.o: /usr/include/bits/select.h
+objs/pc/src/menusettingrgba.o: /usr/include/bits/sigset.h
+objs/pc/src/menusettingrgba.o: /usr/include/bits/time.h
+objs/pc/src/menusettingrgba.o: /usr/include/sys/sysmacros.h
+objs/pc/src/menusettingrgba.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/menusettingrgba.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/menusettingrgba.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/menusettingrgba.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/menusettingrgba.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/menusettingrgba.o: /usr/include/stdlib.h
+objs/pc/src/menusettingrgba.o: /usr/include/bits/waitflags.h
+objs/pc/src/menusettingrgba.o: /usr/include/bits/waitstatus.h
+objs/pc/src/menusettingrgba.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/menusettingrgba.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/menusettingrgba.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/menusettingrgba.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/menusettingrgba.o: /usr/include/iconv.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/begin_code.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/close_code.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/menusettingrgba.o: /usr/include/SDL/SDL_image.h src/gmenu2x.h
+objs/pc/src/menusettingrgba.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/menusettingrgba.o: src/button.h src/FastDelegate.h
+objs/pc/src/menusettingrgba.o: /usr/include/memory.h src/translator.h
+objs/pc/src/menusettingrgba.o: src/utilities.h src/touchscreen.h
+objs/pc/src/menusettingrgba.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/menusettingrgba.o: /usr/include/bits/uio.h
+objs/pc/src/menusettingrgba.o: /usr/include/bits/stat.h src/inputmanager.h
+objs/pc/src/menusettingrgba.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
+objs/pc/src/menusettingstringbase.o: src/menusettingstringbase.h
+objs/pc/src/menusettingstringbase.o: src/menusetting.h src/buttonbox.h
+objs/pc/src/menusettingstringbase.o: src/gmenu2x.h src/surfacecollection.h
+objs/pc/src/menusettingstringbase.o: src/iconbutton.h src/button.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/menusettingstringbase.o: /usr/include/sys/types.h
+objs/pc/src/menusettingstringbase.o: /usr/include/features.h
+objs/pc/src/menusettingstringbase.o: /usr/include/sys/cdefs.h
+objs/pc/src/menusettingstringbase.o: /usr/include/bits/wordsize.h
+objs/pc/src/menusettingstringbase.o: /usr/include/gnu/stubs.h
+objs/pc/src/menusettingstringbase.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/menusettingstringbase.o: /usr/include/bits/types.h
+objs/pc/src/menusettingstringbase.o: /usr/include/bits/typesizes.h
+objs/pc/src/menusettingstringbase.o: /usr/include/time.h
+objs/pc/src/menusettingstringbase.o: /usr/include/endian.h
+objs/pc/src/menusettingstringbase.o: /usr/include/bits/endian.h
+objs/pc/src/menusettingstringbase.o: /usr/include/bits/byteswap.h
+objs/pc/src/menusettingstringbase.o: /usr/include/sys/select.h
+objs/pc/src/menusettingstringbase.o: /usr/include/bits/select.h
+objs/pc/src/menusettingstringbase.o: /usr/include/bits/sigset.h
+objs/pc/src/menusettingstringbase.o: /usr/include/bits/time.h
+objs/pc/src/menusettingstringbase.o: /usr/include/sys/sysmacros.h
+objs/pc/src/menusettingstringbase.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/menusettingstringbase.o: /usr/include/stdio.h
+objs/pc/src/menusettingstringbase.o: /usr/include/libio.h
+objs/pc/src/menusettingstringbase.o: /usr/include/_G_config.h
+objs/pc/src/menusettingstringbase.o: /usr/include/wchar.h
+objs/pc/src/menusettingstringbase.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/menusettingstringbase.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/menusettingstringbase.o: /usr/include/stdlib.h
+objs/pc/src/menusettingstringbase.o: /usr/include/bits/waitflags.h
+objs/pc/src/menusettingstringbase.o: /usr/include/bits/waitstatus.h
+objs/pc/src/menusettingstringbase.o: /usr/include/xlocale.h
+objs/pc/src/menusettingstringbase.o: /usr/include/alloca.h
+objs/pc/src/menusettingstringbase.o: /usr/include/string.h
+objs/pc/src/menusettingstringbase.o: /usr/include/strings.h
+objs/pc/src/menusettingstringbase.o: /usr/include/inttypes.h
+objs/pc/src/menusettingstringbase.o: /usr/include/stdint.h
+objs/pc/src/menusettingstringbase.o: /usr/include/bits/wchar.h
+objs/pc/src/menusettingstringbase.o: /usr/include/ctype.h
+objs/pc/src/menusettingstringbase.o: /usr/include/iconv.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/begin_code.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/close_code.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/menusettingstringbase.o: src/FastDelegate.h /usr/include/memory.h
+objs/pc/src/menusettingstringbase.o: src/translator.h src/utilities.h
+objs/pc/src/menusettingstringbase.o: src/touchscreen.h /usr/include/fcntl.h
+objs/pc/src/menusettingstringbase.o: /usr/include/bits/fcntl.h
+objs/pc/src/menusettingstringbase.o: /usr/include/bits/uio.h
+objs/pc/src/menusettingstringbase.o: /usr/include/bits/stat.h
+objs/pc/src/menusettingstringbase.o: src/inputmanager.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_image.h
+objs/pc/src/menusettingstringbase.o: src/surface.h src/fonthelper.h
+objs/pc/src/menusettingstringbase.o: /usr/include/SDL/SDL_ttf.h
+objs/pc/src/menusettingstring.o: src/menusettingstring.h
+objs/pc/src/menusettingstring.o: src/menusettingstringbase.h
+objs/pc/src/menusettingstring.o: src/menusetting.h src/buttonbox.h
+objs/pc/src/menusettingstring.o: src/iconbutton.h src/button.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/menusettingstring.o: /usr/include/sys/types.h
+objs/pc/src/menusettingstring.o: /usr/include/features.h
+objs/pc/src/menusettingstring.o: /usr/include/sys/cdefs.h
+objs/pc/src/menusettingstring.o: /usr/include/bits/wordsize.h
+objs/pc/src/menusettingstring.o: /usr/include/gnu/stubs.h
+objs/pc/src/menusettingstring.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/menusettingstring.o: /usr/include/bits/types.h
+objs/pc/src/menusettingstring.o: /usr/include/bits/typesizes.h
+objs/pc/src/menusettingstring.o: /usr/include/time.h /usr/include/endian.h
+objs/pc/src/menusettingstring.o: /usr/include/bits/endian.h
+objs/pc/src/menusettingstring.o: /usr/include/bits/byteswap.h
+objs/pc/src/menusettingstring.o: /usr/include/sys/select.h
+objs/pc/src/menusettingstring.o: /usr/include/bits/select.h
+objs/pc/src/menusettingstring.o: /usr/include/bits/sigset.h
+objs/pc/src/menusettingstring.o: /usr/include/bits/time.h
+objs/pc/src/menusettingstring.o: /usr/include/sys/sysmacros.h
+objs/pc/src/menusettingstring.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/menusettingstring.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/menusettingstring.o: /usr/include/_G_config.h
+objs/pc/src/menusettingstring.o: /usr/include/wchar.h
+objs/pc/src/menusettingstring.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/menusettingstring.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/menusettingstring.o: /usr/include/stdlib.h
+objs/pc/src/menusettingstring.o: /usr/include/bits/waitflags.h
+objs/pc/src/menusettingstring.o: /usr/include/bits/waitstatus.h
+objs/pc/src/menusettingstring.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/menusettingstring.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/menusettingstring.o: /usr/include/inttypes.h
+objs/pc/src/menusettingstring.o: /usr/include/stdint.h
+objs/pc/src/menusettingstring.o: /usr/include/bits/wchar.h
+objs/pc/src/menusettingstring.o: /usr/include/ctype.h /usr/include/iconv.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/begin_code.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/close_code.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/menusettingstring.o: src/FastDelegate.h /usr/include/memory.h
+objs/pc/src/menusettingstring.o: src/inputdialog.h src/gmenu2x.h
+objs/pc/src/menusettingstring.o: src/surfacecollection.h src/translator.h
+objs/pc/src/menusettingstring.o: src/utilities.h src/touchscreen.h
+objs/pc/src/menusettingstring.o: /usr/include/fcntl.h
+objs/pc/src/menusettingstring.o: /usr/include/bits/fcntl.h
+objs/pc/src/menusettingstring.o: /usr/include/bits/uio.h
+objs/pc/src/menusettingstring.o: /usr/include/bits/stat.h src/inputmanager.h
+objs/pc/src/menusettingstring.o: /usr/include/SDL/SDL_image.h src/surface.h
+objs/pc/src/menusettingstring.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
+objs/pc/src/menusettingstring.o: src/dialog.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/messagebox.o: /usr/include/sys/types.h /usr/include/features.h
+objs/pc/src/messagebox.o: /usr/include/sys/cdefs.h
+objs/pc/src/messagebox.o: /usr/include/bits/wordsize.h
+objs/pc/src/messagebox.o: /usr/include/gnu/stubs.h
+objs/pc/src/messagebox.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/messagebox.o: /usr/include/bits/types.h
+objs/pc/src/messagebox.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/messagebox.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/messagebox.o: /usr/include/bits/byteswap.h
+objs/pc/src/messagebox.o: /usr/include/sys/select.h
+objs/pc/src/messagebox.o: /usr/include/bits/select.h
+objs/pc/src/messagebox.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/pc/src/messagebox.o: /usr/include/sys/sysmacros.h
+objs/pc/src/messagebox.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/messagebox.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/messagebox.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/messagebox.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/messagebox.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/messagebox.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+objs/pc/src/messagebox.o: /usr/include/bits/waitstatus.h
+objs/pc/src/messagebox.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/messagebox.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/messagebox.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/messagebox.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/messagebox.o: /usr/include/iconv.h /usr/include/SDL/begin_code.h
+objs/pc/src/messagebox.o: /usr/include/SDL/close_code.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_gfxPrimitives.h
+objs/pc/src/messagebox.o: /usr/include/math.h /usr/include/bits/huge_val.h
+objs/pc/src/messagebox.o: /usr/include/bits/huge_valf.h
+objs/pc/src/messagebox.o: /usr/include/bits/huge_vall.h
+objs/pc/src/messagebox.o: /usr/include/bits/inf.h /usr/include/bits/nan.h
+objs/pc/src/messagebox.o: /usr/include/bits/mathdef.h
+objs/pc/src/messagebox.o: /usr/include/bits/mathcalls.h src/messagebox.h
+objs/pc/src/messagebox.o: src/gmenu2x.h src/surfacecollection.h
+objs/pc/src/messagebox.o: src/iconbutton.h src/button.h src/FastDelegate.h
+objs/pc/src/messagebox.o: /usr/include/memory.h src/translator.h
+objs/pc/src/messagebox.o: src/utilities.h src/touchscreen.h
+objs/pc/src/messagebox.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/messagebox.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
+objs/pc/src/messagebox.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
+objs/pc/src/messagebox.o: src/surface.h src/fonthelper.h
+objs/pc/src/messagebox.o: /usr/include/SDL/SDL_ttf.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/selector.o: /usr/include/sys/types.h /usr/include/features.h
+objs/pc/src/selector.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
+objs/pc/src/selector.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+objs/pc/src/selector.o: /usr/include/bits/types.h
+objs/pc/src/selector.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/selector.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/selector.o: /usr/include/bits/byteswap.h
+objs/pc/src/selector.o: /usr/include/sys/select.h /usr/include/bits/select.h
+objs/pc/src/selector.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/pc/src/selector.o: /usr/include/sys/sysmacros.h
+objs/pc/src/selector.o: /usr/include/bits/pthreadtypes.h /usr/include/stdio.h
+objs/pc/src/selector.o: /usr/include/libio.h /usr/include/_G_config.h
+objs/pc/src/selector.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
+objs/pc/src/selector.o: /usr/include/bits/sys_errlist.h /usr/include/stdlib.h
+objs/pc/src/selector.o: /usr/include/bits/waitflags.h
+objs/pc/src/selector.o: /usr/include/bits/waitstatus.h /usr/include/xlocale.h
+objs/pc/src/selector.o: /usr/include/alloca.h /usr/include/string.h
+objs/pc/src/selector.o: /usr/include/strings.h /usr/include/inttypes.h
+objs/pc/src/selector.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+objs/pc/src/selector.o: /usr/include/ctype.h /usr/include/iconv.h
+objs/pc/src/selector.o: /usr/include/SDL/begin_code.h
+objs/pc/src/selector.o: /usr/include/SDL/close_code.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/selector.o: /usr/include/SDL/SDL_gfxPrimitives.h
+objs/pc/src/selector.o: /usr/include/math.h /usr/include/bits/huge_val.h
+objs/pc/src/selector.o: /usr/include/bits/huge_valf.h
+objs/pc/src/selector.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
+objs/pc/src/selector.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
+objs/pc/src/selector.o: /usr/include/bits/mathcalls.h /usr/include/sys/stat.h
+objs/pc/src/selector.o: /usr/include/bits/stat.h /usr/include/dirent.h
+objs/pc/src/selector.o: /usr/include/bits/dirent.h
+objs/pc/src/selector.o: /usr/include/bits/posix1_lim.h
+objs/pc/src/selector.o: /usr/include/bits/local_lim.h
+objs/pc/src/selector.o: /usr/include/linux/limits.h src/menu.h
+objs/pc/src/selector.o: src/linkaction.h src/FastDelegate.h
+objs/pc/src/selector.o: /usr/include/memory.h src/link.h src/button.h
+objs/pc/src/selector.o: src/surface.h /usr/include/SDL/SDL_image.h
+objs/pc/src/selector.o: src/linkapp.h src/selector.h src/gmenu2x.h
+objs/pc/src/selector.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/selector.o: src/translator.h src/utilities.h src/touchscreen.h
+objs/pc/src/selector.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/selector.o: /usr/include/bits/uio.h src/inputmanager.h
+objs/pc/src/selector.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
+objs/pc/src/selector.o: src/dialog.h src/filelister.h src/debug.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/settingsdialog.o: /usr/include/sys/types.h
+objs/pc/src/settingsdialog.o: /usr/include/features.h
+objs/pc/src/settingsdialog.o: /usr/include/sys/cdefs.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/wordsize.h
+objs/pc/src/settingsdialog.o: /usr/include/gnu/stubs.h
+objs/pc/src/settingsdialog.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/types.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/typesizes.h
+objs/pc/src/settingsdialog.o: /usr/include/time.h /usr/include/endian.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/endian.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/byteswap.h
+objs/pc/src/settingsdialog.o: /usr/include/sys/select.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/select.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/sigset.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/time.h
+objs/pc/src/settingsdialog.o: /usr/include/sys/sysmacros.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/settingsdialog.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/settingsdialog.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/settingsdialog.o: /usr/include/stdlib.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/waitflags.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/waitstatus.h
+objs/pc/src/settingsdialog.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/settingsdialog.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/settingsdialog.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/settingsdialog.o: /usr/include/iconv.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/begin_code.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/close_code.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_gfxPrimitives.h
+objs/pc/src/settingsdialog.o: /usr/include/math.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/huge_val.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/huge_valf.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/huge_vall.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/inf.h /usr/include/bits/nan.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/mathdef.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/mathcalls.h
+objs/pc/src/settingsdialog.o: src/settingsdialog.h src/gmenu2x.h
+objs/pc/src/settingsdialog.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/settingsdialog.o: src/button.h src/FastDelegate.h
+objs/pc/src/settingsdialog.o: /usr/include/memory.h src/translator.h
+objs/pc/src/settingsdialog.o: src/utilities.h src/touchscreen.h
+objs/pc/src/settingsdialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/uio.h
+objs/pc/src/settingsdialog.o: /usr/include/bits/stat.h src/inputmanager.h
+objs/pc/src/settingsdialog.o: /usr/include/SDL/SDL_image.h src/surface.h
+objs/pc/src/settingsdialog.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
+objs/pc/src/settingsdialog.o: src/menusetting.h src/buttonbox.h src/dialog.h
+objs/pc/src/surfacecollection.o: src/surfacecollection.h src/surface.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/surfacecollection.o: /usr/include/sys/types.h
+objs/pc/src/surfacecollection.o: /usr/include/features.h
+objs/pc/src/surfacecollection.o: /usr/include/sys/cdefs.h
+objs/pc/src/surfacecollection.o: /usr/include/bits/wordsize.h
+objs/pc/src/surfacecollection.o: /usr/include/gnu/stubs.h
+objs/pc/src/surfacecollection.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/surfacecollection.o: /usr/include/bits/types.h
+objs/pc/src/surfacecollection.o: /usr/include/bits/typesizes.h
+objs/pc/src/surfacecollection.o: /usr/include/time.h /usr/include/endian.h
+objs/pc/src/surfacecollection.o: /usr/include/bits/endian.h
+objs/pc/src/surfacecollection.o: /usr/include/bits/byteswap.h
+objs/pc/src/surfacecollection.o: /usr/include/sys/select.h
+objs/pc/src/surfacecollection.o: /usr/include/bits/select.h
+objs/pc/src/surfacecollection.o: /usr/include/bits/sigset.h
+objs/pc/src/surfacecollection.o: /usr/include/bits/time.h
+objs/pc/src/surfacecollection.o: /usr/include/sys/sysmacros.h
+objs/pc/src/surfacecollection.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/surfacecollection.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/surfacecollection.o: /usr/include/_G_config.h
+objs/pc/src/surfacecollection.o: /usr/include/wchar.h
+objs/pc/src/surfacecollection.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/surfacecollection.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/surfacecollection.o: /usr/include/stdlib.h
+objs/pc/src/surfacecollection.o: /usr/include/bits/waitflags.h
+objs/pc/src/surfacecollection.o: /usr/include/bits/waitstatus.h
+objs/pc/src/surfacecollection.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/surfacecollection.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/surfacecollection.o: /usr/include/inttypes.h
+objs/pc/src/surfacecollection.o: /usr/include/stdint.h
+objs/pc/src/surfacecollection.o: /usr/include/bits/wchar.h
+objs/pc/src/surfacecollection.o: /usr/include/ctype.h /usr/include/iconv.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/begin_code.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/close_code.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/surfacecollection.o: /usr/include/SDL/SDL_image.h src/utilities.h
+objs/pc/src/surfacecollection.o: src/debug.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_gfxPrimitives.h
+objs/pc/src/surface.o: /usr/include/math.h /usr/include/features.h
+objs/pc/src/surface.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
+objs/pc/src/surface.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+objs/pc/src/surface.o: /usr/include/bits/huge_val.h
+objs/pc/src/surface.o: /usr/include/bits/huge_valf.h
+objs/pc/src/surface.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
+objs/pc/src/surface.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
+objs/pc/src/surface.o: /usr/include/bits/mathcalls.h /usr/include/SDL/SDL.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/surface.o: /usr/include/sys/types.h /usr/include/bits/types.h
+objs/pc/src/surface.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/surface.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/surface.o: /usr/include/bits/byteswap.h /usr/include/sys/select.h
+objs/pc/src/surface.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
+objs/pc/src/surface.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+objs/pc/src/surface.o: /usr/include/bits/pthreadtypes.h /usr/include/stdio.h
+objs/pc/src/surface.o: /usr/include/libio.h /usr/include/_G_config.h
+objs/pc/src/surface.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
+objs/pc/src/surface.o: /usr/include/bits/sys_errlist.h /usr/include/stdlib.h
+objs/pc/src/surface.o: /usr/include/bits/waitflags.h
+objs/pc/src/surface.o: /usr/include/bits/waitstatus.h /usr/include/xlocale.h
+objs/pc/src/surface.o: /usr/include/alloca.h /usr/include/string.h
+objs/pc/src/surface.o: /usr/include/strings.h /usr/include/inttypes.h
+objs/pc/src/surface.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+objs/pc/src/surface.o: /usr/include/ctype.h /usr/include/iconv.h
+objs/pc/src/surface.o: /usr/include/SDL/begin_code.h
+objs/pc/src/surface.o: /usr/include/SDL/close_code.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_version.h src/surface.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_image.h src/fonthelper.h
+objs/pc/src/surface.o: /usr/include/SDL/SDL_ttf.h src/utilities.h src/debug.h
+objs/pc/src/textdialog.o: src/textdialog.h src/gmenu2x.h
+objs/pc/src/textdialog.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/textdialog.o: src/button.h /usr/include/SDL/SDL.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/textdialog.o: /usr/include/sys/types.h /usr/include/features.h
+objs/pc/src/textdialog.o: /usr/include/sys/cdefs.h
+objs/pc/src/textdialog.o: /usr/include/bits/wordsize.h
+objs/pc/src/textdialog.o: /usr/include/gnu/stubs.h
+objs/pc/src/textdialog.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/textdialog.o: /usr/include/bits/types.h
+objs/pc/src/textdialog.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/textdialog.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/textdialog.o: /usr/include/bits/byteswap.h
+objs/pc/src/textdialog.o: /usr/include/sys/select.h
+objs/pc/src/textdialog.o: /usr/include/bits/select.h
+objs/pc/src/textdialog.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/pc/src/textdialog.o: /usr/include/sys/sysmacros.h
+objs/pc/src/textdialog.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/textdialog.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/textdialog.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/textdialog.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/textdialog.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/textdialog.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+objs/pc/src/textdialog.o: /usr/include/bits/waitstatus.h
+objs/pc/src/textdialog.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/textdialog.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/textdialog.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/textdialog.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/textdialog.o: /usr/include/iconv.h /usr/include/SDL/begin_code.h
+objs/pc/src/textdialog.o: /usr/include/SDL/close_code.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_version.h src/FastDelegate.h
+objs/pc/src/textdialog.o: /usr/include/memory.h src/translator.h
+objs/pc/src/textdialog.o: src/utilities.h src/touchscreen.h
+objs/pc/src/textdialog.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/textdialog.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
+objs/pc/src/textdialog.o: src/inputmanager.h /usr/include/SDL/SDL_image.h
+objs/pc/src/textdialog.o: src/surface.h src/fonthelper.h
+objs/pc/src/textdialog.o: /usr/include/SDL/SDL_ttf.h src/dialog.h
+objs/pc/src/textmanualdialog.o: src/textmanualdialog.h src/textdialog.h
+objs/pc/src/textmanualdialog.o: src/gmenu2x.h src/surfacecollection.h
+objs/pc/src/textmanualdialog.o: src/iconbutton.h src/button.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/textmanualdialog.o: /usr/include/sys/types.h
+objs/pc/src/textmanualdialog.o: /usr/include/features.h
+objs/pc/src/textmanualdialog.o: /usr/include/sys/cdefs.h
+objs/pc/src/textmanualdialog.o: /usr/include/bits/wordsize.h
+objs/pc/src/textmanualdialog.o: /usr/include/gnu/stubs.h
+objs/pc/src/textmanualdialog.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/textmanualdialog.o: /usr/include/bits/types.h
+objs/pc/src/textmanualdialog.o: /usr/include/bits/typesizes.h
+objs/pc/src/textmanualdialog.o: /usr/include/time.h /usr/include/endian.h
+objs/pc/src/textmanualdialog.o: /usr/include/bits/endian.h
+objs/pc/src/textmanualdialog.o: /usr/include/bits/byteswap.h
+objs/pc/src/textmanualdialog.o: /usr/include/sys/select.h
+objs/pc/src/textmanualdialog.o: /usr/include/bits/select.h
+objs/pc/src/textmanualdialog.o: /usr/include/bits/sigset.h
+objs/pc/src/textmanualdialog.o: /usr/include/bits/time.h
+objs/pc/src/textmanualdialog.o: /usr/include/sys/sysmacros.h
+objs/pc/src/textmanualdialog.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/textmanualdialog.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/textmanualdialog.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/textmanualdialog.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/textmanualdialog.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/textmanualdialog.o: /usr/include/stdlib.h
+objs/pc/src/textmanualdialog.o: /usr/include/bits/waitflags.h
+objs/pc/src/textmanualdialog.o: /usr/include/bits/waitstatus.h
+objs/pc/src/textmanualdialog.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/textmanualdialog.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/textmanualdialog.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/textmanualdialog.o: /usr/include/bits/wchar.h
+objs/pc/src/textmanualdialog.o: /usr/include/ctype.h /usr/include/iconv.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/begin_code.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/close_code.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/textmanualdialog.o: src/FastDelegate.h /usr/include/memory.h
+objs/pc/src/textmanualdialog.o: src/translator.h src/utilities.h
+objs/pc/src/textmanualdialog.o: src/touchscreen.h /usr/include/fcntl.h
+objs/pc/src/textmanualdialog.o: /usr/include/bits/fcntl.h
+objs/pc/src/textmanualdialog.o: /usr/include/bits/uio.h
+objs/pc/src/textmanualdialog.o: /usr/include/bits/stat.h src/inputmanager.h
+objs/pc/src/textmanualdialog.o: /usr/include/SDL/SDL_image.h src/surface.h
+objs/pc/src/textmanualdialog.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
+objs/pc/src/textmanualdialog.o: src/dialog.h
+objs/pc/src/touchscreen.o: /usr/include/unistd.h /usr/include/features.h
+objs/pc/src/touchscreen.o: /usr/include/sys/cdefs.h
+objs/pc/src/touchscreen.o: /usr/include/bits/wordsize.h
+objs/pc/src/touchscreen.o: /usr/include/gnu/stubs.h
+objs/pc/src/touchscreen.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/touchscreen.o: /usr/include/bits/posix_opt.h
+objs/pc/src/touchscreen.o: /usr/include/bits/environments.h
+objs/pc/src/touchscreen.o: /usr/include/bits/types.h
+objs/pc/src/touchscreen.o: /usr/include/bits/typesizes.h
+objs/pc/src/touchscreen.o: /usr/include/bits/confname.h /usr/include/getopt.h
+objs/pc/src/touchscreen.o: src/touchscreen.h /usr/include/SDL/SDL.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/touchscreen.o: /usr/include/sys/types.h /usr/include/time.h
+objs/pc/src/touchscreen.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/touchscreen.o: /usr/include/bits/byteswap.h
+objs/pc/src/touchscreen.o: /usr/include/sys/select.h
+objs/pc/src/touchscreen.o: /usr/include/bits/select.h
+objs/pc/src/touchscreen.o: /usr/include/bits/sigset.h
+objs/pc/src/touchscreen.o: /usr/include/bits/time.h
+objs/pc/src/touchscreen.o: /usr/include/sys/sysmacros.h
+objs/pc/src/touchscreen.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/touchscreen.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/touchscreen.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/touchscreen.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/touchscreen.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/touchscreen.o: /usr/include/stdlib.h
+objs/pc/src/touchscreen.o: /usr/include/bits/waitflags.h
+objs/pc/src/touchscreen.o: /usr/include/bits/waitstatus.h
+objs/pc/src/touchscreen.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/touchscreen.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/touchscreen.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/touchscreen.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/touchscreen.o: /usr/include/iconv.h /usr/include/SDL/begin_code.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/close_code.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/touchscreen.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/touchscreen.o: /usr/include/fcntl.h /usr/include/bits/fcntl.h
+objs/pc/src/touchscreen.o: /usr/include/bits/uio.h /usr/include/bits/stat.h
+objs/pc/src/translator.o: src/translator.h src/utilities.h src/debug.h
+objs/pc/src/utilities.o: /usr/include/sys/stat.h /usr/include/features.h
+objs/pc/src/utilities.o: /usr/include/sys/cdefs.h
+objs/pc/src/utilities.o: /usr/include/bits/wordsize.h
+objs/pc/src/utilities.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+objs/pc/src/utilities.o: /usr/include/bits/types.h
+objs/pc/src/utilities.o: /usr/include/bits/typesizes.h /usr/include/time.h
+objs/pc/src/utilities.o: /usr/include/bits/stat.h /usr/include/sys/types.h
+objs/pc/src/utilities.o: /usr/include/endian.h /usr/include/bits/endian.h
+objs/pc/src/utilities.o: /usr/include/bits/byteswap.h
+objs/pc/src/utilities.o: /usr/include/sys/select.h /usr/include/bits/select.h
+objs/pc/src/utilities.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+objs/pc/src/utilities.o: /usr/include/sys/sysmacros.h
+objs/pc/src/utilities.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/utilities.o: /usr/include/dirent.h /usr/include/bits/dirent.h
+objs/pc/src/utilities.o: /usr/include/bits/posix1_lim.h
+objs/pc/src/utilities.o: /usr/include/bits/local_lim.h
+objs/pc/src/utilities.o: /usr/include/linux/limits.h /usr/include/stdio.h
+objs/pc/src/utilities.o: /usr/include/libio.h /usr/include/_G_config.h
+objs/pc/src/utilities.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
+objs/pc/src/utilities.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/utilities.o: /usr/include/strings.h /usr/include/math.h
+objs/pc/src/utilities.o: /usr/include/bits/huge_val.h
+objs/pc/src/utilities.o: /usr/include/bits/huge_valf.h
+objs/pc/src/utilities.o: /usr/include/bits/huge_vall.h
+objs/pc/src/utilities.o: /usr/include/bits/inf.h /usr/include/bits/nan.h
+objs/pc/src/utilities.o: /usr/include/bits/mathdef.h
+objs/pc/src/utilities.o: /usr/include/bits/mathcalls.h /usr/include/SDL/SDL.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/utilities.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+objs/pc/src/utilities.o: /usr/include/bits/waitstatus.h
+objs/pc/src/utilities.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/utilities.o: /usr/include/string.h /usr/include/inttypes.h
+objs/pc/src/utilities.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+objs/pc/src/utilities.o: /usr/include/ctype.h /usr/include/iconv.h
+objs/pc/src/utilities.o: /usr/include/SDL/begin_code.h
+objs/pc/src/utilities.o: /usr/include/SDL/close_code.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/utilities.o: /usr/include/SDL/SDL_version.h src/utilities.h
+objs/pc/src/utilities.o: src/debug.h
+objs/pc/src/wallpaperdialog.o: src/wallpaperdialog.h src/gmenu2x.h
+objs/pc/src/wallpaperdialog.o: src/surfacecollection.h src/iconbutton.h
+objs/pc/src/wallpaperdialog.o: src/button.h /usr/include/SDL/SDL.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_main.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_stdinc.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_config.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_platform.h
+objs/pc/src/wallpaperdialog.o: /usr/include/sys/types.h
+objs/pc/src/wallpaperdialog.o: /usr/include/features.h
+objs/pc/src/wallpaperdialog.o: /usr/include/sys/cdefs.h
+objs/pc/src/wallpaperdialog.o: /usr/include/bits/wordsize.h
+objs/pc/src/wallpaperdialog.o: /usr/include/gnu/stubs.h
+objs/pc/src/wallpaperdialog.o: /usr/include/gnu/stubs-64.h
+objs/pc/src/wallpaperdialog.o: /usr/include/bits/types.h
+objs/pc/src/wallpaperdialog.o: /usr/include/bits/typesizes.h
+objs/pc/src/wallpaperdialog.o: /usr/include/time.h /usr/include/endian.h
+objs/pc/src/wallpaperdialog.o: /usr/include/bits/endian.h
+objs/pc/src/wallpaperdialog.o: /usr/include/bits/byteswap.h
+objs/pc/src/wallpaperdialog.o: /usr/include/sys/select.h
+objs/pc/src/wallpaperdialog.o: /usr/include/bits/select.h
+objs/pc/src/wallpaperdialog.o: /usr/include/bits/sigset.h
+objs/pc/src/wallpaperdialog.o: /usr/include/bits/time.h
+objs/pc/src/wallpaperdialog.o: /usr/include/sys/sysmacros.h
+objs/pc/src/wallpaperdialog.o: /usr/include/bits/pthreadtypes.h
+objs/pc/src/wallpaperdialog.o: /usr/include/stdio.h /usr/include/libio.h
+objs/pc/src/wallpaperdialog.o: /usr/include/_G_config.h /usr/include/wchar.h
+objs/pc/src/wallpaperdialog.o: /usr/include/bits/stdio_lim.h
+objs/pc/src/wallpaperdialog.o: /usr/include/bits/sys_errlist.h
+objs/pc/src/wallpaperdialog.o: /usr/include/stdlib.h
+objs/pc/src/wallpaperdialog.o: /usr/include/bits/waitflags.h
+objs/pc/src/wallpaperdialog.o: /usr/include/bits/waitstatus.h
+objs/pc/src/wallpaperdialog.o: /usr/include/xlocale.h /usr/include/alloca.h
+objs/pc/src/wallpaperdialog.o: /usr/include/string.h /usr/include/strings.h
+objs/pc/src/wallpaperdialog.o: /usr/include/inttypes.h /usr/include/stdint.h
+objs/pc/src/wallpaperdialog.o: /usr/include/bits/wchar.h /usr/include/ctype.h
+objs/pc/src/wallpaperdialog.o: /usr/include/iconv.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/begin_code.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/close_code.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_audio.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_error.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_endian.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_mutex.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_thread.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_rwops.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_cdrom.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_cpuinfo.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_events.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_active.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_keyboard.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_keysym.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_mouse.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_video.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_joystick.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_quit.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_loadso.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_timer.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_version.h
+objs/pc/src/wallpaperdialog.o: src/FastDelegate.h /usr/include/memory.h
+objs/pc/src/wallpaperdialog.o: src/translator.h src/utilities.h
+objs/pc/src/wallpaperdialog.o: src/touchscreen.h /usr/include/fcntl.h
+objs/pc/src/wallpaperdialog.o: /usr/include/bits/fcntl.h
+objs/pc/src/wallpaperdialog.o: /usr/include/bits/uio.h
+objs/pc/src/wallpaperdialog.o: /usr/include/bits/stat.h src/inputmanager.h
+objs/pc/src/wallpaperdialog.o: /usr/include/SDL/SDL_image.h src/surface.h
+objs/pc/src/wallpaperdialog.o: src/fonthelper.h /usr/include/SDL/SDL_ttf.h
+objs/pc/src/wallpaperdialog.o: src/dialog.h src/filelister.h src/debug.h
