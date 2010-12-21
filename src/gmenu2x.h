@@ -140,6 +140,8 @@ private:
 	void initFont();
 	void initMenu();
 
+	IconButton *btnContextMenu;
+
 	unsigned int memdev;
 	volatile unsigned short *memregs;
 #ifdef TARGET_GP2X

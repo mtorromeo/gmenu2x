@@ -306,6 +306,7 @@ GMenu2X::GMenu2X() {
 #endif
 
 	bg = NULL;
+	btnContextMenu = NULL;
 	font = NULL;
 	menu = NULL;
 	setSkin(confStr["skin"], false);
@@ -807,9 +808,9 @@ void GMenu2X::main() {
 	uint sectionsCoordX = 24;
 	SDL_Rect re = {0,0,0,0};
 
-	IconButton btnContextMenu(this,"skin:imgs/menu.png");
-	btnContextMenu.setPosition(resX-38, bottomBarIconY);
-	btnContextMenu.setAction(MakeDelegate(this, &GMenu2X::contextMenu));
+	btnContextMenu = new IconButton(this,"skin:imgs/menu.png");
+	btnContextMenu->setPosition(resX-38, bottomBarIconY);
+	btnContextMenu->setAction(MakeDelegate(this, &GMenu2X::contextMenu));
 
 	while (!quit) {
 		tickNow = SDL_GetTicks();
@@ -876,7 +877,7 @@ void GMenu2X::main() {
 		}
 
 		if (f200) {
-			btnContextMenu.paint();
+			btnContextMenu->paint();
 		}
 		//check battery status every 60 seconds
 		if (tickNow-tickBattery >= 60000) {
@@ -913,7 +914,7 @@ void GMenu2X::main() {
 		//touchscreen
 		if (f200) {
 			ts.poll();
-			btnContextMenu.handleTS();
+			btnContextMenu->handleTS();
 			re.x = 0; re.y = 0; re.h = skinConfInt["topBarHeight"]; re.w = resX;
 			if (ts.pressed() && ts.inRect(re)) {
 				re.w = skinConfInt["linkWidth"];
@@ -992,6 +993,9 @@ void GMenu2X::main() {
 			}
 		}
 	}
+
+	free(btnContextMenu);
+	btnContextMenu = NULL;
 }
 
 void GMenu2X::explorer() {
@@ -1139,6 +1143,8 @@ void GMenu2X::setSkin(const string &skin, bool setWallpaper) {
 	//clear collection and change the skin path
 	sc.clear();
 	sc.setSkin(skin);
+	if (btnContextMenu != NULL)
+		btnContextMenu->setIcon( btnContextMenu->getIcon() );
 
 	//reset colors to the default values
 	skinConfColors[COLOR_TOP_BAR_BG] = (RGBAColor){255,255,255,130};

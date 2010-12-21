@@ -17,8 +17,7 @@ IconButton::IconButton(GMenu2X *gmenu2x_, const string &icon,
 	updateSurfaces();
 }
 
-void IconButton::updateSurfaces()
-{
+void IconButton::updateSurfaces() {
 	iconSurface = gmenu2x->sc[icon];
 	recalcSize();
 }
