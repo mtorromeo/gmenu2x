@@ -263,7 +263,7 @@ GMenu2X::GMenu2X() {
 	path = "";
 	getExePath();
 
-#if TARGET_GP2X
+#if defined(TARGET_GP2X)
 	cx25874 = 0;
 #endif
 	batteryHandle = 0;
