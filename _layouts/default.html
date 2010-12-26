@@ -43,7 +43,12 @@
 			{% endif %}
 		</nav>
 		<section id="main">{{ content }}</section>
-		<footer>{{ site.time | date: "%Y" }} &mdash; <a href="&#109;&#97;&#x69;&#x6c;&#116;&#111;&#x3a;&#x6d;&#x61;&#115;&#x73;&#x69;&#109;&#105;&#x6c;&#105;&#x61;&#110;&#x6f;&#x2e;&#116;&#x6f;&#x72;&#114;&#x6f;&#x6d;&#x65;&#x6f;&#64;&#x67;&#109;&#97;&#105;&#x6c;&#x2e;&#99;&#111;&#109;">Massimiliano Torromeo</a></footer>
+		<footer>
+			<div style="float:right">
+				Last update: {{ site.time | date: "%d %B %Y" }}
+			</div>
+			2006-{{ site.time | date: "%Y" }} &mdash; <a href="&#109;&#97;&#x69;&#x6c;&#116;&#111;&#x3a;&#x6d;&#x61;&#115;&#x73;&#x69;&#109;&#105;&#x6c;&#105;&#x61;&#110;&#x6f;&#x2e;&#116;&#x6f;&#x72;&#114;&#x6f;&#x6d;&#x65;&#x6f;&#64;&#x67;&#109;&#97;&#105;&#x6c;&#x2e;&#99;&#111;&#109;">Massimiliano Torromeo</a>
+		</footer>
 
 		<script src="http://www.google.com/jsapi?key=ABQIAAAAhliYjbvH13n6EJDPx9D3WhS7pV_IMEZ6_snDFb1sWXjQFLU2lRR_F46ccAQ7hUqtQlvKCRqf3L6lmA" type="text/javascript"></script>
 		<script type="text/javascript">google.load("mootools", "1.2");</script>
