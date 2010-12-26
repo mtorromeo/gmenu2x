@@ -105,7 +105,6 @@ void SurfaceCollection::del(const string &path) {
 
 void SurfaceCollection::clear() {
 	while (surfaces.size()>0) {
-		surfaces.begin()->second->free();
 		delete surfaces.begin()->second;
 		surfaces.erase(surfaces.begin());
 	}

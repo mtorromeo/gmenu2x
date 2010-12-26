@@ -103,8 +103,10 @@ void Surface::enableVirtualDoubleBuffer(SDL_Surface *surface) {
 }
 
 void Surface::free() {
-	if (raw!=NULL) SDL_FreeSurface( raw );
-	if (dblbuffer!=NULL) SDL_FreeSurface( dblbuffer );
+	SDL_FreeSurface( raw );
+	SDL_FreeSurface( dblbuffer );
+	raw = NULL;
+	dblbuffer = NULL;
 }
 
 SDL_PixelFormat *Surface::format() {
