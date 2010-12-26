@@ -132,18 +132,18 @@ h4 {
 	font-weight: normal;
 }
 h1 {
-	font-size: 20pt;
+	font-size: 26px;
 }
 h2 {
-	font-size: 18pt;
+	font-size: 24px;
 	margin-top: 15px;
 }
 h3 {
-	font-size: 14pt;
+	font-size: 20px;
 	margin-top: 10px;
 }
 h4 {
-	font-size: 13pt;
+	font-size: 16px;
 	margin-top: 5px;
 }
 p, ul, ol {
