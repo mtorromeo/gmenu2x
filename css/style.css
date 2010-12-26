@@ -308,8 +308,8 @@ footer a, footer a:link, footer a:visited {
 	position: relative;
 	float: right;
 	width: 320px;
-	height: 240px;
-	margin: 0 0 5px 5px;
+	height: 200px;
+	margin: 0 0 5px 20px;
 }
 #slideshow img {
 	position: absolute;
