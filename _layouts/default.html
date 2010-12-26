@@ -30,12 +30,15 @@
 		</header>
 		<nav id="menu">
 			<a href="/gmenu2x/">Home</a>
-			<a href="/gmenu2x/documentation.html">Documentation</a>
-			<a href="/gmenu2x/compilation-instructions.html">Compilation Instructions</a>
+			<a href="/gmenu2x/documentation/">Documentation</a>
+			<a href="/gmenu2x/documentation/compilation-instructions.html">Compilation Instructions</a>
 			<a href="/gmenu2x/troubleshooting.html">Troubleshooting</a>
 		</nav>
 		<nav id="breadcrumbs">
 			<a href="/gmenu2x/">Home</a>
+			{% if page.parent %}
+				<a href="/gmenu2x/{{ page.parent.url }}">{{ page.parent.title }}</a>
+			{% endif %}
 			{% if page.url != '/index.html' %}
 				<a href="/gmenu2x{{ page.url }}">{{ page.title }}</a>
 			{% endif %}

@@ -1,6 +1,9 @@
 ---
 layout: default
 title: Compilation Instructions
+parent:
+  title: Documentation
+  url: documentation/
 ---
 
 ## Requirements
@@ -30,11 +33,11 @@ The project directory contains various Makefiles for the different supported tar
 To compile GMenu2X for a x86/x86_64 linux system, issue the following command:
 
 {% highlight bash %}
-make -f Makefile.linux
+make -f Makefile.pc
 {% endhighlight %}
 
 The main Makefile targets the GP2X device and supports both static and shared libraries compilation (default).
-The OPEN2X global variable needs to be exported and point to the toolchain directory (e.g. /opt/open2x/gcc-4.1.1-glibc-2.3.6)
+The OPEN2X global variable needs to be exported and point to the toolchain directory (e.g. /opt/open2x/gcc-4.1.1-glibc-2.3.6).
 To build a static binary:
 
 {% highlight bash %}
