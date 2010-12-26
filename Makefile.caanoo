@@ -46,9 +46,8 @@ clean:
 
 dist: dir shared
 	install -m755 -D $(APPNAME) $(DISTDIR)/gmenu2x
-	install -m644 assets/$(TARGET)/input.conf $(DISTDIR)
 	install -m755 -d $(DISTDIR)/sections/applications $(DISTDIR)/sections/emulators $(DISTDIR)/sections/games $(DISTDIR)/sections/settings
-	cp -R assets/skins assets/translations assets/$(TARGET)/sections $(DISTDIR)
+	cp -R assets/skins assets/translations assets/$(TARGET)/* $(DISTDIR)
 
 depend:
 	makedepend -fMakefile.$(TARGET) -p$(OBJDIR)/ -- $(CFLAGS) -- src/*.cpp
