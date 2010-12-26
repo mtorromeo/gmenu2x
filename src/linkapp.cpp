@@ -275,9 +275,6 @@ void LinkApp::showManual() {
 	// Png manuals
 	string ext8 = manual.substr(manual.size()-8,8);
 	if (ext8==".man.png" || ext8==".man.bmp" || ext8==".man.jpg" || manual.substr(manual.size()-9,9)==".man.jpeg") {
-		//Raise the clock to speed-up the loading of the manual
-		gmenu2x->setClock(200);
-
 		Surface pngman(manual);
 		Surface bg(gmenu2x->confStr["wallpaper"],false);
 		stringstream ss;
@@ -289,9 +286,6 @@ void LinkApp::showManual() {
 		ss << pagecount;
 		string spagecount;
 		ss >> spagecount;
-
-		//Lower the clock
-		gmenu2x->setClock(gmenu2x->confInt["menuClock"]);
 
 		while (!close) {
 			if (repaint) {
@@ -321,38 +315,23 @@ void LinkApp::showManual() {
 		return;
 	}
 
-	// Txt manuals
-	if (manual.substr(manual.size()-8,8)==".man.txt") {
-		vector<string> txtman;
-
-		string line;
-		ifstream infile(manual.c_str(), ios_base::in);
-		if (infile.is_open()) {
-			gmenu2x->setClock(200);
-			while (getline(infile, line, '\n')) txtman.push_back(line);
-			infile.close();
-
-			TextManualDialog tmd(gmenu2x, getTitle(), getIconPath(), &txtman);
-			gmenu2x->setClock(gmenu2x->confInt["menuClock"]);
-			tmd.exec();
-		}
-
-		return;
-	}
-
-	//Readmes
-	vector<string> readme;
+	// Txt manuals and readmes
+	vector<string> txtman;
 
 	string line;
 	ifstream infile(manual.c_str(), ios_base::in);
 	if (infile.is_open()) {
-		gmenu2x->setClock(200);
-		while (getline(infile, line, '\n')) readme.push_back(line);
+		while (getline(infile, line, '\n'))
+			txtman.push_back( strreplace(line, "\r", "") );
 		infile.close();
 
-		TextDialog td(gmenu2x, getTitle(), "ReadMe", getIconPath(), &readme);
-		gmenu2x->setClock(gmenu2x->confInt["menuClock"]);
-		td.exec();
+		if (manual.substr(manual.size()-8,8)==".man.txt") {
+			TextManualDialog tmd(gmenu2x, getTitle(), getIconPath(), &txtman);
+			tmd.exec();
+		} else {
+			TextDialog td(gmenu2x, getTitle(), "ReadMe", getIconPath(), &txtman);
+			td.exec();
+		}
 	}
 }
 
