@@ -26,6 +26,7 @@ Check that the autorun option is enabled on your GP2X.
 ## Download GMenu2X
 * Source: [gmenu2x-0.9-src.tar.bz2](http://prdownloads.sourceforge.net/gmenu2x/gmenu2x-0.9-src.tar.bz2?download)
 * Precompiled for GP2X: [gmenu2x-0.9.zip](http://prdownloads.sourceforge.net/gmenu2x/gmenu2x-0.9.zip?download)
+* *Wiz/Caanoo ports coming soon*
 
 ## Getting the latest revision
 You can try to compile the source from the git repository. This is usually not recommended if precompiled packages are available, but you may [give it a try](documentation/compilation-instructions.html) if you cannot wait for the latest feature to come out or if you experience problems that may have been fixed it the repository.
