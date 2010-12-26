@@ -9,7 +9,7 @@ CXXFLAGS = $(CFLAGS)
 LDFLAGS = -L"/usr/lib" `sdl-config --libs` -lfreetype -lSDL_image -lSDL_ttf -lSDL_gfx -ljpeg -lpng12 -lz #-lSDL_gfx
 
 OBJDIR = objs/$(TARGET)
-DISTDIR = dist/$(TARGET)
+DISTDIR = dist/$(TARGET)/gmenu2x
 APPNAME = $(OBJDIR)/gmenu2x
 
 SOURCES := $(wildcard src/*.cpp)

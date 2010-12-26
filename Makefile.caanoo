@@ -12,7 +12,7 @@ CXXFLAGS = $(CFLAGS)
 LDFLAGS = -L$(CHAINPREFIX)/lib -lSDL_image -lSDL_ttf -lfreetype -lSDL_gfx -ljpeg -lpng12 -lSDL -lz -ldl
 
 OBJDIR = objs/$(TARGET)
-DISTDIR = dist/$(TARGET)
+DISTDIR = dist/$(TARGET)/gmenu2x
 APPNAME = $(OBJDIR)/gmenu2x
 
 SOURCES := $(wildcard src/*.cpp)
@@ -48,6 +48,7 @@ dist: dir shared
 	install -m755 -D $(APPNAME) $(DISTDIR)/gmenu2x
 	install -m755 -d $(DISTDIR)/sections/applications $(DISTDIR)/sections/emulators $(DISTDIR)/sections/games $(DISTDIR)/sections/settings
 	cp -R assets/skins assets/translations assets/$(TARGET)/* $(DISTDIR)
+	mv $(DISTDIR)/autorun.gpu $(DISTDIR)/..
 
 depend:
 	makedepend -fMakefile.$(TARGET) -p$(OBJDIR)/ -- $(CFLAGS) -- src/*.cpp
