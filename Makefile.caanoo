@@ -3,13 +3,11 @@ CHAINPREFIX=$(CAANOOSDK)
 CROSS_COMPILE=$(CHAINPREFIX)/tools/gcc-4.2.4-glibc-2.7-eabi/bin/arm-gph-linux-gnueabi-
 TARGET=caanoo
 
-INCLUDE=$(CHAINPREFIX)/include
-
 CC= $(CROSS_COMPILE)gcc
 CXX = $(CROSS_COMPILE)g++
 STRIP = $(CROSS_COMPILE)strip
 
-CFLAGS = -I"$(CHAINPREFIX)/DGE/include" `$(CHAINPREFIX)/DGE/bin/sdl-config --cflags` -DLOG_LEVEL=4 -DTARGET_CAANOO -DTARGET=$(TARGET) -O3 -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops -Wall -Wno-unknown-pragmas -Wno-format
+CFLAGS = -I"$(CHAINPREFIX)/DGE/include" `$(CHAINPREFIX)/DGE/bin/sdl-config --cflags` -DLOG_LEVEL=4 -DTARGET_CAANOO -DTARGET=$(TARGET) -O3 -g -msoft-float -fomit-frame-pointer -ffast-math -funroll-loops -fno-exceptions -Wall -Wno-unknown-pragmas -Wno-format
 CXXFLAGS = $(CFLAGS)
 LDFLAGS = -L$(CHAINPREFIX)/lib -lSDL_image -lSDL_ttf -lfreetype -lSDL_gfx -ljpeg -lpng12 -lSDL -lz -ldl
 
@@ -19,16 +17,16 @@ DISTDIR = dist/$(TARGET)
 APPNAME = $(BUILDDIR)/gmenu2x.$(TARGET)
 
 SOURCES := $(wildcard src/*.cpp)
-OBJS := $(patsubst src/%.cpp, $(OBJDIR)/%.o, $(SOURCES))
+OBJS := $(patsubst src/%.cpp, $(OBJDIR)/src/%.o, $(SOURCES))
 
 # File types rules
-$(OBJDIR)/%.o: src/%.cpp src/%.h
+$(OBJDIR)/src/%.o: src/%.cpp src/%.h
 	$(CXX) $(CFLAGS) -o $@ -c $<
 
 all: dir shared
 
 dir:
-	@if [ ! -d $(OBJDIR) ]; then mkdir -p $(OBJDIR); fi
+	@if [ ! -d $(OBJDIR)/src ]; then mkdir -p $(OBJDIR)/src; fi
 
 debug-static: $(OBJS)
 	@echo "Linking gmenu2x-debug..."
@@ -45,8 +43,7 @@ static: debug-static
 	$(STRIP) $(APPNAME)-debug -o $(APPNAME)
 
 clean:
-	rm -f $(OBJDIR)/*.o *.gcda *.gcno $(APPNAME)
-	rm -rf $(DISTDIR)
+	rm -rf $(OBJDIR) $(DISTDIR) *.gcda *.gcno $(APPNAME)
 
 dist: dir shared
 	@if [ ! -d $(DISTDIR) ]; then mkdir -p $(DISTDIR); fi
@@ -56,7 +53,7 @@ dist: dir shared
 	mkdir -p $(DISTDIR)/sections/applications $(DISTDIR)/sections/emulators $(DISTDIR)/sections/games $(DISTDIR)/sections/settings
 
 depend:
-	makedepend -fMakefile.caanoo -p$(OBJDIR)/ -- $(CFLAGS) -- src/*.cpp
+	makedepend -fMakefile.$(TARGET) -p$(OBJDIR)/ -- $(CFLAGS) -- src/*.cpp
 # DO NOT DELETE
 
 objs/caanoo/src/browsedialog.o: src/browsedialog.h src/filelister.h
@@ -778,17 +775,7 @@ objs/caanoo/src/gmenu2x.o: /usr/include/bits/errno.h
 objs/caanoo/src/gmenu2x.o: /usr/include/linux/errno.h
 objs/caanoo/src/gmenu2x.o: /usr/include/asm/errno.h
 objs/caanoo/src/gmenu2x.o: /usr/include/asm-generic/errno.h
-objs/caanoo/src/gmenu2x.o: /usr/include/asm-generic/errno-base.h src/gp2x.h
-objs/caanoo/src/gmenu2x.o: /usr/include/linux/types.h
-objs/caanoo/src/gmenu2x.o: /usr/include/asm/types.h
-objs/caanoo/src/gmenu2x.o: /usr/include/asm-generic/types.h
-objs/caanoo/src/gmenu2x.o: /usr/include/asm-generic/int-ll64.h
-objs/caanoo/src/gmenu2x.o: /usr/include/asm/bitsperlong.h
-objs/caanoo/src/gmenu2x.o: /usr/include/asm-generic/bitsperlong.h
-objs/caanoo/src/gmenu2x.o: /usr/include/linux/posix_types.h
-objs/caanoo/src/gmenu2x.o: /usr/include/linux/stddef.h
-objs/caanoo/src/gmenu2x.o: /usr/include/asm/posix_types.h
-objs/caanoo/src/gmenu2x.o: /usr/include/asm/posix_types_64.h
+objs/caanoo/src/gmenu2x.o: /usr/include/asm-generic/errno-base.h
 objs/caanoo/src/gmenu2x.o: /usr/include/sys/fcntl.h /usr/include/fcntl.h
 objs/caanoo/src/gmenu2x.o: /usr/include/bits/fcntl.h /usr/include/bits/uio.h
 objs/caanoo/src/gmenu2x.o: /usr/include/bits/stat.h /usr/include/sys/stat.h
@@ -3158,7 +3145,11 @@ objs/caanoo/src/utilities.o: /usr/include/bits/pthreadtypes.h
 objs/caanoo/src/utilities.o: /usr/include/dirent.h /usr/include/bits/dirent.h
 objs/caanoo/src/utilities.o: /usr/include/bits/posix1_lim.h
 objs/caanoo/src/utilities.o: /usr/include/bits/local_lim.h
-objs/caanoo/src/utilities.o: /usr/include/linux/limits.h
+objs/caanoo/src/utilities.o: /usr/include/linux/limits.h /usr/include/stdio.h
+objs/caanoo/src/utilities.o: /usr/include/libio.h /usr/include/_G_config.h
+objs/caanoo/src/utilities.o: /usr/include/wchar.h
+objs/caanoo/src/utilities.o: /usr/include/bits/stdio_lim.h
+objs/caanoo/src/utilities.o: /usr/include/bits/sys_errlist.h
 objs/caanoo/src/utilities.o: /usr/include/strings.h /usr/include/math.h
 objs/caanoo/src/utilities.o: /usr/include/bits/huge_val.h
 objs/caanoo/src/utilities.o: /usr/include/bits/huge_valf.h
@@ -3172,10 +3163,6 @@ objs/caanoo/src/utilities.o: /opt/caanoo-sdk/DGE/include/SDL/SDL_stdinc.h
 objs/caanoo/src/utilities.o: /opt/caanoo-sdk/DGE/include/SDL/SDL_config.h
 objs/caanoo/src/utilities.o: /opt/caanoo-sdk/DGE/include/SDL/SDL_platform.h
 objs/caanoo/src/utilities.o: /opt/caanoo-sdk/DGE/include/SDL/SDL_config_minimal.h
-objs/caanoo/src/utilities.o: /usr/include/stdio.h /usr/include/libio.h
-objs/caanoo/src/utilities.o: /usr/include/_G_config.h /usr/include/wchar.h
-objs/caanoo/src/utilities.o: /usr/include/bits/stdio_lim.h
-objs/caanoo/src/utilities.o: /usr/include/bits/sys_errlist.h
 objs/caanoo/src/utilities.o: /usr/include/stdlib.h
 objs/caanoo/src/utilities.o: /usr/include/bits/waitflags.h
 objs/caanoo/src/utilities.o: /usr/include/bits/waitstatus.h
