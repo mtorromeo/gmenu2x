@@ -459,13 +459,15 @@ const string &LinkApp::getWorkdir() {
 
 const string LinkApp::getRealWorkdir() {
 	string wd = workdir;
-	if (wd=="") {
-		string::size_type pos = exec.rfind("/");
-		if (pos!=string::npos)
-			wd = exec.substr(0,pos);
+	if (wd.empty()) {
+		if (exec[0]!='/') {
+			wd = gmenu2x->getExePath();
+		} else {
+			string::size_type pos = exec.rfind("/");
+			if (pos != string::npos)
+				wd = exec.substr(0,pos);
+		}
 	}
-	if (!wd.empty() && wd[0]!='/')
-		wd = gmenu2x->getExePath() + wd;
 	return wd;
 }
 
