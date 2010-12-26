@@ -73,9 +73,9 @@ int MessageBox::exec() {
 	Surface bg(gmenu2x->s);
 	//Darken background
 	bg.box(0, 0, gmenu2x->resX, gmenu2x->resY, 0,0,0,200);
-	
+
 	SDL_Rect box;
-	box.h = gmenu2x->font->getHeight()*3 +4;
+	box.h = gmenu2x->font->getHeight()*3 +18;
 	box.w = gmenu2x->font->getTextWidth(text) + 24 + (gmenu2x->sc[icon] != NULL ? 37 : 0);
 	box.x = gmenu2x->halfX - box.w/2 -2;
 	box.y = gmenu2x->halfY - box.h/2 -2;
@@ -83,21 +83,21 @@ int MessageBox::exec() {
 	//outer box
 	bg.box(box, gmenu2x->skinConfColors[COLOR_MESSAGE_BOX_BG]);
 	//draw inner rectangle
-	bg.rectangle(box.x+2, box.y+2, box.w-4, box.h-gmenu2x->font->getHeight(),
+	bg.rectangle(box.x+2, box.y+2, box.w-4, box.h-gmenu2x->font->getHeight()-8,
 	gmenu2x->skinConfColors[COLOR_MESSAGE_BOX_BORDER]);
 	//icon+text
 	if (gmenu2x->sc[icon] != NULL)
-		gmenu2x->sc[icon]->blitCenter( &bg, box.x+25, box.y+gmenu2x->font->getHeight()+3 );
-	bg.write( gmenu2x->font, text, box.x+(gmenu2x->sc[icon] != NULL ? 47 : 10), box.y+gmenu2x->font->getHeight()+3, HAlignLeft, VAlignMiddle );
+		gmenu2x->sc[icon]->blitCenter( &bg, box.x+25, box.y+gmenu2x->font->getHeight()+7 );
+	bg.write( gmenu2x->font, text, box.x+(gmenu2x->sc[icon] != NULL ? 47 : 10), box.y+gmenu2x->font->getHeight()+6, HAlignLeft, VAlignMiddle );
 
 	int btnX = gmenu2x->halfX+box.w/2-6;
 	for (uint i=0; i<buttons.size(); i++) {
 		if (buttons[i] != "") {
-			buttonPositions[i].y = box.y+box.h-4;
+			buttonPositions[i].y = box.y+box.h-gmenu2x->font->getHalfHeight()-4;
 			buttonPositions[i].w = btnX;
-			
+
 			btnX = gmenu2x->drawButtonRight(&bg, buttonLabels[i], buttons[i], btnX, buttonPositions[i].y);
-			
+
 			buttonPositions[i].x = btnX;
 			buttonPositions[i].w = buttonPositions[i].x-btnX-6;
 		}
@@ -121,7 +121,7 @@ int MessageBox::exec() {
 		gmenu2x->input.update();
 		for (uint i=0; i<buttons.size(); i++)
 			if (buttons[i]!="" && gmenu2x->input[i]) result = i;
-		
+
 		usleep(LOOP_DELAY);
 	}
 
