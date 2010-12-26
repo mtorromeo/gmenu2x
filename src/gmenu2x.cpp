@@ -119,7 +119,7 @@ static void quit_all(int err) {
 }
 
 int main(int /*argc*/, char * /*argv*/[]) {
-	INFO("GMenu2X starting: If you read this message in the logs, check http://gmenu2x.sourceforge.net/page/Troubleshooting for a solution");
+	INFO("GMenu2X starting: If you read this message in the logs, check http://mtorromeo.github.com/gmenu2x/troubleshooting.html for a solution");
 
 	signal(SIGINT, &quit_all);
 	signal(SIGSEGV,&quit_all);
