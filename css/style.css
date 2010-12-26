@@ -231,6 +231,9 @@ footer a, footer a:link, footer a:visited {
 	width: 720px;
 	margin: 20px auto;
 }
+#main p {
+	text-align: justify;
+}
 #menu {
 	line-height: 30px;
 	height: 30px;
