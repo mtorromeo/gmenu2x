@@ -132,7 +132,7 @@ h4 {
 	font-weight: normal;
 }
 h1 {
-	font-size: 24pt;
+	font-size: 20pt;
 }
 h2 {
 	font-size: 18pt;
@@ -236,7 +236,7 @@ footer a, footer a:link, footer a:visited {
 	height: 30px;
 	font-weight: bold;
 	background-color: #CCC;
-	
+
 	background-image: -webkit-gradient(
 		linear,
 		left top,
@@ -249,7 +249,7 @@ footer a, footer a:link, footer a:visited {
 		rgb(232,232,232) 0%,
 		rgb(187,187,187) 100%
 	);
-	
+
 	text-shadow: 0 1px 0 #E5E5E5;
 }
 #menu a {
@@ -269,7 +269,7 @@ footer a, footer a:link, footer a:visited {
 	color: #444;
 	padding-left: 10px;
 	background-color: #CCC;
-	
+
 	background-image: -webkit-gradient(
 		linear,
 		left top,
@@ -282,9 +282,9 @@ footer a, footer a:link, footer a:visited {
 		rgb(232,232,232) 0%,
 		rgb(187,187,187) 100%
 	);
-	
+
 	text-shadow: 0 1px 0 #E5E5E5;
-	
+
 	box-shadow: 0 5px 5px rgba(100,100,100,.4);
 	-webkit-box-shadow: 0 5px 5px rgba(100,100,100,.4);
 	-moz-box-shadow: 0 5px 5px rgba(100,100,100,.4);
