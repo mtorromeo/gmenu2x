@@ -36,11 +36,10 @@ clean:
 	rm -rf $(OBJDIR) $(DISTDIR) *.gcda *.gcno $(APPNAME)
 
 dist: dir shared
-	@if [ ! -d $(DISTDIR) ]; then mkdir -p $(DISTDIR); fi
-	install -m755 $(APPNAME)-debug $(DISTDIR)/gmenu2x
-	install -m644 $(BUILDDIR)/input.conf.$(TARGET) $(DISTDIR)/input.conf
-	cp -R $(BUILDDIR)/skins $(BUILDDIR)/translations $(DISTDIR)
-	mkdir -p $(DISTDIR)/sections/applications $(DISTDIR)/sections/emulators $(DISTDIR)/sections/games $(DISTDIR)/sections/settings
+	install -m755 -D $(APPNAME) $(DISTDIR)/gmenu2x
+	install -m644 assets/$(TARGET)/input.conf $(DISTDIR)
+	install -m755 -d $(DISTDIR)/sections/applications $(DISTDIR)/sections/emulators $(DISTDIR)/sections/games $(DISTDIR)/sections/settings
+	cp -R assets/skins assets/translations $(DISTDIR)
 
 depend:
 	makedepend -fMakefile.$(TARGET) -p$(OBJDIR)/ -- $(CFLAGS) -- src/*.cpp
