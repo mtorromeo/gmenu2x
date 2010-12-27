@@ -5,6 +5,7 @@ pandora/input.conf
 objs
 dist
 _site
+*.so
 *.patch
 *.kdev*
 *.gdb
