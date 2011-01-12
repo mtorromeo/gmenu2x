@@ -25,7 +25,7 @@ Check that the autorun option is enabled on your GP2X.
 
 ## Download GMenu2X
 * Source: [gmenu2x-0.11.tar.gz](https://github.com/mtorromeo/gmenu2x/tarball/v0.11)
-* GP2X: [gmenu2x-0.9.zip](http://prdownloads.sourceforge.net/gmenu2x/gmenu2x-0.9.zip?download)
+* GP2X: [gmenu2x-gp2x-0.11.zip](https://github.com/downloads/mtorromeo/gmenu2x/gmenu2x-gp2x-0.11.zip)
 * Caanoo: [gmenu2x-caanoo-0.11.zip](https://github.com/downloads/mtorromeo/gmenu2x/gmenu2x-caanoo-0.11.zip)
 * *Wiz port coming soon*
 
