@@ -40,6 +40,9 @@ dist: dir shared
 	install -m755 -d $(DISTDIR)/sections/applications $(DISTDIR)/sections/emulators $(DISTDIR)/sections/games $(DISTDIR)/sections/settings
 	cp -R assets/skins assets/translations $(DISTDIR)
 
-depend:
-	makedepend -p$(OBJDIR)/ -- $(CFLAGS) -- src/*.cpp
-# DO NOT DELETE
+-include $(patsubst src/%.cpp, $(OBJDIR)/src/%.d, $(SOURCES))
+
+$(OBJDIR)/src/%.d: src/%.cpp
+	$(CXX) -M $(CXXFLAGS) $< > $@.$$$$; \
+	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
+	rm -f $@.$$$$
