@@ -252,8 +252,11 @@ GMenu2X::GMenu2X() {
 			case VOLUME_MODE_PHONES: setVolumeScaler(volumeScalerPhones);	break;
 			case VOLUME_MODE_NORMAL: setVolumeScaler(volumeScalerNormal); break;
 		}
-	} else
+	}
+#if defined(TARGET_GP2x)
+	else
 		readCommonIni();
+#endif
 
 	halfX = resX/2;
 	halfY = resY/2;
@@ -401,6 +404,7 @@ void GMenu2X::initBG() {
 	cpuX += 19;
 	manualX = cpuX+font->getTextWidth("300Mhz")+5;
 
+#if defined(TARGET_GP2X)
 	int serviceX = resX-38;
 	if (usbnet) {
 		if (web) {
@@ -419,6 +423,7 @@ void GMenu2X::initBG() {
 			serviceX -= 19;
 		}
 	}
+#endif
 }
 
 void GMenu2X::initFont() {
@@ -860,10 +865,12 @@ void GMenu2X::main() {
 
 		drawScrollBar(linkRows,menu->sectionLinks()->size()/linkColumns + ((menu->sectionLinks()->size()%linkColumns==0) ? 0 : 1),menu->firstDispRow(),43,resY-81);
 
-		switch(volumeMode) {
-			case VOLUME_MODE_MUTE:   sc.skinRes("imgs/mute.png")->blit(s,279,bottomBarIconY); break;
-			case VOLUME_MODE_PHONES: sc.skinRes("imgs/phones.png")->blit(s,279,bottomBarIconY); break;
-			default: sc.skinRes("imgs/volume.png")->blit(s,279,bottomBarIconY); break;
+		if (fwType=="open2x") {
+			switch(volumeMode) {
+				case VOLUME_MODE_MUTE:   sc.skinRes("imgs/mute.png")->blit(s,resX-56,bottomBarIconY); break;
+				case VOLUME_MODE_PHONES: sc.skinRes("imgs/phones.png")->blit(s,resX-56,bottomBarIconY); break;
+				default: sc.skinRes("imgs/volume.png")->blit(s,resX-56,bottomBarIconY); break;
+			}
 		}
 
 		if (menu->selLink()!=NULL) {
