@@ -754,6 +754,7 @@ void GMenu2X::readTmp() {
 			lastSelectorDir = value;
 	}
 	inf.close();
+	unlink("/tmp/gmenu2x.tmp");
 }
 
 void GMenu2X::writeTmp(int selelem, const string &selectordir) {
