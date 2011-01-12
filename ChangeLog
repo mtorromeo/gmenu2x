@@ -1,4 +1,17 @@
 -----------
+New in 0.11
+-----------
+Wiz and Caanoo support implemented (including battery readings and overclocking)
+Completely rewritten font code: fonts are now standard truetype fonts with a 1px outline.
+Skins can specify a custom font, change its size and the color of the outline and of the font itself.
+Completely rewritten input system: the screen is redrawn only when it needs to be updated, idling when there is no input by the user.
+Additional system informations displayed in the about dialog
+Cpu clock increments by steps of ten
+File selectors from the "edit link" menu now start browsing from the link directory
+Reduced size of the binary
+Lots of bug fixes
+
+-----------
 New in 0.10
 -----------
 Raised default clock to 136Mhz for F200 models (minimum frequency for touchscreen)
