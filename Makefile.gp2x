@@ -11,10 +11,9 @@ CFLAGS = -I"$(CHAINPREFIX)/include" `$(CHAINPREFIX)/bin/sdl-config --cflags` -DL
 CXXFLAGS = $(CFLAGS)
 LDFLAGS = -L$(CHAINPREFIX)/lib -lSDL_image -lSDL_ttf -lfreetype -lSDL_gfx -ljpeg -lpng12 -lSDL -lz -ldl
 
-BUILDDIR = build
 OBJDIR = objs/$(TARGET)
 DISTDIR = dist/$(TARGET)/gmenu2x
-APPNAME = $(BUILDDIR)/gmenu2x.$(TARGET)
+APPNAME = $(OBJDIR)/gmenu2x
 
 SOURCES := $(wildcard src/*.cpp)
 OBJS := $(patsubst src/%.cpp, $(OBJDIR)/src/%.o, $(SOURCES))
@@ -47,14 +46,14 @@ clean:
 
 dist: dir shared
 	install -m755 -D $(APPNAME) $(DISTDIR)/gmenu2x
-	install -m644 assets/$(TARGET)/input.conf $(DISTDIR)
 	install -m755 -d $(DISTDIR)/sections/applications $(DISTDIR)/sections/emulators $(DISTDIR)/sections/games $(DISTDIR)/sections/settings
-	cp -R assets/skins assets/translations $(DISTDIR)
+	cp -R assets/skins assets/translations assets/$(TARGET)/* $(DISTDIR)
 	mv $(DISTDIR)/autorun.gpu $(DISTDIR)/..
 
 -include $(patsubst src/%.cpp, $(OBJDIR)/src/%.d, $(SOURCES))
 
 $(OBJDIR)/src/%.d: src/%.cpp
+	@if [ ! -d $(OBJDIR)/src ]; then mkdir -p $(OBJDIR)/src; fi
 	$(CXX) -M $(CXXFLAGS) $< > $@.$$$$; \
 	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
