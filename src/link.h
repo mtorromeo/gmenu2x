@@ -47,11 +47,11 @@ protected:
 	Surface *iconSurface;
 
 	void recalcCoordinates();
-	void updateSurfaces();
 
 public:
 	Link(GMenu2X *gmenu2x);
 	virtual ~Link() {};
+	void updateSurfaces();
 
 	virtual void paint();
 	virtual bool paintHover();

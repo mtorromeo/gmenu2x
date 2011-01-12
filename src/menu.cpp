@@ -83,6 +83,7 @@ void Menu::loadIcons() {
 		string linkIcon;
 		for (uint x=0; x<sectionLinks(i)->size(); x++) {
 			linkIcon = sectionLinks(i)->at(x)->getIcon();
+			sectionLinks(i)->at(x)->updateSurfaces();
 			LinkApp *linkapp = dynamic_cast<LinkApp*>(sectionLinks(i)->at(x));
 
 			if (linkIcon.substr(0,5)=="skin:") {
