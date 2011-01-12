@@ -44,7 +44,7 @@ static: debug-static
 clean:
 	rm -rf $(OBJDIR) $(DISTDIR) *.gcda *.gcno $(APPNAME)
 
-dist: dir shared
+dist: dir static
 	install -m755 -D $(APPNAME) $(DISTDIR)/gmenu2x
 	install -m755 -d $(DISTDIR)/sections/applications $(DISTDIR)/sections/emulators $(DISTDIR)/sections/games $(DISTDIR)/sections/settings
 	install -m644 -D README.rst $(DISTDIR)/README.txt
