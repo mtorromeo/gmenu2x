@@ -47,6 +47,9 @@ clean:
 dist: dir shared
 	install -m755 -D $(APPNAME) $(DISTDIR)/gmenu2x
 	install -m755 -d $(DISTDIR)/sections/applications $(DISTDIR)/sections/emulators $(DISTDIR)/sections/games $(DISTDIR)/sections/settings
+	install -m644 -D README.rst $(DISTDIR)/README.txt
+	install -m644 -D COPYING $(DISTDIR)/COPYING
+	install -m644 -D ChangeLog $(DISTDIR)/ChangeLog
 	cp -R assets/skins assets/translations assets/$(TARGET)/* $(DISTDIR)
 	cp `readlink -f $(CHAINPREFIX)/DGE/lib/libfreetype.so` $(DISTDIR)/libfreetype.so
 	cp `readlink -f $(CHAINPREFIX)/DGE/lib/libSDL_ttf.so` $(DISTDIR)/libSDL_ttf.so

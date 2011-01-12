@@ -38,6 +38,9 @@ dist: dir shared
 	install -m755 -D $(APPNAME)-debug $(DISTDIR)/gmenu2x
 	install -m644 assets/$(TARGET)/input.conf $(DISTDIR)
 	install -m755 -d $(DISTDIR)/sections/applications $(DISTDIR)/sections/emulators $(DISTDIR)/sections/games $(DISTDIR)/sections/settings
+	install -m644 -D README.rst $(DISTDIR)/README.txt
+	install -m644 -D COPYING $(DISTDIR)/COPYING
+	install -m644 -D ChangeLog $(DISTDIR)/ChangeLog
 	cp -R assets/skins assets/translations $(DISTDIR)
 
 -include $(patsubst src/%.cpp, $(OBJDIR)/src/%.d, $(SOURCES))
