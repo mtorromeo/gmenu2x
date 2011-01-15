@@ -50,7 +50,7 @@ dist: dir static
 	install -m644 -D README.rst $(DISTDIR)/README.txt
 	install -m644 -D COPYING $(DISTDIR)/COPYING
 	install -m644 -D ChangeLog $(DISTDIR)/ChangeLog
-	cp -R assets/skins assets/translations assets/$(TARGET)/* $(DISTDIR)
+	cp -RH assets/skins assets/translations assets/$(TARGET)/* $(DISTDIR)
 	mv $(DISTDIR)/autorun.gpu $(DISTDIR)/..
 
 -include $(patsubst src/%.cpp, $(OBJDIR)/src/%.d, $(SOURCES))

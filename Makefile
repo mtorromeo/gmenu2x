@@ -41,7 +41,7 @@ dist: dir shared
 	install -m644 -D README.rst $(DISTDIR)/README.txt
 	install -m644 -D COPYING $(DISTDIR)/COPYING
 	install -m644 -D ChangeLog $(DISTDIR)/ChangeLog
-	cp -R assets/skins assets/translations $(DISTDIR)
+	cp -RH assets/skins assets/translations $(DISTDIR)
 
 -include $(patsubst src/%.cpp, $(OBJDIR)/src/%.d, $(SOURCES))
 
