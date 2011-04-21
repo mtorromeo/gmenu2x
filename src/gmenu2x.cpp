@@ -1301,17 +1301,18 @@ void GMenu2X::contextMenu() {
 	long tickNow, tickStart = SDL_GetTicks();
 
 	Surface bg(s);
-	/*//Darken background
-	bg.box(0, 0, resX, resY, 0,0,0,150);
-	bg.box(box.x, box.y, box.w, box.h, skinConfColors[COLOR_MESSAGE_BOX_BG]);
-	bg.rectangle( box.x+2, box.y+2, box.w-4, box.h-4, skinConfColors[COLOR_MESSAGE_BOX_BORDER] );*/
+	input.setWakeUpInterval(40); //25FPS
+
 	while (!close) {
 		tickNow = SDL_GetTicks();
 
 		selbox.y = box.y+4+(h+2)*sel;
 		bg.blit(s,0,0);
 
-		if (fadeAlpha<200) fadeAlpha = intTransition(0,200,tickStart,500,tickNow);
+		if (fadeAlpha<200)
+			fadeAlpha = intTransition(0,200,tickStart,500,tickNow);
+		else
+			input.setWakeUpInterval(0);
 		s->box(0, 0, resX, resY, 0,0,0,fadeAlpha);
 		s->box(box.x, box.y, box.w, box.h, skinConfColors[COLOR_MESSAGE_BOX_BG]);
 		s->rectangle( box.x+2, box.y+2, box.w-4, box.h-4, skinConfColors[COLOR_MESSAGE_BOX_BORDER] );
@@ -1358,6 +1359,8 @@ void GMenu2X::contextMenu() {
 		if ( input[DOWN]    ) sel = min((int)voices.size()-1, sel+1);
 		if ( input[CONFIRM] ) { voices[sel].action(); close = true; }
 	}
+
+	input.setWakeUpInterval(0);
 }
 
 void GMenu2X::changeWallpaper() {
