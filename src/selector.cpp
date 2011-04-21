@@ -80,6 +80,7 @@ int Selector::exec(int startSelection) {
 	if (gmenu2x->sc.skinRes("imgs/folder.png")==NULL)
 		gmenu2x->sc.addSkinRes("imgs/folder.png");
 	gmenu2x->sc.defaultAlpha = false;
+	gmenu2x->input.setWakeUpInterval(40); //25FPS
 	while (!close) {
 		bg.blit(gmenu2x->s,0,0);
 
@@ -181,6 +182,7 @@ int Selector::exec(int startSelection) {
 	}
 	gmenu2x->sc.defaultAlpha = true;
 	freeScreenshots(&screens);
+	gmenu2x->input.setWakeUpInterval(0);
 
 	return result ? (int)selected : -1;
 }
