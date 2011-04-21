@@ -22,7 +22,7 @@ OBJS := $(patsubst src/%.cpp, $(OBJDIR)/src/%.o, $(SOURCES))
 $(OBJDIR)/src/%.o: src/%.cpp src/%.h
 	$(CXX) $(CFLAGS) -o $@ -c $<
 
-all: dir shared
+all: dir static
 
 dir:
 	@if [ ! -d $(OBJDIR)/src ]; then mkdir -p $(OBJDIR)/src; fi
