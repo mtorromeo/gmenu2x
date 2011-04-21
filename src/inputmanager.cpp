@@ -284,11 +284,8 @@ void InputManager::setWakeUpInterval(int ms) {
 	if (wakeUpTimer != NULL)
 		SDL_RemoveTimer(wakeUpTimer);
 
-	if (ms > 0) {
-		RepeatEventData *data = new RepeatEventData();
-		data->im = this;
-		wakeUpTimer = SDL_AddTimer(ms, wakeUp, data);
-	}
+	if (ms > 0)
+		wakeUpTimer = SDL_AddTimer(ms, wakeUp, NULL);
 }
 
 
