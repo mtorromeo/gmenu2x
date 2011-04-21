@@ -1,2 +1,2 @@
 #!/bin/sh
-LD_LIBRARY_PATH="$PWD" LD_PRELOAD="libfreetype.so libSDL_ttf.so" exec ./gmenu2x
+exec ./gmenu2x
