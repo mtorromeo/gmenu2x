@@ -2,10 +2,9 @@
 #include "utilities.h"
 #include "debug.h"
 
-FontHelper::FontHelper(const string &font, int size, RGBAColor textColor, RGBAColor outlineColor) {
-	this->textColor = textColor;
-	this->outlineColor = outlineColor;
-
+FontHelper::FontHelper(const string &font, int size, RGBAColor textColor, RGBAColor outlineColor)
+	: textColor(textColor),
+	  outlineColor(outlineColor) {
 	if (!TTF_WasInit()) {
 		DEBUG("Initializing font");
 		if (TTF_Init() == -1) {
@@ -50,6 +49,7 @@ FontHelper *FontHelper::setOutlineColor(RGBAColor color) {
 	outlineColor = color;
 	return this;
 }
+
 void FontHelper::write(SDL_Surface *s, const string &text, int x, int y) {
 	if (text.empty()) return;
 
@@ -58,7 +58,24 @@ void FontHelper::write(SDL_Surface *s, const string &text, int x, int y) {
 
 	Surface fg;
 	fg.raw = TTF_RenderUTF8_Blended(font, text.c_str(), rgbatosdl(textColor));
-	fg.blit(&bg, 1,1);
+
+	// Modify alpha channel of outline and text and merge them in the process
+	RGBAColor fgcol, bgcol;
+	for (int iy=0; iy<bg.raw->h; iy++)
+		for (int ix=0; ix<bg.raw->w; ix++) {
+			bgcol = bg.pixelColor(ix, iy);
+			if (bgcol.a != 0) {
+				bgcol.a = bgcol.a * outlineColor.a / 255;
+			}
+			if (ix > 0 && ix-1 < fg.raw->w && iy > 0 && iy-1 < fg.raw->h) {
+				fgcol = fg.pixelColor(ix-1, iy-1);
+				if (fgcol.a > 50) {
+					bgcol = fgcol;
+					bgcol.a = bgcol.a * textColor.a / 255;
+				}
+			}
+			bg.putPixel(ix, iy, bgcol);
+		}
 
 	bg.blit(s, x,y);
 }
