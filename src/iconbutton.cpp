@@ -30,9 +30,6 @@ void IconButton::setPosition(int x, int y) {
 }
 
 void IconButton::paint() {
-	uint margin = labelMargin;
-	if (iconSurface == NULL || label == "")
-		margin = 0;
 	if (iconSurface != NULL)
 		iconSurface->blit(gmenu2x->s,iconRect);
 	if (label != "")
