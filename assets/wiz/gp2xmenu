@@ -1,1 +1,2 @@
-../caanoo/gp2xmenu
+#!/bin/sh
+exec ./gmenu2x
