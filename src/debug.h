@@ -9,19 +9,19 @@
 #define DEBUG_L 4
 
 #ifndef LOG_LEVEL
-#define LOG_LEVEL INFO_L
+# define LOG_LEVEL INFO_L
 #endif
 
 // -------------
 
 #ifndef COLOR_DEBUG
-#define COLOR_DEBUG   "\e[0;34m"
+# define COLOR_DEBUG   "\e[0;34m"
 #endif
 #ifndef COLOR_WARNING
-#define COLOR_WARNING "\e[01;33m"
+# define COLOR_WARNING "\e[01;33m"
 #endif
 #ifndef COLOR_ERROR
-#define COLOR_ERROR   "\e[01;31m"
+# define COLOR_ERROR   "\e[01;31m"
 #endif
 
 #define COLOR_END "\e[00m"
@@ -35,7 +35,7 @@
     fprintf(stdout, "DEBUG: " str "\n", ##__VA_ARGS__)
 # endif
 #else
-#define DEBUG(...)
+# define DEBUG(...)
 #endif
 
 #if (LOG_LEVEL >= INFO_L)
@@ -47,7 +47,7 @@
     fprintf(stdout, str "\n", ##__VA_ARGS__)
 # endif
 #else
-#define INFO(...)
+# define INFO(...)
 #endif
 
 #if (LOG_LEVEL >= WARNING_L)
@@ -59,7 +59,7 @@
     fprintf(stderr, "WARNING: " str "\n", ##__VA_ARGS__)
 # endif
 #else
-#define WARNING(...)
+# define WARNING(...)
 #endif
 
 #if (LOG_LEVEL >= ERROR_L)
@@ -71,7 +71,7 @@
     fprintf(stderr, "ERROR: " str "\n", ##__VA_ARGS__)
 # endif
 #else
-#define ERROR(...)
+# define ERROR(...)
 #endif
 
 #endif
