@@ -1162,7 +1162,7 @@ void GMenu2X::setSkin(const string &skin, bool setWallpaper) {
 	skinConfColors[COLOR_MESSAGE_BOX_BORDER] = (RGBAColor){80,80,80,255};
 	skinConfColors[COLOR_MESSAGE_BOX_SELECTION] = (RGBAColor){160,160,160,255};
 	skinConfColors[COLOR_FONT] = (RGBAColor){255,255,255,255};
-	skinConfColors[COLOR_FONT_OUTLINE] = (RGBAColor){0,0,0,130};
+	skinConfColors[COLOR_FONT_OUTLINE] = (RGBAColor){0,0,0,200};
 
 	//load skin settings
 	string skinconfname = "skins/"+skin+"/skin.conf";
