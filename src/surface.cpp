@@ -89,6 +89,7 @@ Surface::Surface(int w, int h, Uint32 flags) {
 	amask = 0xff000000;
 #endif
 	raw = SDL_DisplayFormat( SDL_CreateRGBSurface( flags, w, h, 16, rmask, gmask, bmask, amask ) );
+	//SDL_SetAlpha(raw, SDL_SRCALPHA|SDL_RLEACCEL, SDL_ALPHA_OPAQUE);
 	halfW = w/2;
 	halfH = h/2;
 }
@@ -97,9 +98,18 @@ Surface::~Surface() {
 	free();
 }
 
-void Surface::enableVirtualDoubleBuffer(SDL_Surface *surface) {
+void Surface::enableVirtualDoubleBuffer(SDL_Surface *surface, bool alpha) {
 	dblbuffer = surface;
-	raw = SDL_DisplayFormat(dblbuffer);
+	if (alpha)
+		raw = SDL_DisplayFormatAlpha(dblbuffer);
+	else
+		raw = SDL_DisplayFormat(dblbuffer);
+}
+
+void Surface::enableAlpha() {
+	SDL_Surface *alpha_surface = SDL_DisplayFormatAlpha(raw);
+	SDL_FreeSurface(raw);
+	raw = alpha_surface;
 }
 
 void Surface::free() {
@@ -128,13 +138,10 @@ void Surface::load(const string &img, bool alpha, const string &skin) {
 		skinpath = img;
 	}
 
-	SDL_Surface *buf = IMG_Load(skinpath.c_str());
-	if (buf!=NULL) {
+	raw = IMG_Load(skinpath.c_str());
+	if (raw != NULL) {
 		if (alpha)
-			raw = SDL_DisplayFormatAlpha(buf);
-		else
-			raw = SDL_DisplayFormat(buf);
-		SDL_FreeSurface(buf);
+			enableAlpha();
 	} else {
 		ERROR("Couldn't load surface '%s'", img.c_str());
 	}
@@ -200,8 +207,8 @@ bool Surface::blitRight(Surface *destination, int x, int y, int w, int h, int a)
 	return blitRight(destination->raw,x,y,w,h,a);
 }
 
-void Surface::putPixel(int x, int y, SDL_Color color) {
-	putPixel(x,y, SDL_MapRGB( raw->format , color.r , color.g , color.b ));
+void Surface::putPixel(int x, int y, RGBAColor color) {
+	putPixel(x,y, SDL_MapRGBA( raw->format , color.r , color.g , color.b, color.a ));
 }
 
 void Surface::putPixel(int x, int y, Uint32 color) {
@@ -215,10 +222,10 @@ void Surface::putPixel(int x, int y, Uint32 color) {
 	memcpy ( pPosition , &color , raw->format->BytesPerPixel ) ;
 }
 
-SDL_Color Surface::pixelColor(int x, int y) {
-	SDL_Color color;
+RGBAColor Surface::pixelColor(int x, int y) {
+	RGBAColor color;
 	Uint32 col = pixel(x,y);
-	SDL_GetRGB( col, raw->format, &color.r, &color.g, &color.b );
+	SDL_GetRGBA( col, raw->format, &color.r, &color.g, &color.b, &color.a );
 	return color;
 }
 
@@ -236,7 +243,7 @@ Uint32 Surface::pixel(int x, int y) {
 }
 
 void Surface::blendAdd(Surface *target, int x, int y) {
-	SDL_Color targetcol, blendcol;
+	RGBAColor targetcol, blendcol;
 	for (int iy=0; iy<raw->h; iy++)
 		if (iy+y >= 0 && iy+y < target->raw->h)
 			for (int ix=0; ix<raw->w; ix++) {

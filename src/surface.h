@@ -29,7 +29,7 @@ using std::string;
 class FontHelper;
 
 struct RGBAColor {
-	unsigned short r,g,b,a;
+	Uint8 r,g,b,a;
 };
 
 RGBAColor strtorgba(const string &strColor);
@@ -54,7 +54,8 @@ public:
 	Surface(int w, int h, Uint32 flags = SDL_HWSURFACE|SDL_SRCALPHA);
 	~Surface();
 
-	void enableVirtualDoubleBuffer(SDL_Surface *surface);
+	void enableVirtualDoubleBuffer(SDL_Surface *surface, bool alpha=true);
+	void enableAlpha();
 
 	SDL_Surface *raw;
 
@@ -65,9 +66,9 @@ public:
 	void flip();
 	SDL_PixelFormat *format();
 
-	void putPixel(int,int,SDL_Color);
+	void putPixel(int,int,RGBAColor);
 	void putPixel(int,int,Uint32);
-	SDL_Color pixelColor(int,int);
+	RGBAColor pixelColor(int,int);
 	Uint32 pixel(int,int);
 
 	void blendAdd(Surface*, int,int);
