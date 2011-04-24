@@ -1287,7 +1287,7 @@ void GMenu2X::contextMenu() {
 	int h = font->getHeight();
 	int h2 = font->getHalfHeight();
 	SDL_Rect box;
-	box.h = (h+2)*voices.size()+8;
+	box.h = h*voices.size()+8;
 	box.w = 0;
 	for (i=0; i<voices.size(); i++) {
 		int w = font->getTextWidth(voices[i].text);
@@ -1297,7 +1297,7 @@ void GMenu2X::contextMenu() {
 	box.x = halfX - box.w/2;
 	box.y = halfY - box.h/2;
 
-	SDL_Rect selbox = {box.x+4, 0, box.w-8, h+2};
+	SDL_Rect selbox = {box.x+4, 0, box.w-8, h};
 	long tickNow, tickStart = SDL_GetTicks();
 
 	Surface bg(s);
@@ -1306,7 +1306,7 @@ void GMenu2X::contextMenu() {
 	while (!close) {
 		tickNow = SDL_GetTicks();
 
-		selbox.y = box.y+4+(h+2)*sel;
+		selbox.y = box.y+4+h*sel;
 		bg.blit(s,0,0);
 
 		if (fadeAlpha<200)
@@ -1321,7 +1321,7 @@ void GMenu2X::contextMenu() {
 		//draw selection rect
 		s->box( selbox.x, selbox.y, selbox.w, selbox.h, skinConfColors[COLOR_MESSAGE_BOX_SELECTION] );
 		for (i=0; i<voices.size(); i++)
-			s->write( font, voices[i].text, box.x+12, box.y+h2+5+(h+2)*i, HAlignLeft, VAlignMiddle );
+			s->write( font, voices[i].text, box.x+12, box.y+h2+3+h*i, HAlignLeft, VAlignMiddle );
 		s->flip();
 
 		//touchscreen
@@ -1333,7 +1333,7 @@ void GMenu2X::contextMenu() {
 				else if (ts.getX() >= selbox.x
 					  && ts.getX() <= selbox.x + selbox.w)
 					for (i=0; i<voices.size(); i++) {
-						selbox.y = box.y+4+(h+2)*i;
+						selbox.y = box.y+4+h*i;
 						if (ts.getY() >= selbox.y
 						 && ts.getY() <= selbox.y + selbox.h) {
 							voices[i].action();
@@ -1343,7 +1343,7 @@ void GMenu2X::contextMenu() {
 					}
 			} else if (ts.pressed() && ts.inRect(box)) {
 				for (i=0; i<voices.size(); i++) {
-					selbox.y = box.y+4+(h+2)*i;
+					selbox.y = box.y+4+h*i;
 					if (ts.getY() >= selbox.y
 					 && ts.getY() <= selbox.y + selbox.h) {
 						sel = i;
