@@ -110,7 +110,7 @@ void MenuSettingRGBA::rightComponent()
 	selPart = constrain(selPart+1,0,3);
 }
 
-void MenuSettingRGBA::setR(unsigned short r)
+void MenuSettingRGBA::setR(Uint8 r)
 {
 	_value->r = r;
 	stringstream ss;
@@ -118,7 +118,7 @@ void MenuSettingRGBA::setR(unsigned short r)
 	ss >> strR;
 }
 
-void MenuSettingRGBA::setG(unsigned short g)
+void MenuSettingRGBA::setG(Uint8 g)
 {
 	_value->g = g;
 	stringstream ss;
@@ -126,7 +126,7 @@ void MenuSettingRGBA::setG(unsigned short g)
 	ss >> strG;
 }
 
-void MenuSettingRGBA::setB(unsigned short b)
+void MenuSettingRGBA::setB(Uint8 b)
 {
 	_value->b = b;
 	stringstream ss;
@@ -134,7 +134,7 @@ void MenuSettingRGBA::setB(unsigned short b)
 	ss >> strB;
 }
 
-void MenuSettingRGBA::setA(unsigned short a)
+void MenuSettingRGBA::setA(Uint8 a)
 {
 	_value->a = a;
 	stringstream ss;
@@ -142,7 +142,7 @@ void MenuSettingRGBA::setA(unsigned short a)
 	ss >> strA;
 }
 
-void MenuSettingRGBA::setSelPart(unsigned short value)
+void MenuSettingRGBA::setSelPart(Uint8 value)
 {
 	switch (selPart) {
 		default: case 0: setR(value); break;
@@ -157,7 +157,7 @@ RGBAColor MenuSettingRGBA::value()
 	return *_value;
 }
 
-unsigned short MenuSettingRGBA::getSelPart()
+Uint8 MenuSettingRGBA::getSelPart()
 {
 	switch (selPart) {
 		default: case 0: return value().r;
