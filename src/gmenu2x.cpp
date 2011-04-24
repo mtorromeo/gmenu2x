@@ -1441,15 +1441,25 @@ void GMenu2X::editLink() {
 	sd.addSetting(new MenuSettingMultiString( this, tr["Section"],              tr["The section this link belongs to"], &newSection, &menu->getSections() ));
 	sd.addSetting(new MenuSettingImage(       this, tr["Icon"],                 tr.translate("Select an icon for the link: $1", linkTitle.c_str(), NULL), &linkIcon, ".png,.bmp,.jpg,.jpeg", wd ));
 	sd.addSetting(new MenuSettingFile(        this, tr["Manual"],               tr["Select a graphic/textual manual or a readme"], &linkManual, ".man.png,.txt", wd ));
+
 	sd.addSetting(new MenuSettingInt(         this, tr.translate("Clock (default: $1)",strClock.c_str(), NULL), tr["Cpu clock frequency to set when launching this link"], &linkClock, 50, confInt["maxClock"] ));
 	sd.addSetting(new MenuSettingBool(        this, tr["Tweak RAM Timings"],    tr["This usually speeds up the application at the cost of stability"], &linkUseRamTimings ));
 	sd.addSetting(new MenuSettingInt(         this, tr["Volume (default: -1)"], tr["Volume to set for this link"], &linkVolume, -1, 100 ));
 	sd.addSetting(new MenuSettingString(      this, tr["Parameters"],           tr["Parameters to pass to the application"], &linkParams, diagTitle, diagIcon ));
+
 	sd.addSetting(new MenuSettingDir(         this, tr["Selector Directory"],   tr["Directory to scan for the selector"], &linkSelDir, wd ));
 	sd.addSetting(new MenuSettingBool(        this, tr["Selector Browser"],     tr["Allow the selector to change directory"], &linkSelBrowser ));
 	sd.addSetting(new MenuSettingString(      this, tr["Selector Filter"],      tr["Filter for the selector (Separate values with a comma)"], &linkSelFilter, diagTitle, diagIcon ));
 	sd.addSetting(new MenuSettingDir(         this, tr["Selector Screenshots"], tr["Directory of the screenshots for the selector"], &linkSelScreens, wd ));
 	sd.addSetting(new MenuSettingFile(        this, tr["Selector Aliases"],     tr["File containing a list of aliases for the selector"], &linkSelAliases, wd ));
+
+#	if defined(TARGET_WIZ) || defined(TARGET_CAANOO)
+	bool linkUseGinge = menu->selLinkApp()->getUseGinge();
+	string ginge_prep = getExePath() + "/ginge/ginge_prep";
+	if (fileExists(ginge_prep))
+		sd.addSetting(new MenuSettingBool(        this, tr["Use Ginge"],            tr["Compatibility layer for running GP2X applications"], &linkUseGinge ));
+#	endif
+
 	//G
 	sd.addSetting(new MenuSettingInt(         this, tr["Gamma (default: 0)"],   tr["Gamma value to set when launching this link"], &linkGamma, 0, 100 ));
 	sd.addSetting(new MenuSettingBool(        this, tr["Wrapper"],              tr["Explicitly relaunch GMenu2X after this link's execution ends"], &menu->selLinkApp()->needsWrapperRef() ));
@@ -1473,6 +1483,10 @@ void GMenu2X::editLink() {
 		menu->selLinkApp()->setVolume(linkVolume);
 		//G
 		menu->selLinkApp()->setGamma(linkGamma);
+
+#		if defined(TARGET_WIZ) || defined(TARGET_CAANOO)
+		menu->selLinkApp()->setUseGinge(linkUseGinge);
+#		endif
 
 		INFO("New Section: '%s'", newSection.c_str());
 

@@ -34,8 +34,8 @@ using namespace std;
 
 LinkApp::LinkApp(GMenu2X *gmenu2x_, InputManager &inputMgr_,
 				 const char* linkfile)
-	: Link(gmenu2x_)
-	, inputMgr(inputMgr_)
+	: Link(gmenu2x_),
+	  inputMgr(inputMgr_)
 {
 	manual = "";
 	file = linkfile;
@@ -50,6 +50,7 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, InputManager &inputMgr_,
 	icon = iconPath = "";
 	selectorbrowser = false;
 	useRamTimings = false;
+	useGinge = false;
 	workdir = "";
 
 	string line;
@@ -76,10 +77,10 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, InputManager &inputMgr_,
 			workdir = value;
 		} else if (name == "manual") {
 			manual = value;
-		} else if (name == "wrapper") {
-			if (value=="true") wrapper = true;
-		} else if (name == "dontleave") {
-			if (value=="true") dontleave = true;
+		} else if (name == "wrapper" && value=="true") {
+			wrapper = true;
+		} else if (name == "dontleave" && value=="true") {
+			dontleave = true;
 		} else if (name == "clock") {
 			setClock( atoi(value.c_str()) );
 		//G
@@ -89,10 +90,12 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, InputManager &inputMgr_,
 			setVolume( atoi(value.c_str()) );
 		} else if (name == "selectordir") {
 			setSelectorDir( value );
-		} else if (name == "selectorbrowser") {
-			if (value=="true") selectorbrowser = true;
-		} else if (name == "useramtimings") {
-			if (value=="true") useRamTimings = true;
+		} else if (name == "selectorbrowser" && value=="true") {
+			selectorbrowser = true;
+		} else if (name == "useramtimings" && value=="true") {
+			useRamTimings = true;
+		} else if (name == "useginge" && value=="true") {
+			useGinge = true;
 		} else if (name == "selectorfilter") {
 			setSelectorFilter( value );
 		} else if (name == "selectorscreens") {
@@ -221,6 +224,7 @@ bool LinkApp::save() {
 		if (manual!=""         ) f << "manual="          << manual          << endl;
 		if (iclock!=0          ) f << "clock="           << iclock          << endl;
 		if (useRamTimings      ) f << "useramtimings=true"                  << endl;
+		if (useGinge           ) f << "useginge=true"                       << endl;
 		if (ivolume>0          ) f << "volume="          << ivolume         << endl;
 		//G
 		if (igamma!=0          ) f << "gamma="           << igamma          << endl;
@@ -408,6 +412,11 @@ void LinkApp::launch(const string &selectedFile, const string &selectedDir) {
 	} // else, well.. we are no worse off :)
 
 	if (params!="") command += " " + params;
+	if (useGinge) {
+		string ginge_prep = gmenu2x->getExePath() + "/ginge/ginge_prep";
+		if (fileExists(ginge_prep))
+			command = cmdclean(ginge_prep) + " " + command;
+	}
 	if (gmenu2x->confInt["outputLogs"]) command += " &> " + cmdclean(gmenu2x->getExePath()) + "/log.txt";
 	if (wrapper) command += "; sync & cd "+cmdclean(gmenu2x->getExePath())+"; exec ./gmenu2x";
 	if (dontleave) {
@@ -510,6 +519,15 @@ bool LinkApp::getUseRamTimings() {
 
 void LinkApp::setUseRamTimings(bool value) {
 	useRamTimings = value;
+	edited = true;
+}
+
+bool LinkApp::getUseGinge() {
+	return useGinge;
+}
+
+void LinkApp::setUseGinge(bool value) {
+	useGinge = value;
 	edited = true;
 }
 
