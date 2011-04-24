@@ -43,7 +43,7 @@ bool BrowseDialog::exec() {
 
 	fl->browse();
 
-	rowHeight = gmenu2x->font->getHeight()+1; // gp2x=15+1 / pandora=19+1
+	rowHeight = gmenu2x->font->getHeight()+1;
 	numRows = (gmenu2x->resY-gmenu2x->skinConfInt["topBarHeight"]-20)/rowHeight;
 	clipRect = (SDL_Rect){0, gmenu2x->skinConfInt["topBarHeight"]+1, gmenu2x->resX-9, gmenu2x->resY-gmenu2x->skinConfInt["topBarHeight"]-25};
 	touchRect = (SDL_Rect){2, gmenu2x->skinConfInt["topBarHeight"]+4, gmenu2x->resX-12, clipRect.h};
@@ -198,7 +198,7 @@ void BrowseDialog::paint() {
 	//Selection
 	iY = selected-firstElement;
 	iY = gmenu2x->skinConfInt["topBarHeight"]+1+(iY*rowHeight);
-	gmenu2x->s->box(2, iY, gmenu2x->resX-12, rowHeight-1, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
+	gmenu2x->s->box(2, iY, gmenu2x->resX-12, rowHeight, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
 	lastElement = firstElement + numRows;
 	if (lastElement > fl->size())
@@ -220,7 +220,7 @@ void BrowseDialog::paint() {
 			icon = iconFile;
 		}
 		icon->blit(gmenu2x->s, 5, offsetY);
-		gmenu2x->s->write(gmenu2x->font, (*fl)[i], 24, offsetY + 8, HAlignLeft, VAlignMiddle);
+		gmenu2x->s->write(gmenu2x->font, (*fl)[i], 24, offsetY + 6, HAlignLeft, VAlignMiddle);
 
 		if (gmenu2x->f200 && gmenu2x->ts.pressed() && gmenu2x->ts.inRect(touchRect.x, offsetY + 3, touchRect.w, rowHeight)) {
 			ts_pressed = true;
