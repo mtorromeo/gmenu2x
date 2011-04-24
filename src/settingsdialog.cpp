@@ -54,7 +54,7 @@ bool SettingsDialog::exec() {
 
 	SDL_Rect clipRect = {0, gmenu2x->skinConfInt["topBarHeight"]+1, gmenu2x->resX-9, gmenu2x->resY-gmenu2x->skinConfInt["topBarHeight"]-25};
 	SDL_Rect touchRect = {2, gmenu2x->skinConfInt["topBarHeight"]+4, gmenu2x->resX-12, clipRect.h};
-	uint rowHeight = gmenu2x->font->getHeight()+1; // gp2x=15+1 / pandora=19+1
+	uint rowHeight = gmenu2x->font->getHeight();
 	uint numRows = (gmenu2x->resY-gmenu2x->skinConfInt["topBarHeight"]-20)/rowHeight;
 
 	while (!close) {
@@ -78,7 +78,7 @@ bool SettingsDialog::exec() {
 		iY = gmenu2x->skinConfInt["topBarHeight"]+2+(iY*rowHeight);
 		gmenu2x->s->setClipRect(clipRect);
 		if (sel<voices.size())
-			gmenu2x->s->box(1, iY, 148, rowHeight-2, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
+			gmenu2x->s->box(1, iY, 148, rowHeight-1, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 		gmenu2x->s->clearClipRect();
 
 		//selected option
@@ -89,7 +89,7 @@ bool SettingsDialog::exec() {
 		if (gmenu2x->f200 && ts.pressed() && !ts.inRect(touchRect)) ts_pressed = false;
 		for (i=firstElement; i<voices.size() && i<firstElement+numRows; i++) {
 			iY = i-firstElement;
-			voices[i]->draw(iY*rowHeight+gmenu2x->skinConfInt["topBarHeight"]+2);
+			voices[i]->draw(iY*rowHeight+gmenu2x->skinConfInt["topBarHeight"]);
 			if (gmenu2x->f200 && ts.pressed() && ts.inRect(touchRect.x, touchRect.y+(iY*rowHeight), touchRect.w, rowHeight)) {
 				ts_pressed = true;
 				sel = i;
