@@ -688,10 +688,10 @@ void GMenu2X::writeSkinConfig() {
 
 		for (int i = 0; i < NUM_COLORS; ++i) {
 			inf << colorToString((enum color)i) << "=#"
-				<< hex << setw(2) << setfill('0') << right << skinConfColors[i].r
-				<< hex << setw(2) << setfill('0') << right << skinConfColors[i].g
-				<< hex << setw(2) << setfill('0') << right << skinConfColors[i].b
-				<< hex << setw(2) << setfill('0') << right << skinConfColors[i].a << endl;
+				<< hex << setw(2) << setfill('0') << right << (unsigned short)skinConfColors[i].r
+				<< hex << setw(2) << setfill('0') << right << (unsigned short)skinConfColors[i].g
+				<< hex << setw(2) << setfill('0') << right << (unsigned short)skinConfColors[i].b
+				<< hex << setw(2) << setfill('0') << right << (unsigned short)skinConfColors[i].a << endl;
 		}
 
 
