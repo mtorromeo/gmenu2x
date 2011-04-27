@@ -592,7 +592,7 @@ void GMenu2X::readConfig() {
 	evalIntConf( &confInt["outputLogs"], 0, 0,1 );
 #ifdef TARGET_GP2X
 	evalIntConf( &confInt["maxClock"], 300, 200,300 );
-	evalIntConf( &confInt["menuClock"], f200 ? 136 : 100, 50,300 );
+	evalIntConf( &confInt["menuClock"], 140, 50,300 );
 #elif defined(TARGET_WIZ) || defined(TARGET_CAANOO)
 	evalIntConf( &confInt["maxClock"], 900, 200,900 );
 	evalIntConf( &confInt["menuClock"], DEFAULT_CPU_CLK, 50,300 );
