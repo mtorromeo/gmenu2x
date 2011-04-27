@@ -150,7 +150,7 @@ bool InputDialog::exec() {
 		gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 		gmenu2x->s->rectangle(box.x, box.y, box.w, box.h, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
-		gmenu2x->s->write(gmenu2x->font, input, box.x+5, box.y+box.h-2, HAlignLeft, VAlignBottom);
+		gmenu2x->s->write(gmenu2x->font, input, box.x+5, box.y+box.h-4, HAlignLeft, VAlignBottom);
 
 		curTick = SDL_GetTicks();
 		if (curTick-caretTick>=600) {
@@ -279,7 +279,7 @@ int InputDialog::drawVirtualKeyboard() {
 			}
 
 			gmenu2x->s->rectangle(re, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
-			gmenu2x->s->write(gmenu2x->font, charX, kbLeft+xc*KEY_WIDTH+KEY_WIDTH/2-1, KB_TOP+l*KEY_HEIGHT+KEY_HEIGHT/2, HAlignCenter, VAlignMiddle);
+			gmenu2x->s->write(gmenu2x->font, charX, kbLeft+xc*KEY_WIDTH+KEY_WIDTH/2-1, KB_TOP+l*KEY_HEIGHT+KEY_HEIGHT/2-2, HAlignCenter, VAlignMiddle);
 			xc++;
 		}
 	}
