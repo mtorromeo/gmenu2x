@@ -1,4 +1,14 @@
 -----------
+New in 0.12
+-----------
+Built-in ginge support
+Modified default skins to use bitmapped ttf fonts that look better at smaller sizes
+Fixed fade-in/out of some menu transitions
+Fixed support for alpha channel of the font colors
+Fixed saving of color settings
+Fixed various layout imperfections
+
+-----------
 New in 0.11
 -----------
 Wiz and Caanoo support implemented (including battery readings and overclocking)
