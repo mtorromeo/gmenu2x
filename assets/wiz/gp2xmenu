@@ -1,2 +1,2 @@
 #!/bin/sh
-exec ./gmenu2x
+LD_LIBRARY_PATH="$PWD:$LD_LIBRARY_PATH" exec ./gmenu2x
