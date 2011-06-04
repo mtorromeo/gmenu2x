@@ -22,37 +22,28 @@ OBJS := $(patsubst src/%.cpp, $(OBJDIR)/src/%.o, $(SOURCES))
 $(OBJDIR)/src/%.o: src/%.cpp src/%.h
 	$(CXX) $(CFLAGS) -o $@ -c $<
 
-all: dir shared
+all: build
 
 dir:
 	@if [ ! -d $(OBJDIR)/src ]; then mkdir -p $(OBJDIR)/src; fi
 
-debug-static: $(OBJS)
-	@echo "Linking gmenu2x-debug..."
-	$(CXX) -o $(APPNAME)-debug $(OBJS) -static `$(CHAINPREFIX)/DGE/bin/sdl-config --static-libs` -lSDL $(LDFLAGS)
-
-debug-shared: $(OBJS)
+build: dir $(OBJS)
 	@echo "Linking gmenu2x-debug..."
 	$(CXX) -o $(APPNAME)-debug `$(CHAINPREFIX)/DGE/bin/sdl-config --libs` $(LDFLAGS) $(OBJS)
-
-shared: debug-shared
-	$(STRIP) $(APPNAME)-debug -o $(APPNAME)
-
-static: debug-static
 	$(STRIP) $(APPNAME)-debug -o $(APPNAME)
 
 clean:
 	rm -rf $(OBJDIR) $(DISTDIR) *.gcda *.gcno $(APPNAME)
 
-dist: dir shared
+dist: build
 	install -m755 -D $(APPNAME) $(DISTDIR)/gmenu2x
 	install -m755 -d $(DISTDIR)/sections/applications $(DISTDIR)/sections/emulators $(DISTDIR)/sections/games $(DISTDIR)/sections/settings
 	install -m644 -D README.rst $(DISTDIR)/README.txt
 	install -m644 -D COPYING $(DISTDIR)/COPYING
 	install -m644 -D ChangeLog $(DISTDIR)/ChangeLog
 	cp -RH assets/skins assets/translations assets/$(TARGET)/* $(DISTDIR)
-	cp -H $(CHAINPREFIX)/DGE/lib/libfreetype.so $(DISTDIR)/libfreetype.so
-	cp -H $(CHAINPREFIX)/DGE/lib/libSDL_ttf.so $(DISTDIR)/libSDL_ttf.so
+	cp -H "$(CHAINPREFIX)/DGE/lib/libfreetype.so.6" $(DISTDIR)
+	cp -H "$(CHAINPREFIX)/DGE/lib/libSDL_ttf-2.0.so.0" $(DISTDIR)
 	mv $(DISTDIR)/autorun.gpu $(DISTDIR)/..
 
 -include $(patsubst src/%.cpp, $(OBJDIR)/src/%.d, $(SOURCES))
