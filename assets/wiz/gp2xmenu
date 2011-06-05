@@ -1,2 +1,1 @@
-#!/bin/sh
-LD_LIBRARY_PATH="$PWD:$LD_LIBRARY_PATH" exec ./gmenu2x
+../caanoo/gp2xmenu
