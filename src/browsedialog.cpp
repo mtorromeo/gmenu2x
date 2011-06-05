@@ -43,10 +43,10 @@ bool BrowseDialog::exec() {
 
 	fl->browse();
 
-	rowHeight = gmenu2x->font->getHeight()+1;
-	numRows = (gmenu2x->resY-gmenu2x->skinConfInt["topBarHeight"]-20)/rowHeight;
-	clipRect = (SDL_Rect){0, gmenu2x->skinConfInt["topBarHeight"]+1, gmenu2x->resX-9, gmenu2x->resY-gmenu2x->skinConfInt["topBarHeight"]-25};
+	rowHeight = gmenu2x->font->getHeight()+2;
+	clipRect = (SDL_Rect){0, gmenu2x->skinConfInt["topBarHeight"]+2, gmenu2x->resX-9, gmenu2x->resY - gmenu2x->skinConfInt["topBarHeight"] - 25};
 	touchRect = (SDL_Rect){2, gmenu2x->skinConfInt["topBarHeight"]+4, gmenu2x->resX-12, clipRect.h};
+	numRows = (clipRect.h + 2) / rowHeight;
 
 	selected = 0;
 	close = false;
@@ -195,16 +195,16 @@ void BrowseDialog::paint() {
 	else if (selected < firstElement)
 		firstElement = selected;
 
+	offsetY = gmenu2x->skinConfInt["topBarHeight"] + 2;
+
 	//Selection
 	iY = selected-firstElement;
-	iY = gmenu2x->skinConfInt["topBarHeight"]+1+(iY*rowHeight);
-	gmenu2x->s->box(2, iY, gmenu2x->resX-12, rowHeight, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
+	iY = offsetY + iY*rowHeight;
+	gmenu2x->s->box(2, iY, gmenu2x->resX-12, rowHeight-2, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
 	lastElement = firstElement + numRows;
 	if (lastElement > fl->size())
 		lastElement = fl->size();
-
-	offsetY = gmenu2x->skinConfInt["topBarHeight"]+1;
 
 	beforeFileList();
 
@@ -231,6 +231,6 @@ void BrowseDialog::paint() {
 	}
 	gmenu2x->s->clearClipRect();
 
-	gmenu2x->drawScrollBar(numRows,fl->size(),firstElement,clipRect.y,clipRect.h);
+	gmenu2x->drawScrollBar(numRows, fl->size(), firstElement, clipRect.y, clipRect.h);
 	gmenu2x->s->flip();
 }
