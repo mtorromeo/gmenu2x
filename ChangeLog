@@ -1,7 +1,7 @@
 -----------
 New in 0.12
 -----------
-Built-in ginge support
+Built-in ginge support (credits for ginge go to notaz)
 Modified default skins to use bitmapped ttf fonts that look better at smaller sizes
 Fixed fade-in/out of some menu transitions
 Fixed support for alpha channel of the font colors
