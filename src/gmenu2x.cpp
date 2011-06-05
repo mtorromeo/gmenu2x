@@ -501,7 +501,8 @@ Pickle for the initial Wiz and Caanoo ports\n\
 \n\
  Beta testers\n\
 ----\n\
-Goemon4, PokeParadox, PSyMastR and Tripmonkey_uk\n\
+Goemon4, PokeParadox, PSyMastR and Tripmonkey_uk (GP2X)\n\
+Yann Vaillant (WIZ)\n\
 \n\
  Translators\n\
 ----\n\
