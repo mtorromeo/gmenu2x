@@ -45,6 +45,7 @@ dist: build
 	cp -H "$(CHAINPREFIX)/DGE/lib/libfreetype.so.6" $(DISTDIR)
 	cp -H "$(CHAINPREFIX)/DGE/lib/libSDL_ttf-2.0.so.0" $(DISTDIR)
 	mv $(DISTDIR)/autorun.gpu $(DISTDIR)/..
+	7z x -y -o$(DISTDIR) assets/$(TARGET)/ginge.7z
 
 -include $(patsubst src/%.cpp, $(OBJDIR)/src/%.d, $(SOURCES))
 

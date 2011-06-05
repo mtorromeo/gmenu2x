@@ -49,6 +49,7 @@ dist: build
 	cp -H "$(CHAINPREFIX)/arm-openwiz-linux-gnu/sys-root/lib/libstdc++.so.6" $(DISTDIR)
 	cp -H "$(CHAINPREFIX)/arm-openwiz-linux-gnu/sys-root/lib/libgcc_s.so.1" $(DISTDIR)
 	mv $(DISTDIR)/autorun.gpu $(DISTDIR)/..
+	7z x -y -o$(DISTDIR) assets/$(TARGET)/ginge.7z
 
 -include $(patsubst src/%.cpp, $(OBJDIR)/src/%.d, $(SOURCES))
 
