@@ -26,13 +26,13 @@ void Dialog::drawTitleIcon(const std::string &icon, bool skinRes, Surface *s) {
 void Dialog::writeTitle(const std::string &title, Surface *s) {
 	if (s==NULL)
 		s = gmenu2x->s;
-	s->write(gmenu2x->font, title, 40, gmenu2x->skinConfInt["topBarHeight"]/4, HAlignLeft, VAlignMiddle);
+	s->write(gmenu2x->font, title, 40, gmenu2x->skinConfInt["topBarHeight"]/2 -1, HAlignLeft, VAlignBottom);
 }
 
 void Dialog::writeSubTitle(const std::string &subtitle, Surface *s) {
 	if (s==NULL)
 		s = gmenu2x->s;
-	s->write(gmenu2x->font, subtitle, 40, gmenu2x->skinConfInt["topBarHeight"]/4*3, HAlignLeft, VAlignMiddle);
+	s->write(gmenu2x->font, subtitle, 40, gmenu2x->skinConfInt["topBarHeight"]/2, HAlignLeft, VAlignTop);
 }
 
 
