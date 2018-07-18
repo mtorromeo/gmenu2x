@@ -25,6 +25,7 @@
 #include <algorithm>
 #include <math.h>
 #include <fstream>
+#include <unistd.h>
 
 #include "gmenu2x.h"
 #include "linkapp.h"

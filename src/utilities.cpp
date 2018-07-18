@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <strings.h>
 #include <math.h>
+#include <unistd.h>
 
 #include <SDL.h>
 
